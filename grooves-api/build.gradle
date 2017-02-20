@@ -1,6 +1,17 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.netflix.nebula:nebula-publishing-plugin:4.9.1'
+    }
+}
+
+apply plugin: 'nebula.source-jar'
+apply plugin: 'nebula.javadoc-jar'
 apply plugin: 'groovy'
 
 dependencies {
-  compile 'org.codehaus.groovy:groovy-all:2.4.7'
-  compile 'org.slf4j:slf4j-api:1.7.22'
+    compile 'org.codehaus.groovy:groovy-all:2.4.7'
+    compile 'org.slf4j:slf4j-api:1.7.22'
 }
