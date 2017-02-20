@@ -9,6 +9,7 @@ buildscript {
 
 apply plugin: 'nebula.source-jar'
 apply plugin: 'nebula.javadoc-jar'
+apply plugin: 'nebula.maven-publish'
 apply plugin: 'groovy'
 
 dependencies {
