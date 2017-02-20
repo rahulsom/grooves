@@ -1,0 +1,12 @@
+sudo: false
+language: groovy
+jdk:
+  - oraclejdk8
+cache:
+  directories:
+  - "$HOME/.grails/wrapper"
+  - "$HOME/.gradle/wrapper"
+  - "$HOME/.gradle/caches/jars-1"
+  - "$HOME/.gradle/caches/jars-2"
+  - "$HOME/.gradle/caches/modules-2/files-2.1"
+  - "$HOME/.m2"
