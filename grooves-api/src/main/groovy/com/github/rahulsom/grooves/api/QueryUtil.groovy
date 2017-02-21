@@ -59,12 +59,12 @@ trait QueryUtil<A extends AggregateType, E extends BaseEvent<A, E>, S extends Sn
 
         if (head instanceof RevertEvent<A, E>) {
             def revert = head as RevertEvent<A, E>
-            if (!tail.contains(revert.revertedEvent)) {
-                throw new Exception("Cannot revert event that does not exist in unapplied list - ${revert.revertedEvent}")
+            if (!(tail*.id).contains(revert.revertedEventId)) {
+                throw new Exception("Cannot revert event that does not exist in unapplied list - ${revert.revertedEventId}")
             }
             log.debug "    --> Revert: $revert"
-            revert.revertedEvent.revertedBy = revert
-            return applyReverts(tail.findAll { it != revert.revertedEvent }, accumulator)
+            events.find { it.id == revert.revertedEventId }.revertedBy = revert
+            return applyReverts(tail.findAll { it.id != revert.revertedEventId }, accumulator)
         } else {
             return applyReverts(tail, accumulator + head)
         }

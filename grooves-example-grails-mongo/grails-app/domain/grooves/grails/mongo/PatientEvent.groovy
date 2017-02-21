@@ -46,8 +46,8 @@ class PaymentMade extends PatientEvent {
 }
 
 class PatientEventReverted extends PatientEvent implements RevertEvent<Patient, PatientEvent> {
-    PatientEvent revertedEvent
+    Long revertedEventId
 
     @Override
-    String getAudit() { new JsonBuilder([revertedEvent: revertedEvent.id]).toString() }
+    String getAudit() { new JsonBuilder([revertedEvent: revertedEventId]).toString() }
 }

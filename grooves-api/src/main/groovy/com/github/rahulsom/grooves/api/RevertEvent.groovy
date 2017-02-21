@@ -6,5 +6,5 @@ package com.github.rahulsom.grooves.api
  * @author Rahul Somasunderam
  */
 interface RevertEvent<A extends AggregateType, E> extends BaseEvent<A, E> {
-    E getRevertedEvent()
+    public <T> T getRevertedEventId()
 }
