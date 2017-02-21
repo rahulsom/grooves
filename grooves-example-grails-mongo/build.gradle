@@ -7,6 +7,7 @@ buildscript {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.11.6"
         classpath "org.grails.plugins:hibernate5:6.0.7"
+        classpath "gradle.plugin.com.sourcemuse.gradle.plugin:gradle-mongo-plugin:1.0.0"
     }
 }
 
@@ -16,6 +17,7 @@ apply plugin:"war"
 apply plugin:"org.grails.grails-web"
 apply plugin:"org.grails.grails-gsp"
 apply plugin:"asset-pipeline"
+apply plugin: "com.sourcemuse.mongo"
 
 repositories {
     mavenLocal()
@@ -65,3 +67,5 @@ assets {
     minifyJs = true
     minifyCss = true
 }
+
+tasks.findByName('bootRun').dependsOn 'startManagedMongoDb'
