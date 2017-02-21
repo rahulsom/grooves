@@ -22,5 +22,5 @@ import java.lang.annotation.Target
      * Aggregates to which this event can be applied
      * @return
      */
-    Class[] value()
+    Class value()
 }

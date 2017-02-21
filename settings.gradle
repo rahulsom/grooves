@@ -1,2 +1,2 @@
 rootProject.name = 'grooves'
-include 'grooves-api'
+include 'grooves-api', 'grooves-example-grails-rdbms', 'grooves-example-grails-mongo'

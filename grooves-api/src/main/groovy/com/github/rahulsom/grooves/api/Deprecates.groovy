@@ -8,8 +8,8 @@ package com.github.rahulsom.grooves.api
  *
  * @author Rahul Somasunderam
  */
-interface Deprecates<A extends AggregateType> extends BaseEvent<A> {
-    DeprecatedBy<A> getConverse()
+interface Deprecates<A extends AggregateType, E> extends BaseEvent<A, E> {
+    DeprecatedBy<A, E> getConverse()
 
     A getDeprecated()
 }

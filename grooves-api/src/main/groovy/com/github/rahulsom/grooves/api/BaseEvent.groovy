@@ -7,7 +7,7 @@ package com.github.rahulsom.grooves.api
  *
  * @author Rahul Somasunderam
  */
-interface BaseEvent<A extends AggregateType> {
+interface BaseEvent<A extends AggregateType, E> {
     A getAggregate()
 
     abstract String getAudit()
@@ -16,9 +16,9 @@ interface BaseEvent<A extends AggregateType> {
 
     String getCreatedBy()
 
-    BaseEvent<A> getRevertedBy()
+    RevertEvent<A, E> getRevertedBy()
 
-    void setRevertedBy(BaseEvent<A> revertEvent)
+    void setRevertedBy(RevertEvent<A, E> revertEvent)
 
     public <T extends Object> T getId()
 

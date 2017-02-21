@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory
  * @author Rahul Somasunderam
  */
 @CompileStatic
-trait QueryUtil<A extends AggregateType, E extends BaseEvent<A>, S extends Snapshot<A>> {
+trait QueryUtil<A extends AggregateType, E extends BaseEvent<A, E>, S extends Snapshot<A>> {
     private Logger log = LoggerFactory.getLogger(getClass())
 
     abstract S createEmptySnapshot()
@@ -57,8 +57,8 @@ trait QueryUtil<A extends AggregateType, E extends BaseEvent<A>, S extends Snaps
         def head = events.head()
         def tail = events.tail()
 
-        if (head instanceof RevertEvent<A>) {
-            def revert = head as RevertEvent<A>
+        if (head instanceof RevertEvent<A, E>) {
+            def revert = head as RevertEvent<A, E>
             if (!tail.contains(revert.revertedEvent)) {
                 throw new Exception("Cannot revert event that does not exist in unapplied list - ${revert.revertedEvent}")
             }
@@ -85,7 +85,7 @@ trait QueryUtil<A extends AggregateType, E extends BaseEvent<A>, S extends Snaps
             def lastSnapshot = getLatestSnapshot(aggregate, lastEventInSnapshot)
 
             List<E> uncomputedEvents = getUncomputedEvents(aggregate, lastSnapshot, lastEvent)
-            def uncomputedReverts = uncomputedEvents.findAll { it instanceof RevertEvent<A> } as List<RevertEvent>
+            def uncomputedReverts = uncomputedEvents.findAll { it instanceof RevertEvent<A, E> } as List<RevertEvent>
 
             if (uncomputedReverts) {
                 log.info "Uncomputed reverts exist: ${uncomputedEvents}"
@@ -127,8 +127,8 @@ trait QueryUtil<A extends AggregateType, E extends BaseEvent<A>, S extends Snaps
 
         log.debug "    --> Event: $event"
 
-        if (event instanceof Deprecates<A>) {
-            def deprecatesEvent = event as Deprecates<A>
+        if (event instanceof Deprecates<A, E>) {
+            def deprecatesEvent = event as Deprecates<A, E>
             def newSnapshot = createEmptySnapshot()
             newSnapshot.aggregate = deprecatesEvent.aggregate
 
@@ -145,8 +145,8 @@ trait QueryUtil<A extends AggregateType, E extends BaseEvent<A>, S extends Snaps
 
             def forwardEventsSortedBackwards = applyReverts(sortedEvents.reverse(), [] as List<E>)
             applyEvents(newSnapshot, forwardEventsSortedBackwards.reverse(), deprecatesList + deprecatesEvent, aggregates)
-        } else if (event instanceof DeprecatedBy<A>) {
-            def deprecatedByEvent = event as DeprecatedBy<A>
+        } else if (event instanceof DeprecatedBy<A, E>) {
+            def deprecatedByEvent = event as DeprecatedBy<A, E>
             def newAggregate = deprecatedByEvent.deprecator
             snapshot.deprecatedBy = newAggregate
             snapshot
@@ -178,13 +178,13 @@ trait QueryUtil<A extends AggregateType, E extends BaseEvent<A>, S extends Snaps
         def events = seTuple2.second as List<E>
         def snapshot = seTuple2.first as S
 
-        if (events.any { it instanceof RevertEvent<A> } && snapshot.aggregate) {
+        if (events.any { it instanceof RevertEvent<A, E> } && snapshot.aggregate) {
             return Optional.empty()
         }
         snapshot.aggregate = aggregate
 
         List<E> forwardEventsSortedBackwards = applyReverts(events.reverse(), [] as List<E>)
-        assert !forwardEventsSortedBackwards.find { it instanceof RevertEvent<A> }
+        assert !forwardEventsSortedBackwards.find { it instanceof RevertEvent<A, E> }
 
         def retval = applyEvents(snapshot, forwardEventsSortedBackwards.reverse(), [], [aggregate])
         log.info "  --> Computed: $retval"
