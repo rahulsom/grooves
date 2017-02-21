@@ -1,0 +1,5 @@
+= Grooves
+
+Groovy + Event Sourcing
+
+== Introduction

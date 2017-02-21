@@ -4,6 +4,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.netflix.nebula:nebula-publishing-plugin:4.9.1'
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+        classpath "org.ajoberstar:gradle-git:1.6.0"
     }
 }
 
@@ -11,8 +13,27 @@ apply plugin: 'nebula.source-jar'
 apply plugin: 'nebula.javadoc-jar'
 apply plugin: 'nebula.maven-publish'
 apply plugin: 'groovy'
+apply plugin: 'org.asciidoctor.convert'
+apply plugin: "org.ajoberstar.github-pages"
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.7'
     compile 'org.slf4j:slf4j-api:1.7.22'
 }
+
+githubPages {
+    repoUri = 'https://github.com/rahulsom/grooves.git'
+    targetBranch = 'gh-pages'
+    pages {
+        from(file("$buildDir/asciidoc/html5")) {
+            into '.'
+        }
+    }
+    credentials {
+        username = System.getenv('GH_TOKEN')
+        password = '\n'
+    }
+}
+
+tasks.findByName('publish').dependsOn 'publishGhPages'
+tasks.findByName('publishGhPages').dependsOn 'asciidoctor'
