@@ -1,5 +1,76 @@
 = Grooves
+Rahul Somasunderam <rahul.som@gmail.com>
+:stem:
 
 Groovy + Event Sourcing
 
 == Introduction
+
+Event Sourcing is a way of storing data for flexible retrieval.
+The principle behind Event Sourcing is very simple.
+Event Sourcing works particularly well with CQRS - Command Query Responsibility Segregation.
+
+There are a couple of types of objects that are relevant to Event Sourcing and CQRS
+
+Aggregate::
+An aggregate is a type of object that you are interested in managing data about.
+A classic example would be a bank account.
+
+Event::
+An event is an atomic change that needs to occur on the account.
+A suitable example for the bank account would be a transaction.
+It could be an ATM withdrawal, or a check deposit, or an electronic payment.
+Most events can be applied while only looking ahead.
+When there is a `revert` event or a `merge` (which is represented as a `deprecates` and a `deprecatedBy` events), that doesn't hold true.
+
+Snapshot::
+A snapshot is a way of looking at the state of an aggregate at a point in time.
+In our banking example, this could be your account balance.
+
+Command::
+A command is an input which causes an event to be stored.
+
+Query::
+A query is a computation that needs to be performed in order to obtain a snapshot from the events.
+
+[stem]
+++++
+S_N = f(S_0, [E_1 .. E_(N)])
+++++
+
+Most of the time this also holds true
+
+[stem]
+++++
+S_N = f(S_k, [E_(k+1) .. E_(N)])
+++++
+
+The second one holds true only for forward events.
+
+== Hurdles
+
+While the theory is very simple, in practice, it's a little more complicated.
+The functions that you see above are very simple at first glance, but implementing an entire system based on it requires some patterns.
+That is the problem that Grooves aims to solve.
+
+When applying events on a Snapshot, you need to be sure that you have handled every single event type.
+Let's say you've got 3 types of events for an aggregate and 2 snapshots.
+If you add a new event type, you need to handle it in the computation of both snapshots.
+When a language has case classes, it's easier to achieve this.
+Alas, Groovy doesn't have case classes.
+
+== How Grooves solves it
+
+Grooves assumes nothing about your persistence framework or whether you're building a webapp or a batch application.
+Grooves only offers three things
+
+* Interfaces for the Aggregate, Event (and its subtypes) and Snapshot.
+* Annotations to mark these and AST Transformations to ensure all event types are covered in a Query implementation.
+* A Trait that helps write queries to compute snapshots.
+
+This allows you to use Grooves with a lot of different frameworks.
+There are examples in the repository for some options you could use.
+
+== Building an Event Sourcing System with Grooves
+
+???
