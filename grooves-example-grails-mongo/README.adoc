@@ -11,6 +11,6 @@ This example uses RDBMS to persist the events, but stores the snapshot in MongoD
 ----
 http :8080/patient.json
 http :8080/patient/show/1.json
-http :8080/patient/billing/1.json
-http :8080/patient/provider/1.json
+http :8080/patient/account/1.json
+http :8080/patient/health/1.json
 ----

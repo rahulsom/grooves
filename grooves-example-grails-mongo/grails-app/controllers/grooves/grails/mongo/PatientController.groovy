@@ -19,11 +19,11 @@ class PatientController {
         respond patient
     }
 
-    def billing(Patient patient) {
+    def account(Patient patient) {
         respond new PatientAccountQuery().computeSnapshot(patient, Long.MAX_VALUE).get()
     }
 
-    def provider(Patient patient) {
+    def health(Patient patient) {
         JSON.use('deep') {
             render new PatientHealthQuery().computeSnapshot(patient, Long.MAX_VALUE).get() as JSON
         }
