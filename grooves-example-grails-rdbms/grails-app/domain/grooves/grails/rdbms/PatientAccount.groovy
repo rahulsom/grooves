@@ -19,5 +19,6 @@ class PatientAccount implements Snapshot<Patient> {
     ]
 
     static constraints = {
+        deprecatedBy nullable: true
     }
 }

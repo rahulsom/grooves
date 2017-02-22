@@ -16,12 +16,15 @@ class PatientHealth implements Snapshot<Patient> {
     List<Procedure> procedures = []
 
     static hasMany = [
-        procedures: Procedure,
+            procedures: Procedure,
             deprecates: Patient
     ]
 
     static constraints = {
+        deprecatedBy nullable: true
     }
+
+    static embedded = ['procedures']
 }
 
 class Procedure {

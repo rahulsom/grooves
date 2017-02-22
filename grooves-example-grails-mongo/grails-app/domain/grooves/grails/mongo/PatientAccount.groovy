@@ -4,6 +4,8 @@ import com.github.rahulsom.grooves.api.Snapshot
 
 class PatientAccount implements Snapshot<Patient> {
 
+    static mapWith = "mongo"
+
     Long lastEvent
     Patient deprecatedBy
     Set<Patient> deprecates
@@ -18,6 +20,9 @@ class PatientAccount implements Snapshot<Patient> {
             deprecates: Patient
     ]
 
+    static embedded = ['deprecates']
+
     static constraints = {
+        deprecatedBy nullable: true
     }
 }

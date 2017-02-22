@@ -7,26 +7,25 @@ import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 
-@Query(aggregate = Patient, snapshot = PatientAccount)
-class PatientBillingQuery implements QueryUtil<Patient, PatientEvent, PatientAccount> {
-
+@Query(aggregate = Patient, snapshot = PatientHealth)
+class PatientHealthQuery implements QueryUtil<Patient, PatientEvent, PatientHealth> {
     public static final Map LATEST = [sort: 'lastEvent', order: 'desc', offset: 0, max: 1]
     public static final Map INCREMENTAL = [sort: 'position', order: 'asc']
 
     @Override
-    PatientAccount createEmptySnapshot() { new PatientAccount(deprecates: []) }
+    PatientHealth createEmptySnapshot() { new PatientHealth(deprecates: []) }
 
     @Override
-    Optional<PatientAccount> getSnapshot(long startWithEvent, Patient aggregate) {
+    Optional<PatientHealth> getSnapshot(long startWithEvent, Patient aggregate) {
         def snapshots = startWithEvent == Long.MAX_VALUE ?
-                PatientAccount.findAllByAggregate(aggregate, LATEST) :
-                PatientAccount.findAllByAggregateAndLastEventLessThan(aggregate, startWithEvent, LATEST)
+                PatientHealth.findAllByAggregate(aggregate, LATEST) :
+                PatientHealth.findAllByAggregateAndLastEventLessThan(aggregate, startWithEvent, LATEST)
 
-        (snapshots ? Optional.of(snapshots[0]) : Optional.empty()) as Optional<PatientAccount>
+        (snapshots ? Optional.of(snapshots[0]) : Optional.empty()) as Optional<PatientHealth>
     }
 
     @Override
-    void detachSnapshot(PatientAccount retval) {
+    void detachSnapshot(PatientHealth retval) {
         if (retval.isAttached()) {
             retval.discard()
             retval.id = null
@@ -34,14 +33,14 @@ class PatientBillingQuery implements QueryUtil<Patient, PatientEvent, PatientAcc
     }
 
     @Override
-    List<PatientEvent> getUncomputedEvents(Patient aggregate, PatientAccount lastSnapshot, long lastEvent) {
+    List<PatientEvent> getUncomputedEvents(Patient aggregate, PatientHealth lastSnapshot, long lastEvent) {
         PatientEvent.
                 findAllByAggregateAndPositionGreaterThanAndPositionLessThanEquals(
                         aggregate, lastSnapshot?.lastEvent ?: 0L, lastEvent, INCREMENTAL)
     }
 
     @Override
-    boolean shouldEventsBeApplied(PatientAccount snapshot) {
+    boolean shouldEventsBeApplied(PatientHealth snapshot) {
         true
     }
 
@@ -51,7 +50,7 @@ class PatientBillingQuery implements QueryUtil<Patient, PatientEvent, PatientAcc
     }
 
     @Override
-    void addToDeprecates(PatientAccount snapshot, Patient otherAggregate) {
+    void addToDeprecates(PatientHealth snapshot, Patient otherAggregate) {
         snapshot.addToDeprecates(otherAggregate)
     }
 
@@ -60,19 +59,18 @@ class PatientBillingQuery implements QueryUtil<Patient, PatientEvent, PatientAcc
         GrailsHibernateUtil.unwrapIfProxy(event) as PatientEvent
     }
 
-    EventApplyOutcome applyPatientCreated(PatientCreated event, PatientAccount snapshot) {
+    EventApplyOutcome applyPatientCreated(PatientCreated event, PatientHealth snapshot) {
         snapshot.name = event.name
         CONTINUE
     }
 
-    EventApplyOutcome applyProcedurePerformed(ProcedurePerformed event, PatientAccount snapshot) {
-        snapshot.balance += event.cost
+    EventApplyOutcome applyProcedurePerformed(ProcedurePerformed event, PatientHealth snapshot) {
+        snapshot.addToProcedures(code: event.code, date: event.date)
         CONTINUE
     }
 
-    EventApplyOutcome applyPaymentMade(PaymentMade event, PatientAccount snapshot) {
-        snapshot.balance -= event.amount
-        snapshot.moneyMade += event.amount
+    EventApplyOutcome applyPaymentMade(PaymentMade event, PatientHealth snapshot) {
+        // Ignore payments
         CONTINUE
     }
 

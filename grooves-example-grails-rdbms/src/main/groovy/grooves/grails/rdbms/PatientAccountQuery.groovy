@@ -8,7 +8,7 @@ import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 
 @Query(aggregate = Patient, snapshot = PatientAccount)
-class PatientBillingQuery implements QueryUtil<Patient, PatientEvent, PatientAccount> {
+class PatientAccountQuery implements QueryUtil<Patient, PatientEvent, PatientAccount> {
 
     public static final Map LATEST = [sort: 'lastEvent', order: 'desc', offset: 0, max: 1]
     public static final Map INCREMENTAL = [sort: 'position', order: 'asc']
