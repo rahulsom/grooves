@@ -1,0 +1,20 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.netflix.nebula:nebula-publishing-plugin:4.9.1'
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+    }
+}
+
+apply plugin: 'nebula.source-jar'
+apply plugin: 'nebula.javadoc-jar'
+apply plugin: 'nebula.maven-publish'
+apply plugin: 'groovy'
+
+dependencies {
+    compile project(':grooves-api')
+
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+}
