@@ -19,9 +19,13 @@ class EventsDsl {
 
         void apply(E event) {
             event.aggregate = aggregate
-            event.createdBy = userSupplier.get()
-            event.position = positionSupplier.get()
-            event.date = dateSupplier.get()
+
+            if (!event.createdBy)
+                event.createdBy = userSupplier.get()
+            if (!event.position)
+                event.position = positionSupplier.get()
+            if (!event.date)
+                event.date = dateSupplier.get()
 
             eventConsumer.accept(event)
         }
