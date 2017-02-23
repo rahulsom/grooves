@@ -21,14 +21,15 @@ class BootStrap {
             apply new ProcedurePerformed(code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
             apply new PaymentMade(amount: 100.25)
-        }
 
-        new PatientAccountQuery().computeSnapshot(patient, Long.MAX_VALUE).get().save(flush: true, failOnError: true)
-        new PatientHealthQuery().computeSnapshot(patient, Long.MAX_VALUE).get().save(flush: true, failOnError: true)
+            snapshotWith new PatientAccountQuery()
+            snapshotWith new PatientHealthQuery()
 
-        on(patient) {
             apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
             apply new PaymentMade(amount: 180.00)
+
+            snapshotWith new PatientAccountQuery()
+            snapshotWith new PatientHealthQuery()
         }
     }
 

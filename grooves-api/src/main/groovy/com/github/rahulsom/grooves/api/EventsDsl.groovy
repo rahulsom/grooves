@@ -9,9 +9,9 @@ import java.util.function.Supplier
  */
 class EventsDsl {
     static AtomicLong defaultPositionSupplier = new AtomicLong()
-    static class OnSpec<A extends AggregateType, E extends BaseEvent<A, E>> {
+    static class OnSpec<A extends AggregateType, E extends BaseEvent<A, E>, S extends Snapshot<A>> {
         A aggregate
-        Consumer<E> eventConsumer
+        Consumer entityConsumer
 
         Supplier<Date> dateSupplier
         Supplier<String> userSupplier
@@ -27,13 +27,17 @@ class EventsDsl {
             if (!event.date)
                 event.date = dateSupplier.get()
 
-            eventConsumer.accept(event)
+            entityConsumer.accept(event)
+        }
+
+        void snapshotWith(QueryUtil<A,E,S> queryUtil) {
+            queryUtil.computeSnapshot(aggregate, Long.MAX_VALUE).ifPresent { entityConsumer.accept(it) }
         }
     }
 
     static <A extends AggregateType, E extends BaseEvent<A, E>> void on(
             A aggregate,
-            Consumer<E> eventConsumer,
+            Consumer eventConsumer,
             Supplier<Long> positionSupplier = { defaultPositionSupplier.incrementAndGet() },
             Supplier<String> userSupplier = { 'anonymous' },
             Supplier<Date> dateSupplier = { new Date() },
@@ -42,7 +46,7 @@ class EventsDsl {
         closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure.delegate = new OnSpec(
                 aggregate: aggregate,
-                eventConsumer: eventConsumer,
+                entityConsumer: eventConsumer,
                 userSupplier: userSupplier,
                 dateSupplier: dateSupplier,
                 positionSupplier: positionSupplier
