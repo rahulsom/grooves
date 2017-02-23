@@ -3,11 +3,13 @@ package grooves.grails.mongo
 import com.github.rahulsom.grooves.annotations.Query
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.api.QueryUtil
+import grails.compiler.GrailsCompileStatic
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 
 @Query(aggregate = Patient, snapshot = PatientHealth)
+@GrailsCompileStatic
 class PatientHealthQuery implements QueryUtil<Patient, PatientEvent, PatientHealth> {
     public static final Map LATEST = [sort: 'lastEvent', order: 'desc', offset: 0, max: 1]
     public static final Map INCREMENTAL = [sort: 'position', order: 'asc']
@@ -35,8 +37,8 @@ class PatientHealthQuery implements QueryUtil<Patient, PatientEvent, PatientHeal
     @Override
     List<PatientEvent> getUncomputedEvents(Patient aggregate, PatientHealth lastSnapshot, long lastEvent) {
         PatientEvent.
-                findAllByAggregateAndPositionGreaterThanAndPositionLessThanEquals(
-                        aggregate, lastSnapshot?.lastEvent ?: 0L, lastEvent, INCREMENTAL)
+                findAllByAggregateIdAndPositionGreaterThanAndPositionLessThanEquals(
+                        aggregate.id, lastSnapshot?.lastEvent ?: 0L, lastEvent, INCREMENTAL)
     }
 
     @Override
@@ -46,7 +48,7 @@ class PatientHealthQuery implements QueryUtil<Patient, PatientEvent, PatientHeal
 
     @Override
     List<PatientEvent> findEventsForAggregates(List<Patient> aggregates) {
-        PatientEvent.findAllByAggregateInList(aggregates, INCREMENTAL) as List<? extends PatientEvent>
+        PatientEvent.findAllByAggregateIdInList(aggregates*.id, INCREMENTAL) as List<? extends PatientEvent>
     }
 
     @Override

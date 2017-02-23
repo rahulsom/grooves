@@ -3,11 +3,13 @@ package grooves.grails.rdbms
 import com.github.rahulsom.grooves.annotations.Query
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.api.QueryUtil
+import grails.compiler.GrailsCompileStatic
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 
 @Query(aggregate = Patient, snapshot = PatientAccount)
+@GrailsCompileStatic
 class PatientAccountQuery implements QueryUtil<Patient, PatientEvent, PatientAccount> {
 
     public static final Map LATEST = [sort: 'lastEvent', order: 'desc', offset: 0, max: 1]

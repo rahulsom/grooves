@@ -12,9 +12,12 @@ abstract class PatientEvent implements BaseEvent<Patient, PatientEvent> {
     String createdBy
     Date date
     Long position
-    Patient aggregate
+    Long aggregateId
 
-    static transients = ['revertedBy']
+    @Override Patient getAggregate() { Patient.get(aggregateId) }
+    @Override void setAggregate(Patient aggregate) { aggregateId = aggregate.id }
+
+    static transients = ['revertedBy', 'aggregate']
 
     static constraints = {
     }

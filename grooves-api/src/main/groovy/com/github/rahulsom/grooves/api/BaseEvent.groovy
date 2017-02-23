@@ -9,20 +9,23 @@ package com.github.rahulsom.grooves.api
  */
 interface BaseEvent<A extends AggregateType, E> {
     A getAggregate()
+    void setAggregate(A aggregate)
 
-    abstract String getAudit()
+    String getAudit()
 
     Date getDate()
+    void setDate(Date date)
 
     String getCreatedBy()
+    void setCreatedBy(String creator)
 
     RevertEvent<A, E> getRevertedBy()
-
     void setRevertedBy(RevertEvent<A, E> revertEvent)
 
     public <T extends Object> T getId()
 
     Long getPosition()
+    void setPosition(Long position)
 }
 
 
