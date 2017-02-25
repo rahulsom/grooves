@@ -9,6 +9,7 @@ class PatientHealth implements Snapshot<Patient> {
     Long lastEvent
     Patient deprecatedBy
     Set<Patient> deprecates
+    Set<String> processingErrors = []
     Patient aggregate
 
     String name
@@ -24,7 +25,7 @@ class PatientHealth implements Snapshot<Patient> {
         deprecatedBy nullable: true
     }
 
-    static embedded = ['procedures']
+    static embedded = ['procedures', 'processingErrors']
 }
 
 class Procedure {

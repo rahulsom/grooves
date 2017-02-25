@@ -9,6 +9,7 @@ class PatientAccount implements Snapshot<Patient> {
     Long lastEvent
     Patient deprecatedBy
     Set<Patient> deprecates
+    Set<String> processingErrors = []
     Patient aggregate
 
     BigDecimal balance = 0.0
@@ -20,7 +21,7 @@ class PatientAccount implements Snapshot<Patient> {
             deprecates: Patient
     ]
 
-    static embedded = ['deprecates']
+    static embedded = ['deprecates', 'processingErrors']
 
     static constraints = {
         deprecatedBy nullable: true

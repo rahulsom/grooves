@@ -62,6 +62,12 @@ class PatientAccountQuery implements QueryUtil<Patient, PatientEvent, PatientAcc
         GrailsHibernateUtil.unwrapIfProxy(event) as PatientEvent
     }
 
+    @Override
+    EventApplyOutcome onException(Exception e, PatientAccount snapshot, PatientEvent event) {
+        // ignore exceptions. Look at the mongo equivalent to see one possible way to handle exceptions
+        CONTINUE
+    }
+
     EventApplyOutcome applyPatientCreated(PatientCreated event, PatientAccount snapshot) {
         snapshot.name = event.name
         CONTINUE

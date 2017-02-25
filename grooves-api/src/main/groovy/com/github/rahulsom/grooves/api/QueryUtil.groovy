@@ -167,10 +167,22 @@ trait QueryUtil<A extends AggregateType, E extends BaseEvent<A, E>, S extends Sn
 
     @CompileStatic(TypeCheckingMode.SKIP)
     private EventApplyOutcome callMethod(String methodName, S snapshot, E event) {
-        this."${methodName}"(unwrapIfProxy(event), snapshot) as EventApplyOutcome
+        try {
+            this."${methodName}"(unwrapIfProxy(event), snapshot) as EventApplyOutcome
+        } catch (Exception e1) {
+            try {
+                onException(e1, snapshot, event)
+            } catch (Exception e2) {
+                def description = "{Snapshot: ${snapshot}; Event: ${event}; method: $methodName; originalException: $e1}"
+                log.error "Exception thrown while calling exception handler. $description", e2
+                EventApplyOutcome.RETURN
+            }
+        }
     }
 
     abstract E unwrapIfProxy(E event)
+
+    abstract EventApplyOutcome onException(Exception e, S snapshot, E event)
 
     Optional<S> computeSnapshot(A aggregate, long lastEvent) {
 

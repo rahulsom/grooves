@@ -62,6 +62,12 @@ class PatientAccountQuery implements QueryUtil<Patient, PatientEvent, PatientAcc
         GrailsHibernateUtil.unwrapIfProxy(event) as PatientEvent
     }
 
+    @Override
+    EventApplyOutcome onException(Exception e, PatientAccount snapshot, PatientEvent event) {
+        snapshot.processingErrors << e.message
+        CONTINUE
+    }
+
     EventApplyOutcome applyPatientCreated(PatientCreated event, PatientAccount snapshot) {
         snapshot.name = event.name
         CONTINUE

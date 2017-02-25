@@ -35,6 +35,7 @@ class BalanceQuery implements QueryUtil<Account, Transaction, Balance> {
     @Override List<Transaction> findEventsForAggregates(List<Account> aggregates) { [] }
     @Override void addToDeprecates(Balance snapshot, Account otherAggregate) {}
     @Override Transaction unwrapIfProxy(Transaction event) { event }
+    @Override EventApplyOutcome onException(Exception e, Balance snapshot, Transaction event) {}
 
     EventApplyOutcome applyCashDeposit(CashDeposit event, Balance snapshot) { EventApplyOutcome.CONTINUE }
     EventApplyOutcome applyCashWithdrawal(CashWithdrawal event, Balance snapshot) { EventApplyOutcome.CONTINUE }
