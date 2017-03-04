@@ -9,7 +9,7 @@ import java.util.function.Supplier
  */
 class EventsDsl {
     static AtomicLong defaultPositionSupplier = new AtomicLong()
-    static class OnSpec<A extends AggregateType, E extends BaseEvent<A, E>, S extends Snapshot<A>> {
+    static class OnSpec<SI, A extends AggregateType, E extends BaseEvent<A, E>, S extends Snapshot<A, ?>> {
         A aggregate
         Consumer entityConsumer
 

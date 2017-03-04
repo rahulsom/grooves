@@ -2,7 +2,7 @@ package grooves.grails.rdbms
 
 import com.github.rahulsom.grooves.api.Snapshot
 
-class PatientHealth implements Snapshot<Patient> {
+class PatientHealth implements Snapshot<Patient, Long> {
 
     Long lastEvent
     Patient deprecatedBy

@@ -2,10 +2,11 @@ package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.Snapshot
 
-class PatientAccount implements Snapshot<Patient> {
+class PatientAccount implements Snapshot<Patient, String> {
 
     static mapWith = "mongo"
 
+    String id
     Long lastEvent
     Patient deprecatedBy
     Set<Patient> deprecates

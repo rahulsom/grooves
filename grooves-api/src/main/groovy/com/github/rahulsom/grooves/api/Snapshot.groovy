@@ -6,17 +6,17 @@ package com.github.rahulsom.grooves.api
  *
  * @author Rahul Somasunderam
  */
-interface Snapshot<A extends AggregateType> {
-    A getAggregate()
+interface Snapshot<A extends AggregateType, ID> {
+    ID getId()
+    void setId(ID id)
 
+    A getAggregate()
     void setAggregate(A aggregate)
 
     A getDeprecatedBy()
-
     void setDeprecatedBy(A aggregate)
 
     Long getLastEvent()
-
     void setLastEvent(Long id)
 
     Set<A> getDeprecates()

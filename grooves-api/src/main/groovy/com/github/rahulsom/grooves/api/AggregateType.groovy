@@ -8,6 +8,7 @@ package com.github.rahulsom.grooves.api
  *
  * @author Rahul Somasunderam
  */
-interface AggregateType {
-
+interface AggregateType<ID> {
+    ID getId()
+    void setId(ID id)
 }

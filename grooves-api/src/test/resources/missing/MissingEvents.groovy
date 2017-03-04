@@ -4,7 +4,9 @@ import com.github.rahulsom.grooves.annotations.*
 import com.github.rahulsom.grooves.api.*
 import groovy.transform.CompileStatic
 
-@CompileStatic @Aggregate class Account implements AggregateType {}
+@CompileStatic @Aggregate class Account implements AggregateType<Long> {
+    Long id
+}
 
 @CompileStatic abstract class Transaction implements BaseEvent<Account, Transaction> {
     Account aggregate
@@ -18,7 +20,8 @@ import groovy.transform.CompileStatic
 
 @CompileStatic @Event(Account) class CashWithdrawal extends Transaction {}
 
-@CompileStatic class Balance implements Snapshot<Account> {
+@CompileStatic class Balance implements Snapshot<Account, Long> {
+    Long id
     Long lastEvent
     Account aggregate, deprecatedBy
     Set<Account> deprecates
