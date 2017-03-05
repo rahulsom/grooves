@@ -41,7 +41,7 @@ class EventsDsl {
 
     static <A extends AggregateType, E extends BaseEvent<A, E>> void on(
             A aggregate,
-            Consumer eventConsumer,
+            Consumer entityConsumer,
             Supplier<Long> positionSupplier = { defaultPositionSupplier.incrementAndGet() },
             Supplier<String> userSupplier = { 'anonymous' },
             Supplier<Date> dateSupplier = { new Date() },
@@ -50,7 +50,7 @@ class EventsDsl {
         closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure.delegate = new OnSpec(
                 aggregate: aggregate,
-                entityConsumer: eventConsumer,
+                entityConsumer: entityConsumer,
                 userSupplier: userSupplier,
                 dateSupplier: dateSupplier,
                 positionSupplier: positionSupplier
