@@ -56,7 +56,7 @@ dependencies {
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
     compile project(':grooves-grails')
-    testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
+    testCompile project(':grooves-example-test')
 }
 
 bootRun {
