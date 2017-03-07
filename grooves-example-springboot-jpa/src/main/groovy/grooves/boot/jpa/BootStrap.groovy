@@ -29,7 +29,7 @@ class BootStrap implements InitializingBean {
         def patient = patientRepository.save(new Patient(uniqueId: '42'))
 
         on(patient) {
-            apply new PatientCreated(name: 'John Smith')
+            apply new PatientCreated(name: 'John Lennon')
             apply new ProcedurePerformed(code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
             apply new PaymentMade(amount: 100.25)

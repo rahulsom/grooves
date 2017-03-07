@@ -24,13 +24,13 @@ abstract class AbstractPatientSpec extends Specification {
             contentType == "application/json"
         }
         with(resp.data) {
-            it.size() == 1
-            it[0].id == 1
+            it.size() == 2
             it[0].uniqueId == '42'
+            it[1].uniqueId == '43'
         }
     }
 
-    def "Patient Show works"() {
+    def "John Lennon - Show works"() {
         given:
         def rest = new RESTClient("http://localhost:${serverPort}/", ContentType.JSON)
 
@@ -48,7 +48,25 @@ abstract class AbstractPatientSpec extends Specification {
         }
     }
 
-    def "Patient Health works"() {
+    def "Ringo Starr - Show works"() {
+        given:
+        def rest = new RESTClient("http://localhost:${serverPort}/", ContentType.JSON)
+
+        when:
+        def resp = rest.get(path: '/patient/show/2.json')
+
+        then:
+        with(resp) {
+            status == 200
+            contentType == "application/json"
+        }
+        with(resp.data) {
+            it.id == 2
+            it.uniqueId == '43'
+        }
+    }
+
+    def "John Lennon - Health works"() {
         given:
         def rest = new RESTClient("http://localhost:${serverPort}/", ContentType.JSON)
 
@@ -64,10 +82,79 @@ abstract class AbstractPatientSpec extends Specification {
         with(resp.data) {
             it.aggregate.id == 1
             it.aggregate.uniqueId == '42'
-            it.name == 'John Smith'
+            it.name == 'John Lennon'
             it.lastEvent == 6
             it.procedures.size() == 3
             it.procedures*.code == ['FLUSHOT', 'GLUCOSETEST', 'ANNUALPHYSICAL']
+        }
+    }
+
+    def "Ringo Starr - Health works"() {
+        given:
+        def rest = new RESTClient("http://localhost:${serverPort}/", ContentType.JSON)
+
+        when:
+        def resp = rest.get(path: '/patient/health/2.json')
+        println resp.data
+
+        then:
+        with(resp) {
+            status == 200
+            contentType == "application/json"
+        }
+        with(resp.data) {
+            it.aggregate.id == 2
+            it.aggregate.uniqueId == '43'
+            it.name == 'Ringo Starr'
+            it.lastEvent == 6
+            it.procedures.size() == 3
+            it.procedures*.code == ['ANNUALPHYSICAL', 'GLUCOSETEST', 'FLUSHOT']
+        }
+    }
+
+    def "John Lennon v2 - Health works"() {
+        given:
+        def rest = new RESTClient("http://localhost:${serverPort}/", ContentType.JSON)
+
+        when:
+        def resp = rest.get(path: '/patient/health/1.json', query: [version: 2])
+        println resp.data
+
+        then:
+        with(resp) {
+            status == 200
+            contentType == "application/json"
+        }
+        with(resp.data) {
+            it.aggregate.id == 1
+            it.aggregate.uniqueId == '42'
+            it.name == 'John Lennon'
+            it.lastEvent == 2
+            it.procedures.size() == 1
+            it.procedures*.code == ['FLUSHOT']
+        }
+    }
+
+    def "Ringo Starr v2 - Health works"() {
+        given:
+        def rest = new RESTClient("http://localhost:${serverPort}/", ContentType.JSON)
+
+        when:
+        def resp = rest.get(path: '/patient/health/2.json', query: [version: 2])
+        println resp.data
+
+        then:
+        with(resp) {
+            status == 200
+            contentType == "application/json"
+        }
+        with(resp.data) {
+            it.aggregate.id == 2
+            it.aggregate.uniqueId == '43'
+            it.name == 'Ringo Starr'
+            it.lastEvent == 2
+            it.procedures.size() == 1
+            it.procedures*.code == ['ANNUALPHYSICAL']
         }
     }
 }

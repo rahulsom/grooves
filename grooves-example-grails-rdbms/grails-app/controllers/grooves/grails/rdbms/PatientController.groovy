@@ -20,12 +20,12 @@ class PatientController {
     }
 
     def account(Patient patient) {
-        respond new PatientAccountQuery().computeSnapshot(patient, Long.MAX_VALUE).get()
+        respond new PatientAccountQuery().computeSnapshot(patient, params.int('version') ?: Long.MAX_VALUE).get()
     }
 
     def health(Patient patient) {
         JSON.use('deep') {
-            render new PatientHealthQuery().computeSnapshot(patient, Long.MAX_VALUE).get() as JSON
+            render new PatientHealthQuery().computeSnapshot(patient, params.int('version') ?: Long.MAX_VALUE).get() as JSON
         }
     }
 

@@ -17,7 +17,7 @@ class BootStrap {
         def patient = new Patient(uniqueId: '42').save(flush: true, failOnError: true)
 
         on(patient) {
-            apply new PatientCreated(name: 'John Smith')
+            apply new PatientCreated(name: 'John Lennon')
             apply new ProcedurePerformed(code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
             apply new PaymentMade(amount: 100.25)
@@ -26,6 +26,24 @@ class BootStrap {
             snapshotWith new PatientHealthQuery()
 
             apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
+            apply new PaymentMade(amount: 180.00)
+
+            snapshotWith new PatientAccountQuery()
+            snapshotWith new PatientHealthQuery()
+        }
+
+        def patient2 = new Patient(uniqueId: '43').save(flush: true, failOnError: true)
+
+        on(patient2) {
+            apply new PatientCreated(name: 'Ringo Starr')
+            apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
+            apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
+            apply new PaymentMade(amount: 100.25)
+
+            snapshotWith new PatientAccountQuery()
+            snapshotWith new PatientHealthQuery()
+
+            apply new ProcedurePerformed(code: 'FLUSHOT', cost: 32.40)
             apply new PaymentMade(amount: 180.00)
 
             snapshotWith new PatientAccountQuery()
