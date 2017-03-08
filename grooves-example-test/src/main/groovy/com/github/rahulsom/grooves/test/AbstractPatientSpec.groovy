@@ -13,7 +13,7 @@ abstract class AbstractPatientSpec extends Specification {
 
     def "Patient List works"() {
         given:
-        def rest = new RESTClient("http://localhost:${serverPort}/", ContentType.JSON)
+        def rest = new RESTClient("http://localhost:${serverPort?:8080}/", ContentType.JSON)
 
         when:
         def resp = rest.get(path: '/patient.json')
@@ -80,8 +80,7 @@ abstract class AbstractPatientSpec extends Specification {
             contentType == "application/json"
         }
         with(resp.data) {
-            it.aggregate.id == 1
-            it.aggregate.uniqueId == '42'
+            it.aggregateId == 1
             it.name == 'John Lennon'
             it.lastEvent == 6
             it.procedures.size() == 3
@@ -103,8 +102,7 @@ abstract class AbstractPatientSpec extends Specification {
             contentType == "application/json"
         }
         with(resp.data) {
-            it.aggregate.id == 2
-            it.aggregate.uniqueId == '43'
+            it.aggregateId == 2
             it.name == 'Ringo Starr'
             it.lastEvent == 6
             it.procedures.size() == 3
@@ -126,8 +124,7 @@ abstract class AbstractPatientSpec extends Specification {
             contentType == "application/json"
         }
         with(resp.data) {
-            it.aggregate.id == 1
-            it.aggregate.uniqueId == '42'
+            it.aggregateId == 1
             it.name == 'John Lennon'
             it.lastEvent == 2
             it.procedures.size() == 1
@@ -149,8 +146,7 @@ abstract class AbstractPatientSpec extends Specification {
             contentType == "application/json"
         }
         with(resp.data) {
-            it.aggregate.id == 2
-            it.aggregate.uniqueId == '43'
+            it.aggregateId == 2
             it.name == 'Ringo Starr'
             it.lastEvent == 2
             it.procedures.size() == 1

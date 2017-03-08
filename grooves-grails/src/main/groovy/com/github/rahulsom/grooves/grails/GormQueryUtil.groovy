@@ -39,8 +39,10 @@ abstract class GormQueryUtil<
     @Override
     final Optional<S> getSnapshot(long startWithEvent, A aggregate) {
         def snapshots = startWithEvent == Long.MAX_VALUE ?
-                invokeStaticMethod(snapshotClass, 'findAllByAggregate', [aggregate, LATEST].toArray()) :
-                invokeStaticMethod(snapshotClass, 'findAllByAggregateAndLastEventLessThan', [aggregate, startWithEvent, LATEST].toArray())
+                invokeStaticMethod(snapshotClass, 'findAllByAggregateId',
+                        [aggregate.id, LATEST].toArray()) :
+                invokeStaticMethod(snapshotClass, 'findAllByAggregateIdAndLastEventLessThan',
+                        [aggregate.id, startWithEvent, LATEST].toArray())
         (snapshots ? Optional.of(snapshots[0]) : Optional.empty()) as Optional<S>
     }
 
@@ -54,13 +56,13 @@ abstract class GormQueryUtil<
 
     @Override
     final List<E> getUncomputedEvents(A aggregate, S lastSnapshot, long lastEvent) {
-        invokeStaticMethod(eventClass, 'findAllByAggregateIdAndPositionGreaterThanAndPositionLessThanEquals',
-                [aggregate.id, lastSnapshot?.lastEvent ?: 0L, lastEvent, INCREMENTAL].toArray()) as List<E>
+        invokeStaticMethod(eventClass, 'findAllByAggregateAndPositionGreaterThanAndPositionLessThanEquals',
+                [aggregate, lastSnapshot?.lastEvent ?: 0L, lastEvent, INCREMENTAL].toArray()) as List<E>
     }
 
     @Override
     final List<E> findEventsForAggregates(List<A> aggregates) {
-        invokeStaticMethod(eventClass, 'findAllByAggregateIdInList', [aggregates*.id, INCREMENTAL].toArray()) as List<? extends E>
+        invokeStaticMethod(eventClass, 'findAllByAggregateInList', [aggregates, INCREMENTAL].toArray()) as List<? extends E>
     }
 
 }

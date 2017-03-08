@@ -8,10 +8,16 @@ class PatientAccount implements Snapshot<Patient, String> {
 
     String id
     Long lastEvent
-    Patient deprecatedBy
-    Set<Patient> deprecates
     Set<String> processingErrors = []
-    Patient aggregate
+    Long aggregateId
+    @Override Patient getAggregate() { Patient.get(aggregateId) }
+    @Override void setAggregate(Patient aggregate) { this.aggregateId = aggregate.id }
+    Long deprecatedById
+    @Override Patient getDeprecatedBy() { Patient.get(deprecatedById) }
+    @Override void setDeprecatedBy(Patient aggregate) { deprecatedById = aggregate.id }
+    Set<Long> deprecatesIds
+    Set<Patient> getDeprecates() { deprecatesIds.collect {Patient.get(it)}.toSet() }
+    void setDeprecates(Set<Patient> deprecates) { deprecatesIds = deprecates*.id }
 
     BigDecimal balance = 0.0
     BigDecimal moneyMade = 0.0
@@ -19,12 +25,13 @@ class PatientAccount implements Snapshot<Patient, String> {
     String name
 
     static hasMany = [
-            deprecates: Patient
+            deprecatesIds: Long
     ]
 
     static embedded = ['deprecates', 'processingErrors']
+    static transients = ['aggregate', 'deprecatedBy', 'deprecates']
 
     static constraints = {
-        deprecatedBy nullable: true
+        deprecatedById nullable: true
     }
 }

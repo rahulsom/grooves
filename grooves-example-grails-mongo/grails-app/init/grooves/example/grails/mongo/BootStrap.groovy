@@ -53,7 +53,7 @@ class BootStrap {
 
     void on(Patient patient, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer<PatientEvent>
-        def positionSupplier = { PatientEvent.countByAggregateId(patient.id) + 1 }
+        def positionSupplier = { PatientEvent.countByAggregate(patient) + 1 }
         EventsDsl.on(patient, eventSaver, positionSupplier, closure)
     }
 

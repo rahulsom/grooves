@@ -27,7 +27,7 @@ class PatientHealthQuery extends GormQueryUtil<Patient, PatientEvent, PatientHea
 
     @Override
     void addToDeprecates(PatientHealth snapshot, Patient otherAggregate) {
-        snapshot.addToDeprecates(otherAggregate)
+        snapshot.addToDeprecatesIds(otherAggregate.id)
     }
 
     @Override
