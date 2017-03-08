@@ -52,6 +52,7 @@ dependencies {
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
     compile project(':grooves-grails')
+    testCompile project(':grooves-example-test')
 }
 
 bootRun {

@@ -1,13 +1,18 @@
 package grooves.grails.rdbms
 
 import com.github.rahulsom.grooves.api.Snapshot
+import groovy.transform.ToString
 
+@ToString
 class PatientHealth implements Snapshot<Patient, Long> {
 
     Long lastEvent
     Patient deprecatedBy
     Set<Patient> deprecates
-    Patient aggregate
+    Long aggregateId
+    @Override Patient getAggregate() { Patient.get(aggregateId) }
+    @Override void setAggregate(Patient aggregate) { aggregateId = aggregate.id }
+    List<Procedure> procedures
 
     String name
 
@@ -15,6 +20,8 @@ class PatientHealth implements Snapshot<Patient, Long> {
             deprecates: Patient,
             procedures: Procedure
     ]
+
+    static transients = ['aggregate']
 
     static constraints = {
         deprecatedBy nullable: true

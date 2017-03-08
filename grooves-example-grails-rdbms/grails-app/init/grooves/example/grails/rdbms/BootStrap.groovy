@@ -1,19 +1,56 @@
 package grooves.example.grails.rdbms
 
-import grooves.grails.rdbms.Patient
-import grooves.grails.rdbms.PatientCreated
-import grooves.grails.rdbms.PaymentMade
-import grooves.grails.rdbms.ProcedurePerformed
+import com.github.rahulsom.grooves.api.EventsDsl
+import grooves.grails.rdbms.*
+
+import java.util.function.Consumer
 
 class BootStrap {
 
     def init = { servletContext ->
-        def patient = new Patient(uniqueId: '42').save()
-        new PatientCreated(aggregate: patient, position: 1, date: new Date(), createdBy: 'rahul', name: 'John Lennon').save()
-        new ProcedurePerformed(aggregate: patient, position: 2, date: new Date(), createdBy: 'rahul', code: 'FLUSHOT', cost: 32.40).save()
-        new ProcedurePerformed(aggregate: patient, position: 3, date: new Date(), createdBy: 'rahul', code: 'GLUCOSETEST', cost: 78.93).save()
-        new PaymentMade(aggregate: patient, position: 4, date: new Date(), createdBy: 'rahul', amount: 100.25).save(flush: true)
+        def patient = new Patient(uniqueId: '42').save(flush: true, failOnError: true)
+
+        on(patient) {
+            apply new PatientCreated(name: 'John Lennon')
+            apply new ProcedurePerformed(code: 'FLUSHOT', cost: 32.40)
+            apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
+            apply new PaymentMade(amount: 100.25)
+
+            snapshotWith new PatientAccountQuery()
+            snapshotWith new PatientHealthQuery()
+
+            apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
+            apply new PaymentMade(amount: 180.00)
+
+            snapshotWith new PatientAccountQuery()
+            snapshotWith new PatientHealthQuery()
+        }
+
+        def patient2 = new Patient(uniqueId: '43').save(flush: true, failOnError: true)
+
+        on(patient2) {
+            apply new PatientCreated(name: 'Ringo Starr')
+            apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
+            apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
+            apply new PaymentMade(amount: 100.25)
+
+            snapshotWith new PatientAccountQuery()
+            snapshotWith new PatientHealthQuery()
+
+            apply new ProcedurePerformed(code: 'FLUSHOT', cost: 32.40)
+            apply new PaymentMade(amount: 180.00)
+
+            snapshotWith new PatientAccountQuery()
+            snapshotWith new PatientHealthQuery()
+        }
     }
+
+    void on(Patient patient, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
+        def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer<PatientEvent>
+        def positionSupplier = { PatientEvent.countByAggregate(patient) + 1 }
+        EventsDsl.on(patient, eventSaver, positionSupplier, closure)
+    }
+
     def destroy = {
     }
 }
