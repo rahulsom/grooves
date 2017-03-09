@@ -5,12 +5,14 @@ buildscript {
     dependencies {
         classpath 'com.netflix.nebula:nebula-publishing-plugin:4.9.1'
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+        classpath 'com.netflix.nebula:gradle-info-plugin:3.+'
     }
 }
 
 apply plugin: 'nebula.source-jar'
 apply plugin: 'nebula.javadoc-jar'
 apply plugin: 'nebula.maven-publish'
+apply plugin: 'nebula.info'
 apply plugin: 'groovy'
 
 dependencies {
