@@ -9,12 +9,9 @@ import spock.lang.Specification
  */
 abstract class AbstractPatientSpec extends Specification {
 
-    abstract Integer getServerPort()
+    abstract RESTClient getRest()
 
     def "Patient List works"() {
-        given:
-        def rest = new RESTClient("http://localhost:${serverPort?:8080}/", ContentType.JSON)
-
         when:
         def resp = rest.get(path: '/patient.json')
 
@@ -31,9 +28,6 @@ abstract class AbstractPatientSpec extends Specification {
     }
 
     def "John Lennon - Show works"() {
-        given:
-        def rest = new RESTClient("http://localhost:${serverPort}/", ContentType.JSON)
-
         when:
         def resp = rest.get(path: '/patient/show/1.json')
 
@@ -49,9 +43,6 @@ abstract class AbstractPatientSpec extends Specification {
     }
 
     def "Ringo Starr - Show works"() {
-        given:
-        def rest = new RESTClient("http://localhost:${serverPort}/", ContentType.JSON)
-
         when:
         def resp = rest.get(path: '/patient/show/2.json')
 
@@ -67,9 +58,6 @@ abstract class AbstractPatientSpec extends Specification {
     }
 
     def "John Lennon - Health works"() {
-        given:
-        def rest = new RESTClient("http://localhost:${serverPort}/", ContentType.JSON)
-
         when:
         def resp = rest.get(path: '/patient/health/1.json')
         println resp.data
@@ -89,9 +77,6 @@ abstract class AbstractPatientSpec extends Specification {
     }
 
     def "Ringo Starr - Health works"() {
-        given:
-        def rest = new RESTClient("http://localhost:${serverPort}/", ContentType.JSON)
-
         when:
         def resp = rest.get(path: '/patient/health/2.json')
         println resp.data
@@ -111,9 +96,6 @@ abstract class AbstractPatientSpec extends Specification {
     }
 
     def "John Lennon v2 - Health works"() {
-        given:
-        def rest = new RESTClient("http://localhost:${serverPort}/", ContentType.JSON)
-
         when:
         def resp = rest.get(path: '/patient/health/1.json', query: [version: 2])
         println resp.data
@@ -133,9 +115,6 @@ abstract class AbstractPatientSpec extends Specification {
     }
 
     def "Ringo Starr v2 - Health works"() {
-        given:
-        def rest = new RESTClient("http://localhost:${serverPort}/", ContentType.JSON)
-
         when:
         def resp = rest.get(path: '/patient/health/2.json', query: [version: 2])
         println resp.data
