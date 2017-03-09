@@ -6,6 +6,7 @@ import com.github.rahulsom.grooves.api.QueryUtil
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientEventRepository
 import grooves.boot.jpa.repositories.PatientHealthRepository
+import com.github.rahulsom.grooves.util.VariableDepthCopier
 import grooves.boot.jpa.util.VariableDepthCopier
 import org.hibernate.engine.spi.SessionImplementor
 import org.springframework.beans.factory.annotation.Autowired

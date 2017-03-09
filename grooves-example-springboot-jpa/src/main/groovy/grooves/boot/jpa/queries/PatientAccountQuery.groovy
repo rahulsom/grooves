@@ -6,6 +6,7 @@ import com.github.rahulsom.grooves.api.QueryUtil
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientAccountRepository
 import grooves.boot.jpa.repositories.PatientEventRepository
+import grooves.boot.jpa.util.VariableDepthCopier
 import org.hibernate.engine.spi.SessionImplementor
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -22,7 +23,6 @@ class PatientAccountQuery implements QueryUtil<Patient, PatientEvent, PatientAcc
 
     @Autowired EntityManager entityManager
     @Autowired PatientAccountRepository patientAccountRepository
-    @Autowired PatientEventRepository patientEventRepository
 
     @Override
     PatientAccount createEmptySnapshot() {
@@ -39,15 +39,20 @@ class PatientAccountQuery implements QueryUtil<Patient, PatientEvent, PatientAcc
 
     @Override
     void detachSnapshot(PatientAccount retval) {
-        if (entityManager.contains(retval)) {
-            entityManager.detach(retval)
-            retval.id = null
-        }
+        new VariableDepthCopier<PatientAccount>().copy(retval)
     }
 
     @Override
     List<PatientEvent> getUncomputedEvents(Patient patient, PatientAccount lastSnapshot, long lastEvent) {
-        patientEventRepository.getUncomputedEvents patient, lastSnapshot?.lastEvent ?: 0L, lastEvent
+        def cb = entityManager.criteriaBuilder
+        def q = cb.createQuery(PatientEvent)
+        def root = q.from(PatientEvent)
+        def criteria = q.select(root).where(
+                cb.equal(root.get('aggregate'), cb.parameter(Patient, 'aggregate')),
+                cb.gt(root.get('position'), lastSnapshot?.lastEvent ?: 0L),
+                cb.le(root.get('position'), lastEvent),
+        )
+        entityManager.createQuery(criteria).setParameter('aggregate', patient).resultList
     }
 
     @Override
@@ -57,7 +62,11 @@ class PatientAccountQuery implements QueryUtil<Patient, PatientEvent, PatientAcc
 
     @Override
     List<PatientEvent> findEventsForAggregates(List<Patient> aggregates) {
-        patientEventRepository.findAllByAggregateIn(aggregates)
+        def cb = entityManager.criteriaBuilder
+        def q = cb.createQuery(PatientEvent)
+        def root = q.from(PatientEvent)
+        def criteria = q.select(root).where(root.get('aggregate').in(aggregates))
+        entityManager.createQuery(criteria).resultList
     }
 
     @Override

@@ -14,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
-import javax.persistence.EntityManager
+import java.util.function.Consumer
+import java.util.function.Supplier
 
 @Component
 class BootStrap implements InitializingBean {
 
-    @Autowired EntityManager entityManager
     @Autowired PatientRepository patientRepository
     @Autowired PatientEventRepository patientEventRepository
     @Autowired PatientAccountQuery patientAccountQuery
@@ -44,13 +44,31 @@ class BootStrap implements InitializingBean {
             snapshotWith patientHealthQuery
         }
 
+        def patient2 = patientRepository.save(new Patient(uniqueId: '43'))
+
+        on(patient2) {
+            apply new PatientCreated(name: 'Ringo Starr')
+            apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
+            apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
+            apply new PaymentMade(amount: 100.25)
+
+            snapshotWith patientAccountQuery
+            snapshotWith patientHealthQuery
+
+            apply new ProcedurePerformed(code: 'FLUSHOT', cost: 32.40)
+            apply new PaymentMade(amount: 180.00)
+
+            snapshotWith patientAccountQuery
+            snapshotWith patientHealthQuery
+        }
     }
 
     void on(Patient patient, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
-        def entitySaver = { patientEventRepository.save(it) }
-        def positionSupplier = { patientEventRepository.countByAggregateId(patient.id) + 1 }
+        def entitySaver = { patientEventRepository.save(it) } as Consumer
+        def positionSupplier = { patientEventRepository.countByAggregateId(patient.id) + 1 } as Supplier<Long>
         EventsDsl.on(patient, entitySaver, positionSupplier, closure)
     }
+
     @Transactional
     @Override
     void afterPropertiesSet() throws Exception {
