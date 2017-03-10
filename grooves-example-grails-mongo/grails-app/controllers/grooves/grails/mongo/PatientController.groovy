@@ -1,9 +1,9 @@
 package grooves.grails.mongo
 
 import grails.converters.JSON
-
-import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
+
+import static org.springframework.http.HttpStatus.NOT_FOUND
 
 @Transactional(readOnly = true)
 class PatientController {
@@ -18,12 +18,22 @@ class PatientController {
     }
 
     def account(Patient patient) {
-        respond new PatientAccountQuery().computeSnapshot(patient, params.int('version') ?: Long.MAX_VALUE).get()
+        def snapshot = params.version ?
+                new PatientAccountQuery().computeSnapshot(patient, params.long('version')) :
+                params['date'] ?
+                        new PatientAccountQuery().computeSnapshot(patient, params.date('date')) :
+                        new PatientAccountQuery().computeSnapshot(patient, Long.MAX_VALUE)
+        respond snapshot.get()
     }
 
     def health(Patient patient) {
+        def snapshot = params.version ?
+                new PatientHealthQuery().computeSnapshot(patient, params.long('version')) :
+                params['date'] ?
+                        new PatientHealthQuery().computeSnapshot(patient, params.date('date')) :
+                        new PatientHealthQuery().computeSnapshot(patient, Long.MAX_VALUE)
         JSON.use('deep') {
-            render new PatientHealthQuery().computeSnapshot(patient, params.int('version') ?: Long.MAX_VALUE).get() as JSON
+            render snapshot.get() as JSON
         }
     }
 

@@ -8,6 +8,7 @@ class PatientAccount implements Snapshot<Patient, String> {
 
     String id
     Long lastEvent
+    Date lastEventTimestamp
     Set<String> processingErrors = []
     Long aggregateId
     @Override Patient getAggregate() { Patient.get(aggregateId) }

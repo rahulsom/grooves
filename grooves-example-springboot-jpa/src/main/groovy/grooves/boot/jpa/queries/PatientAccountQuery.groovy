@@ -5,7 +5,6 @@ import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.api.QueryUtil
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientAccountRepository
-import grooves.boot.jpa.repositories.PatientEventRepository
 import grooves.boot.jpa.util.VariableDepthCopier
 import org.hibernate.engine.spi.SessionImplementor
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 import javax.persistence.EntityManager
+import javax.persistence.TypedQuery
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 
@@ -21,8 +21,10 @@ import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 @Query(aggregate = Patient, snapshot = PatientAccount)
 class PatientAccountQuery implements QueryUtil<Patient, PatientEvent, PatientAccount> {
 
-    @Autowired EntityManager entityManager
-    @Autowired PatientAccountRepository patientAccountRepository
+    @Autowired
+    EntityManager entityManager
+    @Autowired
+    PatientAccountRepository patientAccountRepository
 
     @Override
     PatientAccount createEmptySnapshot() {
@@ -38,21 +40,54 @@ class PatientAccountQuery implements QueryUtil<Patient, PatientEvent, PatientAcc
     }
 
     @Override
+    Optional<PatientAccount> getSnapshot(Date timestamp, Patient aggregate) {
+        def snapshots = timestamp == null ?
+                patientAccountRepository.findAllByAggregateId(aggregate.id) :
+                patientAccountRepository.findAllByAggregateIdAndLastEventTimestampLessThan(aggregate.id, timestamp)
+        (snapshots ? Optional.of(snapshots[0]) : Optional.empty()) as Optional<PatientAccount>
+    }
+
+    @Override
     void detachSnapshot(PatientAccount retval) {
         new VariableDepthCopier<PatientAccount>().copy(retval)
     }
 
     @Override
-    List<PatientEvent> getUncomputedEvents(Patient patient, PatientAccount lastSnapshot, long lastEvent) {
+    List<PatientEvent> getUncomputedEvents(Patient patient, PatientAccount lastSnapshot, long version) {
         def cb = entityManager.criteriaBuilder
         def q = cb.createQuery(PatientEvent)
         def root = q.from(PatientEvent)
         def criteria = q.select(root).where(
                 cb.equal(root.get('aggregate'), cb.parameter(Patient, 'aggregate')),
                 cb.gt(root.get('position'), lastSnapshot?.lastEvent ?: 0L),
-                cb.le(root.get('position'), lastEvent),
+                cb.le(root.get('position'), version),
         )
         entityManager.createQuery(criteria).setParameter('aggregate', patient).resultList
+    }
+
+    @Override
+    List<PatientEvent> getUncomputedEvents(Patient aggregate, PatientAccount lastSnapshot, Date snapshotTime) {
+        def cb = entityManager.criteriaBuilder
+        def q = cb.createQuery(PatientEvent)
+        def root = q.from(PatientEvent)
+        def criteria = lastSnapshot?.lastEventTimestamp ?
+                q.select(root).where(
+                        cb.equal(root.get('aggregate'), cb.parameter(Patient, 'aggregate')),
+                        cb.gt(root.get('timestamp'), cb.parameter(Date, 'from')),
+                        cb.le(root.get('timestamp'), cb.parameter(Date, 'until')),
+                ) :
+                q.select(root).where(
+                        cb.equal(root.get('aggregate'), cb.parameter(Patient, 'aggregate')),
+                        cb.le(root.get('timestamp'), cb.parameter(Date, 'until')),
+                )
+
+        def query = entityManager.createQuery(criteria)
+        query.setParameter('aggregate', aggregate).setParameter('until', snapshotTime)
+        if (lastSnapshot?.lastEventTimestamp) {
+            query.setParameter('from', lastSnapshot.lastEventTimestamp)
+        }
+
+        query.resultList
     }
 
     @Override

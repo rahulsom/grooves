@@ -30,6 +30,15 @@ trait QueryUtil<A extends AggregateType, E extends BaseEvent<A, E>, S extends Sn
      */
     abstract Optional<S> getSnapshot(long startWithEvent, A aggregate)
 
+    /**
+     * Gets the last snapshot before given timestamp. Is responsible for discarding attached entity
+     *
+     * @param timestamp
+     * @param aggregate
+     * @return
+     */
+    abstract Optional<S> getSnapshot(Date timestamp, A aggregate)
+
     abstract void detachSnapshot(S retval)
 
     /**
@@ -40,6 +49,22 @@ trait QueryUtil<A extends AggregateType, E extends BaseEvent<A, E>, S extends Sn
      */
     private S getLatestSnapshot(A aggregate, long startWithEvent) {
         S lastSnapshot = getSnapshot(startWithEvent, aggregate).orElse(createEmptySnapshot()) as S
+
+        log.info "    --> Last Snapshot: ${lastSnapshot.lastEvent ? lastSnapshot : '<none>'}"
+        detachSnapshot(lastSnapshot)
+
+        lastSnapshot.aggregate = aggregate
+        lastSnapshot
+    }
+
+    /**
+     *
+     * @param aggregate
+     * @param startAtTime
+     * @return
+     */
+    private S getLatestSnapshot(A aggregate, Date startAtTime) {
+        S lastSnapshot = getSnapshot(startAtTime, aggregate).orElse(createEmptySnapshot()) as S
 
         log.info "    --> Last Snapshot: ${lastSnapshot.lastEvent ? lastSnapshot : '<none>'}"
         detachSnapshot(lastSnapshot)
@@ -86,6 +111,16 @@ trait QueryUtil<A extends AggregateType, E extends BaseEvent<A, E>, S extends Sn
         getSnapshotAndEventsSince(aggregate, version, version)
     }
 
+    /**
+     * Given a last event, finds the latest snapshot older than that event
+     * @param aggregate
+     * @param version
+     * @return
+     */
+    private Tuple2<S, List<E>> getSnapshotAndEventsSince(A aggregate, Date moment) {
+        getSnapshotAndEventsSince(aggregate, moment, moment)
+    }
+
     private Tuple2<S, List<E>> getSnapshotAndEventsSince(A aggregate, long maxLastEventInSnapshot, long version) {
         if (maxLastEventInSnapshot) {
             def lastSnapshot = getLatestSnapshot(aggregate, maxLastEventInSnapshot)
@@ -100,6 +135,7 @@ trait QueryUtil<A extends AggregateType, E extends BaseEvent<A, E>, S extends Sn
                 log.info "Events in pair: ${uncomputedEvents*.position}"
                 if (uncomputedEvents) {
                     lastSnapshot.lastEvent = uncomputedEvents*.position.max()
+                    lastSnapshot.lastEventTimestamp = uncomputedEvents*.timestamp.max()
                 }
                 new Tuple2(lastSnapshot, uncomputedEvents)
             }
@@ -111,13 +147,49 @@ trait QueryUtil<A extends AggregateType, E extends BaseEvent<A, E>, S extends Sn
             log.info "Events in pair: ${uncomputedEvents*.position}"
             if (uncomputedEvents) {
                 lastSnapshot.lastEvent = uncomputedEvents*.position.max()
+                lastSnapshot.lastEventTimestamp = uncomputedEvents*.timestamp.max()
             }
             new Tuple2(lastSnapshot, uncomputedEvents)
         }
 
     }
 
-    abstract List<E> getUncomputedEvents(A aggregate, S lastSnapshot, long lastEvent)
+    private Tuple2<S, List<E>> getSnapshotAndEventsSince(A aggregate, Date maxLastEventTimestamp, Date snapshotTime) {
+        if (maxLastEventTimestamp) {
+            def lastSnapshot = getLatestSnapshot(aggregate, maxLastEventTimestamp)
+
+            List<E> uncomputedEvents = getUncomputedEvents(aggregate, lastSnapshot, snapshotTime)
+            def uncomputedReverts = uncomputedEvents.findAll { it instanceof RevertEvent<A, E> } as List<RevertEvent>
+
+            if (uncomputedReverts) {
+                log.info "Uncomputed reverts exist: ${uncomputedEvents}"
+                getSnapshotAndEventsSince(aggregate, null, snapshotTime)
+            } else {
+                log.info "Events in pair: ${uncomputedEvents*.position}"
+                if (uncomputedEvents) {
+                    lastSnapshot.lastEvent = uncomputedEvents*.position.max()
+                    lastSnapshot.lastEventTimestamp = uncomputedEvents*.timestamp.max()
+                }
+                new Tuple2(lastSnapshot, uncomputedEvents)
+            }
+        } else {
+            def lastSnapshot = createEmptySnapshot()
+
+            List<E> uncomputedEvents = getUncomputedEvents(aggregate, lastSnapshot, snapshotTime)
+
+            log.info "Events in pair: ${uncomputedEvents*.position}"
+            if (uncomputedEvents) {
+                lastSnapshot.lastEvent = uncomputedEvents*.position.max()
+                lastSnapshot.lastEventTimestamp = uncomputedEvents*.timestamp.max()
+            }
+            new Tuple2(lastSnapshot, uncomputedEvents)
+        }
+
+    }
+
+    abstract List<E> getUncomputedEvents(A aggregate, S lastSnapshot, long version)
+
+    abstract List<E> getUncomputedEvents(A aggregate, S lastSnapshot, Date snapshotTime)
 
     abstract boolean shouldEventsBeApplied(S snapshot)
 
@@ -199,6 +271,30 @@ trait QueryUtil<A extends AggregateType, E extends BaseEvent<A, E>, S extends Sn
     Optional<S> computeSnapshot(A aggregate, long version) {
 
         Tuple2<S, List<E>> seTuple2 = getSnapshotAndEventsSince(aggregate, version)
+        def events = seTuple2.second as List<E>
+        def snapshot = seTuple2.first as S
+
+        if (events.any { it instanceof RevertEvent<A, E> } && snapshot.aggregate) {
+            return Optional.empty()
+        }
+        snapshot.aggregate = aggregate
+
+        List<E> forwardEventsSortedBackwards = applyReverts(events.reverse(), [] as List<E>)
+        assert !forwardEventsSortedBackwards.find { it instanceof RevertEvent<A, E> }
+
+        def retval = applyEvents(snapshot, forwardEventsSortedBackwards.reverse(), [], [aggregate])
+        log.info "  --> Computed: $retval"
+        Optional.of(retval)
+    }
+
+    /**
+     * Computes a snapshot for specified version of an aggregate
+     * @param aggregate The aggregate
+     * @param moment The moment at which the snapshot is desired
+     * @return An Optional Snapshot. Empty if cannot be computed.
+     */
+    Optional<S> computeSnapshot(A aggregate, Date moment) {
+        Tuple2<S, List<E>> seTuple2 = getSnapshotAndEventsSince(aggregate, moment)
         def events = seTuple2.second as List<E>
         def snapshot = seTuple2.first as S
 

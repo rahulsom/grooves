@@ -63,10 +63,14 @@ class BootStrap implements InitializingBean {
         }
     }
 
+    Date currDate = Date.parse('yyyy-MM-dd', '2016-01-01')
+
     void on(Patient patient, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
-        def entitySaver = { patientEventRepository.save(it) } as Consumer
+        def eventSaver = { patientEventRepository.save(it) } as Consumer
         def positionSupplier = { patientEventRepository.countByAggregateId(patient.id) + 1 } as Supplier<Long>
-        EventsDsl.on(patient, entitySaver, positionSupplier, closure)
+        def userSupplier = {'anonymous'}
+        def dateSupplier = {currDate+=1; currDate}
+        EventsDsl.on(patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
     }
 
     @Transactional

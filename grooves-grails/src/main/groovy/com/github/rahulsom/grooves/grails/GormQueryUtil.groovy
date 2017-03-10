@@ -47,6 +47,16 @@ abstract class GormQueryUtil<
     }
 
     @Override
+    final Optional<S> getSnapshot(Date startAtTime, A aggregate) {
+        def snapshots = startAtTime == null ?
+                invokeStaticMethod(snapshotClass, 'findAllByAggregateId',
+                        [aggregate.id, LATEST].toArray()) :
+                invokeStaticMethod(snapshotClass, 'findAllByAggregateIdAndLastEventTimestampLessThan',
+                        [aggregate.id, startAtTime, LATEST].toArray())
+        (snapshots ? Optional.of(snapshots[0]) : Optional.empty()) as Optional<S>
+    }
+
+    @Override
     final void detachSnapshot(S retval) {
         if (retval.isAttached()) {
             retval.discard()
@@ -55,9 +65,18 @@ abstract class GormQueryUtil<
     }
 
     @Override
-    final List<E> getUncomputedEvents(A aggregate, S lastSnapshot, long lastEvent) {
+    final List<E> getUncomputedEvents(A aggregate, S lastSnapshot, long version) {
         invokeStaticMethod(eventClass, 'findAllByAggregateAndPositionGreaterThanAndPositionLessThanEquals',
-                [aggregate, lastSnapshot?.lastEvent ?: 0L, lastEvent, INCREMENTAL].toArray()) as List<E>
+                [aggregate, lastSnapshot?.lastEvent ?: 0L, version, INCREMENTAL].toArray()) as List<E>
+    }
+
+    @Override
+    final List<E> getUncomputedEvents(A aggregate, S lastSnapshot, Date snapshotTime) {
+        lastSnapshot.lastEventTimestamp ?
+                invokeStaticMethod(eventClass, 'findAllByAggregateAndTimestampGreaterThanAndTimestampLessThanEquals',
+                        [aggregate, lastSnapshot.lastEventTimestamp, snapshotTime, INCREMENTAL].toArray()) as List<E> :
+                invokeStaticMethod(eventClass, 'findAllByAggregateAndTimestampLessThanEquals',
+                        [aggregate, snapshotTime, INCREMENTAL].toArray()) as List<E>
     }
 
     @Override

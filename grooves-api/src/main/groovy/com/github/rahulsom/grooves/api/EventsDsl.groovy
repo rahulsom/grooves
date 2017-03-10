@@ -30,7 +30,7 @@ class EventsDsl {
             entityConsumer.accept(event)
         }
 
-        void snapshotWith(QueryUtil<A,E,S> queryUtil, Consumer<S> beforePersist = null) {
+        void snapshotWith(QueryUtil<A, E, S> queryUtil, Consumer<S> beforePersist = null) {
 
             queryUtil.computeSnapshot(aggregate, Long.MAX_VALUE).ifPresent {
                 beforePersist?.accept(it)

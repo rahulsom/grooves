@@ -17,7 +17,7 @@ class PatientHealthQuery extends GormQueryUtil<Patient, PatientEvent, PatientHea
     }
 
     @Override
-    PatientHealth createEmptySnapshot() { new PatientHealth(deprecates: []) }
+    PatientHealth createEmptySnapshot() { new PatientHealth(deprecates: [], procedures: []) }
 
     @Override
     boolean shouldEventsBeApplied(PatientHealth snapshot) {
@@ -47,6 +47,7 @@ class PatientHealthQuery extends GormQueryUtil<Patient, PatientEvent, PatientHea
 
     EventApplyOutcome applyProcedurePerformed(ProcedurePerformed event, PatientHealth snapshot) {
         snapshot.addToProcedures(code: event.code, date: event.timestamp)
+        println "snapshotProcedures: ${snapshot.procedures}"
         CONTINUE
     }
 

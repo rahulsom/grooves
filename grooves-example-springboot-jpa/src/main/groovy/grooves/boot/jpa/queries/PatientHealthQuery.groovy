@@ -31,11 +31,19 @@ class PatientHealthQuery implements QueryUtil<Patient, PatientEvent, PatientHeal
     }
 
     @Override
-    Optional<PatientAccount> getSnapshot(long startWithEvent, Patient aggregate) {
+    Optional<PatientHealth> getSnapshot(long startWithEvent, Patient aggregate) {
         def snapshots = startWithEvent == Long.MAX_VALUE ?
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
                 patientHealthRepository.findAllByAggregateIdAndLastEventLessThan(aggregate.id, startWithEvent)
-        (snapshots ? Optional.of(snapshots[0]) : Optional.empty()) as Optional<PatientAccount>
+        (snapshots ? Optional.of(snapshots[0]) : Optional.empty()) as Optional<PatientHealth>
+    }
+
+    @Override
+    Optional<PatientHealth> getSnapshot(Date startAtTime, Patient aggregate) {
+        def snapshots = startAtTime == null ?
+                patientHealthRepository.findAllByAggregateId(aggregate.id) :
+                patientHealthRepository.findAllByAggregateIdAndLastEventTimestampLessThan(aggregate.id, startAtTime)
+        (snapshots ? Optional.of(snapshots[0]) : Optional.empty()) as Optional<PatientHealth>
     }
 
     @Override
@@ -44,8 +52,15 @@ class PatientHealthQuery implements QueryUtil<Patient, PatientEvent, PatientHeal
     }
 
     @Override
-    List<PatientEvent> getUncomputedEvents(Patient patient, PatientHealth lastSnapshot, long lastEvent) {
-        patientEventRepository.getUncomputedEvents patient, lastSnapshot?.lastEvent ?: 0L, lastEvent
+    List<PatientEvent> getUncomputedEvents(Patient patient, PatientHealth lastSnapshot, long version) {
+        patientEventRepository.getUncomputedEventsByVersion patient, lastSnapshot?.lastEvent ?: 0L, version
+    }
+
+    @Override
+    List<PatientEvent> getUncomputedEvents(Patient patient, PatientHealth lastSnapshot, Date snapshotTime) {
+        lastSnapshot?.lastEventTimestamp ?
+                patientEventRepository.getUncomputedEventsByDateRange(patient, lastSnapshot.lastEventTimestamp, snapshotTime) :
+                patientEventRepository.getUncomputedEventsUntilDate(patient, snapshotTime)
     }
 
     @Override
