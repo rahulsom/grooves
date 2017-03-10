@@ -16,7 +16,7 @@ class PatientHealth implements Snapshot<Patient, String> {
     @Override Patient getDeprecatedBy() { Patient.get(deprecatedById) }
     @Override void setDeprecatedBy(Patient aggregate) { deprecatedById = aggregate.id }
     Set<Long> deprecatesIds
-    Set<Patient> getDeprecates() { deprecatesIds.collect {Patient.get(it)}.toSet() }
+    Set<Patient> getDeprecates() { deprecatesIds.collect { Patient.get(it) }.toSet() }
     void setDeprecates(Set<Patient> deprecates) { deprecatesIds = deprecates*.id }
 
     String name
@@ -24,7 +24,7 @@ class PatientHealth implements Snapshot<Patient, String> {
     List<Procedure> procedures = []
 
     static hasMany = [
-            procedures: Procedure,
+            procedures   : Procedure,
             deprecatesIds: Long
     ]
 

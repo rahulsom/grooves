@@ -1,5 +1,6 @@
 package com.github.rahulsom.grooves
 
+import com.github.rahulsom.grooves.api.EventApplyOutcome
 import org.codehaus.groovy.control.MultipleCompilationErrorsException
 import org.codehaus.groovy.control.messages.SyntaxErrorMessage
 import spock.lang.Specification
@@ -15,6 +16,7 @@ class GroovesAstTransformationsSpec extends Specification {
         retval instanceof Optional
         (retval as Optional).present
     }
+
     def 'test missing events'() {
         when:
         def retval = new GroovyShell().evaluate(this.class.getResource('/missing/MissingEvents.groovy').text)
@@ -23,9 +25,10 @@ class GroovesAstTransformationsSpec extends Specification {
         def exception = thrown(MultipleCompilationErrorsException)
         exception.errorCollector.errorCount == 2
         exception.errorCollector.errors[0].class == SyntaxErrorMessage
-        (exception.errorCollector.errors[0] as SyntaxErrorMessage).cause.message == '''
-                |Missing expected method com.github.rahulsom.grooves.api.EventApplyOutcome applyCashDeposit(missing.CashDeposit event, missing.Balance snapshot)
-                | @ line 30, column 16.'''.stripMargin().replaceAll('^\n', '')
+        def message = (exception.errorCollector.errors[0] as SyntaxErrorMessage).cause.message
+        message.split('\n').length == 2
+        message.split('\n')[0] ==
+                "Missing expected method ${EventApplyOutcome.name} applyCashDeposit(missing.CashDeposit event, missing.Balance snapshot)".toString()
         exception.errorCollector.errors[1].class == SyntaxErrorMessage
         retval == null
 
