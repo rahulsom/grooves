@@ -19,5 +19,8 @@ interface Snapshot<A extends AggregateType, ID> {
     Long getLastEvent()
     void setLastEvent(Long id)
 
+    Date getLastEventTimestamp()
+    void setLastEventTimestamp(Date timestamp)
+
     Set<A> getDeprecates()
 }

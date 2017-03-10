@@ -45,10 +45,14 @@ class BootStrap {
         }
     }
 
+    Date currDate = Date.parse('yyyy-MM-dd', '2016-01-01')
+
     void on(Patient patient, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer<PatientEvent>
         def positionSupplier = { PatientEvent.countByAggregate(patient) + 1 }
-        EventsDsl.on(patient, eventSaver, positionSupplier, closure)
+        def userSupplier = {'anonymous'}
+        def dateSupplier = {currDate+=1; currDate}
+        EventsDsl.on(patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
     }
 
     def destroy = {

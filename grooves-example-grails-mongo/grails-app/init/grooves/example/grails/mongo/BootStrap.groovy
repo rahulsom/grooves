@@ -9,6 +9,7 @@ import grooves.grails.mongo.PatientHealthQuery
 import grooves.grails.mongo.PaymentMade
 import grooves.grails.mongo.ProcedurePerformed
 
+import java.text.SimpleDateFormat
 import java.util.function.Consumer
 
 class BootStrap {
@@ -51,10 +52,14 @@ class BootStrap {
         }
     }
 
+    Date currDate = Date.parse('yyyy-MM-dd', '2016-01-01')
+
     void on(Patient patient, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
-        def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer<PatientEvent>
+        def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { PatientEvent.countByAggregate(patient) + 1 }
-        EventsDsl.on(patient, eventSaver, positionSupplier, closure)
+        def userSupplier = {'anonymous'}
+        def dateSupplier = {currDate+=1; currDate}
+        EventsDsl.on(patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
     }
 
     def destroy = {

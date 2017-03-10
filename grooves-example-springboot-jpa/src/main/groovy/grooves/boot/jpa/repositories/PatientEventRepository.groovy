@@ -9,7 +9,13 @@ interface PatientEventRepository extends JpaRepository<PatientEvent, Long> {
     long countByAggregateId(Long aggregateId)
 
     @Query("from PatientEvent e where e.aggregate = ?1 and e.position > ?2 and e.position <= ?3")
-    List<PatientEvent> getUncomputedEvents(Patient patient, Long startPosition, Long endPosition)
+    List<PatientEvent> getUncomputedEventsByVersion(Patient patient, Long startPosition, Long endPosition)
 
     List<PatientEvent> findAllByAggregateIn(List<Patient> patients)
+
+    @Query("from PatientEvent e where e.aggregate = ?1 and e.timestamp <= ?2")
+    List<PatientEvent> getUncomputedEventsUntilDate(Patient patient, Date date)
+
+    @Query("from PatientEvent e where e.aggregate = ?1 and e.timestamp > ?2 and e.timestamp <= ?3")
+    List<PatientEvent> getUncomputedEventsByDateRange(Patient patient, Date fromDate, Date toDate)
 }

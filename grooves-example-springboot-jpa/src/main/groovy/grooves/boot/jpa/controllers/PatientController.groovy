@@ -7,6 +7,7 @@ import grooves.boot.jpa.queries.PatientAccountQuery
 import grooves.boot.jpa.queries.PatientHealthQuery
 import grooves.boot.jpa.repositories.PatientRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
@@ -33,8 +34,17 @@ class PatientController {
     }
 
     @GetMapping("/patient/account/{id}.json")
-    PatientAccount account(@PathVariable Long id, @RequestParam(required = false) Long version) {
-        def computation = patientAccountQuery.computeSnapshot(patientRepository.getOne(id), version == null ? Long.MAX_VALUE : version)
+    PatientAccount account(
+            @PathVariable Long id,
+            @RequestParam(required = false) Long version,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        def patient = patientRepository.getOne(id)
+        def computation = version ?
+                patientAccountQuery.computeSnapshot(patient, version) :
+                date ?
+                        patientAccountQuery.computeSnapshot(patient, date) :
+                        patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE)
+
         if (!computation.isPresent()) {
             throw new RuntimeException('Could not compute')
         }
@@ -42,8 +52,16 @@ class PatientController {
     }
 
     @GetMapping("/patient/health/{id}.json")
-    PatientHealth health(@PathVariable Long id, @RequestParam(required = false) Long version) {
-        def computation = patientHealthQuery.computeSnapshot(patientRepository.getOne(id), version == null ? Long.MAX_VALUE : version)
+    PatientHealth health(
+            @PathVariable Long id,
+            @RequestParam(required = false) Long version,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        def patient = patientRepository.getOne(id)
+        def computation = version ?
+                patientHealthQuery.computeSnapshot(patient, version) :
+                date ?
+                        patientHealthQuery.computeSnapshot(patient, date) :
+                        patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE)
         if (!computation.isPresent()) {
             throw new RuntimeException('Could not compute')
         }

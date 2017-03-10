@@ -23,6 +23,7 @@ import groovy.transform.CompileStatic
 @CompileStatic class Balance implements Snapshot<Account, String> {
     String id
     Long lastEvent
+    Date lastEventTimestamp
     Account aggregate, deprecatedBy
     Set<Account> deprecates
 }
@@ -32,8 +33,10 @@ import groovy.transform.CompileStatic
 class BalanceQuery implements QueryUtil<Account, Transaction, Balance> {
     @Override Balance createEmptySnapshot() { new Balance() }
     @Override Optional<Balance> getSnapshot(long startWithEvent, Account aggregate) { Optional.empty() }
+    @Override Optional<Balance> getSnapshot(Date startAtTime, Account aggregate) { Optional.empty() }
     @Override void detachSnapshot(Balance retval) {}
-    @Override List<Transaction> getUncomputedEvents(Account aggregate, Balance lastSnapshot, long lastEvent) { [] }
+    @Override List<Transaction> getUncomputedEvents(Account aggregate, Balance lastSnapshot, long version) { [] }
+    @Override List<Transaction> getUncomputedEvents(Account aggregate, Balance lastSnapshot, Date snapshotTime) { [] }
     @Override boolean shouldEventsBeApplied(Balance snapshot) { true }
     @Override List<Transaction> findEventsForAggregates(List<Account> aggregates) { [] }
     @Override void addToDeprecates(Balance snapshot, Account otherAggregate) {}
