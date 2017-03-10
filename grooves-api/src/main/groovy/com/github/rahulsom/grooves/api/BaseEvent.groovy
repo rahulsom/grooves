@@ -13,8 +13,8 @@ interface BaseEvent<A extends AggregateType, E> {
 
     String getAudit()
 
-    Date getDate()
-    void setDate(Date date)
+    Date getTimestamp()
+    void setTimestamp(Date timestamp)
 
     String getCreatedBy()
     void setCreatedBy(String creator)

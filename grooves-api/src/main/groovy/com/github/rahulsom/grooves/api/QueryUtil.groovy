@@ -145,7 +145,7 @@ trait QueryUtil<A extends AggregateType, E extends BaseEvent<A, E>, S extends Sn
 
             def sortedEvents = allEvents.
                     findAll { it.id != deprecatesEvent.id && it.id != deprecatesEvent.converse.id }.
-                    toSorted { a, b -> (a.date.time - b.date.time) as int }
+                    toSorted { it.timestamp.time }
 
             log.info "Sorted Events: [\n    ${sortedEvents.join(',\n    ')}\n]"
 

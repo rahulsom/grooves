@@ -12,7 +12,7 @@ import groovy.transform.CompileStatic
     Account aggregate
     RevertEvent<Account, Transaction> revertedBy
     Long id, position
-    Date date
+    Date timestamp
     String createdBy, audit
 }
 

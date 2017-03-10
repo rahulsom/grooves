@@ -9,7 +9,7 @@ abstract class PatientEvent implements BaseEvent<Patient, PatientEvent> {
 
     RevertEvent<Patient, PatientEvent> revertedBy
     String createdBy
-    Date date
+    Date timestamp
     Long position
     Patient aggregate
 

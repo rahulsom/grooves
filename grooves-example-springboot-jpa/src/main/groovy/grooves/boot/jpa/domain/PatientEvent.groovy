@@ -16,7 +16,7 @@ abstract class PatientEvent implements BaseEvent<Patient, PatientEvent> {
     @GeneratedValue @Id Long id
     @Transient RevertEvent<Patient, PatientEvent> revertedBy
     @Column(nullable = false) String createdBy
-    @Column(nullable = false) Date date
+    @Column(nullable = false) Date timestamp
     @Column(nullable = false) Long position
     @OneToOne Patient aggregate
 

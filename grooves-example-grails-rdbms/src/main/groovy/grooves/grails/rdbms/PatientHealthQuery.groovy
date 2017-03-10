@@ -2,7 +2,6 @@ package grooves.grails.rdbms
 
 import com.github.rahulsom.grooves.annotations.Query
 import com.github.rahulsom.grooves.api.EventApplyOutcome
-import com.github.rahulsom.grooves.api.QueryUtil
 import com.github.rahulsom.grooves.grails.GormQueryUtil
 import grails.compiler.GrailsCompileStatic
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
@@ -47,7 +46,7 @@ class PatientHealthQuery extends GormQueryUtil<Patient, PatientEvent, PatientHea
     }
 
     EventApplyOutcome applyProcedurePerformed(ProcedurePerformed event, PatientHealth snapshot) {
-        snapshot.addToProcedures(code: event.code, date: event.date)
+        snapshot.addToProcedures(code: event.code, date: event.timestamp)
         CONTINUE
     }
 

@@ -13,7 +13,7 @@ class EventsDsl {
         A aggregate
         Consumer entityConsumer
 
-        Supplier<Date> dateSupplier
+        Supplier<Date> timestampSupplier
         Supplier<String> userSupplier
         Supplier<Long> positionSupplier
 
@@ -24,8 +24,8 @@ class EventsDsl {
                 event.createdBy = userSupplier.get()
             if (!event.position)
                 event.position = positionSupplier.get()
-            if (!event.date)
-                event.date = dateSupplier.get()
+            if (!event.timestamp)
+                event.timestamp = timestampSupplier.get()
 
             entityConsumer.accept(event)
         }
@@ -44,7 +44,7 @@ class EventsDsl {
             Consumer entityConsumer,
             Supplier<Long> positionSupplier = { defaultPositionSupplier.incrementAndGet() },
             Supplier<String> userSupplier = { 'anonymous' },
-            Supplier<Date> dateSupplier = { new Date() },
+            Supplier<Date> timestampSupplier = { new Date() },
             @DelegatesTo(OnSpec) Closure closure) {
 
         closure.resolveStrategy = Closure.DELEGATE_FIRST
@@ -52,7 +52,7 @@ class EventsDsl {
                 aggregate: aggregate,
                 entityConsumer: entityConsumer,
                 userSupplier: userSupplier,
-                dateSupplier: dateSupplier,
+                timestampSupplier: timestampSupplier,
                 positionSupplier: positionSupplier
         )
         closure.call()
