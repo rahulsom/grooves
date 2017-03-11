@@ -21,12 +21,12 @@ subprojects {
 
 task release() {
     description = 'Release artifacts to nexus'
-    dependsOn 'uploadArchives', 'closeAndPromoteRepository'
+    dependsOn 'grooves-api:uploadArchives', 'grooves-grails:uploadArchives', 'closeAndPromoteRepository'
     doLast {
         println "Released $version"
     }
 }
 
 project.afterEvaluate {
-    project.tasks.findByName('closeAndPromoteRepository').mustRunAfter 'uploadArchives'
+    project.tasks.findByName('closeAndPromoteRepository').mustRunAfter 'grooves-api:uploadArchives', 'grooves-grails:uploadArchives'
 }
