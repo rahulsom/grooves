@@ -1,0 +1,52 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.bmuschko:gradle-nexus-plugin:2.3.1"
+    }
+}
+
+modifyPom {
+    project {
+        name 'Grooves'
+        description "Groovy Event Sourcing"
+        url 'https://github.com/rahulsom/grooves'
+        inceptionYear '2017'
+
+        scm {
+            url 'https://github.com/rahulsom/grooves'
+            connection 'scm:https://github.com/rahulsom/grooves.git'
+            developerConnection 'scm:git://github.com/rahulsom/grooves.git'
+        }
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+            }
+        }
+
+        developers {
+            developer {
+                id 'rahulsom'
+                name 'Rahul Somasunderam'
+                email 'rahul.som@gmail.com'
+            }
+        }
+
+        issueManagement {
+            system 'Github'
+            url 'https://github.com/rahulsom/grooves/issues'
+        }
+    }
+}
+
+extraArchive {
+    sources = true
+    tests = true
+    javadoc = true
+}

@@ -2,31 +2,31 @@ buildscript {
     repositories {
         jcenter()
     }
+    dependencies {
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"
+    }
 }
+
+apply plugin: 'io.codearte.nexus-staging'
 
 allprojects {
     group = 'com.github.rahulsom'
-    version = '0.0.1-SNAPSHOT'
 }
 
 subprojects {
     repositories {
         jcenter()
     }
+}
 
-    apply plugin: 'maven-publish'
-
-    publishing {
-        repositories {
-            maven {
-                url project.version.toString().endsWith('-SNAPSHOT') ?
-                        'https://oss.sonatype.org/content/repositories/snapshots' :
-                        'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-                credentials {
-                    username System.getenv('SONATYPE_USER')
-                    password System.getenv('SONATYPE_PASSWORD')
-                }
-            }
-        }
+task release() {
+    description = 'Release artifacts to nexus'
+    dependsOn 'uploadArchives', 'closeAndPromoteRepository'
+    doLast {
+        println "Released $version"
     }
+}
+
+project.afterEvaluate {
+    project.tasks.findByName('closeAndPromoteRepository').mustRunAfter 'uploadArchives'
 }

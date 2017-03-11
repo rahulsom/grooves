@@ -3,17 +3,16 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.netflix.nebula:nebula-publishing-plugin:4.9.1'
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
-        classpath "org.ajoberstar:gradle-git:1.6.0"
+        classpath 'org.ajoberstar:gradle-git:1.6.0'
         classpath 'com.netflix.nebula:gradle-info-plugin:3.+'
     }
 }
 
-apply plugin: 'nebula.source-jar'
-apply plugin: 'nebula.javadoc-jar'
-apply plugin: 'nebula.maven-publish'
-apply plugin: 'nebula.info'
+apply plugin: 'com.bmuschko.nexus'
+apply from: '../gradle/publishing.gradle'
 apply plugin: 'groovy'
 apply plugin: 'org.asciidoctor.convert'
 apply plugin: "org.ajoberstar.github-pages"
@@ -39,5 +38,5 @@ githubPages {
     }
 }
 
-tasks.findByName('publish').dependsOn 'publishGhPages'
+tasks.findByName('uploadArchives').dependsOn 'publishGhPages'
 tasks.findByName('publishGhPages').dependsOn 'asciidoctor'
