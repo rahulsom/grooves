@@ -10,14 +10,17 @@ class PatientAccount implements Snapshot<Patient, String> {
     Long lastEvent
     Date lastEventTimestamp
     Set<String> processingErrors = []
+
     Long aggregateId
-    @Override Patient getAggregate() { Patient.get(aggregateId) }
-    @Override void setAggregate(Patient aggregate) { this.aggregateId = aggregate.id }
+    Patient getAggregate() { Patient.get(aggregateId) }
+    void setAggregate(Patient aggregate) { this.aggregateId = aggregate.id }
+
     Long deprecatedById
-    @Override Patient getDeprecatedBy() { Patient.get(deprecatedById) }
-    @Override void setDeprecatedBy(Patient aggregate) { deprecatedById = aggregate.id }
+    Patient getDeprecatedBy() { Patient.get(deprecatedById) }
+    void setDeprecatedBy(Patient aggregate) { deprecatedById = aggregate.id }
+
     Set<Long> deprecatesIds
-    Set<Patient> getDeprecates() { deprecatesIds.collect {Patient.get(it)}.toSet() }
+    Set<Patient> getDeprecates() { deprecatesIds.collect { Patient.get(it) }.toSet() }
     void setDeprecates(Set<Patient> deprecates) { deprecatesIds = deprecates*.id }
 
     BigDecimal balance = 0.0

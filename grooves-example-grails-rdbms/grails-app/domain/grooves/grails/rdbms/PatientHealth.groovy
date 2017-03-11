@@ -10,9 +10,10 @@ class PatientHealth implements Snapshot<Patient, Long> {
     Date lastEventTimestamp
     Patient deprecatedBy
     Set<Patient> deprecates
+
     Long aggregateId
-    @Override Patient getAggregate() { Patient.get(aggregateId) }
-    @Override void setAggregate(Patient aggregate) { aggregateId = aggregate.id }
+    Patient getAggregate() { Patient.get(aggregateId) }
+    void setAggregate(Patient aggregate) { aggregateId = aggregate.id }
     List<Procedure> procedures
 
     String name

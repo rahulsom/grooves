@@ -10,9 +10,10 @@ class PatientAccount implements Snapshot<Patient, Long> {
     Date lastEventTimestamp
     Patient deprecatedBy
     Set<Patient> deprecates
+
     Long aggregateId
-    @Override Patient getAggregate() { Patient.get(aggregateId) }
-    @Override void setAggregate(Patient aggregate) { aggregateId = aggregate.id }
+    Patient getAggregate() { Patient.get(aggregateId) }
+    void setAggregate(Patient aggregate) { aggregateId = aggregate.id }
 
     BigDecimal balance = 0.0
     BigDecimal moneyMade = 0.0
