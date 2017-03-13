@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 import javax.persistence.EntityManager
-import javax.persistence.TypedQuery
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 
@@ -35,7 +34,7 @@ class PatientAccountQuery implements QueryUtil<Patient, PatientEvent, PatientAcc
     Optional<PatientAccount> getSnapshot(long startWithEvent, Patient aggregate) {
         def snapshots = startWithEvent == Long.MAX_VALUE ?
                 patientAccountRepository.findAllByAggregateId(aggregate.id) :
-                patientAccountRepository.findAllByAggregateIdAndLastEventLessThan(aggregate.id, startWithEvent)
+                patientAccountRepository.findAllByAggregateIdAndLastEventPositionLessThan(aggregate.id, startWithEvent)
         (snapshots ? Optional.of(snapshots[0]) : Optional.empty()) as Optional<PatientAccount>
     }
 
@@ -59,7 +58,7 @@ class PatientAccountQuery implements QueryUtil<Patient, PatientEvent, PatientAcc
         def root = q.from(PatientEvent)
         def criteria = q.select(root).where(
                 cb.equal(root.get('aggregate'), cb.parameter(Patient, 'aggregate')),
-                cb.gt(root.get('position'), lastSnapshot?.lastEvent ?: 0L),
+                cb.gt(root.get('position'), lastSnapshot?.lastEventPosition ?: 0L),
                 cb.le(root.get('position'), version),
         )
         entityManager.createQuery(criteria).setParameter('aggregate', patient).resultList

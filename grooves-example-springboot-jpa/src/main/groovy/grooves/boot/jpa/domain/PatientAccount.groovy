@@ -13,7 +13,7 @@ class PatientAccount implements Snapshot<Patient, Long> {
 
     @GeneratedValue @Id Long id
 
-    @Column(nullable = false) Long lastEvent
+    @Column(nullable = false) Long lastEventPosition
     @Column(nullable = false) @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ") Date lastEventTimestamp
 
     @OneToOne Patient deprecatedBy

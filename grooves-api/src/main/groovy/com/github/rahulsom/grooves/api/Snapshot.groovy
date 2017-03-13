@@ -20,6 +20,8 @@ import groovy.transform.PackageScope
     void setDeprecatedBy(A aggregate)
 
     Set<A> getDeprecates()
+
+    void setLastEvent(BaseEvent<A, ID> event)
 }
 
 /**
@@ -28,9 +30,14 @@ import groovy.transform.PackageScope
  *
  * @author Rahul Somasunderam
  */
-interface VersionedSnapshot<A extends AggregateType, ID> extends BaseSnapshot<A, ID> {
-    Long getLastEvent()
-    void setLastEvent(Long id)
+trait VersionedSnapshot<A extends AggregateType, ID> implements BaseSnapshot<A, ID> {
+    abstract Long getLastEventPosition()
+    abstract void setLastEventPosition(Long id)
+
+    @Override
+    void setLastEvent(BaseEvent<A, ID> event) {
+        this.lastEventPosition = event.position
+    }
 }
 
 /**
@@ -39,9 +46,14 @@ interface VersionedSnapshot<A extends AggregateType, ID> extends BaseSnapshot<A,
  *
  * @author Rahul Somasunderam
  */
-interface TemporalSnapshot<A extends AggregateType, ID> extends BaseSnapshot<A, ID> {
-    Date getLastEventTimestamp()
-    void setLastEventTimestamp(Date timestamp)
+trait TemporalSnapshot<A extends AggregateType, ID> implements BaseSnapshot<A, ID> {
+    abstract Date getLastEventTimestamp()
+    abstract void setLastEventTimestamp(Date timestamp)
+
+    @Override
+    void setLastEvent(BaseEvent<A, ID> event) {
+        this.lastEventTimestamp = event.timestamp
+    }
 }
 
 /**
@@ -50,4 +62,11 @@ interface TemporalSnapshot<A extends AggregateType, ID> extends BaseSnapshot<A, 
  *
  * @author Rahul Somasunderam
  */
-interface Snapshot<A extends AggregateType, ID> extends VersionedSnapshot<A, ID>, TemporalSnapshot<A, ID> {}
+trait Snapshot<A extends AggregateType, ID> implements VersionedSnapshot<A, ID>, TemporalSnapshot<A, ID> {
+
+    @Override
+    void setLastEvent(BaseEvent<A, ID> event) {
+        this.lastEventTimestamp = event.timestamp
+        this.lastEventPosition = event.position
+    }
+}

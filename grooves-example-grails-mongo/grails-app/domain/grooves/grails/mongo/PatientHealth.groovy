@@ -7,7 +7,7 @@ class PatientHealth implements Snapshot<Patient, String> {
     static mapWith = "mongo"
 
     String id
-    Long lastEvent
+    Long lastEventPosition
     Date lastEventTimestamp
     Set<String> processingErrors = []
 

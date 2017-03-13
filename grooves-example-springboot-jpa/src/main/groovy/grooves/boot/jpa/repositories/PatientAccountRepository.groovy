@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface PatientAccountRepository extends JpaRepository<PatientAccount, Long> {
     List<PatientAccount> findAllByAggregateId(Long aggregateId)
 
-    List<PatientAccount> findAllByAggregateIdAndLastEventLessThan(Long aggregateId, Long lastEvent)
+    List<PatientAccount> findAllByAggregateIdAndLastEventPositionLessThan(Long aggregateId, Long lastEventPosition)
 
     List<PatientAccount> findAllByAggregateIdAndLastEventTimestampLessThan(Long aggregateId, Date date)
 }

@@ -33,7 +33,7 @@ abstract class GormQueryUtil<
         this.snapshotClass = snapshotClass
     }
 
-    public static final Map LATEST = [sort: 'lastEvent', order: 'desc', offset: 0, max: 1]
+    public static final Map LATEST = [sort: 'lastEventPosition', order: 'desc', offset: 0, max: 1]
     public static final Map INCREMENTAL = [sort: 'position', order: 'asc']
 
     @Override
@@ -41,7 +41,7 @@ abstract class GormQueryUtil<
         def snapshots = startWithEvent == Long.MAX_VALUE ?
                 invokeStaticMethod(snapshotClass, 'findAllByAggregateId',
                         [aggregate.id, LATEST].toArray()) :
-                invokeStaticMethod(snapshotClass, 'findAllByAggregateIdAndLastEventLessThan',
+                invokeStaticMethod(snapshotClass, 'findAllByAggregateIdAndLastEventPositionLessThan',
                         [aggregate.id, startWithEvent, LATEST].toArray())
         (snapshots ? Optional.of(snapshots[0]) : Optional.empty()) as Optional<S>
     }
@@ -67,7 +67,7 @@ abstract class GormQueryUtil<
     @Override
     final List<E> getUncomputedEvents(A aggregate, S lastSnapshot, long version) {
         invokeStaticMethod(eventClass, 'findAllByAggregateAndPositionGreaterThanAndPositionLessThanEquals',
-                [aggregate, lastSnapshot?.lastEvent ?: 0L, version, INCREMENTAL].toArray()) as List<E>
+                [aggregate, lastSnapshot?.lastEventPosition ?: 0L, version, INCREMENTAL].toArray()) as List<E>
     }
 
     @Override

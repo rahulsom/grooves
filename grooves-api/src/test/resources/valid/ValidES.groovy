@@ -22,7 +22,7 @@ import groovy.transform.CompileStatic
 
 @CompileStatic class Balance implements Snapshot<Account, String> {
     String id
-    Long lastEvent
+    Long lastEventPosition
     Date lastEventTimestamp
     Account aggregate, deprecatedBy
     Set<Account> deprecates

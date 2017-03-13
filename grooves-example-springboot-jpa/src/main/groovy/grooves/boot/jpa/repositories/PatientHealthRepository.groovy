@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface PatientHealthRepository extends JpaRepository<PatientHealth, Long> {
     List<PatientHealth> findAllByAggregateId(Long aggregateId)
 
-    List<PatientHealth> findAllByAggregateIdAndLastEventLessThan(Long aggregateId, Long lastEvent)
+    List<PatientHealth> findAllByAggregateIdAndLastEventPositionLessThan(Long aggregateId, Long lastEventPosition)
 
     List<PatientHealth> findAllByAggregateIdAndLastEventTimestampLessThan(Long aggregateId, Date date)
 }

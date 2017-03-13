@@ -6,7 +6,7 @@ import groovy.transform.ToString
 @ToString
 class PatientAccount implements Snapshot<Patient, Long> {
 
-    Long lastEvent
+    Long lastEventPosition
     Date lastEventTimestamp
     Patient deprecatedBy
     Set<Patient> deprecates

@@ -62,13 +62,13 @@ abstract class AbstractPatientSpec extends Specification {
         with(resp.data) {
             it.aggregateId == id
             it.name == name
-            it.lastEvent == lastEvent
+            it.lastEventPosition == lastEventPosition
             it.procedures.size() == codes.size()
             it.procedures*.code == codes
         }
 
         where:
-        id | name          || lastEvent | codes
+        id | name          || lastEventPosition | codes
         1  | 'John Lennon' || 6         | ['FLUSHOT', 'GLUCOSETEST', 'ANNUALPHYSICAL']
         2  | 'Ringo Starr' || 6         | ['ANNUALPHYSICAL', 'GLUCOSETEST', 'FLUSHOT']
     }
@@ -87,7 +87,7 @@ abstract class AbstractPatientSpec extends Specification {
         with(resp.data) {
             it.aggregateId == id
             it.name == name
-            it.lastEvent == version
+            it.lastEventPosition == version
             it.procedures.size() == codes.size()
             it.procedures*.code == codes
         }
@@ -118,13 +118,13 @@ abstract class AbstractPatientSpec extends Specification {
         with(resp.data) {
             it.aggregateId == id
             it.name == name
-            it.lastEvent == 2
+            it.lastEventPosition == lastEventPosition
             it.procedures.size() == codes.size()
             it.procedures*.code == codes
         }
 
         where:
-        id | date         || lastEvent | name          | codes
+        id | date         || lastEventPosition | name          | codes
         1  | '2016-01-03' || 2         | 'John Lennon' | ['FLUSHOT']
         2  | '2016-01-09' || 2         | 'Ringo Starr' | ['ANNUALPHYSICAL']
     }

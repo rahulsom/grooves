@@ -34,7 +34,7 @@ class PatientHealthQuery implements QueryUtil<Patient, PatientEvent, PatientHeal
     Optional<PatientHealth> getSnapshot(long startWithEvent, Patient aggregate) {
         def snapshots = startWithEvent == Long.MAX_VALUE ?
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
-                patientHealthRepository.findAllByAggregateIdAndLastEventLessThan(aggregate.id, startWithEvent)
+                patientHealthRepository.findAllByAggregateIdAndLastEventPositionLessThan(aggregate.id, startWithEvent)
         (snapshots ? Optional.of(snapshots[0]) : Optional.empty()) as Optional<PatientHealth>
     }
 
@@ -53,7 +53,7 @@ class PatientHealthQuery implements QueryUtil<Patient, PatientEvent, PatientHeal
 
     @Override
     List<PatientEvent> getUncomputedEvents(Patient patient, PatientHealth lastSnapshot, long version) {
-        patientEventRepository.getUncomputedEventsByVersion patient, lastSnapshot?.lastEvent ?: 0L, version
+        patientEventRepository.getUncomputedEventsByVersion patient, lastSnapshot?.lastEventPosition ?: 0L, version
     }
 
     @Override
