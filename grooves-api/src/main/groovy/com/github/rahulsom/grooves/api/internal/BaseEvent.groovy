@@ -1,4 +1,7 @@
-package com.github.rahulsom.grooves.api
+package com.github.rahulsom.grooves.api.internal
+
+import com.github.rahulsom.grooves.api.AggregateType
+import com.github.rahulsom.grooves.api.RevertEvent
 
 /**
  * Base class for Events

@@ -1,5 +1,8 @@
 package com.github.rahulsom.grooves.api
 
+import com.github.rahulsom.grooves.api.internal.BaseEvent
+import com.github.rahulsom.grooves.queries.QueryUtil
+
 import java.util.concurrent.atomic.AtomicLong
 import java.util.function.Consumer
 import java.util.function.Supplier

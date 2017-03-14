@@ -3,16 +3,18 @@ package com.github.rahulsom.grooves.api
 import com.github.rahulsom.grooves.api.internal.BaseEvent
 
 /**
- * Marks a class as a snapshot. This supports both temporal and versioned access.
+ * Marks a class as a versioned snapshot
  * @param <A> The Aggregate this snapshot works over
  *
  * @author Rahul Somasunderam
  */
-trait Snapshot<A extends AggregateType, ID> implements VersionedSnapshot<A, ID>, TemporalSnapshot<A, ID> {
+trait VersionedSnapshot<A extends AggregateType, ID> implements BaseSnapshot<A, ID> {
+    abstract Long getLastEventPosition()
+
+    abstract void setLastEventPosition(Long id)
 
     @Override
     void setLastEvent(BaseEvent<A, ID> event) {
-        this.lastEventTimestamp = event.timestamp
         this.lastEventPosition = event.position
     }
 }

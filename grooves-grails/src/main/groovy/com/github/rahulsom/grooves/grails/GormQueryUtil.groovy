@@ -1,8 +1,8 @@
 package com.github.rahulsom.grooves.grails
 
 import com.github.rahulsom.grooves.api.AggregateType
-import com.github.rahulsom.grooves.api.BaseEvent
-import com.github.rahulsom.grooves.api.QueryUtil
+import com.github.rahulsom.grooves.api.internal.BaseEvent
+import com.github.rahulsom.grooves.queries.QueryUtil
 import com.github.rahulsom.grooves.api.Snapshot
 import org.grails.datastore.gorm.GormEntity
 

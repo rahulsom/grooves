@@ -1,5 +1,7 @@
 package com.github.rahulsom.grooves.api
 
+import com.github.rahulsom.grooves.api.internal.BaseEvent
+
 /**
  * Revert a prior event. A reverted event's effects are not applied.
  *

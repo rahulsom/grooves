@@ -1,5 +1,7 @@
 package com.github.rahulsom.grooves.api
 
+import com.github.rahulsom.grooves.api.internal.BaseEvent
+
 /**
  * A deprecation event.
  * <br/>

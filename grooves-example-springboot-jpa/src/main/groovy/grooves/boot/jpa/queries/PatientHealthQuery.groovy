@@ -2,7 +2,7 @@ package grooves.boot.jpa.queries
 
 import com.github.rahulsom.grooves.annotations.Query
 import com.github.rahulsom.grooves.api.EventApplyOutcome
-import com.github.rahulsom.grooves.api.QueryUtil
+import com.github.rahulsom.grooves.queries.QueryUtil
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientEventRepository
 import grooves.boot.jpa.repositories.PatientHealthRepository

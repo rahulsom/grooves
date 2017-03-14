@@ -1,7 +1,7 @@
 package grooves.boot.jpa.domain
 
 import com.github.rahulsom.grooves.annotations.Event
-import com.github.rahulsom.grooves.api.BaseEvent
+import com.github.rahulsom.grooves.api.internal.BaseEvent
 import com.github.rahulsom.grooves.api.RevertEvent
 import groovy.json.JsonBuilder
 import groovy.transform.ToString

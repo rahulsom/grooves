@@ -2,7 +2,7 @@ package grooves.grails.mongo
 
 
 import com.github.rahulsom.grooves.annotations.Event
-import com.github.rahulsom.grooves.api.BaseEvent
+import com.github.rahulsom.grooves.api.internal.BaseEvent
 import com.github.rahulsom.grooves.api.RevertEvent
 import groovy.json.JsonBuilder
 

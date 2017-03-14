@@ -2,6 +2,8 @@ package valid
 
 import com.github.rahulsom.grooves.annotations.*
 import com.github.rahulsom.grooves.api.*
+import com.github.rahulsom.grooves.api.internal.BaseEvent
+import com.github.rahulsom.grooves.queries.QueryUtil
 import groovy.transform.CompileStatic
 
 @CompileStatic @Aggregate class Account implements AggregateType<Long> {
