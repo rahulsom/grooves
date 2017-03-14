@@ -21,7 +21,6 @@ abstract class AbstractPatientSpec extends Specification {
             contentType == "application/json"
         }
         with(resp.data) {
-            it.size() == 2
             it[0].uniqueId == '42'
             it[1].uniqueId == '43'
         }
@@ -69,8 +68,8 @@ abstract class AbstractPatientSpec extends Specification {
 
         where:
         id | name          || lastEventPosition | codes
-        1  | 'John Lennon' || 6         | ['FLUSHOT', 'GLUCOSETEST', 'ANNUALPHYSICAL']
-        2  | 'Ringo Starr' || 6         | ['ANNUALPHYSICAL', 'GLUCOSETEST', 'FLUSHOT']
+        1  | 'John Lennon' || 6                 | ['FLUSHOT', 'GLUCOSETEST', 'ANNUALPHYSICAL']
+        2  | 'Ringo Starr' || 6                 | ['ANNUALPHYSICAL', 'GLUCOSETEST', 'FLUSHOT']
     }
 
     @Unroll
@@ -125,7 +124,7 @@ abstract class AbstractPatientSpec extends Specification {
 
         where:
         id | date         || lastEventPosition | name          | codes
-        1  | '2016-01-03' || 2         | 'John Lennon' | ['FLUSHOT']
-        2  | '2016-01-09' || 2         | 'Ringo Starr' | ['ANNUALPHYSICAL']
+        1  | '2016-01-03' || 2                 | 'John Lennon' | ['FLUSHOT']
+        2  | '2016-01-09' || 2                 | 'Ringo Starr' | ['ANNUALPHYSICAL']
     }
 }

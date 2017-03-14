@@ -42,7 +42,7 @@ class EventsDsl {
         }
     }
 
-    static <A extends AggregateType, E extends BaseEvent<A, E>> void on(
+    static <A extends AggregateType, E extends BaseEvent<A, E>> A on(
             A aggregate,
             Consumer entityConsumer,
             Supplier<Long> positionSupplier = { defaultPositionSupplier.incrementAndGet() },
@@ -59,5 +59,6 @@ class EventsDsl {
                 positionSupplier: positionSupplier
         )
         closure.call()
+        return aggregate
     }
 }
