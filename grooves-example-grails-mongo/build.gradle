@@ -47,6 +47,7 @@ dependencies {
     compile "org.grails.plugins:mongodb"
     console "org.grails:grails-console"
     profile "org.grails.profiles:web"
+    runtime 'org.grails.plugins:grails-console:2.0.8'
 
     runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.11.6"
     runtime "com.h2database:h2"

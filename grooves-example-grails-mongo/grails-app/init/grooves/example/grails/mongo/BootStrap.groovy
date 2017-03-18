@@ -8,21 +8,25 @@ import java.util.function.Consumer
 
 class BootStrap {
 
+    public static final int    ONE_DAY    = 24 * 60 * 60 * 1000
+    public static final String START_DATE = '2016-01-01'
+
     def init = { servletContext ->
         def campbell = on(new Zipcode(uniqueId: '95008').save(flush: true, failOnError: true)) {
-            apply new ZipcodeCreated(name: 'Campbell, California')
+            apply new ZipcodeCreated(name: 'Campbell, California', timestamp: date(START_DATE))
         }
         def santanaRow = on(new Zipcode(uniqueId: '95128').save(flush: true, failOnError: true)) {
-            apply new ZipcodeCreated(name: 'Santana Row, San Jose, California')
+            apply new ZipcodeCreated(name: 'Santana Row, San Jose, California', timestamp: date(START_DATE))
         }
-        johnLennon()
-        ringoStarr()
+        createJohnLennon()
+        createRingoStarr()
+
         def names = NameDbUsa.instance
         for (int i = 0; i < 10; i++) {
             def seed = i * 0.05 + 0.12
             def random = new Random((Long.MAX_VALUE * seed) as long)
 
-            currDate = Date.parse('yyyy-MM-dd', '2016-01-01')
+            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time + random.nextInt(ONE_DAY))
 
             def patient = new Patient(uniqueId: "I${i}").save(flush: true, failOnError: true)
             on(patient) {
@@ -33,6 +37,30 @@ class BootStrap {
                     def key = procedures.keySet().toList()[p]
                     apply new ProcedurePerformed(code: key, cost: procedures[key])
                 }
+            }
+
+            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time + random.nextInt(ONE_DAY))
+            def zipChanges = random.nextInt(4) + 1
+            def zipcode = random.nextBoolean() ? campbell : santanaRow
+            Zipcode lastZipcode = null
+            zipChanges.times {
+                currDate += random.nextInt(10) + 1
+                on(patient) {
+                    if (lastZipcode) {
+                        apply new PatientRemovedFromZipcode(joinAggregate: lastZipcode, timestamp: currDate)
+                    }
+                    apply new PatientAddedToZipcode(joinAggregate: zipcode, timestamp: currDate)
+                }
+                if (lastZipcode) {
+                    on(lastZipcode) {
+                        apply new ZipcodeLostPatient(joinAggregate: patient, timestamp: currDate)
+                    }
+                }
+                on(zipcode) {
+                    apply new ZipcodeGotPatient(joinAggregate: patient, timestamp: currDate)
+                }
+                lastZipcode = zipcode
+                zipcode = zipcode == campbell ? santanaRow : campbell
             }
 
         }
@@ -47,7 +75,12 @@ class BootStrap {
             XRAY_BACK     : 104.40,
     ]
 
-    private Patient ringoStarr() {
+    Date date(String str) {
+        Date.parse('yyyy-MM-dd', str)
+    }
+
+
+    private Patient createRingoStarr() {
         def patient2 = new Patient(uniqueId: '43').save(flush: true, failOnError: true)
 
         on(patient2) {
@@ -66,7 +99,8 @@ class BootStrap {
             snapshotWith new PatientHealthQuery()
         }
     }
-    private Patient johnLennon() {
+
+    private Patient createJohnLennon() {
         def patient = new Patient(uniqueId: '42').save(flush: true, failOnError: true)
 
         on(patient) {
@@ -86,7 +120,7 @@ class BootStrap {
         }
     }
 
-    Date currDate = Date.parse('yyyy-MM-dd', '2016-01-01')
+    Date currDate = Date.parse('yyyy-MM-dd', START_DATE)
 
     Patient on(Patient patient, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer

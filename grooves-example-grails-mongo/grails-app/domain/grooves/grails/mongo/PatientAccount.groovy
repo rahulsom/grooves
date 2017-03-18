@@ -1,8 +1,8 @@
 package grooves.grails.mongo
 
-import com.github.rahulsom.grooves.api.Snapshot
+import com.github.rahulsom.grooves.api.snapshots.Snapshot
 
-class PatientAccount implements Snapshot<Patient, String> {
+class PatientAccount implements Snapshot<Patient, String, Long, PatientEvent> {
 
     static mapWith = "mongo"
 

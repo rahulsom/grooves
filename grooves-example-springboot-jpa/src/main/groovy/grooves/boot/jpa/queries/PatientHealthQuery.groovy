@@ -1,8 +1,8 @@
 package grooves.boot.jpa.queries
 
-import com.github.rahulsom.grooves.annotations.Query
+import com.github.rahulsom.grooves.transformations.Query
 import com.github.rahulsom.grooves.api.EventApplyOutcome
-import com.github.rahulsom.grooves.queries.QueryUtil
+import com.github.rahulsom.grooves.queries.QuerySupport
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientEventRepository
 import grooves.boot.jpa.repositories.PatientHealthRepository
@@ -19,7 +19,7 @@ import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 @Transactional
 @Component
 @Query(aggregate = Patient, snapshot = PatientHealth)
-class PatientHealthQuery implements QueryUtil<Patient, PatientEvent, PatientHealth> {
+class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Long, PatientHealth> {
 
     @Autowired EntityManager entityManager
     @Autowired PatientHealthRepository patientHealthRepository

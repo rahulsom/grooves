@@ -40,3 +40,7 @@ githubPages {
 
 tasks.findByName('uploadArchives').dependsOn 'publishGhPages'
 tasks.findByName('publishGhPages').dependsOn 'asciidoctor'
+
+groovydoc {
+    exclude '**/*.java'
+}

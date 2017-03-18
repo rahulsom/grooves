@@ -1,13 +1,13 @@
 package grooves.grails.rdbms
 
-import com.github.rahulsom.grooves.annotations.Event
-import com.github.rahulsom.grooves.api.internal.BaseEvent
-import com.github.rahulsom.grooves.api.RevertEvent
+import com.github.rahulsom.grooves.transformations.Event
+import com.github.rahulsom.grooves.api.events.BaseEvent
+import com.github.rahulsom.grooves.api.events.RevertEvent
 import groovy.json.JsonBuilder
 
-abstract class PatientEvent implements BaseEvent<Patient, PatientEvent> {
+abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> {
 
-    RevertEvent<Patient, PatientEvent> revertedBy
+    RevertEvent<Patient, Long, PatientEvent> revertedBy
     String createdBy
     Date timestamp
     Long position
@@ -44,7 +44,7 @@ class PaymentMade extends PatientEvent {
     String getAudit() { new JsonBuilder([amount: amount]).toString() }
 }
 
-class PatientEventReverted extends PatientEvent implements RevertEvent<Patient, PatientEvent> {
+class PatientEventReverted extends PatientEvent implements RevertEvent<Patient, Long, PatientEvent> {
     Long revertedEventId
 
     @Override
