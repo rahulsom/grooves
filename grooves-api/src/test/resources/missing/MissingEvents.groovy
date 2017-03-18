@@ -1,18 +1,20 @@
 package missing
 
-import com.github.rahulsom.grooves.annotations.*
+import com.github.rahulsom.grooves.api.snapshots.Snapshot
+import com.github.rahulsom.grooves.transformations.*
 import com.github.rahulsom.grooves.api.*
-import com.github.rahulsom.grooves.api.internal.BaseEvent
-import com.github.rahulsom.grooves.queries.QueryUtil
+import com.github.rahulsom.grooves.api.events.BaseEvent
+import com.github.rahulsom.grooves.api.events.RevertEvent
+import com.github.rahulsom.grooves.queries.QuerySupport
 import groovy.transform.CompileStatic
 
 @CompileStatic @Aggregate class Account implements AggregateType<Long> {
     Long id
 }
 
-@CompileStatic abstract class Transaction implements BaseEvent<Account, Transaction> {
+@CompileStatic abstract class Transaction implements BaseEvent<Account, Long, Transaction> {
     Account aggregate
-    RevertEvent<Account, Transaction> revertedBy
+    RevertEvent<Account, Long, Transaction> revertedBy
     Long id, position
     Date timestamp
     String createdBy, audit
@@ -22,7 +24,7 @@ import groovy.transform.CompileStatic
 
 @CompileStatic @Event(Account) class CashWithdrawal extends Transaction {}
 
-@CompileStatic class Balance implements Snapshot<Account, Long> {
+@CompileStatic class Balance implements Snapshot<Account, Long, Long, Transaction> {
     Long id
     Long lastEventPosition
     Date lastEventTimestamp
@@ -31,7 +33,7 @@ import groovy.transform.CompileStatic
 }
 
 @CompileStatic @Query(aggregate = Account, snapshot = Balance)
-class BalanceQuery implements QueryUtil<Account, Transaction, Balance> {
+class BalanceQuery implements QuerySupport<Account, Long, Transaction, Long, Balance> {
     @Override Balance createEmptySnapshot() { null }
     @Override Optional<Balance> getSnapshot(long startWithEvent, Account aggregate) { Optional.empty() }
     @Override Optional<Balance> getSnapshot(Date startAtTime, Account aggregate) { Optional.empty() }
@@ -42,7 +44,7 @@ class BalanceQuery implements QueryUtil<Account, Transaction, Balance> {
     @Override List<Transaction> findEventsForAggregates(List<Account> aggregates) { [] }
     @Override void addToDeprecates(Balance snapshot, Account otherAggregate) {}
     @Override Transaction unwrapIfProxy(Transaction event) { event }
-    @Override EventApplyOutcome onException(Exception e, Balance snapshot, Transaction event) {}
+    @Override EventApplyOutcome onException(Exception e, Balance snapshot, Transaction event) {null}
 }
 
 new BalanceQuery().computeSnapshot(new Account(), 0)

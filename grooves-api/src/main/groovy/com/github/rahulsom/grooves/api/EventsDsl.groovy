@@ -1,7 +1,8 @@
 package com.github.rahulsom.grooves.api
 
-import com.github.rahulsom.grooves.api.internal.BaseEvent
-import com.github.rahulsom.grooves.queries.QueryUtil
+import com.github.rahulsom.grooves.api.events.BaseEvent
+import com.github.rahulsom.grooves.api.snapshots.Snapshot
+import com.github.rahulsom.grooves.queries.QuerySupport
 
 import java.util.concurrent.atomic.AtomicLong
 import java.util.function.Consumer
@@ -12,15 +13,20 @@ import java.util.function.Supplier
  */
 class EventsDsl {
     static AtomicLong defaultPositionSupplier = new AtomicLong()
-    static class OnSpec<SI, A extends AggregateType, E extends BaseEvent<A, E>, S extends Snapshot<A, ?>> {
-        A aggregate
-        Consumer entityConsumer
+    static class OnSpec<
+            SnapshotIdType,
+            Aggregate extends AggregateType,
+            EventIdType,
+            EventType extends BaseEvent<Aggregate, EventIdType, EventType>,
+            SnapshotType extends Snapshot<Aggregate, SnapshotIdType, EventIdType, EventType>> {
+        Aggregate aggregate
+        Consumer  entityConsumer
 
         Supplier<Date> timestampSupplier
         Supplier<String> userSupplier
         Supplier<Long> positionSupplier
 
-        void apply(E event) {
+        void apply(EventType event) {
             event.aggregate = aggregate
 
             if (!event.createdBy)
@@ -33,7 +39,9 @@ class EventsDsl {
             entityConsumer.accept(event)
         }
 
-        void snapshotWith(QueryUtil<A, E, S> queryUtil, Consumer<S> beforePersist = null) {
+        void snapshotWith(
+                QuerySupport<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> queryUtil,
+                Consumer<SnapshotType> beforePersist = null) {
 
             queryUtil.computeSnapshot(aggregate, Long.MAX_VALUE).ifPresent {
                 beforePersist?.accept(it)
@@ -42,8 +50,10 @@ class EventsDsl {
         }
     }
 
-    static <A extends AggregateType, E extends BaseEvent<A, E>> A on(
-            A aggregate,
+    static <Aggregate extends AggregateType,
+            EventIdType,
+            EventType extends BaseEvent<Aggregate, EventIdType, EventType>> Aggregate on(
+            Aggregate aggregate,
             Consumer entityConsumer,
             Supplier<Long> positionSupplier = { defaultPositionSupplier.incrementAndGet() },
             Supplier<String> userSupplier = { 'anonymous' },

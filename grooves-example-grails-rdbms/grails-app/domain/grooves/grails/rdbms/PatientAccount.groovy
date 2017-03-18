@@ -1,10 +1,10 @@
 package grooves.grails.rdbms
 
-import com.github.rahulsom.grooves.api.Snapshot
+import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import groovy.transform.ToString
 
 @ToString
-class PatientAccount implements Snapshot<Patient, Long> {
+class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
 
     Long lastEventPosition
     Date lastEventTimestamp

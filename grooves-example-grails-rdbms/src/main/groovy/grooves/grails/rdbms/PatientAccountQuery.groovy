@@ -1,8 +1,8 @@
 package grooves.grails.rdbms
 
-import com.github.rahulsom.grooves.annotations.Query
+import com.github.rahulsom.grooves.transformations.Query
 import com.github.rahulsom.grooves.api.EventApplyOutcome
-import com.github.rahulsom.grooves.grails.GormQueryUtil
+import com.github.rahulsom.grooves.grails.GormQuerySupport
 import grails.compiler.GrailsCompileStatic
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
@@ -10,10 +10,10 @@ import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 
 @Query(aggregate = Patient, snapshot = PatientAccount)
 @GrailsCompileStatic
-class PatientAccountQuery extends GormQueryUtil<Patient, PatientEvent, PatientAccount> {
+class PatientAccountQuery extends GormQuerySupport<Patient, Long, PatientEvent, Long, PatientAccount> {
 
     PatientAccountQuery() {
-        super(Patient, PatientEvent, PatientAccount)
+        super(PatientEvent, PatientAccount)
     }
 
     @Override

@@ -1,7 +1,7 @@
 package grooves.boot.jpa.domain
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.github.rahulsom.grooves.api.Snapshot
+import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import groovy.transform.ToString
 import org.springframework.format.annotation.DateTimeFormat
 
@@ -9,7 +9,7 @@ import javax.persistence.*
 
 @Entity
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
-class PatientAccount implements Snapshot<Patient, Long> {
+class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
 
     @GeneratedValue @Id Long id
 
