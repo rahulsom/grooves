@@ -1,12 +1,12 @@
 buildscript {
-	repositories {
-		mavenCentral()
-		maven { url "https://repo.spring.io/snapshot" }
-		maven { url "https://repo.spring.io/milestone" }
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+    repositories {
+        mavenCentral()
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
 
 apply plugin: 'groovy'
@@ -14,16 +14,16 @@ apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 
 jar {
-	baseName = 'grooves-example-springboot-jpa'
-	version = '0.0.1-SNAPSHOT'
+    baseName = 'grooves-example-springboot-jpa'
+    version = '0.0.1-SNAPSHOT'
 }
 
 sourceCompatibility = 1.8
 
 repositories {
-	mavenCentral()
-	maven { url "https://repo.spring.io/snapshot" }
-	maven { url "https://repo.spring.io/milestone" }
+    mavenCentral()
+    maven { url "https://repo.spring.io/snapshot" }
+    maven { url "https://repo.spring.io/milestone" }
 }
 
 
@@ -31,9 +31,9 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-integration')
     compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.codehaus.groovy:groovy')
-	runtime('com.h2database:h2')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile('org.codehaus.groovy:groovy')
+    runtime('com.h2database:h2')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
 
     testCompile 'org.spockframework:spock-core'
     testCompile 'org.spockframework:spock-spring'
