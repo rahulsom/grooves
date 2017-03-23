@@ -62,7 +62,42 @@ class BootStrap {
                 lastZipcode = zipcode
                 zipcode = zipcode == campbell ? santanaRow : campbell
             }
+        }
+        
+        for (int i = 0; i < 10; i++) {
+            def seed = i * 0.07 + 0.03
+            def random = new Random((Long.MAX_VALUE * seed) as long)
 
+            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time + random.nextInt(ONE_DAY))
+
+            def doctor = new Doctor(uniqueId: "A${i}").save(flush: true, failOnError: true)
+            on(doctor) {
+                apply new DoctorCreated(name: "${names.getMaleName(seed)} ${names.getLastName(seed)}")
+            }
+
+            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time + random.nextInt(ONE_DAY))
+            def zipChanges = random.nextInt(4) + 1
+            def zipcode = random.nextBoolean() ? campbell : santanaRow
+            Zipcode lastZipcode = null
+            zipChanges.times {
+                currDate += random.nextInt(10) + 1
+                on(doctor) {
+                    if (lastZipcode) {
+                        apply new DoctorRemovedFromZipcode(joinAggregate: lastZipcode, timestamp: currDate)
+                    }
+                    apply new DoctorAddedToZipcode(joinAggregate: zipcode, timestamp: currDate)
+                }
+                if (lastZipcode) {
+                    on(lastZipcode) {
+                        apply new ZipcodeLostDoctor(joinAggregate: doctor, timestamp: currDate)
+                    }
+                }
+                on(zipcode) {
+                    apply new ZipcodeGotDoctor(joinAggregate: doctor, timestamp: currDate)
+                }
+                lastZipcode = zipcode
+                zipcode = zipcode == campbell ? santanaRow : campbell
+            }
         }
     }
 
@@ -135,6 +170,13 @@ class BootStrap {
         def positionSupplier = { ZipcodeEvent.countByAggregate(zipcode) + 1 }
         def userSupplier = { 'anonymous' }
         EventsDsl.on(zipcode, eventSaver, positionSupplier, userSupplier, closure)
+    }
+
+    Doctor on(Doctor Doctor, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
+        def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
+        def positionSupplier = { DoctorEvent.countByAggregate(Doctor) + 1 }
+        def userSupplier = { 'anonymous' }
+        EventsDsl.on(Doctor, eventSaver, positionSupplier, userSupplier, closure)
     }
 
     def destroy = {

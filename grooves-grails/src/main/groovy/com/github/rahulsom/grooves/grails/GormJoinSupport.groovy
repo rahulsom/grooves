@@ -6,6 +6,8 @@ import com.github.rahulsom.grooves.api.events.DisjoinEvent
 import com.github.rahulsom.grooves.api.events.JoinEvent
 import com.github.rahulsom.grooves.api.snapshots.Join
 import com.github.rahulsom.grooves.queries.JoinSupport
+import com.github.rahulsom.grooves.queries.internal.JoinExecutor
+import com.github.rahulsom.grooves.queries.internal.QueryExecutor
 import org.grails.datastore.gorm.GormEntity
 
 import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod
@@ -103,4 +105,11 @@ abstract class GormJoinSupport<
     final List<EventType> findEventsForAggregates(List<Aggregate> aggregates) {
         invokeStaticMethod(eventClass, 'findAllByAggregateInList', [aggregates, INCREMENTAL].toArray()) as List<EventType>
     }
+
+    @Override
+    QueryExecutor<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> getExecutor() {
+        new JoinExecutor<Aggregate, EventIdType, EventType, JoinedAggregateIdType, JoinedAggregateType, SnapshotIdType, SnapshotType, JoinE, DisjoinE>(
+                classAggregate, classEventIdType, eventClass, classJoinedAggregateIdType, joinedAggregateClass, snapshotIdClass, snapshotClass, joinEventClass, disjoinEventClass)
+    }
+
 }

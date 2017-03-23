@@ -30,14 +30,44 @@ class ZipcodeCreated extends ZipcodeEvent {
 
 @Event(Zipcode)
 class ZipcodeGotPatient extends ZipcodeEvent implements JoinEvent<Zipcode, Long, ZipcodeEvent, Patient> {
-    Patient joinAggregate
+    Patient patient
 
     @Override String getAudit() { new JsonBuilder([patientId: joinAggregate?.id]).toString() }
+    @Override Patient getJoinAggregate() { patient }
+    @Override void setJoinAggregate(Patient rollupAggregate) { this.patient = rollupAggregate}
+
+    static transients = ['joinAggregate']
 }
 
 @Event(Zipcode)
 class ZipcodeLostPatient extends ZipcodeEvent implements DisjoinEvent<Zipcode, Long, ZipcodeEvent, Patient> {
-    Patient joinAggregate
+    Patient patient
 
     @Override String getAudit() { new JsonBuilder([patientId: joinAggregate?.id]).toString() }
+    @Override Patient getJoinAggregate() { patient }
+    @Override void setJoinAggregate(Patient rollupAggregate) { this.patient = rollupAggregate}
+
+    static transients = ['joinAggregate']
+}
+
+@Event(Zipcode)
+class ZipcodeGotDoctor extends ZipcodeEvent implements JoinEvent<Zipcode, Long, ZipcodeEvent, Doctor> {
+    Doctor doctor
+
+    @Override String getAudit() { new JsonBuilder([doctorId: joinAggregate?.id]).toString() }
+    @Override Doctor getJoinAggregate() { doctor }
+    @Override void setJoinAggregate(Doctor rollupAggregate) { this.doctor = rollupAggregate }
+
+    static transients = ['joinAggregate']
+}
+
+@Event(Zipcode)
+class ZipcodeLostDoctor extends ZipcodeEvent implements DisjoinEvent<Zipcode, Long, ZipcodeEvent, Doctor> {
+    Doctor doctor
+
+    @Override String getAudit() { new JsonBuilder([doctorId: joinAggregate?.id]).toString() }
+    @Override Doctor getJoinAggregate() { doctor }
+    @Override void setJoinAggregate(Doctor rollupAggregate) { this.doctor = rollupAggregate }
+
+    static transients = ['joinAggregate']
 }

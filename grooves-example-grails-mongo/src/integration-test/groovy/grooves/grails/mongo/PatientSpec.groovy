@@ -5,6 +5,7 @@ import grails.test.mixin.integration.Integration
 import groovyx.net.http.ContentType
 import groovyx.net.http.RESTClient
 import org.springframework.beans.factory.annotation.Value
+import spock.lang.IgnoreRest
 import spock.lang.Unroll
 
 @Integration
@@ -36,8 +37,8 @@ class PatientSpec extends AbstractPatientSpec {
 
         where:
         id | location      | version || patients                   | lastEventPosition
-        1  | 'Campbell'    | null    || [3, 4, 5, 7, 8, 9, 10, 12] | 15
-        2  | 'Santana Row' | null    || [6, 11]                    | 13
+        1  | 'Campbell'    | null    || [3, 4, 5, 7, 8, 9, 10, 12] | 33
+        2  | 'Santana Row' | null    || [6, 11]                    | 37
     }
 
     @Unroll

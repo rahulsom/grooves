@@ -30,15 +30,23 @@ class PatientCreated extends PatientEvent {
 }
 
 class PatientAddedToZipcode extends PatientEvent implements JoinEvent<Patient, Long, PatientEvent, Zipcode>{
-    Zipcode joinAggregate
+    Zipcode zipcode
+    @Override Zipcode getJoinAggregate() { zipcode }
+    @Override void setJoinAggregate(Zipcode rollupAggregate) { zipcode = rollupAggregate}
 
     @Override String getAudit() { new JsonBuilder([zipcodeId: joinAggregate?.id]).toString() }
+
+    static transients = ['joinAggregate']
 }
 
 class PatientRemovedFromZipcode extends PatientEvent implements DisjoinEvent<Patient, Long, PatientEvent, Zipcode> {
-    Zipcode joinAggregate
+    Zipcode zipcode
+    @Override Zipcode getJoinAggregate() { zipcode }
+    @Override void setJoinAggregate(Zipcode rollupAggregate) { zipcode = rollupAggregate}
 
     @Override String getAudit() { new JsonBuilder([zipcodeId: joinAggregate?.id]).toString() }
+
+    static transients = ['joinAggregate']
 }
 
 @Event(Patient)
