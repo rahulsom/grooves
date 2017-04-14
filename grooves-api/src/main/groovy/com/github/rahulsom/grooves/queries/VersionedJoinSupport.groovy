@@ -8,6 +8,20 @@ import com.github.rahulsom.grooves.api.snapshots.VersionedJoin
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor
 import com.github.rahulsom.grooves.queries.internal.QueryExecutor
 
+/**
+ *
+ * @param <Aggregate>
+ * @param <EventIdType>
+ * @param <EventType>
+ * @param <JoinedAggregateIdType>
+ * @param <JoinedAggregateType>
+ * @param <SnapshotIdType>
+ * @param <SnapshotType>
+ * @param <JoinE>
+ * @param <DisjoinE>
+ *
+ * @author Rahul Somasunderam
+ */
 trait VersionedJoinSupport<
         Aggregate extends AggregateType,
         EventIdType,

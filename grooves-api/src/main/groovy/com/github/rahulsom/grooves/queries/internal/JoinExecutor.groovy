@@ -6,6 +6,20 @@ import com.github.rahulsom.grooves.api.snapshots.internal.BaseJoin
 import groovy.transform.CompileStatic
 import groovy.transform.TupleConstructor
 
+/**
+ *
+ * @param <Aggregate>
+ * @param <EventIdType>
+ * @param <EventType>
+ * @param <JoinedAggregateIdType>
+ * @param <JoinedAggregateType>
+ * @param <SnapshotIdType>
+ * @param <SnapshotType>
+ * @param <JoinE>
+ * @param <DisjoinE>
+ *
+ * @author Rahul Somasunderam
+ */
 @CompileStatic
 @TupleConstructor
 class JoinExecutor<
@@ -21,25 +35,18 @@ class JoinExecutor<
         extends
                 QueryExecutor<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> {
 
-    Class<Aggregate> classAggregate
-    Class<EventIdType> classEventIdType
-    Class<EventType> classEventType
-    Class<JoinedAggregateIdType> classJoinedAggregateIdType
-    Class<JoinedAggregateType> classJoinedAggregateType
-    Class<SnapshotIdType> classSnapshotIdType
-    Class<SnapshotType> classSnapshotType
     Class<JoinE> classJoinE
     Class<DisjoinE> classDisjoinE
     
     @Override
     SnapshotType applyEvents(
-            BaseQuery<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> util,
+            BaseQuery<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> query,
             SnapshotType snapshot,
             List<EventType> events,
             List<Deprecates<Aggregate, EventIdType, EventType>> deprecatesList,
             List<Aggregate> aggregates) {
 
-        if (events.empty || !util.shouldEventsBeApplied(snapshot)) {
+        if (events.empty || !query.shouldEventsBeApplied(snapshot)) {
             return snapshot
         }
         def event = events.head()
@@ -48,17 +55,17 @@ class JoinExecutor<
         log.debug "    --> Event: $event"
 
         if (event instanceof Deprecates<Aggregate, EventIdType, EventType>) {
-            applyDeprecates(event, util, aggregates, deprecatesList)
+            applyDeprecates(event, query, aggregates, deprecatesList)
         } else if (event instanceof DeprecatedBy<Aggregate, EventIdType, EventType>) {
             applyDeprecatedBy(event, snapshot)
         } else if (classJoinE.isAssignableFrom(event.class)) {
             snapshot.joinedIds.add((event as JoinE).joinAggregate.id)
-            applyEvents(util, snapshot as SnapshotType, remainingEvents, deprecatesList, aggregates)
+            applyEvents(query, snapshot as SnapshotType, remainingEvents, deprecatesList, aggregates)
         } else if (classDisjoinE.isAssignableFrom(event.class)) {
             snapshot.joinedIds.remove((event as DisjoinE).joinAggregate.id)
-            applyEvents(util, snapshot as SnapshotType, remainingEvents, deprecatesList, aggregates)
+            applyEvents(query, snapshot as SnapshotType, remainingEvents, deprecatesList, aggregates)
         } else {
-            applyEvents(util, snapshot as SnapshotType, remainingEvents, deprecatesList, aggregates)
+            applyEvents(query, snapshot as SnapshotType, remainingEvents, deprecatesList, aggregates)
         }
     }
 }

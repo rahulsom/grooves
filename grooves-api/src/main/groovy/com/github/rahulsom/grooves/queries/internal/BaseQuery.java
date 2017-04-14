@@ -17,6 +17,7 @@ import java.util.Optional;
  * @param <EventType>      The Event type
  * @param <SnapshotIdType> The snapshot's id's type
  * @param <SnapshotType>   The snapshot type
+ *
  * @author Rahul Somasunderam
  */
 public interface BaseQuery<

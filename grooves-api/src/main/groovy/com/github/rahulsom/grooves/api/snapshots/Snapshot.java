@@ -7,6 +7,10 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
  * Marks a class as a snapshot. This supports both temporal and versioned access.
  *
  * @param <Aggregate> The Aggregate this snapshot works over
+ * @param <SnapshotIdType>
+ * @param <EventIdType>
+ * @param <EventType>
+ *
  * @author Rahul Somasunderam
  */
 public interface Snapshot<

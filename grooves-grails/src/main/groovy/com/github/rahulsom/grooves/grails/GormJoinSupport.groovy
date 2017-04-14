@@ -13,14 +13,25 @@ import org.grails.datastore.gorm.GormEntity
 import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod
 
 /**
- * Created by rahul on 3/18/17.
+ *
+ * @param <Aggregate>
+ * @param <EventIdType>
+ * @param <EventType>
+ * @param <JoinedAggregateIdType>
+ * @param <JoinedAggregateType>
+ * @param <SnapshotIdType>
+ * @param <SnapshotType>
+ * @param <JoinE>
+ * @param <DisjoinE>
+ *
+ * @author Rahul Somasunderam
  */
 abstract class GormJoinSupport<
         Aggregate extends AggregateType & GormEntity<Aggregate>,
         EventIdType,
         EventType extends BaseEvent<Aggregate, EventIdType, EventType> & GormEntity<EventType>,
         JoinedAggregateIdType,
-        JoinedAggregateType extends AggregateType  & GormEntity<JoinedAggregateType>,
+        JoinedAggregateType extends AggregateType & GormEntity<JoinedAggregateType>,
         SnapshotIdType,
         SnapshotType extends Join<Aggregate, SnapshotIdType, JoinedAggregateIdType, EventIdType, EventType> & GormEntity<SnapshotType>,
         JoinE extends JoinEvent<Aggregate, EventIdType, EventType, JoinedAggregateType>,
@@ -109,7 +120,7 @@ abstract class GormJoinSupport<
     @Override
     QueryExecutor<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> getExecutor() {
         new JoinExecutor<Aggregate, EventIdType, EventType, JoinedAggregateIdType, JoinedAggregateType, SnapshotIdType, SnapshotType, JoinE, DisjoinE>(
-                classAggregate, classEventIdType, eventClass, classJoinedAggregateIdType, joinedAggregateClass, snapshotIdClass, snapshotClass, joinEventClass, disjoinEventClass)
+                joinEventClass, disjoinEventClass)
     }
 
 }

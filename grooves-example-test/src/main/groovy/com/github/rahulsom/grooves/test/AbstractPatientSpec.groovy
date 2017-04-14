@@ -6,6 +6,8 @@ import spock.lang.Unroll
 
 /**
  * Base test to replicate across example projects
+ *
+ * @author Rahul Somasunderam
  */
 abstract class AbstractPatientSpec extends Specification {
 

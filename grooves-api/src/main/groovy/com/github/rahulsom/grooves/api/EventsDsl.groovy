@@ -10,10 +10,12 @@ import java.util.function.Supplier
 
 /**
  * DSL to simplify writing code with Events
+ *
+ * @author Rahul Somasunderam
  */
 class EventsDsl {
     static AtomicLong defaultPositionSupplier = new AtomicLong()
-    static class OnSpec<
+    private static class OnSpec<
             SnapshotIdType,
             Aggregate extends AggregateType,
             EventIdType,

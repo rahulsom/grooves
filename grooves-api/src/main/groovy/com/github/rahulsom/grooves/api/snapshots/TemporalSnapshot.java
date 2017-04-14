@@ -11,6 +11,9 @@ import java.util.Date;
  *
  * @param <Aggregate>      The Aggregate this snapshot works over
  * @param <SnapshotIdType> Type of Snapshot's `id` field
+ * @param <EventIdType>
+ * @param <EventType>
+ *
  * @author Rahul Somasunderam
  */
 public interface TemporalSnapshot<

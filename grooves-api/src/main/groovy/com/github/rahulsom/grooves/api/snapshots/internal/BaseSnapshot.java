@@ -8,7 +8,11 @@ import java.util.Set;
 /**
  * Marks a class as a snapshot. This makes no assumption about the type of snapshot.
  *
- * @param <Aggregate> The Aggregate this snapshot works over
+ * @param <Aggregate>      The Aggregate this snapshot works over
+ * @param <SnapshotIdType> The type for the snapshot's {@link #getId()} field
+ * @param <EventIdType>    The type for the {@link EventType}'s id field
+ * @param <EventType>      The base type for events that apply to {@link Aggregate}
+ *
  * @author Rahul Somasunderam
  */
 public interface BaseSnapshot<

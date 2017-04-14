@@ -8,7 +8,9 @@ import java.util.Date;
  * Base class for Events
  *
  * @param <Aggregate> Aggregate this event applies to
+ * @param <EventIdType> The Type for Event's {@link #getId} field
  * @param <EventType> Event Type
+ *
  * @author Rahul Somasunderam
  */
 public interface BaseEvent<Aggregate extends AggregateType, EventIdType, EventType> {

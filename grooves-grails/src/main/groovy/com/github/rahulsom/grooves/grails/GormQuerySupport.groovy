@@ -13,7 +13,9 @@ import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod
  * This is the preferred way of writing Grooves applications with Grails.
  *
  * @param <Aggregate> The Aggregate type
+ * @param <EventIdType>
  * @param <EventType> The Event type
+ * @param <SnapshotIdType>
  * @param <SnapshotType> The snapshot type
  *
  * @author Rahul Somasunderam

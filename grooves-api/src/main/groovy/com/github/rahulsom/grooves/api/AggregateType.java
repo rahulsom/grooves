@@ -6,6 +6,8 @@ package com.github.rahulsom.grooves.api;
  * <br/>
  * You should not have to use this class.
  *
+ * @param <AggregateIdType>
+ *
  * @author Rahul Somasunderam
  */
 public interface AggregateType<AggregateIdType> {

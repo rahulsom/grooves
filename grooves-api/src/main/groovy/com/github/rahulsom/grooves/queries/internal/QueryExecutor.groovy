@@ -14,6 +14,16 @@ import org.codehaus.groovy.runtime.InvokerHelper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+/**
+ *
+ * @param <Aggregate>
+ * @param <EventIdType>
+ * @param <EventType>
+ * @param <SnapshotIdType>
+ * @param <SnapshotType>
+ *
+ * @author Rahul Somasunderam
+ */
 class QueryExecutor<
         Aggregate extends AggregateType,
         EventIdType,
@@ -33,7 +43,7 @@ class QueryExecutor<
      * @return
      */
     List<EventType> applyReverts(
-            BaseQuery<Aggregate, EventIdType, EventType,SnapshotIdType, SnapshotType> util,
+            BaseQuery<Aggregate, EventIdType, EventType,SnapshotIdType, SnapshotType> query,
             List<EventType> events,
             List<EventType> accumulator) {
         if (!events) {
@@ -49,19 +59,19 @@ class QueryExecutor<
             }
             log.debug "    --> Revert: $revert"
             events.find { it.id == revert.revertedEventId }.revertedBy = revert
-            return applyReverts(util, tail.findAll { it.id != revert.revertedEventId }, accumulator)
+            return applyReverts(query, tail.findAll { it.id != revert.revertedEventId }, accumulator)
         } else {
-            return applyReverts(util, tail, accumulator + head)
+            return applyReverts(query, tail, accumulator + head)
         }
     }
 
     SnapshotType applyEvents(
-            BaseQuery<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> util,
+            BaseQuery<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> query,
             SnapshotType snapshot,
             List<EventType> events,
             List<Deprecates<Aggregate, EventIdType, EventType>> deprecatesList,
             List<Aggregate> aggregates) {
-        if (events.empty || !util.shouldEventsBeApplied(snapshot)) {
+        if (events.empty || !query.shouldEventsBeApplied(snapshot)) {
             return snapshot
         }
         def event = events.head()
@@ -70,14 +80,14 @@ class QueryExecutor<
         log.debug "    --> Event: $event"
 
         if (event instanceof Deprecates<Aggregate, EventIdType, EventType>) {
-            applyDeprecates(event, util, aggregates, deprecatesList)
+            applyDeprecates(event, query, aggregates, deprecatesList)
         } else if (event instanceof DeprecatedBy<Aggregate, EventIdType, EventType>) {
             applyDeprecatedBy(event, snapshot)
         } else {
             def methodName = "apply${event.class.simpleName}".toString()
-            def retval = callMethod(util, methodName, snapshot, event)
+            def retval = callMethod(query, methodName, snapshot, event)
             if (retval == EventApplyOutcome.CONTINUE) {
-                applyEvents(util, snapshot as SnapshotType, remainingEvents, deprecatesList, aggregates as List<Aggregate>)
+                applyEvents(query, snapshot as SnapshotType, remainingEvents, deprecatesList, aggregates as List<Aggregate>)
             } else if (retval == EventApplyOutcome.RETURN) {
                 snapshot
             } else {
