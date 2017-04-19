@@ -4,7 +4,7 @@ import com.github.rahulsom.grooves.api.AggregateType
 import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import com.github.rahulsom.grooves.queries.QuerySupport
-import org.grails.datastore.gorm.GormEntity
+import grails.gorm.rx.RxEntity
 import rx.Observable
 
 import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod
@@ -21,19 +21,19 @@ import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod
  *
  * @author Rahul Somasunderam
  */
-abstract class GormQuerySupport<
-        Aggregate extends AggregateType & GormEntity<Aggregate>,
+abstract class RxGormQuerySupport <
+        Aggregate extends AggregateType & RxEntity<Aggregate>,
         EventIdType,
-        EventType extends BaseEvent<Aggregate, EventIdType, EventType> & GormEntity<EventType>,
+        EventType extends BaseEvent<Aggregate, EventIdType, EventType> & RxEntity<EventType>,
         SnapshotIdType,
-        SnapshotType extends Snapshot<Aggregate, SnapshotIdType, EventIdType, EventType> & GormEntity<SnapshotType>>
+        SnapshotType extends Snapshot<Aggregate, SnapshotIdType, EventIdType, EventType> & RxEntity<SnapshotType>>
         implements
                 QuerySupport<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> {
 
     private final Class<EventType>    eventClass
     private final Class<SnapshotType> snapshotClass
 
-    GormQuerySupport(Class<EventType> eventClass, Class<SnapshotType> snapshotClass) {
+    RxGormQuerySupport(Class<EventType> eventClass, Class<SnapshotType> snapshotClass) {
         this.eventClass = eventClass
         this.snapshotClass = snapshotClass
     }
@@ -43,22 +43,20 @@ abstract class GormQuerySupport<
 
     @Override
     final Observable<SnapshotType> getSnapshot(long maxPosition, Aggregate aggregate) {
-        List<SnapshotType> snapshots = maxPosition == Long.MAX_VALUE ?
+        maxPosition == Long.MAX_VALUE ?
                 invokeStaticMethod(snapshotClass, 'findAllByAggregateId',
-                        [aggregate.id, LATEST].toArray()) as List<SnapshotType>:
+                        [aggregate.id, LATEST].toArray()) as Observable<SnapshotType>:
                 invokeStaticMethod(snapshotClass, 'findAllByAggregateIdAndLastEventPositionLessThan',
-                        [aggregate.id, maxPosition, LATEST].toArray()) as List<SnapshotType>
-        snapshots ? Observable.just(snapshots[0]) : Observable.empty()
+                        [aggregate.id, maxPosition, LATEST].toArray()) as Observable<SnapshotType>
     }
 
     @Override
     final Observable<SnapshotType> getSnapshot(Date maxTimestamp, Aggregate aggregate) {
-        List<SnapshotType> snapshots = maxTimestamp == null ?
+        maxTimestamp == null ?
                 invokeStaticMethod(snapshotClass, 'findAllByAggregateId',
-                        [aggregate.id, LATEST].toArray()) as List<SnapshotType> :
+                        [aggregate.id, LATEST].toArray()) as Observable<SnapshotType> :
                 invokeStaticMethod(snapshotClass, 'findAllByAggregateIdAndLastEventTimestampLessThan',
-                        [aggregate.id, maxTimestamp, LATEST].toArray()) as List<SnapshotType>
-        snapshots ? Observable.just(snapshots[0]) : Observable.empty()
+                        [aggregate.id, maxTimestamp, LATEST].toArray()) as Observable<SnapshotType>
     }
 
     @Override
@@ -71,24 +69,22 @@ abstract class GormQuerySupport<
 
     @Override
     final Observable<EventType> getUncomputedEvents(Aggregate aggregate, SnapshotType lastSnapshot, long version) {
-        Observable.from(
         invokeStaticMethod(eventClass, 'findAllByAggregateAndPositionGreaterThanAndPositionLessThanEquals',
-                [aggregate, lastSnapshot?.lastEventPosition ?: 0L, version, INCREMENTAL].toArray()) as List<EventType>)
+                [aggregate, lastSnapshot?.lastEventPosition ?: 0L, version, INCREMENTAL].toArray()) as Observable<EventType>
     }
 
     @Override
     final Observable<EventType> getUncomputedEvents(Aggregate aggregate, SnapshotType lastSnapshot, Date snapshotTime) {
-        Observable.from(
         lastSnapshot.lastEventTimestamp ?
                 invokeStaticMethod(eventClass, 'findAllByAggregateAndTimestampGreaterThanAndTimestampLessThanEquals',
-                        [aggregate, lastSnapshot.lastEventTimestamp, snapshotTime, INCREMENTAL].toArray()) as List<EventType> :
+                        [aggregate, lastSnapshot.lastEventTimestamp, snapshotTime, INCREMENTAL].toArray()) as Observable<EventType> :
                 invokeStaticMethod(eventClass, 'findAllByAggregateAndTimestampLessThanEquals',
-                        [aggregate, snapshotTime, INCREMENTAL].toArray()) as List<EventType>)
+                        [aggregate, snapshotTime, INCREMENTAL].toArray()) as Observable<EventType>
     }
 
     @Override
     final Observable<EventType> findEventsForAggregates(List<Aggregate> aggregates) {
-        Observable.from(invokeStaticMethod(eventClass, 'findAllByAggregateInList', [aggregates, INCREMENTAL].toArray()) as List<EventType>)
+        invokeStaticMethod(eventClass, 'findAllByAggregateInList', [aggregates, INCREMENTAL].toArray()) as Observable<EventType>
     }
 
 }

@@ -20,7 +20,51 @@ class BootStrap {
         }
         createJohnLennon()
         createRingoStarr()
+        createPaulMcCartney()
+        createGeorgeHarrison()
 
+        linkZipcodesAndPatients(campbell, santanaRow)
+        linkZipcodesAndDoctors(campbell, santanaRow)
+    }
+    private void linkZipcodesAndDoctors(Zipcode campbell, Zipcode santanaRow) {
+        def names = NameDbUsa.instance
+        for (int i = 0; i < 10; i++) {
+            def seed = i * 0.07 + 0.03
+            def random = new Random((Long.MAX_VALUE * seed) as long)
+
+            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time + random.nextInt(ONE_DAY))
+
+            def doctor = new Doctor(uniqueId: "A${i}").save(flush: true, failOnError: true)
+            on(doctor) {
+                apply new DoctorCreated(name: "${names.getMaleName(seed)} ${names.getLastName(seed)}")
+            }
+
+            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time + random.nextInt(ONE_DAY))
+            def zipChanges = random.nextInt(4) + 1
+            def zipcode = random.nextBoolean() ? campbell : santanaRow
+            Zipcode lastZipcode = null
+            zipChanges.times {
+                currDate += random.nextInt(10) + 1
+                on(doctor) {
+                    if (lastZipcode) {
+                        apply new DoctorRemovedFromZipcode(joinAggregate: lastZipcode, timestamp: currDate)
+                    }
+                    apply new DoctorAddedToZipcode(joinAggregate: zipcode, timestamp: currDate)
+                }
+                if (lastZipcode) {
+                    on(lastZipcode) {
+                        apply new ZipcodeLostDoctor(joinAggregate: doctor, timestamp: currDate)
+                    }
+                }
+                on(zipcode) {
+                    apply new ZipcodeGotDoctor(joinAggregate: doctor, timestamp: currDate)
+                }
+                lastZipcode = zipcode
+                zipcode = zipcode == campbell ? santanaRow : campbell
+            }
+        }
+    }
+    private void linkZipcodesAndPatients(Zipcode campbell, Zipcode santanaRow) {
         def names = NameDbUsa.instance
         for (int i = 0; i < 10; i++) {
             def seed = i * 0.05 + 0.12
@@ -63,42 +107,6 @@ class BootStrap {
                 zipcode = zipcode == campbell ? santanaRow : campbell
             }
         }
-        
-        for (int i = 0; i < 10; i++) {
-            def seed = i * 0.07 + 0.03
-            def random = new Random((Long.MAX_VALUE * seed) as long)
-
-            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time + random.nextInt(ONE_DAY))
-
-            def doctor = new Doctor(uniqueId: "A${i}").save(flush: true, failOnError: true)
-            on(doctor) {
-                apply new DoctorCreated(name: "${names.getMaleName(seed)} ${names.getLastName(seed)}")
-            }
-
-            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time + random.nextInt(ONE_DAY))
-            def zipChanges = random.nextInt(4) + 1
-            def zipcode = random.nextBoolean() ? campbell : santanaRow
-            Zipcode lastZipcode = null
-            zipChanges.times {
-                currDate += random.nextInt(10) + 1
-                on(doctor) {
-                    if (lastZipcode) {
-                        apply new DoctorRemovedFromZipcode(joinAggregate: lastZipcode, timestamp: currDate)
-                    }
-                    apply new DoctorAddedToZipcode(joinAggregate: zipcode, timestamp: currDate)
-                }
-                if (lastZipcode) {
-                    on(lastZipcode) {
-                        apply new ZipcodeLostDoctor(joinAggregate: doctor, timestamp: currDate)
-                    }
-                }
-                on(zipcode) {
-                    apply new ZipcodeGotDoctor(joinAggregate: doctor, timestamp: currDate)
-                }
-                lastZipcode = zipcode
-                zipcode = zipcode == campbell ? santanaRow : campbell
-            }
-        }
     }
 
     def procedures = [
@@ -112,27 +120,6 @@ class BootStrap {
 
     Date date(String str) {
         Date.parse('yyyy-MM-dd', str)
-    }
-
-
-    private Patient createRingoStarr() {
-        def patient2 = new Patient(uniqueId: '43').save(flush: true, failOnError: true)
-
-        on(patient2) {
-            apply new PatientCreated(name: 'Ringo Starr')
-            apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
-            apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
-            apply new PaymentMade(amount: 100.25)
-
-            snapshotWith new PatientAccountQuery()
-            snapshotWith new PatientHealthQuery()
-
-            apply new ProcedurePerformed(code: 'FLUSHOT', cost: 32.40)
-            apply new PaymentMade(amount: 180.00)
-
-            snapshotWith new PatientAccountQuery()
-            snapshotWith new PatientHealthQuery()
-        }
     }
 
     private Patient createJohnLennon() {
@@ -155,6 +142,97 @@ class BootStrap {
         }
     }
 
+    private Patient createRingoStarr() {
+        def patient = new Patient(uniqueId: '43').save(flush: true, failOnError: true)
+
+        on(patient) {
+            apply new PatientCreated(name: 'Ringo Starr')
+            apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
+            apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
+            apply new PaymentMade(amount: 100.25)
+
+            snapshotWith new PatientAccountQuery()
+            snapshotWith new PatientHealthQuery()
+
+            apply new ProcedurePerformed(code: 'FLUSHOT', cost: 32.40)
+            apply new PaymentMade(amount: 180.00)
+
+            snapshotWith new PatientAccountQuery()
+            snapshotWith new PatientHealthQuery()
+        }
+    }
+
+    private Patient createPaulMcCartney() {
+        def patient = new Patient(uniqueId: '44').save(flush: true, failOnError: true)
+
+        on(patient) {
+            apply new PatientCreated(name: 'Paul McCartney')
+            apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
+            def gluc = apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
+            apply new PaymentMade(amount: 100.25)
+            apply new PatientEventReverted(revertedEventId: gluc.id)
+            def pmt = apply new PaymentMade(amount: 30.00)
+
+            snapshotWith new PatientAccountQuery()
+            snapshotWith new PatientHealthQuery()
+
+            apply new PatientEventReverted(revertedEventId: pmt.id)
+            apply new PaymentMade(amount: 60.00)
+
+
+            snapshotWith new PatientAccountQuery()
+            snapshotWith new PatientHealthQuery()
+
+            apply new PaymentMade(amount: 60.00)
+
+            snapshotWith new PatientAccountQuery()
+            snapshotWith new PatientHealthQuery()
+        }
+
+    }
+
+    private Patient createGeorgeHarrison() {
+        def patient = new Patient(uniqueId: '45').save(flush: true, failOnError: true)
+        def patient2 = new Patient(uniqueId: '46').save(flush: true, failOnError: true)
+
+        on(patient) {
+            apply new PatientCreated(name: 'George Harrison')
+            apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
+            apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
+
+            snapshotWith new PatientAccountQuery()
+            snapshotWith new PatientHealthQuery()
+        }
+
+        on(patient2) {
+            apply new PatientCreated(name: 'George Harrison, Member of the Most Excellent Order of the British Empire')
+            apply new PaymentMade(amount: 100.25)
+
+            snapshotWith new PatientAccountQuery()
+            snapshotWith new PatientHealthQuery()
+        }
+
+        currDate += 1;
+        merge(patient, patient2)
+        patient
+    }
+
+    /**
+     *
+     * @param self The aggregate to be deprecated
+     * @param into The aggregate to survive
+     * @return
+     */
+    private PatientDeprecatedBy merge(Patient self, Patient into) {
+        def e1 = new PatientDeprecatedBy(aggregate: self, createdBy: 'anonymous' , deprecator: into,
+                timestamp: currDate, position: PatientEvent.countByAggregate(self) + 1)
+        def e2 = new PatientDeprecates(aggregate: into, createdBy: 'anonymous' , deprecated: self,
+                timestamp: currDate, converse: e1, position: PatientEvent.countByAggregate(into) + 1)
+        e1.converse = e2
+        e2.save(flush: true, failOnError: true)
+        e2.converse
+    }
+
     Date currDate = Date.parse('yyyy-MM-dd', START_DATE)
 
     Patient on(Patient patient, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
@@ -162,21 +240,21 @@ class BootStrap {
         def positionSupplier = { PatientEvent.countByAggregate(patient) + 1 }
         def userSupplier = { 'anonymous' }
         def dateSupplier = { currDate += 1; currDate }
-        EventsDsl.on(patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
+        new EventsDsl<Patient, Long, PatientEvent>().on(patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
     }
 
     Zipcode on(Zipcode zipcode, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { ZipcodeEvent.countByAggregate(zipcode) + 1 }
         def userSupplier = { 'anonymous' }
-        EventsDsl.on(zipcode, eventSaver, positionSupplier, userSupplier, closure)
+        new EventsDsl<Zipcode, Long, ZipcodeEvent>().on(zipcode, eventSaver, positionSupplier, userSupplier, closure)
     }
 
-    Doctor on(Doctor Doctor, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
+    Doctor on(Doctor doctor, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
-        def positionSupplier = { DoctorEvent.countByAggregate(Doctor) + 1 }
+        def positionSupplier = { DoctorEvent.countByAggregate(doctor) + 1 }
         def userSupplier = { 'anonymous' }
-        EventsDsl.on(Doctor, eventSaver, positionSupplier, userSupplier, closure)
+        new EventsDsl<Doctor, Long, DoctorEvent>().on(doctor, eventSaver, positionSupplier, userSupplier, closure)
     }
 
     def destroy = {

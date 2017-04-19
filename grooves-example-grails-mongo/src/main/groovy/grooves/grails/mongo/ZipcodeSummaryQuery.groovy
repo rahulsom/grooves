@@ -1,24 +1,24 @@
 package grooves.grails.mongo
 
 import grails.compiler.GrailsCompileStatic
+import rx.Observable
 
 @GrailsCompileStatic
 class ZipcodeSummaryQuery {
 
-    Optional<ZipcodeSummary> computeSnapshot(Zipcode aggregate, Date moment) {
-        def retval = new ZipcodePatientsQuery().computeSnapshot(aggregate, moment).
-                map { ZipcodePatients zipcodePatients ->
-                    zipcodePatients.joinedIds.
-                            inject(createEmptySnapshot()) {  snapshot, patientId ->
-                                new PatientHealthQuery().computeSnapshot(Patient.get(patientId), moment).
-                                        ifPresent { PatientHealth health -> addHealthToSnapshot(health, snapshot) }
+    Observable<ZipcodeSummary> computeSnapshot(Zipcode aggregate, Date moment) {
+        new ZipcodePatientsQuery().computeSnapshot(aggregate, moment).
+                flatMap {
+                    Observable.from(it.joinedIds).
+                            flatMap { new PatientHealthQuery().computeSnapshot(Patient.get(it), moment) }.
+                            reduce(createEmptySnapshot()) { ZipcodeSummary snapshot, PatientHealth health ->
+                                addHealthToSnapshot(health, snapshot)
                                 snapshot
                             }
                 }
-        retval as Optional<ZipcodeSummary>
     }
 
-    private List<Procedure> addHealthToSnapshot(PatientHealth health, ZipcodeSummary snapshot) {
+    private static void addHealthToSnapshot(PatientHealth health, ZipcodeSummary snapshot) {
         health.procedures.each { patientProcedure ->
             def procedure = snapshot.procedureCounts.find {
                 it.code == patientProcedure.code

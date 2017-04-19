@@ -71,5 +71,7 @@ assets {
     minifyCss = true
 }
 
-tasks.findByName('bootRun').dependsOn 'startManagedMongoDb'
-tasks.findByName('integrationTest').dependsOn 'startManagedMongoDb'
+tasks.findByName('bootRun').dependsOn 'startMongoDb'
+tasks.findByName('bootRun').finalizedBy 'stopMongoDb'
+tasks.findByName('integrationTest').dependsOn 'startMongoDb'
+tasks.findByName('integrationTest').finalizedBy 'stopMongoDb'

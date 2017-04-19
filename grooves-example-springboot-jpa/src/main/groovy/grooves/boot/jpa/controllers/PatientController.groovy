@@ -45,10 +45,11 @@ class PatientController {
                         patientAccountQuery.computeSnapshot(patient, date) :
                         patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE)
 
-        if (!computation.isPresent()) {
+        def resp = computation.toBlocking().first()
+        if (!resp) {
             throw new RuntimeException('Could not compute')
         }
-        computation.get()
+        resp
     }
 
     @GetMapping("/patient/health/{id}.json")
@@ -62,9 +63,11 @@ class PatientController {
                 date ?
                         patientHealthQuery.computeSnapshot(patient, date) :
                         patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE)
-        if (!computation.isPresent()) {
+
+        def resp = computation.toBlocking().first()
+        if (!resp) {
             throw new RuntimeException('Could not compute')
         }
-        computation.get()
+        resp
     }
 }

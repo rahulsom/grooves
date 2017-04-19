@@ -1,26 +1,27 @@
 package com.github.rahulsom.grooves.queries.internal
 
-import com.github.rahulsom.grooves.api.*
+import com.github.rahulsom.grooves.api.AggregateType
+import com.github.rahulsom.grooves.api.EventApplyOutcome
+import com.github.rahulsom.grooves.api.GroovesException
 import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.events.DeprecatedBy
 import com.github.rahulsom.grooves.api.events.Deprecates
 import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot
 import groovy.transform.CompileStatic
-import groovy.transform.TailRecursive
 import groovy.transform.TypeCheckingMode
-import groovy.util.logging.Slf4j
 import org.codehaus.groovy.runtime.InvokerHelper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import rx.Observable
 
 /**
  *
- * @param <Aggregate>
- * @param <EventIdType>
- * @param <EventType>
- * @param <SnapshotIdType>
- * @param <SnapshotType>
+ * @param <Aggregate>      The aggregate over which the query executes
+ * @param <EventIdType>    The type of the Event's id field
+ * @param <EventType>      The type of the Event
+ * @param <SnapshotIdType> The type of the Snapshot's id field
+ * @param <SnapshotType>   The type of the Snapshot
  *
  * @author Rahul Somasunderam
  */
@@ -42,58 +43,70 @@ class QueryExecutor<
      * @param accumulator accumulator of events.
      * @return
      */
-    List<EventType> applyReverts(
-            BaseQuery<Aggregate, EventIdType, EventType,SnapshotIdType, SnapshotType> query,
-            List<EventType> events,
-            List<EventType> accumulator) {
-        if (!events) {
-            return accumulator
-        }
-        def head = events.head()
-        def tail = events.tail()
+    @Override
+    Observable<EventType> applyReverts(
+            BaseQuery<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> query,
+            Observable<EventType> events) {
 
-        if (head instanceof RevertEvent<Aggregate, EventIdType, EventType>) {
-            def revert = head as RevertEvent<Aggregate, EventIdType, EventType>
-            if (!(tail*.id).contains(revert.revertedEventId)) {
-                throw new GroovesException("Cannot revert event that does not exist in unapplied list - ${revert.revertedEventId}")
+        events.toList().flatMap { eventList ->
+            log.debug "EventList: ${eventList*.id}"
+            def forwardEvents = []
+            while (eventList) {
+                def head = eventList.pop()
+                if (head instanceof RevertEvent<Aggregate, EventIdType, EventType>) {
+                    def revertedEventId = (head as RevertEvent).revertedEventId
+                    def revertedEvent = eventList.find {
+                        it.id == revertedEventId
+                    }
+                    if (revertedEvent) {
+                        eventList.remove(revertedEvent)
+                    } else {
+                        throw new GroovesException("Cannot revert event that does not exist in unapplied list - ${revertedEventId}")
+                    }
+                } else {
+                    forwardEvents.add(0, head)
+                }
             }
-            log.debug "    --> Revert: $revert"
-            events.find { it.id == revert.revertedEventId }.revertedBy = revert
-            return applyReverts(query, tail.findAll { it.id != revert.revertedEventId }, accumulator)
-        } else {
-            return applyReverts(query, tail, accumulator + head)
+            assert !forwardEvents.find { it instanceof RevertEvent<Aggregate, EventIdType, EventType> }
+            Observable.from(forwardEvents)
         }
     }
 
-    SnapshotType applyEvents(
+    @Override
+    Observable<SnapshotType> applyEvents(
             BaseQuery<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> query,
-            SnapshotType snapshot,
-            List<EventType> events,
+            SnapshotType initialSnapshot,
+            Observable<EventType> events,
             List<Deprecates<Aggregate, EventIdType, EventType>> deprecatesList,
             List<Aggregate> aggregates) {
-        if (events.empty || !query.shouldEventsBeApplied(snapshot)) {
-            return snapshot
-        }
-        def event = events.head()
-        def remainingEvents = events.tail()
 
-        log.debug "    --> Event: $event"
-
-        if (event instanceof Deprecates<Aggregate, EventIdType, EventType>) {
-            applyDeprecates(event, query, aggregates, deprecatesList)
-        } else if (event instanceof DeprecatedBy<Aggregate, EventIdType, EventType>) {
-            applyDeprecatedBy(event, snapshot)
-        } else {
-            def methodName = "apply${event.class.simpleName}".toString()
-            def retval = callMethod(query, methodName, snapshot, event)
-            if (retval == EventApplyOutcome.CONTINUE) {
-                applyEvents(query, snapshot as SnapshotType, remainingEvents, deprecatesList, aggregates as List<Aggregate>)
-            } else if (retval == EventApplyOutcome.RETURN) {
-                snapshot
+        boolean stopApplyingEvents = false
+        events.reduce(initialSnapshot) { SnapshotType snapshot, EventType event ->
+            if (!query.shouldEventsBeApplied(snapshot) || stopApplyingEvents) {
+                return snapshot
             } else {
-                throw new GroovesException("Unexpected value from calling '$methodName'")
+                log.debug "    --> Event: $event"
+
+                if (event instanceof Deprecates<Aggregate, EventIdType, EventType>) {
+                    applyDeprecates(event, query, aggregates, deprecatesList)
+                } else if (event instanceof DeprecatedBy<Aggregate, EventIdType, EventType>) {
+                    applyDeprecatedBy(event, snapshot)
+                } else {
+                    def methodName = "apply${event.class.simpleName}".toString()
+                    def retval = callMethod(query, methodName, snapshot, event)
+                    if (retval == EventApplyOutcome.CONTINUE) {
+                        // applyEvents(query, snapshot as SnapshotType, remainingEvents, deprecatesList, aggregates as List<Aggregate>)
+                        snapshot
+                    } else if (retval == EventApplyOutcome.RETURN) {
+                        stopApplyingEvents = true
+                        snapshot
+                    } else {
+                        throw new GroovesException("Unexpected value from calling '$methodName'")
+                    }
+                }
             }
         }
+
     }
 
     @SuppressWarnings("GrMethodMayBeStatic")
@@ -104,7 +117,11 @@ class QueryExecutor<
         snapshot
     }
 
-    protected SnapshotType applyDeprecates(EventType event, BaseQuery<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> util, List<Aggregate> aggregates, List<Deprecates<Aggregate, EventIdType, EventType>> deprecatesList) {
+    protected SnapshotType applyDeprecates(
+            EventType event,
+            BaseQuery<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> util,
+            List<Aggregate> aggregates,
+            List<Deprecates<Aggregate, EventIdType, EventType>> deprecatesList) {
         def deprecatesEvent = event as Deprecates<Aggregate, EventIdType, EventType>
         def newSnapshot = util.createEmptySnapshot()
         newSnapshot.aggregate = deprecatesEvent.aggregate
@@ -112,21 +129,22 @@ class QueryExecutor<
         def otherAggregate = deprecatesEvent.deprecated
         util.addToDeprecates(newSnapshot, otherAggregate)
 
-        def allEvents = util.findEventsForAggregates(aggregates + deprecatesEvent.deprecated)
-
-        def sortedEvents = allEvents.
-                findAll { it.id != deprecatesEvent.id && it.id != deprecatesEvent.converse.id }.
-                toSorted { it.timestamp.time }
-
-        log.info "Sorted Events: [\n    ${sortedEvents.join(',\n    ')}\n]"
-
-        def forwardEventsSortedBackwards = applyReverts(util, sortedEvents.reverse(), [] as List<EventType>)
-        applyEvents(util, newSnapshot, forwardEventsSortedBackwards.reverse(), deprecatesList + deprecatesEvent, aggregates)
+        util.
+                findEventsForAggregates(aggregates + deprecatesEvent.deprecated).
+                filter { it.id != deprecatesEvent.id && it.id != deprecatesEvent.converse.id }.
+                toSortedList { a, b -> a.timestamp.time <=> b.timestamp.time }.
+                flatMap { sortedEvents ->
+                    log.info "Sorted Events: [\n    ${sortedEvents.join(',\n    ')}\n]"
+                    def forwardEventsSortedBackwards = applyReverts(util, Observable.from(sortedEvents))
+                    applyEvents(util, newSnapshot, forwardEventsSortedBackwards, deprecatesList + deprecatesEvent, aggregates)
+                }.
+                toBlocking().
+                first()
     }
 
     @SuppressWarnings("GrMethodMayBeStatic")
-    @CompileStatic(TypeCheckingMode.SKIP) protected
-    EventApplyOutcome callMethod(
+    @CompileStatic(TypeCheckingMode.SKIP)
+    protected EventApplyOutcome callMethod(
             BaseQuery<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> util,
             String methodName,
             SnapshotType snapshot,

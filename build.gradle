@@ -1,12 +1,17 @@
 buildscript {
     repositories {
         jcenter()
+        maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"
+        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
+        classpath 'com.gradle:build-scan-plugin:1.6'
+        classpath 'me.champeau.gradle:buildscan-recipes-plugin:0.2.0'
     }
 }
 
+apply plugin: 'com.gradle.build-scan'
+apply plugin: me.champeau.gradle.buildscans.RecipesPlugin
 apply plugin: 'io.codearte.nexus-staging'
 
 allprojects {
@@ -29,4 +34,13 @@ task release() {
 
 project.afterEvaluate {
     project.tasks.findByName('closeAndPromoteRepository').mustRunAfter 'grooves-api:uploadArchives', 'grooves-grails:uploadArchives'
+}
+
+buildScan {
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
+}
+
+buildScanRecipes {
+    recipes 'git-commit', 'git-status', 'travis-ci', 'gc-stats'
 }

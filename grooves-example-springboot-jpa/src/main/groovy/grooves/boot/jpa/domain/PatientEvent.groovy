@@ -1,5 +1,7 @@
 package grooves.boot.jpa.domain
 
+import com.github.rahulsom.grooves.api.events.DeprecatedBy
+import com.github.rahulsom.grooves.api.events.Deprecates
 import com.github.rahulsom.grooves.transformations.Event
 import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.events.RevertEvent
@@ -60,4 +62,22 @@ class PatientEventReverted extends PatientEvent implements RevertEvent<Patient, 
 
     @Override
     String getAudit() { new JsonBuilder([revertedEvent: revertedEventId]).toString() }
+}
+
+@Entity
+@ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
+class PatientDeprecatedBy extends PatientEvent implements DeprecatedBy<Patient, Long, PatientEvent> {
+    @OneToOne PatientDeprecates converse
+    @OneToOne Patient deprecator
+
+    @Override String getAudit() { new JsonBuilder([deprecatedBy: deprecator.id]).toString() }
+}
+
+@Entity
+@ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
+class PatientDeprecates extends PatientEvent implements Deprecates<Patient, Long, PatientEvent> {
+    @OneToOne PatientDeprecatedBy converse
+    @OneToOne Patient deprecated
+
+    @Override String getAudit() { new JsonBuilder([deprecates: deprecated.id]).toString() }
 }

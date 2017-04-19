@@ -38,7 +38,7 @@ trait JoinSupport<
 
     @Override
     QueryExecutor<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> getExecutor() {
-        new JoinExecutor<Aggregate, EventIdType, EventType, JoinedAggregateIdType, JoinedAggregateType, SnapshotIdType, SnapshotType, JoinE, DisjoinE>(
-                Aggregate, EventIdType, EventType, JoinedAggregateIdType, JoinedAggregateType, SnapshotIdType, SnapshotType, JoinE, DisjoinE)
+        new JoinExecutor<Aggregate, EventIdType, EventType, JoinedAggregateIdType, JoinedAggregateType,
+                SnapshotIdType, SnapshotType, JoinE, DisjoinE>(JoinE, DisjoinE)
     }
 }
