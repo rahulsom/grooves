@@ -37,6 +37,7 @@ dependencies {
 
     testCompile 'org.spockframework:spock-core'
     testCompile 'org.spockframework:spock-spring'
+
     compile project(':grooves-api')
     testCompile project(':grooves-example-test')
 }

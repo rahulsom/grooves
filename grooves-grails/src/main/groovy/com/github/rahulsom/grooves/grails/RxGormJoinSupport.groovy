@@ -8,33 +8,33 @@ import com.github.rahulsom.grooves.api.snapshots.Join
 import com.github.rahulsom.grooves.queries.JoinSupport
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor
 import com.github.rahulsom.grooves.queries.internal.QueryExecutor
-import org.grails.datastore.gorm.GormEntity
+import grails.gorm.rx.RxEntity
 import rx.Observable
 
 import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod
 
 /**
  *
- * @param < Aggregate >
- * @param < EventIdType >
- * @param < EventType >
- * @param < JoinedAggregateIdType >
- * @param < JoinedAggregateType >
- * @param < SnapshotIdType >
- * @param < SnapshotType >
- * @param < JoinE >
- * @param < DisjoinE >
+ * @param <Aggregate>
+ * @param <EventIdType>
+ * @param <EventType>
+ * @param <JoinedAggregateIdType>
+ * @param <JoinedAggregateType>
+ * @param <SnapshotIdType>
+ * @param <SnapshotType>
+ * @param <JoinE>
+ * @param <DisjoinE>
  *
  * @author Rahul Somasunderam
  */
-abstract class GormJoinSupport<
-        Aggregate extends AggregateType & GormEntity<Aggregate>,
+abstract class RxGormJoinSupport<
+        Aggregate extends AggregateType & RxEntity<Aggregate>,
         EventIdType,
-        EventType extends BaseEvent<Aggregate, EventIdType, EventType> & GormEntity<EventType>,
+        EventType extends BaseEvent<Aggregate, EventIdType, EventType> & RxEntity<EventType>,
         JoinedAggregateIdType,
-        JoinedAggregateType extends AggregateType & GormEntity<JoinedAggregateType>,
+        JoinedAggregateType extends AggregateType & RxEntity<JoinedAggregateType>,
         SnapshotIdType,
-        SnapshotType extends Join<Aggregate, SnapshotIdType, JoinedAggregateIdType, EventIdType, EventType> & GormEntity<SnapshotType>,
+        SnapshotType extends Join<Aggregate, SnapshotIdType, JoinedAggregateIdType, EventIdType, EventType> & RxEntity<SnapshotType>,
         JoinE extends JoinEvent<Aggregate, EventIdType, EventType, JoinedAggregateType>,
         DisjoinE extends DisjoinEvent<Aggregate, EventIdType, EventType, JoinedAggregateType>>
         implements
@@ -50,7 +50,7 @@ abstract class GormJoinSupport<
     private final Class<JoinE> joinEventClass
     private final Class<DisjoinE> disjoinEventClass
 
-    GormJoinSupport(
+    RxGormJoinSupport(
             Class<Aggregate> classAggregate,
             Class<EventIdType> classEventIdType, Class<EventType> eventClass,
             Class<JoinedAggregateIdType> classJoinedAggregateIdType, Class<JoinedAggregateType> joinedAggregateClass,
@@ -72,22 +72,20 @@ abstract class GormJoinSupport<
 
     @Override
     final Observable<SnapshotType> getSnapshot(long maxPosition, Aggregate aggregate) {
-        List<SnapshotType> snapshots = maxPosition == Long.MAX_VALUE ?
+        maxPosition == Long.MAX_VALUE ?
                 invokeStaticMethod(snapshotClass, 'findAllByAggregateId',
-                        [aggregate.id, LATEST].toArray()) as List<SnapshotType> :
+                        [aggregate.id, LATEST].toArray()) as Observable<SnapshotType> :
                 invokeStaticMethod(snapshotClass, 'findAllByAggregateIdAndLastEventPositionLessThan',
-                        [aggregate.id, maxPosition, LATEST].toArray()) as List<SnapshotType>
-        snapshots ? Observable.just(snapshots[0]) : Observable.empty()
+                        [aggregate.id, maxPosition, LATEST].toArray()) as Observable<SnapshotType>
     }
 
     @Override
     final Observable<SnapshotType> getSnapshot(Date maxTimestamp, Aggregate aggregate) {
-        List<SnapshotType> snapshots = maxTimestamp == null ?
+        maxTimestamp == null ?
                 invokeStaticMethod(snapshotClass, 'findAllByAggregateId',
-                        [aggregate.id, LATEST].toArray()) as List<SnapshotType> :
+                        [aggregate.id, LATEST].toArray()) as Observable<SnapshotType> :
                 invokeStaticMethod(snapshotClass, 'findAllByAggregateIdAndLastEventTimestampLessThan',
-                        [aggregate.id, maxTimestamp, LATEST].toArray()) as List<SnapshotType>
-        snapshots ? Observable.just(snapshots[0]) : Observable.empty()
+                        [aggregate.id, maxTimestamp, LATEST].toArray()) as Observable<SnapshotType>
     }
 
     @Override
@@ -100,23 +98,22 @@ abstract class GormJoinSupport<
 
     @Override
     final Observable<EventType> getUncomputedEvents(Aggregate aggregate, SnapshotType lastSnapshot, long version) {
-        Observable.from(
-                invokeStaticMethod(eventClass, 'findAllByAggregateAndPositionGreaterThanAndPositionLessThanEquals',
-                        [aggregate, lastSnapshot?.lastEventPosition ?: 0L, version, INCREMENTAL].toArray()) as List<EventType>)
+        invokeStaticMethod(eventClass, 'findAllByAggregateAndPositionGreaterThanAndPositionLessThanEquals',
+                [aggregate, lastSnapshot?.lastEventPosition ?: 0L, version, INCREMENTAL].toArray()) as Observable<EventType>
     }
 
     @Override
     final Observable<EventType> getUncomputedEvents(Aggregate aggregate, SnapshotType lastSnapshot, Date snapshotTime) {
-        Observable.from(lastSnapshot.lastEventTimestamp ?
+        lastSnapshot.lastEventTimestamp ?
                 invokeStaticMethod(eventClass, 'findAllByAggregateAndTimestampGreaterThanAndTimestampLessThanEquals',
-                        [aggregate, lastSnapshot.lastEventTimestamp, snapshotTime, INCREMENTAL].toArray()) as List<EventType> :
+                        [aggregate, lastSnapshot.lastEventTimestamp, snapshotTime, INCREMENTAL].toArray()) as Observable<EventType> :
                 invokeStaticMethod(eventClass, 'findAllByAggregateAndTimestampLessThanEquals',
-                        [aggregate, snapshotTime, INCREMENTAL].toArray()) as List<EventType>)
+                        [aggregate, snapshotTime, INCREMENTAL].toArray()) as Observable<EventType>
     }
 
     @Override
     final Observable<EventType> findEventsForAggregates(List<Aggregate> aggregates) {
-        Observable.from (invokeStaticMethod(eventClass, 'findAllByAggregateInList', [aggregates, INCREMENTAL].toArray()) as List<EventType>)
+        invokeStaticMethod(eventClass, 'findAllByAggregateInList', [aggregates, INCREMENTAL].toArray()) as Observable<EventType>
     }
 
     @Override
@@ -126,3 +123,4 @@ abstract class GormJoinSupport<
     }
 
 }
+

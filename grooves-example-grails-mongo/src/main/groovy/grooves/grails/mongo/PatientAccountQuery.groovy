@@ -25,8 +25,8 @@ class PatientAccountQuery extends GormQuerySupport<Patient, Long, PatientEvent, 
     }
 
     @Override
-    void addToDeprecates(PatientAccount snapshot, Patient otherAggregate) {
-        snapshot.addToDeprecatesIds(otherAggregate.id)
+    void addToDeprecates(PatientAccount snapshot, Patient deprecatedAggregate) {
+        snapshot.addToDeprecatesIds(deprecatedAggregate.id)
     }
 
     @Override

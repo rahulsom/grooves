@@ -3,6 +3,7 @@ package com.github.rahulsom.grooves
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import org.codehaus.groovy.control.MultipleCompilationErrorsException
 import org.codehaus.groovy.control.messages.SyntaxErrorMessage
+import rx.Observable
 import spock.lang.Specification
 
 class GroovesAstTransformationsSpec extends Specification {
@@ -13,8 +14,8 @@ class GroovesAstTransformationsSpec extends Specification {
 
         then:
         notThrown(MultipleCompilationErrorsException)
-        retval instanceof Optional
-        (retval as Optional).present
+        retval instanceof Observable
+        (retval as Observable).toBlocking().first() 
     }
 
     def 'test missing events'() {

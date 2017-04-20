@@ -34,7 +34,12 @@ if (Environment.isDevelopmentMode() && targetDir != null) {
     logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
     root(ERROR, ['STDOUT', 'FULL_STACKTRACE'])
 
-}
-else {
+} else {
     root(ERROR, ['STDOUT'])
 }
+
+logger "com.github.rahulsom", DEBUG
+logger "grooves.example.grails.mongo", DEBUG
+logger "grooves.grails.mongo", DEBUG
+logger 'grails.app.controllers.grooves.grails.mongo', DEBUG
+logger 'grails.app.conf.grooves.grails.mongo', INFO, ['STDOUT']

@@ -26,7 +26,7 @@ class DoctorPatientsQuery extends
     }
 
     @Override
-    void addToDeprecates(DoctorPatients snapshot, Doctor otherAggregate) {
+    void addToDeprecates(DoctorPatients snapshot, Doctor deprecatedAggregate) {
         // ignore for now
     }
 

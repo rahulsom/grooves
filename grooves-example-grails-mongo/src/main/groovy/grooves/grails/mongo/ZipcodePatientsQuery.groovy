@@ -26,7 +26,7 @@ class ZipcodePatientsQuery extends
     }
 
     @Override
-    void addToDeprecates(ZipcodePatients snapshot, Zipcode otherAggregate) {
+    void addToDeprecates(ZipcodePatients snapshot, Zipcode deprecatedAggregate) {
         // ignore for now
     }
 

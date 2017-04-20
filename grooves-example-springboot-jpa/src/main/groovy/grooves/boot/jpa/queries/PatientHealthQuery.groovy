@@ -1,8 +1,8 @@
 package grooves.boot.jpa.queries
 
-import com.github.rahulsom.grooves.transformations.Query
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.queries.QuerySupport
+import com.github.rahulsom.grooves.transformations.Query
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientEventRepository
 import grooves.boot.jpa.repositories.PatientHealthRepository
@@ -11,6 +11,7 @@ import org.hibernate.engine.spi.SessionImplementor
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import rx.Observable
 
 import javax.persistence.EntityManager
 
@@ -31,36 +32,37 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
     }
 
     @Override
-    Optional<PatientHealth> getSnapshot(long startWithEvent, Patient aggregate) {
-        def snapshots = startWithEvent == Long.MAX_VALUE ?
+    Observable<PatientHealth> getSnapshot(long maxPosition, Patient aggregate) {
+        def snapshots = maxPosition == Long.MAX_VALUE ?
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
-                patientHealthRepository.findAllByAggregateIdAndLastEventPositionLessThan(aggregate.id, startWithEvent)
-        (snapshots ? Optional.of(snapshots[0]) : Optional.empty()) as Optional<PatientHealth>
+                patientHealthRepository.findAllByAggregateIdAndLastEventPositionLessThan(aggregate.id, maxPosition)
+        snapshots ? Observable.just(snapshots[0]) : Observable.empty()
     }
 
     @Override
-    Optional<PatientHealth> getSnapshot(Date startAtTime, Patient aggregate) {
-        def snapshots = startAtTime == null ?
+    Observable<PatientHealth> getSnapshot(Date maxTimestamp, Patient aggregate) {
+        def snapshots = maxTimestamp == null ?
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
-                patientHealthRepository.findAllByAggregateIdAndLastEventTimestampLessThan(aggregate.id, startAtTime)
-        (snapshots ? Optional.of(snapshots[0]) : Optional.empty()) as Optional<PatientHealth>
+                patientHealthRepository.findAllByAggregateIdAndLastEventTimestampLessThan(aggregate.id, maxTimestamp)
+        snapshots ? Observable.just(snapshots[0]) : Observable.empty()
     }
 
     @Override
-    void detachSnapshot(PatientHealth retval) {
-        new VariableDepthCopier<PatientHealth>().copy(retval)
+    void detachSnapshot(PatientHealth snapshot) {
+        new VariableDepthCopier<PatientHealth>().copy(snapshot)
     }
 
     @Override
-    List<PatientEvent> getUncomputedEvents(Patient patient, PatientHealth lastSnapshot, long version) {
-        patientEventRepository.getUncomputedEventsByVersion patient, lastSnapshot?.lastEventPosition ?: 0L, version
+    Observable<PatientEvent> getUncomputedEvents(Patient patient, PatientHealth lastSnapshot, long version) {
+        Observable.from (patientEventRepository.getUncomputedEventsByVersion(patient, lastSnapshot?.lastEventPosition ?: 0L, version))
     }
 
     @Override
-    List<PatientEvent> getUncomputedEvents(Patient patient, PatientHealth lastSnapshot, Date snapshotTime) {
-        lastSnapshot?.lastEventTimestamp ?
-                patientEventRepository.getUncomputedEventsByDateRange(patient, lastSnapshot.lastEventTimestamp, snapshotTime) :
-                patientEventRepository.getUncomputedEventsUntilDate(patient, snapshotTime)
+    Observable<PatientEvent> getUncomputedEvents(Patient patient, PatientHealth lastSnapshot, Date snapshotTime) {
+        Observable.from(
+                lastSnapshot?.lastEventTimestamp ?
+                        patientEventRepository.getUncomputedEventsByDateRange(patient, lastSnapshot.lastEventTimestamp, snapshotTime) :
+                        patientEventRepository.getUncomputedEventsUntilDate(patient, snapshotTime))
     }
 
     @Override
@@ -69,13 +71,13 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
     }
 
     @Override
-    List<PatientEvent> findEventsForAggregates(List<Patient> aggregates) {
-        patientEventRepository.findAllByAggregateIn(aggregates)
+    Observable<PatientEvent> findEventsForAggregates(List<Patient> aggregates) {
+        Observable.from patientEventRepository.findAllByAggregateIn(aggregates)
     }
 
     @Override
-    void addToDeprecates(PatientHealth snapshot, Patient otherAggregate) {
-        snapshot.deprecates << otherAggregate
+    void addToDeprecates(PatientHealth snapshot, Patient deprecatedAggregate) {
+        snapshot.deprecates << deprecatedAggregate
     }
 
     @Override

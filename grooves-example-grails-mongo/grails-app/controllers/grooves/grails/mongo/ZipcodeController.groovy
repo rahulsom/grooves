@@ -20,7 +20,7 @@ class ZipcodeController {
                 new ZipcodeSummaryQuery().computeSnapshot(Zipcode, params.date('date')) :
                 new ZipcodeSummaryQuery().computeSnapshot(Zipcode, new Date())
         JSON.use('deep') {
-            render snapshot.get() as JSON
+            render snapshot.toBlocking().first() as JSON
         }
     }
 
@@ -31,7 +31,7 @@ class ZipcodeController {
                         new ZipcodePatientsQuery().computeSnapshot(Zipcode, params.date('date')) :
                         new ZipcodePatientsQuery().computeSnapshot(Zipcode, new Date())
         JSON.use('deep') {
-            render snapshot.get() as JSON
+            render snapshot.toBlocking().first() as JSON
         }
     }
 

@@ -9,13 +9,17 @@ import com.github.rahulsom.grooves.queries.internal.QueryExecutor
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import rx.Observable
+import rx.Observer
 
 /**
  * Aggregate trait that simplifies computing temporal snapshots from events
  *
- * @param <Aggregate> The Aggregate type
- * @param <EventType> The Event type
- * @param <SnapshotType> The snapshot type
+ * @param <Aggregate>      The aggregate over which the query executes
+ * @param <EventIdType>    The type of the Event's id field
+ * @param <EventType>      The type of the Event
+ * @param <SnapshotIdType> The type of the Snapshot's id field
+ * @param <SnapshotType>   The type of the Snapshot
  *
  * @author Rahul Somasunderam
  */
@@ -32,17 +36,19 @@ trait TemporalQuerySupport<
     /**
      *
      * @param aggregate
-     * @param startAtTime
+     * @param maxTimestamp
      * @return
      */
-    private SnapshotType getLatestSnapshot(Aggregate aggregate, Date startAtTime) {
-        SnapshotType lastSnapshot = getSnapshot(startAtTime, aggregate).orElse(createEmptySnapshot())
+    private Observable<SnapshotType> getLatestSnapshot(Aggregate aggregate, Date maxTimestamp) {
+        getSnapshot(maxTimestamp, aggregate).
+                defaultIfEmpty(createEmptySnapshot()).
+                map {
+                    log.info "    --> Last SnapshotType: ${it.lastEventTimestamp ? it : '<none>'}"
+                    detachSnapshot(it)
 
-        log.info "    --> Last SnapshotType: ${lastSnapshot.lastEventTimestamp ? lastSnapshot : '<none>'}"
-        detachSnapshot(lastSnapshot)
-
-        lastSnapshot.aggregate = aggregate
-        lastSnapshot
+                    it.aggregate = aggregate
+                    it
+                }
     }
 
     /**
@@ -57,9 +63,9 @@ trait TemporalQuerySupport<
 
     private Tuple2<SnapshotType, List<EventType>> getSnapshotAndEventsSince(Aggregate aggregate, Date maxLastEventTimestamp, Date snapshotTime) {
         if (maxLastEventTimestamp) {
-            def lastSnapshot = getLatestSnapshot(aggregate, maxLastEventTimestamp)
+            def lastSnapshot = getLatestSnapshot(aggregate, maxLastEventTimestamp).toBlocking().first()
 
-            List<EventType> uncomputedEvents = getUncomputedEvents(aggregate, lastSnapshot, snapshotTime)
+            List<EventType> uncomputedEvents = getUncomputedEvents(aggregate, lastSnapshot, snapshotTime).toList().toBlocking().first()
             def uncomputedReverts = uncomputedEvents.findAll {
                 it instanceof RevertEvent<Aggregate, EventIdType, EventType>
             } as List<RevertEvent>
@@ -69,20 +75,14 @@ trait TemporalQuerySupport<
                 getSnapshotAndEventsSince(aggregate, null, snapshotTime)
             } else {
                 log.info "Events in pair: ${uncomputedEvents*.position}"
-                if (uncomputedEvents) {
-                    lastSnapshot.lastEvent = uncomputedEvents.last()
-                }
                 new Tuple2(lastSnapshot, uncomputedEvents)
             }
         } else {
             def lastSnapshot = createEmptySnapshot()
 
-            List<EventType> uncomputedEvents = getUncomputedEvents(aggregate, lastSnapshot, snapshotTime)
+            List<EventType> uncomputedEvents = getUncomputedEvents(aggregate, lastSnapshot, snapshotTime).toList().toBlocking().first()
 
             log.info "Events in pair: ${uncomputedEvents*.position}"
-            if (uncomputedEvents) {
-                lastSnapshot.lastEvent = uncomputedEvents.last()
-            }
             new Tuple2(lastSnapshot, uncomputedEvents)
         }
 
@@ -94,28 +94,34 @@ trait TemporalQuerySupport<
      * @param moment The moment at which the snapshot is desired
      * @return An Optional SnapshotType. Empty if cannot be computed.
      */
-    Optional<SnapshotType> computeSnapshot(Aggregate aggregate, Date moment) {
+    Observable<SnapshotType> computeSnapshot(Aggregate aggregate, Date moment) {
         Tuple2<SnapshotType, List<EventType>> seTuple2 = getSnapshotAndEventsSince(aggregate, moment)
         def events = seTuple2.second
         def snapshot = seTuple2.first
 
         if (events.any { it instanceof RevertEvent<Aggregate, EventIdType, EventType> } && snapshot.aggregate) {
-            return Optional.empty()
+            return Observable.empty()
         }
         snapshot.aggregate = aggregate
 
-        List<EventType> forwardEventsSortedBackwards =
-                executor.applyReverts(this, events.reverse(false), [])
-        assert !forwardEventsSortedBackwards.find { it instanceof RevertEvent<Aggregate, EventIdType, EventType> }
+        Observable<EventType> forwardOnlyEvents = executor.applyReverts(this, Observable.from(events)).
+                onErrorReturn {
+                    executor.applyReverts(this, Observable.from(getSnapshotAndEventsSince(aggregate, null, moment).second))
+                }
 
-        def retval = executor.applyEvents(this, snapshot, forwardEventsSortedBackwards.reverse(false), [], [aggregate])
-        log.info "  --> Computed: $retval"
-        Optional.of(retval)
+        executor.
+                applyEvents(this, snapshot, forwardOnlyEvents, [], [aggregate]).
+                doOnEach ({ SnapshotType snapshotType ->
+                    if (events) {
+                        snapshotType.lastEvent = events.last()
+                    }
+                    log.info "  --> Computed: $snapshotType"
+                } as Observer<SnapshotType>)
     }
 
     QueryExecutor<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> getExecutor() {
         new QueryExecutor<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType>()
     }
 
-    abstract List<EventType> getUncomputedEvents(Aggregate aggregate, SnapshotType lastSnapshot, Date snapshotTime)
+    abstract Observable<EventType> getUncomputedEvents(Aggregate aggregate, SnapshotType lastSnapshot, Date snapshotTime)
 }

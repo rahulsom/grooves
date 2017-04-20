@@ -23,8 +23,9 @@ class PatientController {
                 params['date'] ?
                         new PatientAccountQuery().computeSnapshot(patient, params.date('date')) :
                         new PatientAccountQuery().computeSnapshot(patient, Long.MAX_VALUE)
-        println snapshot.get().toString().length()
-        respond snapshot.get()
+        def res = snapshot.toBlocking().first()
+        println res.toString().length()
+        respond res
     }
 
     def health(Patient patient) {
@@ -33,9 +34,10 @@ class PatientController {
                 params['date'] ?
                         new PatientHealthQuery().computeSnapshot(patient, params.date('date')) :
                         new PatientHealthQuery().computeSnapshot(patient, Long.MAX_VALUE)
-        println snapshot.get().toString().length()
+        def res = snapshot.toBlocking().first()
+        println res.toString().length()
         JSON.use('deep') {
-            render snapshot.get() as JSON
+            render res as JSON
         }
     }
 
