@@ -65,7 +65,6 @@ class PatientEventReverted extends PatientEvent implements RevertEvent<Patient, 
 }
 
 @Entity
-@ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
 class PatientDeprecatedBy extends PatientEvent implements DeprecatedBy<Patient, Long, PatientEvent> {
     @OneToOne PatientDeprecates converse
     @OneToOne Patient deprecator
@@ -74,7 +73,6 @@ class PatientDeprecatedBy extends PatientEvent implements DeprecatedBy<Patient, 
 }
 
 @Entity
-@ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
 class PatientDeprecates extends PatientEvent implements Deprecates<Patient, Long, PatientEvent> {
     @OneToOne PatientDeprecatedBy converse
     @OneToOne Patient deprecated

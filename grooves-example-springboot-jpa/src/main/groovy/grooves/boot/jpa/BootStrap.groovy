@@ -26,6 +26,7 @@ class BootStrap implements InitializingBean {
         createJohnLennon()
         createRingoStarr()
         createPaulMcCartney()
+        createGeorgeHarrison()
     }
 
     private Patient createJohnLennon() {
@@ -95,6 +96,48 @@ class BootStrap implements InitializingBean {
             snapshotWith patientHealthQuery
         }
 
+    }
+
+    private Patient createGeorgeHarrison() {
+        def patient = patientRepository.save(new Patient(uniqueId: '45'))
+        def patient2 = patientRepository.save(new Patient(uniqueId: '46'))
+
+        on(patient) {
+            apply new PatientCreated(name: 'George Harrison')
+            apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
+            apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
+
+            snapshotWith patientAccountQuery
+            snapshotWith patientHealthQuery
+        }
+
+        on(patient2) {
+            apply new PatientCreated(name: 'George Harrison, Member of the Most Excellent Order of the British Empire')
+            apply new PaymentMade(amount: 100.25)
+
+            snapshotWith patientAccountQuery
+            snapshotWith patientHealthQuery
+        }
+
+        currDate += 1;
+        merge(patient, patient2)
+        patient
+    }
+
+    /**
+     *
+     * @param self The aggregate to be deprecated
+     * @param into The aggregate to survive
+     * @return
+     */
+    private PatientDeprecatedBy merge(Patient self, Patient into) {
+        def e1 = new PatientDeprecatedBy(aggregate: self, createdBy: 'anonymous' , deprecator: into,
+                timestamp: currDate, position: patientEventRepository.countByAggregateId(self.id) + 1)
+        def e2 = new PatientDeprecates(aggregate: into, createdBy: 'anonymous' , deprecated: self,
+                timestamp: currDate, converse: e1, position: patientEventRepository.countByAggregateId(into.id)+ 1)
+        e1.converse = e2
+        patientEventRepository.save([e1,e2])
+        e2.converse
     }
 
     Date currDate = Date.parse('yyyy-MM-dd', '2016-01-01')

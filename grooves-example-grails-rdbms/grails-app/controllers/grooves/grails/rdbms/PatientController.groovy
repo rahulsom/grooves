@@ -23,9 +23,13 @@ class PatientController {
                 params['date'] ?
                         new PatientAccountQuery().computeSnapshot(patient, params.date('date')) :
                         new PatientAccountQuery().computeSnapshot(patient, Long.MAX_VALUE)
-        def res = snapshot.toBlocking().first()
-        println res.toString().length()
-        respond res
+        def patientAccount = snapshot.toBlocking().first()
+        println patientAccount.toString().length()
+        if (patientAccount.deprecatedById) {
+            redirect(action: 'account', id: patientAccount.deprecatedById)
+        } else {
+            respond patientAccount
+        }
     }
 
     def health(Patient patient) {
@@ -34,10 +38,16 @@ class PatientController {
                 params['date'] ?
                         new PatientHealthQuery().computeSnapshot(patient, params.date('date')) :
                         new PatientHealthQuery().computeSnapshot(patient, Long.MAX_VALUE)
-        def res = snapshot.toBlocking().first()
-        println res.toString().length()
-        JSON.use('deep') {
-            render res as JSON
+
+        def patientHealth = snapshot.toBlocking().first()
+        println patientHealth.toString().length()
+
+        if (patientHealth.deprecatedById) {
+            redirect(action: 'health', id: patientHealth.deprecatedById)
+        } else {
+            JSON.use('deep') {
+                render patientHealth as JSON
+            }
         }
     }
 

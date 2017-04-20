@@ -1,5 +1,6 @@
 package com.github.rahulsom.grooves.test
 
+import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.RESTClient
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -164,5 +165,92 @@ abstract class AbstractPatientSpec extends Specification {
         3  | '2016-01-15' || 2                 | 'Paul McCartney' | ['ANNUALPHYSICAL']
         3  | '2016-01-16' || 3                 | 'Paul McCartney' | ['ANNUALPHYSICAL', 'GLUCOSETEST']
         3  | '2016-01-18' || 5                 | 'Paul McCartney' | ['ANNUALPHYSICAL']
+    }
+
+
+    @Unroll
+    void "George Harrison's balance is correct at version #version"() {
+        given:
+        def resp = rest.get(path: "/patient/account/4.json".toString(), params: [version: version])
+
+        expect:
+        with(resp) {
+            status == 200
+            contentType == "application/json"
+        }
+        with(resp.data) {
+            it.balance == balance
+            it.moneyMade == moneyMade
+            it.deprecatesIds == deprecatedIds || it.deprecates*.id == deprecatedIds
+            it.aggregateId == aggregateId || it.aggregate.id == aggregateId
+        }
+
+        where:
+        version || balance | moneyMade | aggregateId | deprecatedIds
+        1       || 0.0     | 0.0       | 4           | null
+        2       || 170.0   | 0.0       | 4           | null
+        3       || 248.93  | 0.0       | 4           | null
+        4       || 148.68  | 100.25    | 5           | [4]
+    }
+
+    @Unroll
+    void "George Harrison MBE's balance is correct at version #version"() {
+        given:
+        def resp = rest.get(path: "/patient/account/5.json".toString(), params: [version: version])
+
+        expect:
+        with(resp) {
+            status == 200
+            contentType == "application/json"
+        }
+        with(resp.data) {
+            it.balance == balance
+            it.moneyMade == moneyMade
+        }
+
+        where:
+        version || balance | moneyMade | aggregateId | deprecatedIds
+        1       || 0.0     | 0.0       | 5           | null
+        2       || -100.25 | 100.25    | 5           | null
+        3       || 148.68  | 100.25    | 5           | [4]
+    }
+
+    void "George Harrison and George Harrison MBE are merged"() {
+        given:
+        HttpResponseDecorator resp = null
+
+        when:
+        resp = rest.get(path: "/patient/account/5.json".toString())
+
+        then:
+        with(resp) {
+            status == 200
+            contentType == "application/json"
+        }
+        with(resp.data) {
+            it.aggregateId == 5 || it.aggregate.id == 5
+            it.deprecatesIds == [4] || it.deprecates*.id == [4]
+            it.balance == 148.68
+            it.moneyMade == 100.25
+            it.lastEventPosition == 3
+            Date.parse("yyyy-MM-dd", it.lastEventTimestamp.toString()[0..10]).format('yyyyMMdd') == '20160128'
+        }
+
+        when:
+        resp = rest.get(path: "/patient/account/4.json".toString())
+
+        then:
+        with(resp) {
+            status == 200
+            contentType == "application/json"
+        }
+        with(resp.data) {
+            it.aggregateId == 5 || it.aggregate.id == 5
+            it.deprecatesIds == [4] || it.deprecates*.id == [4]
+            it.balance == 148.68
+            it.moneyMade == 100.25
+            it.lastEventPosition == 3
+            Date.parse("yyyy-MM-dd", it.lastEventTimestamp.toString()[0..10]).format('yyyyMMdd') == '20160128'
+        }
     }
 }

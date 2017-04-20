@@ -8,10 +8,13 @@ import grooves.boot.jpa.queries.PatientHealthQuery
 import grooves.boot.jpa.repositories.PatientRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 
 import javax.persistence.EntityManager
 
@@ -34,7 +37,7 @@ class PatientController {
     }
 
     @GetMapping("/patient/account/{id}.json")
-    PatientAccount account(
+    ResponseEntity<?>  account(
             @PathVariable Long id,
             @RequestParam(required = false) Long version,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
@@ -49,11 +52,21 @@ class PatientController {
         if (!resp) {
             throw new RuntimeException('Could not compute')
         }
-        resp
+        if (resp.deprecatedBy) {
+            ResponseEntity.status(HttpStatus.FOUND).
+                    header('Location',
+                            ServletUriComponentsBuilder.fromCurrentContextPath().
+                                    path("/patient/account/${resp.deprecatedBy.id}.json").
+                                    build().toString()).
+                    build()
+        } else {
+            ResponseEntity.ok(resp)
+        }
+
     }
 
     @GetMapping("/patient/health/{id}.json")
-    PatientHealth health(
+    ResponseEntity<?> health(
             @PathVariable Long id,
             @RequestParam(required = false) Long version,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
@@ -68,6 +81,15 @@ class PatientController {
         if (!resp) {
             throw new RuntimeException('Could not compute')
         }
-        resp
+        if (resp.deprecatedBy) {
+            ResponseEntity.status(HttpStatus.FOUND).
+                    header('Location',
+                            ServletUriComponentsBuilder.fromCurrentContextPath().
+                                    path("/patient/health/${resp.deprecatedBy.id}.json").
+                                    build().toString()).
+                    build()
+        } else {
+            ResponseEntity.ok(resp)
+        }
     }
 }
