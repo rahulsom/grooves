@@ -2,6 +2,7 @@ package com.github.rahulsom.grooves.test
 
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.RESTClient
+import spock.lang.IgnoreRest
 import spock.lang.Specification
 import spock.lang.Unroll
 

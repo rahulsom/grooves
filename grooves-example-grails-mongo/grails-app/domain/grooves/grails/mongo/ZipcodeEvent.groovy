@@ -26,6 +26,7 @@ class ZipcodeCreated extends ZipcodeEvent {
     String name
 
     @Override String getAudit() { new JsonBuilder([name: name]).toString() }
+    @Override String toString() { "${aggregate} was created" }
 }
 
 @Event(Zipcode)
@@ -35,6 +36,7 @@ class ZipcodeGotPatient extends ZipcodeEvent implements JoinEvent<Zipcode, Long,
     @Override String getAudit() { new JsonBuilder([patientId: joinAggregate?.id]).toString() }
     @Override Patient getJoinAggregate() { patient }
     @Override void setJoinAggregate(Patient rollupAggregate) { this.patient = rollupAggregate}
+    @Override String toString() { "${aggregate} got ${patient}" }
 
     static transients = ['joinAggregate']
 }
@@ -46,6 +48,7 @@ class ZipcodeLostPatient extends ZipcodeEvent implements DisjoinEvent<Zipcode, L
     @Override String getAudit() { new JsonBuilder([patientId: joinAggregate?.id]).toString() }
     @Override Patient getJoinAggregate() { patient }
     @Override void setJoinAggregate(Patient rollupAggregate) { this.patient = rollupAggregate}
+    @Override String toString() { "${aggregate} lost ${patient}" }
 
     static transients = ['joinAggregate']
 }
@@ -57,6 +60,7 @@ class ZipcodeGotDoctor extends ZipcodeEvent implements JoinEvent<Zipcode, Long, 
     @Override String getAudit() { new JsonBuilder([doctorId: joinAggregate?.id]).toString() }
     @Override Doctor getJoinAggregate() { doctor }
     @Override void setJoinAggregate(Doctor rollupAggregate) { this.doctor = rollupAggregate }
+    @Override String toString() { "${aggregate} got ${doctor}" }
 
     static transients = ['joinAggregate']
 }
@@ -68,6 +72,7 @@ class ZipcodeLostDoctor extends ZipcodeEvent implements DisjoinEvent<Zipcode, Lo
     @Override String getAudit() { new JsonBuilder([doctorId: joinAggregate?.id]).toString() }
     @Override Doctor getJoinAggregate() { doctor }
     @Override void setJoinAggregate(Doctor rollupAggregate) { this.doctor = rollupAggregate }
+    @Override String toString() { "${aggregate} lost ${doctor}" }
 
     static transients = ['joinAggregate']
 }

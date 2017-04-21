@@ -9,5 +9,8 @@ class Doctor implements AggregateType<Long> {
     String uniqueId
     static constraints = {
     }
+
+    @Override String toString() { "Doctor($id, $uniqueId)" }
+
 }
 

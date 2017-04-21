@@ -1,16 +1,17 @@
 package grooves.grails.rdbms
 
 import grails.converters.JSON
-
-import static org.springframework.http.HttpStatus.*
+import grails.rx.web.RxController
 import grails.transaction.Transactional
 
+import static org.springframework.http.HttpStatus.NOT_FOUND
+
 @Transactional(readOnly = true)
-class PatientController {
+class PatientController implements RxController {
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond Patient.list(params), model:[patientCount: Patient.count()]
+        respond Patient.list(params), model: [patientCount: Patient.count()]
     }
 
     def show(Patient patient) {
@@ -23,13 +24,12 @@ class PatientController {
                 params['date'] ?
                         new PatientAccountQuery().computeSnapshot(patient, params.date('date')) :
                         new PatientAccountQuery().computeSnapshot(patient, Long.MAX_VALUE)
-        def patientAccount = snapshot.toBlocking().first()
-        println patientAccount.toString().length()
-        if (patientAccount.deprecatedById) {
-            redirect(action: 'account', id: patientAccount.deprecatedById)
-        } else {
-            respond patientAccount
-        }
+
+        snapshot.
+                map { patientAccount ->
+                    println patientAccount.toString().length()
+                    rx.respond patientAccount
+                }
     }
 
     def health(Patient patient) {
@@ -57,7 +57,7 @@ class PatientController {
                 flash.message = message(code: 'default.not.found.message', args: [message(code: 'patient.label', default: 'Patient'), params.id])
                 redirect action: "index", method: "GET"
             }
-            '*'{ render status: NOT_FOUND }
+            '*' { render status: NOT_FOUND }
         }
     }
 }

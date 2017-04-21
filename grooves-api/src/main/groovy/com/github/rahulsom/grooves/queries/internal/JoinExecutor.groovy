@@ -52,7 +52,7 @@ class JoinExecutor<
             if (!query.shouldEventsBeApplied(snapshot)) {
                 return snapshot
             } else {
-                log.debug "    --> Event: $event"
+                log.debug "     -> Event: $event"
 
                 if (event instanceof Deprecates<Aggregate, EventIdType, EventType>) {
                     applyDeprecates(event, query, aggregates, deprecatesList)

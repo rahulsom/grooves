@@ -2,6 +2,7 @@ package com.github.rahulsom.grooves.queries
 
 import com.github.rahulsom.grooves.api.AggregateType
 import com.github.rahulsom.grooves.api.events.BaseEvent
+import com.github.rahulsom.grooves.api.events.DeprecatedBy
 import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot
 import com.github.rahulsom.grooves.queries.internal.BaseQuery
@@ -10,7 +11,6 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import rx.Observable
-import rx.Observer
 
 /**
  * Aggregate trait that simplifies computing temporal snapshots from events
@@ -43,7 +43,7 @@ trait TemporalQuerySupport<
         getSnapshot(maxTimestamp, aggregate).
                 defaultIfEmpty(createEmptySnapshot()).
                 map {
-                    log.info "    --> Last SnapshotType: ${it.lastEventTimestamp ? it : '<none>'}"
+                    log.debug "  -> Last Snapshot: ${it.lastEventTimestamp ? it : '<none>'}"
                     detachSnapshot(it)
 
                     it.aggregate = aggregate
@@ -71,10 +71,10 @@ trait TemporalQuerySupport<
             } as List<RevertEvent>
 
             if (uncomputedReverts) {
-                log.info "Uncomputed reverts exist: ${uncomputedEvents}"
+                log.info "     Uncomputed reverts exist: [\n    ${uncomputedEvents.join(',\n    ')}\n]"
                 getSnapshotAndEventsSince(aggregate, null, snapshotTime)
             } else {
-                log.info "Events in pair: ${uncomputedEvents*.position}"
+                log.debug "     Events in pair: ${uncomputedEvents*.id}"
                 new Tuple2(lastSnapshot, uncomputedEvents)
             }
         } else {
@@ -82,7 +82,7 @@ trait TemporalQuerySupport<
 
             List<EventType> uncomputedEvents = getUncomputedEvents(aggregate, lastSnapshot, snapshotTime).toList().toBlocking().first()
 
-            log.info "Events in pair: ${uncomputedEvents*.position}"
+            log.debug "     Events in pair: ${uncomputedEvents*.id}"
             new Tuple2(lastSnapshot, uncomputedEvents)
         }
 
@@ -92,9 +92,11 @@ trait TemporalQuerySupport<
      * Computes a snapshot for specified version of an aggregate
      * @param aggregate The aggregate
      * @param moment The moment at which the snapshot is desired
+     * @param redirect If there has been a deprecation, redirect to the current aggregate's snapshot. Defaults to true.
      * @return An Optional SnapshotType. Empty if cannot be computed.
      */
-    Observable<SnapshotType> computeSnapshot(Aggregate aggregate, Date moment) {
+    Observable<SnapshotType> computeSnapshot(Aggregate aggregate, Date moment, boolean redirect = true) {
+        log.info "Computing snapshot for $aggregate at $moment"
         Tuple2<SnapshotType, List<EventType>> seTuple2 = getSnapshotAndEventsSince(aggregate, moment)
         def events = seTuple2.second
         def snapshot = seTuple2.first
@@ -106,17 +108,25 @@ trait TemporalQuerySupport<
 
         Observable<EventType> forwardOnlyEvents = executor.applyReverts(this, Observable.from(events)).
                 onErrorReturn {
-                    executor.applyReverts(this, Observable.from(getSnapshotAndEventsSince(aggregate, null, moment).second))
+                    executor.applyReverts(this, Observable.from(
+                            getSnapshotAndEventsSince(aggregate, null, moment).second)
+                    )
                 }
 
         executor.
                 applyEvents(this, snapshot, forwardOnlyEvents, [], [aggregate]).
-                doOnEach ({ SnapshotType snapshotType ->
+                doOnNext { SnapshotType snapshotType ->
                     if (events) {
                         snapshotType.lastEvent = events.last()
                     }
                     log.info "  --> Computed: $snapshotType"
-                } as Observer<SnapshotType>)
+                }.
+                flatMap {
+                    def lastEvent = events ? events.last() : null
+                    it.deprecatedBy && lastEvent && lastEvent instanceof DeprecatedBy && redirect ?
+                            computeSnapshot(it.deprecatedBy, moment) :
+                            Observable.just(it)
+                }
     }
 
     QueryExecutor<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> getExecutor() {

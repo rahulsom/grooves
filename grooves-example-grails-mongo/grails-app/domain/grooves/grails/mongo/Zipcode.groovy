@@ -9,4 +9,6 @@ class Zipcode implements AggregateType<Long> {
     String uniqueId
     static constraints = {
     }
+
+    @Override String toString() { "Zipcode($id, $uniqueId)" }
 }

@@ -49,7 +49,7 @@ class QueryExecutor<
             Observable<EventType> events) {
 
         events.toList().flatMap { eventList ->
-            log.debug "EventList: ${eventList*.id}"
+            log.debug "     EventList: ${eventList*.id}"
             def forwardEvents = []
             while (eventList) {
                 def head = eventList.pop()
@@ -85,7 +85,7 @@ class QueryExecutor<
             if (!query.shouldEventsBeApplied(snapshot) || stopApplyingEvents) {
                 return snapshot
             } else {
-                log.debug "    --> Event: $event"
+                log.debug "     -> Event: $event"
 
                 if (event instanceof Deprecates<Aggregate, EventIdType, EventType>) {
                     applyDeprecates(event, query, aggregates, deprecatesList)
@@ -134,7 +134,7 @@ class QueryExecutor<
                 filter { it.id != deprecatesEvent.id && it.id != deprecatesEvent.converse.id }.
                 toSortedList { a, b -> a.timestamp.time <=> b.timestamp.time }.
                 flatMap { sortedEvents ->
-                    log.info "Sorted Events: [\n    ${sortedEvents.join(',\n    ')}\n]"
+                    log.debug "     Sorted Events: [\n    ${sortedEvents.join(',\n    ')}\n]"
                     def forwardEventsSortedBackwards = applyReverts(util, Observable.from(sortedEvents))
                     applyEvents(util, newSnapshot, forwardEventsSortedBackwards, deprecatesList + deprecatesEvent, aggregates)
                 }.

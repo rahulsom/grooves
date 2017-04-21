@@ -51,6 +51,8 @@ dependencies {
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
+    compile "org.grails.plugins:rxjava"
+
     compile project(':grooves-grails')
     testCompile project(':grooves-example-test')
 }

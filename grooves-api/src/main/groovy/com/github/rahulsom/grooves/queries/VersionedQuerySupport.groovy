@@ -2,6 +2,7 @@ package com.github.rahulsom.grooves.queries
 
 import com.github.rahulsom.grooves.api.AggregateType
 import com.github.rahulsom.grooves.api.events.BaseEvent
+import com.github.rahulsom.grooves.api.events.DeprecatedBy
 import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot
 import com.github.rahulsom.grooves.queries.internal.BaseQuery
@@ -10,7 +11,6 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import rx.Observable
-import rx.Observer
 
 /**
  * Aggregate trait that simplifies computing temporal snapshots from events
@@ -41,7 +41,7 @@ trait VersionedQuerySupport<
         getSnapshot(maxPosition, aggregate).
                 defaultIfEmpty(createEmptySnapshot()).
                 map {
-                    log.info "    --> Last SnapshotType: ${it.lastEventPosition ? it : '<none>'}"
+                    log.debug "  -> Last Snapshot: ${it.lastEventPosition ? it : '<none>'}"
                     detachSnapshot(it)
 
                     it.aggregate = aggregate
@@ -69,10 +69,10 @@ trait VersionedQuerySupport<
             } as List<RevertEvent>
 
             if (uncomputedReverts) {
-                log.info "Uncomputed reverts exist: ${uncomputedEvents}"
+                log.info "     Uncomputed reverts exist: [\n    ${uncomputedEvents.join(',\n    ')}\n]"
                 getSnapshotAndEventsSince(aggregate, 0, version)
             } else {
-                log.info "Events in pair: ${uncomputedEvents*.position}"
+                log.debug "     Events in pair: ${uncomputedEvents*.id}"
                 new Tuple2(lastSnapshot, uncomputedEvents)
             }
         } else {
@@ -80,7 +80,7 @@ trait VersionedQuerySupport<
 
             List<EventType> uncomputedEvents = getUncomputedEvents(aggregate, lastSnapshot, version).toList().toBlocking().first()
 
-            log.info "Events in pair: ${uncomputedEvents*.position}"
+            log.debug "     Events in pair: ${uncomputedEvents*.id}"
             new Tuple2(lastSnapshot, uncomputedEvents)
         }
     }
@@ -95,10 +95,12 @@ trait VersionedQuerySupport<
      * Computes a snapshot for specified version of an aggregate
      * @param aggregate The aggregate
      * @param version The version number, starting at 1
+     * @param redirect If there has been a deprecation, redirect to the current aggregate's snapshot. Defaults to true.
      * @return An Optional SnapshotType. Empty if cannot be computed.
      */
-    Observable<SnapshotType> computeSnapshot(Aggregate aggregate, long version) {
+    Observable<SnapshotType> computeSnapshot(Aggregate aggregate, long version, boolean redirect = true) {
 
+        log.info "Computing snapshot for $aggregate version $version"
         Tuple2<SnapshotType, List<EventType>> seTuple2 = getSnapshotAndEventsSince(aggregate, version)
         def events = seTuple2.second
         def snapshot = seTuple2.first
@@ -118,23 +120,22 @@ trait VersionedQuerySupport<
                             )
                     ).toList().toBlocking().first()
                 }.
-                flatMap {
-                    Observable.from(it)
-                }
+                flatMap { Observable.from(it) }
 
-//        Observable<EventType> forwardOnlyEvents = executor.applyReverts(this, Observable.from(events)).
-//                onErrorReturn {
-//                    executor.applyReverts(this, Observable.from(getSnapshotAndEventsSince(aggregate, 0, version).second))
-//                }
-//
         executor.
                 applyEvents(this, snapshot, forwardOnlyEvents, [], [aggregate]).
-                doOnEach ({ SnapshotType snapshotType ->
+                doOnNext { SnapshotType snapshotType ->
                     if (events) {
                         snapshotType.lastEvent = events.last()
                     }
                     log.info "  --> Computed: $snapshotType"
-                } as Observer<SnapshotType>)
+                }.
+                flatMap {
+                    def lastEvent = events ? events.last() : null
+                    it.deprecatedBy && lastEvent && lastEvent instanceof DeprecatedBy && redirect ?
+                            computeSnapshot(it.deprecatedBy, (lastEvent as DeprecatedBy).converse.position) :
+                            Observable.just(it)
+                }
 
     }
 
