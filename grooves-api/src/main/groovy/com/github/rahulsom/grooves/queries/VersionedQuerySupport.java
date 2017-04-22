@@ -147,23 +147,24 @@ public interface VersionedQuerySupport<
      * @param version   The version number, starting at 1
      * @param redirect  If there has been a deprecation, redirect to the current aggregate's
      *                  snapshot. Defaults to true.
-     * @return An Observable of SnapshotType that contains at most one snapshot.
+     * @return An Observable that returns at most one Snapshot
      */
     default Observable<SnapshotT> computeSnapshot(
             AggregateT aggregate, long version, boolean redirect) {
 
         getLog().info(String.format("Computing snapshot for %s version %s",
-                String.valueOf(aggregate), String.valueOf(version)));
+                String.valueOf(aggregate),
+                version == Long.MAX_VALUE ? "<LATEST>" : String.valueOf(version)));
         Tuple2<SnapshotT, List<EventT>> seTuple2 =
                 getSnapshotAndEventsSince(aggregate, version);
         List<EventT> events = seTuple2.getSecond();
-        SnapshotT snapshot = seTuple2.getFirst();
+        SnapshotT lastUsableSnapshot = seTuple2.getFirst();
 
         if (events.stream().anyMatch(it -> it instanceof RevertEvent)
-                && snapshot.getAggregate() != null) {
+                && lastUsableSnapshot.getAggregate() != null) {
             return Observable.empty();
         }
-        snapshot.setAggregate(aggregate);
+        lastUsableSnapshot.setAggregate(aggregate);
 
         Observable<EventT> forwardOnlyEvents =
                 getExecutor().applyReverts(Observable.from(events))
@@ -180,16 +181,16 @@ public interface VersionedQuerySupport<
                         )
                         .flatMap(Observable::from);
 
-        final Observable<SnapshotT> snapshotTypeObservable =
-                getExecutor().applyEvents(this, snapshot, forwardOnlyEvents, new ArrayList<>(),
-                        Collections.singletonList(aggregate));
-        return snapshotTypeObservable
-                .doOnNext(snapshotType -> {
+        final Observable<SnapshotT> snapshotObservable =
+                getExecutor().applyEvents(this, lastUsableSnapshot, forwardOnlyEvents,
+                        new ArrayList<>(), Collections.singletonList(aggregate));
+        return snapshotObservable
+                .doOnNext(snapshot -> {
                     if (!events.isEmpty()) {
-                        snapshotType.setLastEvent(events.get(events.size() - 1));
+                        snapshot.setLastEvent(events.get(events.size() - 1));
                     }
 
-                    getLog().info("  --> Computed: " + String.valueOf(snapshotType));
+                    getLog().info("  --> Computed: " + String.valueOf(snapshot));
                 })
                 .flatMap(it -> {
                     EventT lastEvent = events.isEmpty() ? null : events.get(events.size() - 1);
@@ -202,11 +203,11 @@ public interface VersionedQuerySupport<
     }
 
     /**
-     * Computes a snapshot for specified version of an aggregate
+     * Computes a snapshot for specified version of an aggregate.
      *
      * @param aggregate The aggregate
      * @param version   The version number, starting at 1
-     * @return An Optional SnapshotType. Empty if cannot be computed.
+     * @return An Observable that returns at most one Snapshot
      */
     default Observable<SnapshotT> computeSnapshot(AggregateT aggregate, long version) {
         return computeSnapshot(aggregate, version, true);

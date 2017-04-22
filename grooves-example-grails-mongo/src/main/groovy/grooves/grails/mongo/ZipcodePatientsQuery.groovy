@@ -7,13 +7,13 @@ import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 
-@GrailsCompileStatic
-class ZipcodePatientsQuery extends
-        GormJoinSupport<Zipcode, Long, ZipcodeEvent, Long, Patient, String, ZipcodePatients, ZipcodeGotPatient, ZipcodeLostPatient> {
+class ZipcodePatientsQuery implements GormJoinSupport<
+        Zipcode, Long, ZipcodeEvent, Long, Patient, String, ZipcodePatients, ZipcodeGotPatient, ZipcodeLostPatient> {
 
-    ZipcodePatientsQuery() {
-        super(Zipcode, Long, ZipcodeEvent, Long, Patient, String, ZipcodePatients, ZipcodeGotPatient, ZipcodeLostPatient)
-    }
+    final Class snapshotClass = ZipcodePatients
+    final Class disjoinEventClass = ZipcodeLostPatient
+    final Class joinEventClass = ZipcodeGotPatient
+    final Class eventClass = ZipcodeEvent
 
     @Override
     ZipcodePatients createEmptySnapshot() {

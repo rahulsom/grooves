@@ -32,8 +32,7 @@ class PatientSpec extends AbstractPatientSpec {
         }
         with(resp.data) {
             it.aggregateId == id
-            it.joinedIds == patients.collect { it + 5 }
-            it.lastEventPosition == lastEventPosition
+            it.joinedIds.toSet() == patients.collect { it + 5 }.toSet()
         }
 
         where:

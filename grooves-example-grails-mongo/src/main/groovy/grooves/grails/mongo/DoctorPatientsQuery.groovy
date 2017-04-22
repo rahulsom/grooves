@@ -1,19 +1,22 @@
 package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome
+import com.github.rahulsom.grooves.api.events.DisjoinEvent
+import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import com.github.rahulsom.grooves.grails.GormJoinSupport
 import grails.compiler.GrailsCompileStatic
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 
-@GrailsCompileStatic
-class DoctorPatientsQuery extends
-        GormJoinSupport<Doctor, Long, DoctorEvent, Long, Patient, String, DoctorPatients, DoctorGotPatient, DoctorLostPatient> {
+class DoctorPatientsQuery implements GormJoinSupport<
+        Doctor, Long, DoctorEvent, Long, Patient, String, DoctorPatients, DoctorGotPatient,
+        DoctorLostPatient> {
 
-    DoctorPatientsQuery() {
-        super(Doctor, Long, DoctorEvent, Long, Patient, String, DoctorPatients, DoctorGotPatient, DoctorLostPatient)
-    }
+    final Class snapshotClass = DoctorPatients
+    final Class disjoinEventClass = DoctorLostPatient
+    final Class joinEventClass = DoctorGotPatient
+    final Class eventClass = DoctorEvent
 
     @Override
     DoctorPatients createEmptySnapshot() {

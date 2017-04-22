@@ -35,4 +35,10 @@ class ZipcodePatients implements Join<Zipcode, String, Long, Long, ZipcodeEvent>
 
     static embedded = ['procedures', 'processingErrors']
     static transients = ['aggregate', 'deprecatedBy', 'deprecates']
+
+
+    @Override
+    String toString() {
+        "ZipcodePatients{id=$id, lastEvent=($lastEventPosition, $lastEventTimestamp), aggregateId=$aggregateId}"
+    }
 }

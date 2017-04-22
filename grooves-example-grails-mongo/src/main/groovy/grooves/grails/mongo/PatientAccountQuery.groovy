@@ -10,11 +10,10 @@ import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 
 @Query(aggregate = Patient, snapshot = PatientAccount)
 @GrailsCompileStatic
-class PatientAccountQuery extends GormQuerySupport<Patient, Long, PatientEvent, String, PatientAccount> {
+class PatientAccountQuery implements GormQuerySupport<Patient, Long, PatientEvent, String, PatientAccount> {
 
-    PatientAccountQuery() {
-        super(PatientEvent, PatientAccount)
-    }
+    final Class<PatientAccount> snapshotClass = PatientAccount
+    final Class<PatientEvent> eventClass = PatientEvent
 
     @Override
     PatientAccount createEmptySnapshot() { new PatientAccount(deprecates: []) }

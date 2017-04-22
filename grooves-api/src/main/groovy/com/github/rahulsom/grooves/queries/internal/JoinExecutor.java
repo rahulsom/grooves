@@ -57,7 +57,7 @@ public class JoinExecutor<
             if (!query.shouldEventsBeApplied(snapshot)) {
                 return snapshot;
             } else {
-                log.debug("     -> Event: $event");
+                log.debug("     -> Event: " + event.toString());
 
                 if (event instanceof Deprecates) {
                     return applyDeprecates((Deprecates<AggregateT, EventIdT, EventT>) event,

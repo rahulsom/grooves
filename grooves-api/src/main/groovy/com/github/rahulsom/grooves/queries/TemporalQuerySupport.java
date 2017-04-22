@@ -186,10 +186,17 @@ public interface TemporalQuerySupport<
                     getLog().info("  --> Computed: " + String.valueOf(snapshotType));
                 })
                 .flatMap(it -> {
-                    EventT lastEvent = events.isEmpty() ? null : events.get(events.size() - 1);
-                    return it.getDeprecatedBy() != null && lastEvent != null
-                            && lastEvent instanceof DeprecatedBy && redirect
-                            ? computeSnapshot(it.getDeprecatedBy(), moment) :
+                    final EventT lastEvent =
+                            events.isEmpty() ? null : events.get(events.size() - 1);
+
+                    final boolean redirectToDeprecator =
+                            it.getDeprecatedBy() != null
+                            && lastEvent != null
+                            && lastEvent instanceof DeprecatedBy
+                            && redirect;
+
+                    return redirectToDeprecator ?
+                            computeSnapshot(it.getDeprecatedBy(), moment) :
                             Observable.just(it);
                 });
     }
@@ -199,7 +206,7 @@ public interface TemporalQuerySupport<
      *
      * @param aggregate The aggregate
      * @param moment    The moment at which the snapshot is desired
-     * @return An Optional SnapshotType. Empty if cannot be computed.
+     * @return An Observable that returns at most one Snapshot
      */
     default Observable<SnapshotT> computeSnapshot(AggregateT aggregate, Date moment) {
         return computeSnapshot(aggregate, moment, true);

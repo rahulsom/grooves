@@ -17,8 +17,8 @@ apply plugin: 'groovy'
 
 dependencies {
     compile project(':grooves-api')
-    compile 'org.grails:grails-datastore-gorm:6.0.7.RELEASE'
-    compile 'org.grails:grails-datastore-gorm-rx:6.0.7.RELEASE'
+    compileOnly 'org.grails:grails-datastore-gorm:6.0.7.RELEASE'
+    compileOnly 'org.grails:grails-datastore-gorm-rx:6.0.7.RELEASE'
 
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }

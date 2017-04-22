@@ -46,7 +46,7 @@ public interface BaseQuery<
      *
      * @param maxPosition The position before which a snapshot is required
      * @param aggregate   The aggregate for which a snapshot is required
-     * @return An observable that returns at most one SnapshotType
+     * @return An observable that returns at most one Snapshot
      */
     Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate);
 
@@ -55,7 +55,7 @@ public interface BaseQuery<
      *
      * @param maxTimestamp The maximum timestamp of the snapshot
      * @param aggregate    The aggregate for which a snapshot is required
-     * @return An observable that returns at most one SnapshotType
+     * @return An observable that returns at most one Snapshot
      */
     Observable<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate);
 
