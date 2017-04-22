@@ -7,27 +7,28 @@ import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
 
 /**
- * Aggregate trait that simplifies computing temporal snapshots from events
+ * Aggregate trait that simplifies computing temporal snapshots from events.
  *
- * @param <Aggregate>      The aggregate over which the query executes
- * @param <EventIdType>    The type of the Event's id field
- * @param <EventType>      The type of the Event
- * @param <SnapshotIdType> The type of the Snapshot's id field
- * @param <SnapshotType>   The type of the Snapshot
+ * @param <AggregateT>  The aggregate over which the query executes
+ * @param <EventIdT>    The type of the Event's id field
+ * @param <EventT>      The type of the Event
+ * @param <SnapshotIdT> The type of the Snapshot's id field
+ * @param <SnapshotT>   The type of the Snapshot
+ *
  * @author Rahul Somasunderam
  */
 public interface QuerySupport<
-        Aggregate extends AggregateType,
-        EventIdType,
-        EventType extends BaseEvent<Aggregate, EventIdType, EventType>,
-        SnapshotIdType,
-        SnapshotType extends Snapshot<Aggregate, SnapshotIdType, EventIdType, EventType>
+        AggregateT extends AggregateType,
+        EventIdT,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        SnapshotIdT,
+        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
         >
         extends
-        TemporalQuerySupport<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType>,
-        VersionedQuerySupport<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> {
+        TemporalQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        VersionedQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
-    default Executor<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> getExecutor() {
+    default Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> getExecutor() {
         return new QueryExecutor<>();
     }
 

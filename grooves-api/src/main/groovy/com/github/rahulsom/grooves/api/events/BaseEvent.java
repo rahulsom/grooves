@@ -5,17 +5,18 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import java.util.Date;
 
 /**
- * Base class for Events
+ * Base class for Events.
  *
- * @param <Aggregate>   Aggregate this event applies to
- * @param <EventIdType> The Type for Event's {@link #getId} field
- * @param <EventType>   Event Type
+ * @param <AggregateT> Aggregate this event applies to
+ * @param <EventIdT>   The Type for Event's {@link #getId} field
+ * @param <EventT>     Event Type
+ *
  * @author Rahul Somasunderam
  */
-public interface BaseEvent<Aggregate extends AggregateType, EventIdType, EventType> {
-    Aggregate getAggregate();
+public interface BaseEvent<AggregateT extends AggregateType, EventIdT, EventT> {
+    AggregateT getAggregate();
 
-    void setAggregate(Aggregate aggregate);
+    void setAggregate(AggregateT aggregate);
 
     String getAudit();
 
@@ -27,11 +28,11 @@ public interface BaseEvent<Aggregate extends AggregateType, EventIdType, EventTy
 
     void setCreatedBy(String creator);
 
-    RevertEvent<Aggregate, EventIdType, EventType> getRevertedBy();
+    RevertEvent<AggregateT, EventIdT, EventT> getRevertedBy();
 
-    void setRevertedBy(RevertEvent<Aggregate, EventIdType, EventType> revertEvent);
+    void setRevertedBy(RevertEvent<AggregateT, EventIdT, EventT> revertEvent);
 
-    EventIdType getId();
+    EventIdT getId();
 
     Long getPosition();
 

@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a class as an Aggregate
+ * Marks a class as an Aggregate.
  *
  * @author Rahul Somasunderam
  */

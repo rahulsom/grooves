@@ -2,15 +2,14 @@ package com.github.rahulsom.grooves.api;
 
 /**
  * Marks a class as an aggregate.
- * <p>
- * <br/>
- * You should not have to use this class.
  *
- * @param <AggregateIdType>
+ * <p>You should not have to use this class.
+ *
+ * @param <AggregateIdT> The type of the primary key/identifier for the Aggregate
  * @author Rahul Somasunderam
  */
-public interface AggregateType<AggregateIdType> {
-    AggregateIdType getId();
+public interface AggregateType<AggregateIdT> {
+    AggregateIdT getId();
 
-    void setId(AggregateIdType id);
+    void setId(AggregateIdT id);
 }

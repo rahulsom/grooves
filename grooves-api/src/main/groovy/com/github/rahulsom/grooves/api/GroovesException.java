@@ -1,7 +1,7 @@
 package com.github.rahulsom.grooves.api;
 
 /**
- * An Exception in performing Grooves tasks
+ * An Exception in performing Grooves tasks.
  *
  * @author Rahul Somasunderam
  */

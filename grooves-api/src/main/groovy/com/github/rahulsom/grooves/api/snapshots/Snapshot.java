@@ -6,21 +6,22 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
 /**
  * Marks a class as a snapshot. This supports both temporal and versioned access.
  *
- * @param <Aggregate>      The Aggregate this snapshot works over
- * @param <SnapshotIdType>
- * @param <EventIdType>
- * @param <EventType>
+ * @param <AggregateT>  The Aggregate this snapshot works over
+ * @param <SnapshotIdT> The type for the snapshot's {@link #getId()} field
+ * @param <EventIdT>    The type for the {@link EventT}'s id field
+ * @param <EventT>      The base type for events that apply to {@link AggregateT}
+ *                
  * @author Rahul Somasunderam
  */
 public interface Snapshot<
-        Aggregate extends AggregateType, SnapshotIdType, EventIdType,
-        EventType extends BaseEvent<Aggregate, EventIdType, EventType>>
+        AggregateT extends AggregateType, SnapshotIdT, EventIdT,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>>
         extends
-        VersionedSnapshot<Aggregate, SnapshotIdType, EventIdType, EventType>,
-        TemporalSnapshot<Aggregate, SnapshotIdType, EventIdType, EventType> {
+        VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
+        TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT> {
 
     @Override
-    default void setLastEvent(EventType aidBaseEvent) {
+    default void setLastEvent(EventT aidBaseEvent) {
         this.setLastEventTimestamp(aidBaseEvent.getTimestamp());
         this.setLastEventPosition(aidBaseEvent.getPosition());
     }

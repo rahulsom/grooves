@@ -3,7 +3,6 @@ package com.github.rahulsom.grooves.transformations.internal;
 import com.github.rahulsom.grooves.transformations.Aggregate;
 import org.codehaus.groovy.ast.*;
 import org.codehaus.groovy.control.SourceUnit;
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.codehaus.groovy.transform.AbstractASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformation;
 
@@ -15,7 +14,9 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * Creates an interface for the query
+ * Registers an {@link com.github.rahulsom.grooves.api.AggregateType} as something that could later
+ * be used for computing one or more {@link com.github.rahulsom.grooves.api.snapshots.Snapshot}s in
+ * a class annotated as a {@link com.github.rahulsom.grooves.transformations.Query}.
  *
  * @author Rahul Somasunderam
  */
@@ -23,34 +24,35 @@ import java.util.logging.Logger;
 public class AggregateASTTransformation extends AbstractASTTransformation {
     private static final Class<Aggregate> MY_CLASS = Aggregate.class;
     private static final ClassNode MY_TYPE = ClassHelper.make(MY_CLASS);
-    private static final Map<String, List<ClassNode>> eventsForAggregate = new LinkedHashMap<>();
     private final Logger log = Logger.getLogger(getClass().getName());
 
-    static void addEventToAggregate(String aggregate, ClassNode event) {
-        if (!eventsForAggregate.containsKey(aggregate)) {
-            eventsForAggregate.put(aggregate, new ArrayList<>());
-        }
+    private static final Map<String, List<ClassNode>> EVENTS_FOR_AGGREGATE = new LinkedHashMap<>();
 
-        DefaultGroovyMethods.leftShift(eventsForAggregate.get(aggregate), event);
+    static void addEventToAggregate(String aggregate, ClassNode event) {
+        if (!EVENTS_FOR_AGGREGATE.containsKey(aggregate)) {
+            EVENTS_FOR_AGGREGATE.put(aggregate, new ArrayList<>());
+        }
+        EVENTS_FOR_AGGREGATE.get(aggregate).add(event);
     }
 
-    public static List<ClassNode> getEventsForAggregate(String aggregate) {
-        if (!eventsForAggregate.containsKey(aggregate)) {
-            eventsForAggregate.put(aggregate, new ArrayList<>());
+    static List<ClassNode> getEventsForAggregate(String aggregate) {
+        if (!EVENTS_FOR_AGGREGATE.containsKey(aggregate)) {
+            EVENTS_FOR_AGGREGATE.put(aggregate, new ArrayList<>());
         }
 
-        return eventsForAggregate.get(aggregate);
+        return EVENTS_FOR_AGGREGATE.get(aggregate);
     }
 
     @Override
     public void visit(ASTNode[] nodes, SourceUnit source) {
         init(nodes, source);
-        AnnotatedNode annotatedNode = DefaultGroovyMethods.asType(nodes[1], AnnotatedNode.class);
-        AnnotationNode annotationNode = DefaultGroovyMethods.asType(nodes[0], AnnotationNode.class);
+        AnnotatedNode annotatedNode = (AnnotatedNode) nodes[1];
+        AnnotationNode annotationNode = (AnnotationNode) nodes[0];
 
         if (MY_TYPE.equals(annotationNode.getClassNode()) && annotatedNode instanceof ClassNode) {
-            final ClassNode theClassNode = DefaultGroovyMethods.asType(annotatedNode, ClassNode.class);
-            log.fine(() -> MessageFormat.format("Storing entry for aggregate {0}", theClassNode.getName()));
+            final ClassNode theClassNode = (ClassNode) annotatedNode;
+            log.fine(() -> MessageFormat.format("Storing entry for aggregate {0}",
+                    theClassNode.getName()));
             getEventsForAggregate(theClassNode.getName());
         }
 

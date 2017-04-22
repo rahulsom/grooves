@@ -10,7 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a class as an Event
+ * Marks a class as an Event.
  *
  * @author Rahul Somasunderam
  */

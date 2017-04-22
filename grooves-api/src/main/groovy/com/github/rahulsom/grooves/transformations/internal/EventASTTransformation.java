@@ -1,10 +1,10 @@
 package com.github.rahulsom.grooves.transformations.internal;
 
 import com.github.rahulsom.grooves.transformations.Event;
+import com.github.rahulsom.grooves.transformations.Query;
 import org.codehaus.groovy.ast.*;
 import org.codehaus.groovy.ast.expr.Expression;
 import org.codehaus.groovy.control.SourceUnit;
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.codehaus.groovy.transform.AbstractASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformation;
 
@@ -12,7 +12,8 @@ import java.text.MessageFormat;
 import java.util.logging.Logger;
 
 /**
- * Adds methods corresponding to event into the query interface
+ * Adds methods corresponding to the {@link Event} into the list of methods that a {@link Query}
+ * must handle.
  *
  * @author Rahul Somasunderam
  */
@@ -26,14 +27,16 @@ public class EventASTTransformation extends AbstractASTTransformation {
     @Override
     public void visit(ASTNode[] nodes, SourceUnit source) {
         init(nodes, source);
-        AnnotatedNode annotatedNode = DefaultGroovyMethods.asType(nodes[1], AnnotatedNode.class);
-        AnnotationNode annotationNode = DefaultGroovyMethods.asType(nodes[0], AnnotationNode.class);
+        AnnotatedNode annotatedNode = (AnnotatedNode) nodes[1];
+        AnnotationNode annotationNode = (AnnotationNode) nodes[0];
 
         if (MY_TYPE.equals(annotationNode.getClassNode()) && annotatedNode instanceof ClassNode) {
             final Expression theAggregate = annotationNode.getMember("value");
-            final ClassNode theClassNode = DefaultGroovyMethods.asType(annotatedNode, ClassNode.class);
-            log.fine(() -> MessageFormat.format("Adding event {0} to aggregate {1}", theClassNode.getNameWithoutPackage(), theAggregate.getType().getName()));
-            AggregateASTTransformation.addEventToAggregate(theAggregate.getType().getName(), theClassNode);
+            final ClassNode theClassNode = (ClassNode) annotatedNode;
+            final String aggregateClassName = theAggregate.getType().getName();
+            log.fine(() -> MessageFormat.format("Adding event {0} to aggregate {1}",
+                    theClassNode.getNameWithoutPackage(), aggregateClassName));
+            AggregateASTTransformation.addEventToAggregate(aggregateClassName, theClassNode);
         }
 
     }

@@ -9,44 +9,44 @@ import rx.Observable;
 import java.util.List;
 
 /**
- * Executes a query by controlling how events are applied
+ * Executes a query by controlling how events are applied.
  *
- * @param <Aggregate>      The type of Aggregate
- * @param <EventIdType>    The type of Event Id
- * @param <EventType>      The type of Event
- * @param <SnapshotIdType> The type of Snapshot Id
- * @param <SnapshotType>   The type of Snapshot
+ * @param <AggregateT>  The type of Aggregate
+ * @param <EventIdT>    The type of Event Id
+ * @param <EventT>      The type of Event
+ * @param <SnapshotIdT> The type of Snapshot Id
+ * @param <SnapshotT>   The type of Snapshot
  * @author Rahul Somasunderam
  */
 public interface Executor<
-        Aggregate extends AggregateType,
-        EventIdType,
-        EventType extends BaseEvent<Aggregate, EventIdType, EventType>,
-        SnapshotIdType,
-        SnapshotType extends BaseSnapshot<Aggregate, SnapshotIdType, EventIdType, EventType>
+        AggregateT extends AggregateType,
+        EventIdT,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        SnapshotIdT,
+        SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
         > {
     /**
-     * Applies reverts to a list of events and then returns forward events
+     * Applies reverts to a list of events and then returns forward events.
      *
      * @param events The list of events
      * @return a list of events after the reverts have been applied
      */
-    Observable<EventType> applyReverts(Observable<EventType> events);
+    Observable<EventT> applyReverts(Observable<EventT> events);
 
     /**
      * Applies forward events on a snapshot
      *
-     * @param query          The query that demands the events to be applied
+     * @param query          The query that demands the events to be applied.
      * @param snapshot       The snapshot to be mutated
      * @param events         The list of forward events
      * @param deprecatesList The list of Deprecate events
      * @param aggregates     The list of deprecated aggregates
      * @return The Snapshot that has been mutated
      */
-    Observable<SnapshotType> applyEvents(
-            BaseQuery<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> query,
-            SnapshotType snapshot,
-            Observable<EventType> events,
-            List<Deprecates<Aggregate, EventIdType, EventType>> deprecatesList,
-            List<Aggregate> aggregates);
+    Observable<SnapshotT> applyEvents(
+            BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> query,
+            SnapshotT snapshot,
+            Observable<EventT> events,
+            List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesList,
+            List<AggregateT> aggregates);
 }

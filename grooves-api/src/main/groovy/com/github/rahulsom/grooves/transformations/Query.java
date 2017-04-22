@@ -11,9 +11,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a class as a Query
- * <br/>
- * The query is something that computes a snapshot out of an aggregate and a collection of events
+ * Marks a class as a Query.
+ *
+ * <p>The query is something that computes a snapshot out of an aggregate and a collection of events
  *
  * @author Rahul Somasunderam
  */

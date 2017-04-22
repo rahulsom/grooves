@@ -119,7 +119,7 @@ class BootStrap implements InitializingBean {
             snapshotWith patientHealthQuery
         }
 
-        currDate += 1;
+        currDate += 1
         merge(patient, patient2)
         patient
     }

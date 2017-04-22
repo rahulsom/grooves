@@ -8,30 +8,31 @@ import java.util.Set;
 /**
  * Marks a class as a snapshot. This makes no assumption about the type of snapshot.
  *
- * @param <Aggregate>      The Aggregate this snapshot works over
- * @param <SnapshotIdType> The type for the snapshot's {@link #getId()} field
- * @param <EventIdType>    The type for the {@link EventType}'s id field
- * @param <EventType>      The base type for events that apply to {@link Aggregate}
+ * @param <AggregateT>  The Aggregate this snapshot works over
+ * @param <SnapshotIdT> The type for the snapshot's {@link #getId()} field
+ * @param <EventIdT>    The type for the {@link EventT}'s id field
+ * @param <EventT>      The base type for events that apply to {@link AggregateT}
+ *                
  * @author Rahul Somasunderam
  */
 public interface BaseSnapshot<
-        Aggregate extends AggregateType,
-        SnapshotIdType,
-        EventIdType,
-        EventType extends BaseEvent<Aggregate, EventIdType, EventType>> {
-    SnapshotIdType getId();
+        AggregateT extends AggregateType,
+        SnapshotIdT,
+        EventIdT,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>> {
+    SnapshotIdT getId();
 
-    void setId(SnapshotIdType id);
+    void setId(SnapshotIdT id);
 
-    Aggregate getAggregate();
+    AggregateT getAggregate();
 
-    void setAggregate(Aggregate aggregate);
+    void setAggregate(AggregateT aggregate);
 
-    Aggregate getDeprecatedBy();
+    AggregateT getDeprecatedBy();
 
-    void setDeprecatedBy(Aggregate aggregate);
+    void setDeprecatedBy(AggregateT aggregate);
 
-    Set<Aggregate> getDeprecates();
+    Set<AggregateT> getDeprecates();
 
-    void setLastEvent(EventType event);
+    void setLastEvent(EventT event);
 }

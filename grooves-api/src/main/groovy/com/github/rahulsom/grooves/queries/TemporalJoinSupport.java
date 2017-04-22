@@ -9,36 +9,41 @@ import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
 
 /**
- * @param <Aggregate>
- * @param <EventIdType>
- * @param <EventType>
- * @param <JoinedAggregateIdType>
- * @param <JoinedAggregateType>
- * @param <SnapshotIdType>
- * @param <SnapshotType>
- * @param <JoinE>
- * @param <DisjoinE>
+ * Default interface that makes temporal joins easier to write.
+ *
+ * @param <AggregateT>         The Aggregate this join represents
+ * @param <EventIdT>           The type for the {@link EventT}'s id field
+ * @param <EventT>             The base type for events that apply to {@link AggregateT}
+ * @param <SnapshotIdT>        The type for the join's id field
+ * @param <JoinedAggregateIdT> The type for the other id of aggregate that {@link AggregateT}
+ *                             joins to
+ * @param <JoinedAggregateT>   The type for the other aggregate that {@link AggregateT} joins to
+ * @param <SnapshotT>          The type of Snapshot that is computed
+ * @param <JoinEventT>         The type of the Join Event
+ * @param <DisjoinEventT>      The type of the disjoin event
  * @author Rahul Somasunderam
  */
 public interface TemporalJoinSupport<
-        Aggregate extends AggregateType,
-        EventIdType,
-        EventType extends BaseEvent<Aggregate, EventIdType, EventType>,
-        JoinedAggregateIdType,
-        JoinedAggregateType extends AggregateType,
-        SnapshotIdType,
-        SnapshotType extends TemporalJoin<Aggregate, SnapshotIdType, JoinedAggregateIdType, EventIdType, EventType>,
-        JoinE extends JoinEvent<Aggregate, EventIdType, EventType, JoinedAggregateType>,
-        DisjoinE extends DisjoinEvent<Aggregate, EventIdType, EventType, JoinedAggregateType>
+        AggregateT extends AggregateType,
+        EventIdT,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        JoinedAggregateIdT,
+        JoinedAggregateT extends AggregateType,
+        SnapshotIdT,
+        SnapshotT extends TemporalJoin<AggregateT, SnapshotIdT, JoinedAggregateIdT,
+                EventIdT, EventT>,
+        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
+        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>
         > extends
-        TemporalQuerySupport<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> {
+        TemporalQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
-    Class<JoinE> getJoinEventClass();
+    Class<JoinEventT> getJoinEventClass();
 
-    Class<DisjoinE> getDisjoinEventClass();
+    Class<DisjoinEventT> getDisjoinEventClass();
 
     @Override
-    default Executor<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> getExecutor() {
+    default Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
+            > getExecutor() {
         return new JoinExecutor(getJoinEventClass(), getDisjoinEventClass());
     }
 }

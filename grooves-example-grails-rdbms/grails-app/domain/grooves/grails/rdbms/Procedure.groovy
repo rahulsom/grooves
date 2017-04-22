@@ -16,7 +16,7 @@ class Procedure {
     Date date
 
     @Override
-    public String toString() {
-        return "Procedure{id=$id, patientHealth=$patientHealth.id, code='$code', date=$date}";
+    String toString() {
+        "Procedure{id=$id, patientHealth=$patientHealth.id, code='$code', date=$date}"
     }
 }

@@ -212,7 +212,7 @@ class BootStrap {
             snapshotWith new PatientHealthQuery()
         }
 
-        currDate += 1;
+        currDate += 1
         merge(patient, patient2)
         patient
     }

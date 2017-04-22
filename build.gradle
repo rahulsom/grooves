@@ -11,7 +11,7 @@ buildscript {
 }
 
 apply plugin: 'com.gradle.build-scan'
-apply plugin: me.champeau.gradle.buildscans.RecipesPlugin
+apply plugin: 'me.champeau.buildscan-recipes'
 apply plugin: 'io.codearte.nexus-staging'
 
 allprojects {
@@ -22,18 +22,29 @@ subprojects {
     repositories {
         jcenter()
     }
+    apply plugin: 'checkstyle'
+
+    checkstyle {
+        configFile = rootProject.file('gradle/checkstyle.xml')
+        toolVersion ="7.6.1"
+        showViolations = false
+        maxWarnings = 0
+        maxErrors = 0
+    }
 }
 
 task release() {
     description = 'Release artifacts to nexus'
-    dependsOn 'grooves-api:uploadArchives', 'grooves-grails:uploadArchives', 'closeAndPromoteRepository'
+    dependsOn 'grooves-api:uploadArchives', 'grooves-grails:uploadArchives',
+            'closeAndPromoteRepository'
     doLast {
         println "Released $version"
     }
 }
 
 project.afterEvaluate {
-    project.tasks.findByName('closeAndPromoteRepository').mustRunAfter 'grooves-api:uploadArchives', 'grooves-grails:uploadArchives'
+    project.tasks.findByName('closeAndPromoteRepository').mustRunAfter 'grooves-api:uploadArchives',
+            'grooves-grails:uploadArchives'
 }
 
 buildScan {

@@ -47,7 +47,6 @@ class PatientHealthQuery extends GormQuerySupport<Patient, Long, PatientEvent, L
 
     EventApplyOutcome applyProcedurePerformed(ProcedurePerformed event, PatientHealth snapshot) {
         snapshot.addToProcedures(code: event.code, date: event.timestamp)
-        println "snapshotProcedures: ${snapshot.procedures}"
         CONTINUE
     }
 

@@ -9,7 +9,6 @@ import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
 import groovy.lang.Tuple2;
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import rx.Observable;
 
 import java.util.ArrayList;
@@ -18,33 +17,38 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Aggregate trait that simplifies computing temporal snapshots from events
+ * Default interface to help in building versioned snapshots.
  *
- * @param <Aggregate>      The aggregate over which the query executes
- * @param <EventIdType>    The type of the Event's id field
- * @param <EventType>      The type of the Event
- * @param <SnapshotIdType> The type of the Snapshot's id field
- * @param <SnapshotType>   The type of the Snapshot
+ * @param <AggregateT>  The aggregate over which the query executes
+ * @param <EventIdT>    The type of the Event's id field
+ * @param <EventT>      The type of the Event
+ * @param <SnapshotIdT> The type of the Snapshot's id field
+ * @param <SnapshotT>   The type of the Snapshot
  * @author Rahul Somasunderam
  */
 public interface VersionedQuerySupport<
-        Aggregate extends AggregateType,
-        EventIdType,
-        EventType extends BaseEvent<Aggregate, EventIdType, EventType>,
-        SnapshotIdType,
-        SnapshotType extends VersionedSnapshot<Aggregate, SnapshotIdType, EventIdType, EventType>
+        AggregateT extends AggregateType,
+        EventIdT,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        SnapshotIdT,
+        SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
         >
         extends
-        BaseQuery<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> {
+        BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+
     /**
-     * @param aggregate
-     * @param maxPosition
-     * @return
+     * Finds the last usable snapshot. For a given maxPosition, finds a snapshot that's older than
+     * that version number so a new one can be incrementally computed if possible.
+     *
+     * @param aggregate   The aggregate for which a snapshot is to be computed
+     * @param maxPosition The maximum allowed version of the snapshot that is deemed usable
+     * @return An Observable that returns at most one snapshot
      */
-    default Observable<SnapshotType> getLastUsableSnapshot(final Aggregate aggregate, long maxPosition) {
-        return getSnapshot(maxPosition, aggregate).
-                defaultIfEmpty(createEmptySnapshot()).
-                map(it -> {
+    default Observable<SnapshotT> getLastUsableSnapshot(
+            final AggregateT aggregate, long maxPosition) {
+        return getSnapshot(maxPosition, aggregate)
+                .defaultIfEmpty(createEmptySnapshot())
+                .map(it -> {
                     final String snapshotAsString = it == null ? "<none>" :
                             it.getLastEventPosition() == null ? "<none>" :
                                     it.getLastEventPosition() == 0 ? "<none>" :
@@ -58,96 +62,140 @@ public interface VersionedQuerySupport<
     }
 
     /**
-     * Given a last event, finds the latest snapshot older than that event
+     * Given a last event, finds the latest snapshot older than that event, and events between the
+     * snapshot and the desired version.
      *
-     * @param aggregate
-     * @param version
-     * @return
+     * @param aggregate The aggregate for which such data is desired
+     * @param version   The version of the snapshot that is desired
+     * @return A Tuple containing the snapshot and the events
      */
-    default Tuple2<SnapshotType, List<EventType>> getSnapshotAndEventsSince(Aggregate aggregate, long version) {
+    default Tuple2<SnapshotT, List<EventT>> getSnapshotAndEventsSince(
+            AggregateT aggregate, long version) {
         return getSnapshotAndEventsSince(aggregate, version, version);
     }
 
-    default Tuple2<SnapshotType, List<EventType>> getSnapshotAndEventsSince(Aggregate aggregate, long maxSnapshotPosition, long version) {
-        if (DefaultGroovyMethods.asBoolean(maxSnapshotPosition)) {
-            SnapshotType lastSnapshot = getLastUsableSnapshot(aggregate, maxSnapshotPosition).toBlocking().first();
+    /**
+     * Given a last event, finds the latest snapshot older than that event, and events between the
+     * snapshot and the desired version.
+     *
+     * @param aggregate           The aggregate for which such data is desired
+     * @param maxSnapshotPosition The max allowed position of the last event of the snapshot
+     * @param version             The version of the snapshot that is desired
+     * @return A Tuple containing the snapshot and the events
+     */
+    default Tuple2<SnapshotT, List<EventT>> getSnapshotAndEventsSince(
+            AggregateT aggregate, long maxSnapshotPosition, long version) {
+        if (maxSnapshotPosition > 0) {
+            SnapshotT lastSnapshot =
+                    getLastUsableSnapshot(aggregate, maxSnapshotPosition).toBlocking().first();
 
-            final List<EventType> uncomputedEvents = getUncomputedEvents(aggregate, lastSnapshot, version).toList().toBlocking().first();
-            final List<EventType> uncomputedReverts = uncomputedEvents.stream().filter(it -> it instanceof RevertEvent).collect(Collectors.toList());
+            final List<EventT> uncomputedEvents =
+                    getUncomputedEvents(aggregate, lastSnapshot, version)
+                            .toList()
+                            .toBlocking()
+                            .first();
+            final List<EventT> uncomputedReverts =
+                    uncomputedEvents.stream()
+                            .filter(it -> it instanceof RevertEvent)
+                            .collect(Collectors.toList());
 
-            if (DefaultGroovyMethods.asBoolean(uncomputedReverts)) {
-                getLog().info("     Uncomputed reverts exist: [\n    " + uncomputedEvents.stream().map(it -> it.getId().toString()).collect(Collectors.joining(", ")) + "\n]");
-                return getSnapshotAndEventsSince(aggregate, 0, version);
-            } else {
-                getLog().debug("     Events in pair: " + uncomputedEvents.stream().map(it -> it.getId().toString()).collect(Collectors.joining(", ")));
+            if (uncomputedReverts.isEmpty()) {
+                getLog().debug("     Events in pair: "
+                        + uncomputedEvents.stream()
+                        .map(it -> it.getId().toString())
+                        .collect(Collectors.joining(", ")));
                 return new Tuple2<>(lastSnapshot, uncomputedEvents);
+            } else {
+                getLog().info("     Uncomputed reverts exist: "
+                        + uncomputedEvents.stream()
+                        .map(it -> it.getId().toString())
+                        .collect(Collectors.joining(", ", "[\n    ", "\n]"))
+                );
+                return getSnapshotAndEventsSince(aggregate, 0, version);
             }
 
         } else {
-            SnapshotType lastSnapshot = createEmptySnapshot();
+            SnapshotT lastSnapshot = createEmptySnapshot();
 
-            final List<EventType> uncomputedEvents = getUncomputedEvents(aggregate, lastSnapshot, version).toList().toBlocking().first();
+            final List<EventT> uncomputedEvents =
+                    getUncomputedEvents(aggregate, lastSnapshot, version)
+                            .toList()
+                            .toBlocking()
+                            .first();
 
-            getLog().debug("     Events in pair: " + uncomputedEvents.stream().map(it -> it.getId().toString()).collect(Collectors.joining(", ")));
+            getLog().debug("     Events in pair: "
+                    + uncomputedEvents.stream()
+                            .map(it -> it.getId().toString())
+                            .collect(Collectors.joining(", ")));
             return new Tuple2<>(lastSnapshot, uncomputedEvents);
         }
 
     }
 
-    default Executor<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> getExecutor() {
+    default Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
+            > getExecutor() {
         return new QueryExecutor<>();
     }
 
-    Observable<EventType> getUncomputedEvents(Aggregate aggregate, SnapshotType lastSnapshot, long version);
+    Observable<EventT> getUncomputedEvents(
+            AggregateT aggregate, SnapshotT lastSnapshot, long version);
 
     /**
-     * Computes a snapshot for specified version of an aggregate
+     * Computes a snapshot for specified version of an aggregate.
      *
      * @param aggregate The aggregate
      * @param version   The version number, starting at 1
-     * @param redirect  If there has been a deprecation, redirect to the current aggregate's snapshot. Defaults to true.
-     * @return An Optional SnapshotType. Empty if cannot be computed.
+     * @param redirect  If there has been a deprecation, redirect to the current aggregate's
+     *                  snapshot. Defaults to true.
+     * @return An Observable of SnapshotType that contains at most one snapshot.
      */
-    default Observable<SnapshotType> computeSnapshot(Aggregate aggregate, long version, boolean redirect) {
+    default Observable<SnapshotT> computeSnapshot(
+            AggregateT aggregate, long version, boolean redirect) {
 
-        getLog().info("Computing snapshot for " + String.valueOf(aggregate) + " version " + String.valueOf(version));
-        Tuple2<SnapshotType, List<EventType>> seTuple2 = getSnapshotAndEventsSince(aggregate, version);
-        List<EventType> events = seTuple2.getSecond();
-        SnapshotType snapshot = seTuple2.getFirst();
+        getLog().info(String.format("Computing snapshot for %s version %s",
+                String.valueOf(aggregate), String.valueOf(version)));
+        Tuple2<SnapshotT, List<EventT>> seTuple2 =
+                getSnapshotAndEventsSince(aggregate, version);
+        List<EventT> events = seTuple2.getSecond();
+        SnapshotT snapshot = seTuple2.getFirst();
 
-        if (events.stream().anyMatch(it -> it instanceof RevertEvent) && snapshot.getAggregate() != null) {
+        if (events.stream().anyMatch(it -> it instanceof RevertEvent)
+                && snapshot.getAggregate() != null) {
             return Observable.empty();
         }
         snapshot.setAggregate(aggregate);
 
-        Observable<EventType> forwardOnlyEvents = getExecutor().applyReverts(Observable.from(events)).
-                toList().
-                onErrorReturn(throwable -> getExecutor().
-                        applyReverts(
-                                Observable.
-                                        from(getSnapshotAndEventsSince(aggregate, 0, version).
-                                                getSecond())
-                        ).
-                        toList().
-                        toBlocking().
-                        first()
-                ).
-                flatMap(Observable::from);
+        Observable<EventT> forwardOnlyEvents =
+                getExecutor().applyReverts(Observable.from(events))
+                        .toList()
+                        .onErrorReturn(throwable -> getExecutor()
+                                .applyReverts(
+                                        Observable.from(
+                                                getSnapshotAndEventsSince(aggregate, 0, version)
+                                                        .getSecond())
+                                )
+                                .toList()
+                                .toBlocking()
+                                .first()
+                        )
+                        .flatMap(Observable::from);
 
-        final Observable<SnapshotType> snapshotTypeObservable = getExecutor().
-                applyEvents(this, snapshot, forwardOnlyEvents, new ArrayList<>(), Collections.singletonList(aggregate));
-        return snapshotTypeObservable.
-                doOnNext(snapshotType -> {
-                    if (DefaultGroovyMethods.asBoolean(events)) {
-                        snapshotType.setLastEvent(DefaultGroovyMethods.last(events));
+        final Observable<SnapshotT> snapshotTypeObservable =
+                getExecutor().applyEvents(this, snapshot, forwardOnlyEvents, new ArrayList<>(),
+                        Collections.singletonList(aggregate));
+        return snapshotTypeObservable
+                .doOnNext(snapshotType -> {
+                    if (!events.isEmpty()) {
+                        snapshotType.setLastEvent(events.get(events.size() - 1));
                     }
 
                     getLog().info("  --> Computed: " + String.valueOf(snapshotType));
-                }).
-                flatMap(it -> {
-                    EventType lastEvent = DefaultGroovyMethods.asBoolean(events) ? DefaultGroovyMethods.last(events) : null;
-                    return it.getDeprecatedBy() != null && lastEvent != null && lastEvent instanceof DeprecatedBy && redirect ?
-                            computeSnapshot(it.getDeprecatedBy(), version) :
+                })
+                .flatMap(it -> {
+                    EventT lastEvent = events.isEmpty() ? null : events.get(events.size() - 1);
+                    return it.getDeprecatedBy() != null && lastEvent != null
+                            && lastEvent instanceof DeprecatedBy
+                            && redirect ? computeSnapshot(it.getDeprecatedBy(), version) :
                             Observable.just(it);
                 });
 
@@ -160,7 +208,7 @@ public interface VersionedQuerySupport<
      * @param version   The version number, starting at 1
      * @return An Optional SnapshotType. Empty if cannot be computed.
      */
-    default Observable<SnapshotType> computeSnapshot(Aggregate aggregate, long version) {
+    default Observable<SnapshotT> computeSnapshot(AggregateT aggregate, long version) {
         return computeSnapshot(aggregate, version, true);
     }
 
