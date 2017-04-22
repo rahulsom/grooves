@@ -10,10 +10,9 @@ import java.util.Date;
  * Marks a class as a temporal snapshot
  *
  * @param <Aggregate>      The Aggregate this snapshot works over
- * @param <SnapshotIdType> Type of Snapshot's `id` field
- * @param <EventIdType>
- * @param <EventType>
- *
+ * @param <SnapshotIdType> The type for the snapshot's {@link #getId()} field
+ * @param <EventIdType>    The type for the {@link EventType}'s id field
+ * @param <EventType>      The base type for events that apply to {@link Aggregate}
  * @author Rahul Somasunderam
  */
 public interface TemporalSnapshot<
@@ -24,9 +23,11 @@ public interface TemporalSnapshot<
         extends BaseSnapshot<Aggregate, SnapshotIdType, EventIdType, EventType> {
 
     Date getLastEventTimestamp();
+
     void setLastEventTimestamp(Date timestamp);
 
-    @Override default void setLastEvent(EventType event) {
+    @Override
+    default void setLastEvent(EventType event) {
         this.setLastEventTimestamp(event.getTimestamp());
     }
 }

@@ -24,14 +24,14 @@ public @interface Query {
     /**
      * The aggregate for which this query needs to be performed
      *
-     * @return
+     * @return The aggregate for which this query needs to be performed
      */
     Class<AggregateType> aggregate();
 
     /**
      * The snapshot that the query will return
      *
-     * @return
+     * @return The snapshot that the query will return
      */
     Class<Snapshot> snapshot();
 }

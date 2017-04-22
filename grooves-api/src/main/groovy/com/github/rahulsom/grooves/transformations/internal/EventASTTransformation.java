@@ -19,7 +19,9 @@ import java.util.logging.Logger;
 @GroovyASTTransformation
 public class EventASTTransformation extends AbstractASTTransformation {
 
-    private Logger log = Logger.getLogger(getClass().getName());
+    private static final Class<Event> MY_CLASS = Event.class;
+    private static final ClassNode MY_TYPE = ClassHelper.make(MY_CLASS);
+    private final Logger log = Logger.getLogger(getClass().getName());
 
     @Override
     public void visit(ASTNode[] nodes, SourceUnit source) {
@@ -35,7 +37,4 @@ public class EventASTTransformation extends AbstractASTTransformation {
         }
 
     }
-
-    private static final Class<Event> MY_CLASS = Event.class;
-    private static final ClassNode MY_TYPE = ClassHelper.make(MY_CLASS);
 }

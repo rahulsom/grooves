@@ -21,7 +21,7 @@ public @interface Event {
     /**
      * Aggregates to which this event can be applied
      *
-     * @return
+     * @return The type of the Aggregate
      */
     Class<AggregateType> value();
 }

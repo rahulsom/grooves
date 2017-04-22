@@ -11,13 +11,13 @@ import java.util.List;
  * @param <JoinedAggregateIdType> The type for the other aggregate that {@link Aggregate} joins to
  * @param <EventIdType>           The type for the {@link EventType}'s id field
  * @param <EventType>             The base type for events that apply to {@link Aggregate}
- *
  * @author Rahul Somasunderam
  */
 public interface BaseJoin<Aggregate extends AggregateType, JoinIdType, JoinedAggregateIdType, EventIdType, EventType extends BaseEvent<Aggregate, EventIdType, EventType>>
         extends BaseSnapshot<Aggregate, JoinIdType, EventIdType, EventType> {
 
     List<JoinedAggregateIdType> getJoinedIds();
+
     void setJoinedIds(List<JoinedAggregateIdType> ids);
 
 }

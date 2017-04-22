@@ -58,7 +58,7 @@ class EventsDsl<Aggregate extends AggregateType,
     }
 
     @SuppressWarnings("GrMethodMayBeStatic")
-    def Aggregate on(
+    Aggregate on(
             Aggregate aggregate,
             Consumer entityConsumer,
             Supplier<Long> positionSupplier = { defaultPositionSupplier.incrementAndGet() },

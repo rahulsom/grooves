@@ -4,6 +4,8 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rx.Observable;
 
 import java.util.Date;
@@ -26,6 +28,11 @@ public interface BaseQuery<
         SnapshotIdType,
         SnapshotType extends BaseSnapshot<Aggregate, SnapshotIdType, EventIdType, EventType>
         > {
+
+    default Logger getLog() {
+        return LoggerFactory.getLogger(getClass());
+    }
+
     /**
      * When no snapshot is found in the database, the query has to create the zero of the snapshot.
      * This is the implementation of such a snapshot

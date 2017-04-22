@@ -6,8 +6,8 @@ import com.github.rahulsom.grooves.api.events.DisjoinEvent
 import com.github.rahulsom.grooves.api.events.JoinEvent
 import com.github.rahulsom.grooves.api.snapshots.Join
 import com.github.rahulsom.grooves.queries.JoinSupport
+import com.github.rahulsom.grooves.queries.internal.Executor
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor
-import com.github.rahulsom.grooves.queries.internal.QueryExecutor
 import grails.gorm.rx.RxEntity
 import rx.Observable
 
@@ -15,15 +15,15 @@ import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod
 
 /**
  *
- * @param <Aggregate>
- * @param <EventIdType>
- * @param <EventType>
- * @param <JoinedAggregateIdType>
- * @param <JoinedAggregateType>
- * @param <SnapshotIdType>
- * @param <SnapshotType>
- * @param <JoinE>
- * @param <DisjoinE>
+ * @param < Aggregate >
+ * @param < EventIdType >
+ * @param < EventType >
+ * @param < JoinedAggregateIdType >
+ * @param < JoinedAggregateType >
+ * @param < SnapshotIdType >
+ * @param < SnapshotType >
+ * @param < JoinE >
+ * @param < DisjoinE >
  *
  * @author Rahul Somasunderam
  */
@@ -117,7 +117,7 @@ abstract class RxGormJoinSupport<
     }
 
     @Override
-    QueryExecutor<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> getExecutor() {
+    Executor<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> getExecutor() {
         new JoinExecutor<Aggregate, EventIdType, EventType, JoinedAggregateIdType, JoinedAggregateType, SnapshotIdType, SnapshotType, JoinE, DisjoinE>(
                 joinEventClass, disjoinEventClass)
     }

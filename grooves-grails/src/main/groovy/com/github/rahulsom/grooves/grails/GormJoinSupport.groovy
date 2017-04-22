@@ -6,8 +6,8 @@ import com.github.rahulsom.grooves.api.events.DisjoinEvent
 import com.github.rahulsom.grooves.api.events.JoinEvent
 import com.github.rahulsom.grooves.api.snapshots.Join
 import com.github.rahulsom.grooves.queries.JoinSupport
+import com.github.rahulsom.grooves.queries.internal.Executor
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor
-import com.github.rahulsom.grooves.queries.internal.QueryExecutor
 import org.grails.datastore.gorm.GormEntity
 import rx.Observable
 
@@ -47,8 +47,8 @@ abstract class GormJoinSupport<
     private final Class<JoinedAggregateType> joinedAggregateClass
     private final Class<SnapshotIdType> snapshotIdClass
     private final Class<SnapshotType> snapshotClass
-    private final Class<JoinE> joinEventClass
-    private final Class<DisjoinE> disjoinEventClass
+    final Class<JoinE> joinEventClass
+    final Class<DisjoinE> disjoinEventClass
 
     GormJoinSupport(
             Class<Aggregate> classAggregate,
@@ -116,11 +116,11 @@ abstract class GormJoinSupport<
 
     @Override
     final Observable<EventType> findEventsForAggregates(List<Aggregate> aggregates) {
-        Observable.from (invokeStaticMethod(eventClass, 'findAllByAggregateInList', [aggregates, INCREMENTAL].toArray()) as List<EventType>)
+        Observable.from(invokeStaticMethod(eventClass, 'findAllByAggregateInList', [aggregates, INCREMENTAL].toArray()) as List<EventType>)
     }
 
     @Override
-    QueryExecutor<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> getExecutor() {
+    Executor<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> getExecutor() {
         new JoinExecutor<Aggregate, EventIdType, EventType, JoinedAggregateIdType, JoinedAggregateType, SnapshotIdType, SnapshotType, JoinE, DisjoinE>(
                 joinEventClass, disjoinEventClass)
     }

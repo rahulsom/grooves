@@ -21,19 +21,10 @@ import java.util.logging.Logger;
  */
 @GroovyASTTransformation
 public class AggregateASTTransformation extends AbstractASTTransformation {
-    @Override
-    public void visit(ASTNode[] nodes, SourceUnit source) {
-        init(nodes, source);
-        AnnotatedNode annotatedNode = DefaultGroovyMethods.asType(nodes[1], AnnotatedNode.class);
-        AnnotationNode annotationNode = DefaultGroovyMethods.asType(nodes[0], AnnotationNode.class);
-
-        if (MY_TYPE.equals(annotationNode.getClassNode()) && annotatedNode instanceof ClassNode) {
-            final ClassNode theClassNode = DefaultGroovyMethods.asType(annotatedNode, ClassNode.class);
-            log.fine(() -> MessageFormat.format("Storing entry for aggregate {0}", theClassNode.getName()));
-            getEventsForAggregate(theClassNode.getName());
-        }
-
-    }
+    private static final Class<Aggregate> MY_CLASS = Aggregate.class;
+    private static final ClassNode MY_TYPE = ClassHelper.make(MY_CLASS);
+    private static final Map<String, List<ClassNode>> eventsForAggregate = new LinkedHashMap<>();
+    private final Logger log = Logger.getLogger(getClass().getName());
 
     static void addEventToAggregate(String aggregate, ClassNode event) {
         if (!eventsForAggregate.containsKey(aggregate)) {
@@ -51,8 +42,17 @@ public class AggregateASTTransformation extends AbstractASTTransformation {
         return eventsForAggregate.get(aggregate);
     }
 
-    private Logger log = Logger.getLogger(getClass().getName());
-    private static final Class<Aggregate> MY_CLASS = Aggregate.class;
-    private static final ClassNode MY_TYPE = ClassHelper.make(MY_CLASS);
-    private static final Map<String, List<ClassNode>> eventsForAggregate = new LinkedHashMap<>();
+    @Override
+    public void visit(ASTNode[] nodes, SourceUnit source) {
+        init(nodes, source);
+        AnnotatedNode annotatedNode = DefaultGroovyMethods.asType(nodes[1], AnnotatedNode.class);
+        AnnotationNode annotationNode = DefaultGroovyMethods.asType(nodes[0], AnnotationNode.class);
+
+        if (MY_TYPE.equals(annotationNode.getClassNode()) && annotatedNode instanceof ClassNode) {
+            final ClassNode theClassNode = DefaultGroovyMethods.asType(annotatedNode, ClassNode.class);
+            log.fine(() -> MessageFormat.format("Storing entry for aggregate {0}", theClassNode.getName()));
+            getEventsForAggregate(theClassNode.getName());
+        }
+
+    }
 }

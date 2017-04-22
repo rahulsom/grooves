@@ -16,7 +16,6 @@ import java.util.List;
  * @param <EventType>      The type of Event
  * @param <SnapshotIdType> The type of Snapshot Id
  * @param <SnapshotType>   The type of Snapshot
- *
  * @author Rahul Somasunderam
  */
 public interface Executor<
@@ -29,14 +28,10 @@ public interface Executor<
     /**
      * Applies reverts to a list of events and then returns forward events
      *
-     * @param query       The Query that demands reverts be applied
-     * @param events      The list of events
-     *
+     * @param events The list of events
      * @return a list of events after the reverts have been applied
      */
-    Observable<EventType> applyReverts(
-            BaseQuery<Aggregate, EventIdType, EventType, SnapshotIdType, SnapshotType> query,
-            Observable<EventType> events);
+    Observable<EventType> applyReverts(Observable<EventType> events);
 
     /**
      * Applies forward events on a snapshot
@@ -46,7 +41,6 @@ public interface Executor<
      * @param events         The list of forward events
      * @param deprecatesList The list of Deprecate events
      * @param aggregates     The list of deprecated aggregates
-     *
      * @return The Snapshot that has been mutated
      */
     Observable<SnapshotType> applyEvents(

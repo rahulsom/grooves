@@ -9,7 +9,6 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
  * @param <JoinedAggregateIdType> The type for the other aggregate that {@link Aggregate} joins to
  * @param <EventIdType>           The type for the {@link EventType}'s id field
  * @param <EventType>             The base type for events that apply to {@link Aggregate}
- *
  * @author Rahul Somasunderam
  */
 public interface Join<
@@ -20,7 +19,8 @@ public interface Join<
         VersionedJoin<Aggregate, JoinIdType, JoinedAggregateIdType, EventIdType, EventType>,
         Snapshot<Aggregate, JoinIdType, EventIdType, EventType> {
 
-    @Override default void setLastEvent(EventType aidBaseEvent) {
+    @Override
+    default void setLastEvent(EventType aidBaseEvent) {
         this.setLastEventTimestamp(aidBaseEvent.getTimestamp());
         this.setLastEventPosition(aidBaseEvent.getPosition());
     }

@@ -12,7 +12,6 @@ import java.util.Set;
  * @param <SnapshotIdType> The type for the snapshot's {@link #getId()} field
  * @param <EventIdType>    The type for the {@link EventType}'s id field
  * @param <EventType>      The base type for events that apply to {@link Aggregate}
- *
  * @author Rahul Somasunderam
  */
 public interface BaseSnapshot<
@@ -21,12 +20,15 @@ public interface BaseSnapshot<
         EventIdType,
         EventType extends BaseEvent<Aggregate, EventIdType, EventType>> {
     SnapshotIdType getId();
+
     void setId(SnapshotIdType id);
 
     Aggregate getAggregate();
+
     void setAggregate(Aggregate aggregate);
 
     Aggregate getDeprecatedBy();
+
     void setDeprecatedBy(Aggregate aggregate);
 
     Set<Aggregate> getDeprecates();

@@ -6,5 +6,5 @@ package com.github.rahulsom.grooves.api;
  * @author Rahul Somasunderam
  */
 public enum EventApplyOutcome {
-    RETURN, CONTINUE;
+    RETURN, CONTINUE
 }

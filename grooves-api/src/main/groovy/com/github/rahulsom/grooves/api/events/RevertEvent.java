@@ -8,7 +8,6 @@ import com.github.rahulsom.grooves.api.AggregateType;
  * @param <Aggregate>   Aggregate this event applies to
  * @param <EventIdType> The Type for Event's {@link #getId} field
  * @param <EventType>   Event Type that could be reverted
- *
  * @author Rahul Somasunderam
  */
 public interface RevertEvent<Aggregate extends AggregateType, EventIdType, EventType>
