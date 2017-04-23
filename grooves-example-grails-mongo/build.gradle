@@ -67,7 +67,6 @@ bootRun {
     jvmArgs('-Dspring.output.ansi.enabled=always')
 }
 
-
 assets {
     minifyJs = true
     minifyCss = true
@@ -77,3 +76,7 @@ tasks.findByName('bootRun').dependsOn 'startMongoDb'
 tasks.findByName('bootRun').finalizedBy 'stopMongoDb'
 tasks.findByName('integrationTest').dependsOn 'startMongoDb'
 tasks.findByName('integrationTest').finalizedBy 'stopMongoDb'
+
+mongo {
+    port 27018
+}
