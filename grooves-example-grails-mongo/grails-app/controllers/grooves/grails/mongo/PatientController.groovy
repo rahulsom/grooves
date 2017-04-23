@@ -1,12 +1,13 @@
 package grooves.grails.mongo
 
 import grails.converters.JSON
+import grails.rx.web.RxController
 import grails.transaction.Transactional
 
 import static org.springframework.http.HttpStatus.NOT_FOUND
 
 @Transactional(readOnly = true)
-class PatientController {
+class PatientController implements RxController {
 
     def index(Integer max) {
         log.info "$params"
@@ -26,11 +27,9 @@ class PatientController {
                 params['date'] ?
                         new PatientAccountQuery().computeSnapshot(patient, params.date('date')) :
                         new PatientAccountQuery().computeSnapshot(patient, Long.MAX_VALUE)
-        def patientAccount = snapshot.toBlocking().first()
-        if (patientAccount.deprecatedById) {
-            redirect(action: 'account', id: patientAccount.deprecatedById)
-        } else {
-            respond patientAccount
+
+        snapshot.map {
+            rx.respond(it)
         }
     }
 
@@ -41,13 +40,10 @@ class PatientController {
                 params['date'] ?
                         new PatientHealthQuery().computeSnapshot(patient, params.date('date')) :
                         new PatientHealthQuery().computeSnapshot(patient, Long.MAX_VALUE)
-        def patientHealth = snapshot.toBlocking().first()
 
-        if (patientHealth.deprecatedById) {
-            redirect(action: 'health', id: patientHealth.deprecatedById)
-        } else {
+        snapshot.map { s ->
             JSON.use('deep') {
-                render patientHealth as JSON
+                rx.render(s as JSON)
             }
         }
     }

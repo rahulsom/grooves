@@ -51,8 +51,7 @@ public class QueryExecutor<
      * @return An Observable of forward only events
      */
     @Override
-    public Observable<EventT> applyReverts(
-            Observable<EventT> events) {
+    public Observable<EventT> applyReverts(Observable<EventT> events) {
 
         return events.toList().flatMap(eventList -> {
             log.debug(
@@ -93,15 +92,17 @@ public class QueryExecutor<
     @Override
     public Observable<SnapshotT> applyEvents(
             final BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> query,
-            SnapshotT initialSnapshot, Observable<EventT> events,
+            SnapshotT initialSnapshot,
+            Observable<EventT> events,
             final List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesList,
             final List<AggregateT> aggregates) {
 
         final AtomicBoolean stopApplyingEvents = new AtomicBoolean(false);
 
-        return events.reduce(initialSnapshot, (snapshot, event) -> {
+        // s -> snapshotObservable
+        return events.reduce(Observable.just(initialSnapshot), (s, event) -> s.flatMap(snapshot -> {
             if (!query.shouldEventsBeApplied(snapshot) || stopApplyingEvents.get()) {
-                return snapshot;
+                return Observable.just(snapshot);
             } else {
                 log.debug("     -> Event: " + String.valueOf(event));
 
@@ -110,16 +111,16 @@ public class QueryExecutor<
                             (Deprecates<AggregateT, EventIdT, EventT>) event,
                             query, aggregates, deprecatesList);
                 } else if (event instanceof DeprecatedBy) {
-                    return applyDeprecatedBy(
-                            (DeprecatedBy<AggregateT, EventIdT, EventT>) event, snapshot);
+                    return Observable.just(applyDeprecatedBy(
+                            (DeprecatedBy<AggregateT, EventIdT, EventT>) event, snapshot));
                 } else {
                     String methodName = "apply" + event.getClass().getSimpleName();
                     EventApplyOutcome retval = callMethod(query, methodName, snapshot, event);
                     if (retval.equals(EventApplyOutcome.CONTINUE)) {
-                        return snapshot;
+                        return Observable.just(snapshot);
                     } else if (retval.equals(EventApplyOutcome.RETURN)) {
                         stopApplyingEvents.set(true);
-                        return snapshot;
+                        return Observable.just(snapshot);
                     } else {
                         throw new GroovesException(
                                 "Unexpected value from calling '" + methodName + "'");
@@ -128,8 +129,7 @@ public class QueryExecutor<
                 }
 
             }
-
-        });
+        })).flatMap(it -> it);
 
     }
 
@@ -141,7 +141,7 @@ public class QueryExecutor<
         return snapshot;
     }
 
-    SnapshotT applyDeprecates(
+    Observable<SnapshotT> applyDeprecates(
             final Deprecates<AggregateT, EventIdT, EventT> event,
             final BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> util,
             final List<AggregateT> aggregates,
@@ -166,7 +166,7 @@ public class QueryExecutor<
                             applyReverts(Observable.from(sortedEvents));
                     return applyEvents(util, newSnapshot, forwardEventsSortedBackwards,
                             DefaultGroovyMethods.plus(deprecatesList, event), aggregates);
-                }).toBlocking().first();
+                });
     }
 
     @CompileStatic(TypeCheckingMode.SKIP)
@@ -185,8 +185,7 @@ public class QueryExecutor<
                 String description = String.format(
                         "{Snapshot: %s; Event: %s; method: %s; originalException: %s}",
                         String.valueOf(snapshot), String.valueOf(event), methodName,
-                        String.valueOf(e1)
-                );
+                        String.valueOf(e1));
                 log.error(String.format("Exception thrown while calling exception handler. %s",
                         String.valueOf(description)), e2);
                 return EventApplyOutcome.RETURN;

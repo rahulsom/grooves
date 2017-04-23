@@ -53,9 +53,10 @@ public class JoinExecutor<
             List<AggregateT> aggregates) {
 
 
-        return events.reduce(initialSnapshot, (snapshot, event) -> {
+        // s -> snapshotObservable
+        return events.reduce(Observable.just(initialSnapshot), (s, event) -> s.flatMap(snapshot -> {
             if (!query.shouldEventsBeApplied(snapshot)) {
-                return snapshot;
+                return Observable.just(snapshot);
             } else {
                 log.debug("     -> Event: " + event.toString());
 
@@ -63,22 +64,22 @@ public class JoinExecutor<
                     return applyDeprecates((Deprecates<AggregateT, EventIdT, EventT>) event,
                             query, aggregates, deprecatesList);
                 } else if (event instanceof DeprecatedBy) {
-                    return applyDeprecatedBy(
+                    return Observable.just(applyDeprecatedBy(
                             (DeprecatedBy<AggregateT, EventIdT, EventT>) event,
-                            initialSnapshot);
+                            initialSnapshot));
                 } else if (classJoinE.isAssignableFrom(event.getClass())) {
                     initialSnapshot.getJoinedIds().add(
                             ((JoinEventT) event).getJoinAggregate().getId());
-                    return initialSnapshot;
+                    return Observable.just(initialSnapshot);
                 } else if (classDisjoinE.isAssignableFrom(event.getClass())) {
                     initialSnapshot.getJoinedIds().remove(
                             ((DisjoinEventT) event).getJoinAggregate().getId());
-                    return initialSnapshot;
+                    return Observable.just(initialSnapshot);
                 } else {
-                    return initialSnapshot;
+                    return Observable.just(initialSnapshot);
                 }
             }
-        });
+        })).flatMap(it -> it);
 
 
     }

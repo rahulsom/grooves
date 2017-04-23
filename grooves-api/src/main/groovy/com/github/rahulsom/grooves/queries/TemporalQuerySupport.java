@@ -49,15 +49,14 @@ public interface TemporalQuerySupport<
             final AggregateT aggregate, Date maxTimestamp) {
         return getSnapshot(maxTimestamp, aggregate)
                 .defaultIfEmpty(createEmptySnapshot())
-                .map(it -> {
-                    final String snapshotAsString = it == null ? "<none>" :
+                .doOnNext(it -> {
+                    final String snapshotAsString =
                             it.getLastEventTimestamp() == null ? "<none>" :
                                     it.toString();
                     getLog().debug("  -> Last Usable Snapshot: " + snapshotAsString);
                     detachSnapshot(it);
 
                     it.setAggregate(aggregate);
-                    return it;
                 });
     }
 
@@ -69,68 +68,75 @@ public interface TemporalQuerySupport<
      * @param moment    The maximum timestamp of the last event
      * @return A Tuple containing the snapshot and the events
      */
-    default Tuple2<SnapshotT, List<EventT>> getSnapshotAndEventsSince(
+    default Observable<Tuple2<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
             AggregateT aggregate, Date moment) {
-        return getSnapshotAndEventsSince(aggregate, moment, moment);
+        return getSnapshotAndEventsSince(aggregate, moment, true);
     }
 
     /**
      * Given a timestamp, finds the latest snapshot older than that timestamp, and events between
      * the snapshot and the desired timestamp.
      *
-     * @param aggregate             The aggregate for which such data is desired
-     * @param maxLastEventTimestamp The maximum allowed timestamp allowed in the snapshot
-     * @param moment                The moment for the desired snapshot
+     * @param aggregate            The aggregate for which such data is desired
+     * @param moment               The moment for the desired snapshot
+     * @param reuseEarlierSnapshot Whether earlier snapshots can be reused for this computation.
+     *                             It is generally a good idea to set this to true unless there are
+     *                             known reverts that demand this be set to false.
      * @return A Tuple containing the snapshot and the events
      */
-    default Tuple2<SnapshotT, List<EventT>> getSnapshotAndEventsSince(
-            AggregateT aggregate, Date maxLastEventTimestamp, Date moment) {
-        if (maxLastEventTimestamp != null) {
-            SnapshotT lastSnapshot = getLastUsableSnapshot(aggregate, maxLastEventTimestamp)
-                    .toBlocking()
-                    .first();
+    default Observable<Tuple2<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
+            AggregateT aggregate, Date moment, boolean reuseEarlierSnapshot) {
+        if (reuseEarlierSnapshot) {
+            return getLastUsableSnapshot(aggregate, moment).flatMap(lastSnapshot -> {
+                final Observable<EventT> uncomputedEvents =
+                        getUncomputedEvents(aggregate, lastSnapshot, moment);
 
-            List<EventT> uncomputedEvents =
-                    getUncomputedEvents(aggregate, lastSnapshot, moment)
-                            .toList()
-                            .toBlocking()
-                            .first();
+                final Observable<EventT> uncomputedReverts =
+                        uncomputedEvents
+                                .filter(it -> it instanceof RevertEvent);
 
-            final List<EventT> uncomputedReverts =
-                    uncomputedEvents
-                            .stream()
-                            .filter(it -> it instanceof RevertEvent)
-                            .collect(Collectors.toList());
+                return uncomputedReverts.isEmpty().flatMap(eventsAreForwardOnly -> {
+                    if (eventsAreForwardOnly) {
+                        return uncomputedEvents
+                                .toList()
+                                .doOnNext(ue -> {
+                                    getLog().debug("     Events in pair: " + ue.stream()
+                                            .map(it -> it.getId().toString())
+                                            .collect(Collectors.joining(", ")));
+                                })
+                                .map(ue -> new Tuple2<>(lastSnapshot, ue));
+                    } else {
+                        return uncomputedEvents
+                                .toList()
+                                .doOnNext(ue -> {
+                                    getLog().info("     Uncomputed reverts exist: "
+                                            + ue.stream()
+                                            .map(it -> it.getId().toString())
+                                            .collect(Collectors.joining(", ", "[\n    ", "\n]"))
+                                    );
+                                })
+                                .flatMap(ue ->
+                                        getSnapshotAndEventsSince(aggregate, moment, false));
 
-            if (!uncomputedReverts.isEmpty()) {
-                getLog().info("     Uncomputed reverts exist: [\n    "
-                        + uncomputedEvents.stream()
-                        .map(it -> it.getId().toString())
-                        .collect(Collectors.joining(", "))
-                        + "\n]");
-                return getSnapshotAndEventsSince(aggregate, null, moment);
-            } else {
-                getLog().debug("     Events in pair: "
-                        + uncomputedEvents.stream()
-                        .map(it -> it.getId().toString())
-                        .collect(Collectors.joining(", ")));
-                return new Tuple2<>(lastSnapshot, uncomputedEvents);
-            }
+                    }
+                });
+
+            });
+
 
         } else {
             SnapshotT lastSnapshot = createEmptySnapshot();
 
-            List<EventT> uncomputedEvents =
+            final Observable<List<EventT>> uncomputedEvents =
                     getUncomputedEvents(aggregate, lastSnapshot, moment)
-                            .toList()
-                            .toBlocking()
-                            .first();
+                            .toList();
 
-            getLog().debug("     Events in pair: "
-                    + uncomputedEvents.stream()
-                    .map(it -> it.getId().toString())
-                    .collect(Collectors.joining(", ")));
-            return new Tuple2<>(lastSnapshot, uncomputedEvents);
+            return uncomputedEvents
+                    .doOnNext(ue -> {
+                        getLog().debug("     Events in pair: " + ue.stream()
+                                .map(it -> it.getId().toString())
+                                .collect(Collectors.joining(", ")));
+                    }).map(ue -> new Tuple2<>(lastSnapshot, ue));
         }
 
 
@@ -149,56 +155,58 @@ public interface TemporalQuerySupport<
             AggregateT aggregate, Date moment, boolean redirect) {
         getLog().info(String.format("Computing snapshot for %s at %s", String.valueOf(aggregate),
                 String.valueOf(moment)));
-        Tuple2<SnapshotT, List<EventT>> seTuple2 =
-                getSnapshotAndEventsSince(aggregate, moment);
-        List<EventT> events = seTuple2.getSecond();
-        SnapshotT snapshot = seTuple2.getFirst();
 
-        if (events.stream().anyMatch(it -> it instanceof RevertEvent)
-                && snapshot.getAggregate() != null) {
-            return Observable.empty();
-        }
+        return getSnapshotAndEventsSince(aggregate, moment).flatMap(seTuple2 -> {
+            List<EventT> events = seTuple2.getSecond();
+            SnapshotT snapshot = seTuple2.getFirst();
 
-        snapshot.setAggregate(aggregate);
+            if (events.stream().anyMatch(it -> it instanceof RevertEvent)
+                    && snapshot.getAggregate() != null) {
+                return Observable.empty();
+            }
 
-        Observable<EventT> forwardOnlyEvents =
-                getExecutor().applyReverts(Observable.from(events))
-                        .toList()
-                        .onErrorReturn(throwable -> getExecutor()
-                                .applyReverts(
-                                        Observable.from(
-                                                getSnapshotAndEventsSince(aggregate, null, moment)
-                                                        .getSecond())
-                                )
-                                .toList()
-                                .toBlocking()
-                                .first())
-                        .flatMap(Observable::from);
+            snapshot.setAggregate(aggregate);
 
-        final Observable<SnapshotT> snapshotTypeObservable =
-                getExecutor().applyEvents(this, snapshot, forwardOnlyEvents, new ArrayList<>(),
-                        Collections.singletonList(aggregate));
-        return snapshotTypeObservable
-                .doOnNext(snapshotType -> {
-                    if (!events.isEmpty()) {
-                        snapshotType.setLastEvent(events.get(events.size() - 1));
-                    }
-                    getLog().info("  --> Computed: " + String.valueOf(snapshotType));
-                })
-                .flatMap(it -> {
-                    final EventT lastEvent =
-                            events.isEmpty() ? null : events.get(events.size() - 1);
+            Observable<EventT> forwardOnlyEvents =
+                    getExecutor().applyReverts(Observable.from(events))
+                            .toList()
+                            .map(Observable::just)
+                            .onErrorReturn(throwable -> getExecutor()
+                                    .applyReverts(
+                                            getSnapshotAndEventsSince(aggregate, moment, false)
+                                                    .flatMap(it -> Observable.from(it.getSecond()))
+                                    )
+                                    .toList()
+                            )
+                            .flatMap(it -> it)
+                            .flatMap(Observable::from);
 
-                    final boolean redirectToDeprecator =
-                            it.getDeprecatedBy() != null
-                            && lastEvent != null
-                            && lastEvent instanceof DeprecatedBy
-                            && redirect;
+            final Observable<SnapshotT> snapshotTypeObservable =
+                    getExecutor().applyEvents(this, snapshot, forwardOnlyEvents, new ArrayList<>(),
+                            Collections.singletonList(aggregate));
+            return snapshotTypeObservable
+                    .doOnNext(snapshotType -> {
+                        if (!events.isEmpty()) {
+                            snapshotType.setLastEvent(events.get(events.size() - 1));
+                        }
+                        getLog().info("  --> Computed: " + String.valueOf(snapshotType));
+                    })
+                    .flatMap(it -> {
+                        final EventT lastEvent =
+                                events.isEmpty() ? null : events.get(events.size() - 1);
 
-                    return redirectToDeprecator ?
-                            computeSnapshot(it.getDeprecatedBy(), moment) :
-                            Observable.just(it);
-                });
+                        final boolean redirectToDeprecator =
+                                it.getDeprecatedBy() != null
+                                        && lastEvent != null
+                                        && lastEvent instanceof DeprecatedBy
+                                        && redirect;
+
+                        return redirectToDeprecator ?
+                                computeSnapshot(it.getDeprecatedBy(), moment) :
+                                Observable.just(it);
+                    });
+        });
+
     }
 
     /**

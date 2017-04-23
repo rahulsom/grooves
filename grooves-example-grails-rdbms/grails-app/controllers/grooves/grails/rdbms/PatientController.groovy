@@ -39,14 +39,10 @@ class PatientController implements RxController {
                         new PatientHealthQuery().computeSnapshot(patient, params.date('date')) :
                         new PatientHealthQuery().computeSnapshot(patient, Long.MAX_VALUE)
 
-        def patientHealth = snapshot.toBlocking().first()
-        println patientHealth.toString().length()
-
-        if (patientHealth.deprecatedById) {
-            redirect(action: 'health', id: patientHealth.deprecatedById)
-        } else {
+        snapshot.map { s ->
+            println s.toString().length()
             JSON.use('deep') {
-                render patientHealth as JSON
+                rx.render(s as JSON)
             }
         }
     }

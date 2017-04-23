@@ -1,10 +1,11 @@
 package grooves.grails.mongo
 
 import grails.converters.JSON
+import grails.rx.web.RxController
 import grails.transaction.Transactional
 
 @Transactional(readOnly = true)
-class ZipcodeController {
+class ZipcodeController implements RxController {
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
@@ -19,8 +20,11 @@ class ZipcodeController {
         def snapshot = params['date'] ?
                 new ZipcodeSummaryQuery().computeSnapshot(Zipcode, params.date('date')) :
                 new ZipcodeSummaryQuery().computeSnapshot(Zipcode, new Date())
-        JSON.use('deep') {
-            render snapshot.toBlocking().first() as JSON
+
+        snapshot.map { s ->
+            JSON.use('deep') {
+                rx.render(s as JSON)
+            }
         }
     }
 
@@ -30,8 +34,10 @@ class ZipcodeController {
                 params['date'] ?
                         new ZipcodePatientsQuery().computeSnapshot(Zipcode, params.date('date')) :
                         new ZipcodePatientsQuery().computeSnapshot(Zipcode, new Date())
-        JSON.use('deep') {
-            render snapshot.toBlocking().first() as JSON
+        snapshot.map { s ->
+            JSON.use('deep') {
+                rx.render(s as JSON)
+            }
         }
     }
 
