@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
  * @param <EventT>      The type of the Event
  * @param <SnapshotIdT> The type of the Snapshot's id field
  * @param <SnapshotT>   The type of the Snapshot
+ *
  * @author Rahul Somasunderam
  */
 public interface VersionedQuerySupport<
@@ -42,6 +43,7 @@ public interface VersionedQuerySupport<
      *
      * @param aggregate   The aggregate for which a snapshot is to be computed
      * @param maxPosition The maximum allowed version of the snapshot that is deemed usable
+     *
      * @return An Observable that returns at most one snapshot
      */
     default Observable<SnapshotT> getLastUsableSnapshot(
@@ -66,6 +68,7 @@ public interface VersionedQuerySupport<
      *
      * @param aggregate The aggregate for which such data is desired
      * @param version   The version of the snapshot that is desired
+     *
      * @return A Tuple containing the snapshot and the events
      */
     default Observable<Tuple2<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
@@ -79,9 +82,10 @@ public interface VersionedQuerySupport<
      *
      * @param aggregate            The aggregate for which such data is desired
      * @param version              The version of the snapshot that is desired
-     * @param reuseEarlierSnapshot Whether earlier snapshots can be reused for this computation.
-     *                             It is generally a good idea to set this to true unless there are
+     * @param reuseEarlierSnapshot Whether earlier snapshots can be reused for this computation. It
+     *                             is generally a good idea to set this to true unless there are
      *                             known reverts that demand this be set to false.
+     *
      * @return A Tuple containing the snapshot and the events
      */
     default Observable<Tuple2<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
@@ -106,13 +110,14 @@ public interface VersionedQuerySupport<
                                 })
                                 .map(ue -> new Tuple2<>(lastSnapshot, ue));
                     } else {
-                        return uncomputedEvents
+                        return uncomputedReverts
                                 .toList()
-                                .doOnNext(ue -> {
+                                .doOnNext(eventList -> {
                                     getLog().info("     Uncomputed reverts exist: "
-                                            + ue.stream()
-                                            .map(it -> it.getId().toString())
-                                            .collect(Collectors.joining(", ", "[\n    ", "\n]"))
+                                            + eventList.stream()
+                                            .map(EventT::toString)
+                                            .collect(Collectors.joining(
+                                                    ",\n    ", "[\n    ", "\n]"))
                                     );
                                 })
                                 .flatMap(ue ->
@@ -153,6 +158,7 @@ public interface VersionedQuerySupport<
      * @param version   The version number, starting at 1
      * @param redirect  If there has been a deprecation, redirect to the current aggregate's
      *                  snapshot. Defaults to true.
+     *
      * @return An Observable that returns at most one Snapshot
      */
     default Observable<SnapshotT> computeSnapshot(
@@ -215,6 +221,7 @@ public interface VersionedQuerySupport<
      *
      * @param aggregate The aggregate
      * @param version   The version number, starting at 1
+     *
      * @return An Observable that returns at most one Snapshot
      */
     default Observable<SnapshotT> computeSnapshot(AggregateT aggregate, long version) {

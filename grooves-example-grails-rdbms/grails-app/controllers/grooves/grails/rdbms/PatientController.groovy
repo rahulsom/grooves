@@ -6,7 +6,13 @@ import grails.transaction.Transactional
 
 import static org.springframework.http.HttpStatus.NOT_FOUND
 
+/**
+ * Allows access to Patient information over HTTP
+ *
+ * @author Rahul Somasunderam
+ */
 @Transactional(readOnly = true)
+@SuppressWarnings(['DuplicateStringLiteral'])
 class PatientController implements RxController {
 
     def index(Integer max) {
@@ -19,28 +25,30 @@ class PatientController implements RxController {
     }
 
     def account(Patient patient) {
+        def query = new PatientAccountQuery()
         def snapshot = params.version ?
-                new PatientAccountQuery().computeSnapshot(patient, params.long('version')) :
+                query.computeSnapshot(patient, params.long('version')) :
                 params['date'] ?
-                        new PatientAccountQuery().computeSnapshot(patient, params.date('date')) :
-                        new PatientAccountQuery().computeSnapshot(patient, Long.MAX_VALUE)
+                        query.computeSnapshot(patient, params.date('date')) :
+                        query.computeSnapshot(patient, Long.MAX_VALUE)
 
         snapshot.
                 map { patientAccount ->
-                    println patientAccount.toString().length()
+                    patientAccount.toString().length()
                     rx.respond patientAccount
                 }
     }
 
     def health(Patient patient) {
+        def query = new PatientHealthQuery()
         def snapshot = params.version ?
-                new PatientHealthQuery().computeSnapshot(patient, params.long('version')) :
+                query.computeSnapshot(patient, params.long('version')) :
                 params['date'] ?
-                        new PatientHealthQuery().computeSnapshot(patient, params.date('date')) :
-                        new PatientHealthQuery().computeSnapshot(patient, Long.MAX_VALUE)
+                        query.computeSnapshot(patient, params.date('date')) :
+                        query.computeSnapshot(patient, Long.MAX_VALUE)
 
         snapshot.map { s ->
-            println s.toString().length()
+            s.toString().length()
             JSON.use('deep') {
                 rx.render(s as JSON)
             }
@@ -50,8 +58,9 @@ class PatientController implements RxController {
     protected void notFound() {
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'patient.label', default: 'Patient'), params.id])
-                redirect action: "index", method: "GET"
+                flash.message = message(code: 'default.not.found.message',
+                        args: [message(code: 'patient.label', default: 'Patient'), params.id])
+                redirect action: 'index', method: 'GET'
             }
             '*' { render status: NOT_FOUND }
         }

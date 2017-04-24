@@ -1,10 +1,18 @@
 package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
+import groovy.transform.EqualsAndHashCode
 
+/**
+ * Represents a patient's health
+ *
+ * @author Rahul Somasunderam
+ */
+@SuppressWarnings(['DuplicateStringLiteral',])
+@EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition',])
 class PatientHealth implements Snapshot<Patient, String, Long, PatientEvent> {
 
-    static mapWith = "mongo"
+    static mapWith = 'mongo'
 
     String id
     Long lastEventPosition
@@ -29,7 +37,7 @@ class PatientHealth implements Snapshot<Patient, String, Long, PatientEvent> {
 
     static hasMany = [
             procedures   : Procedure,
-            deprecatesIds: Long
+            deprecatesIds: Long,
     ]
 
     static constraints = {
@@ -38,9 +46,14 @@ class PatientHealth implements Snapshot<Patient, String, Long, PatientEvent> {
 
     static embedded = ['procedures', 'processingErrors']
     static transients = ['aggregate', 'deprecatedBy', 'deprecates']
+
+    @Override String toString() { "PatientHealth($id, $aggregateId, $lastEventPosition)" }
 }
 
+@EqualsAndHashCode
+@SuppressWarnings(['GrailsDomainReservedSqlKeywordName'])
 class Procedure {
     String code
     Date date
+    @Override String toString() { "Procedure($code, $date)" }
 }

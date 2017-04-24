@@ -1,9 +1,17 @@
 package grooves.grails.rdbms
 
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
+/**
+ * Represents a patient's health
+ *
+ * @author Rahul Somasunderam
+ */
 @ToString
+@SuppressWarnings(['DuplicateStringLiteral'])
+@EqualsAndHashCode(includes = ['aggregate', 'lastEventPosition'])
 class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
 
     Long lastEventPosition
@@ -20,10 +28,10 @@ class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
 
     static hasMany = [
             deprecates: Patient,
-            procedures: Procedure
+            procedures: Procedure,
     ]
 
-    static transients = ['aggregate']
+    static transients = ['aggregate',]
 
     static constraints = {
         deprecatedBy nullable: true

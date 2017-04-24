@@ -1,10 +1,17 @@
 package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.snapshots.Join
+import groovy.transform.EqualsAndHashCode
 
+/**
+ * Joins Doctor with Patients
+ *
+ * @author Rahul Somasunderam
+ */
+@EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition', ])
 class DoctorPatients implements Join<Doctor, String, Long, Long, DoctorEvent> {
 
-    static mapWith = "mongo"
+    static mapWith = 'mongo'
 
     String id
     Long lastEventPosition
@@ -26,13 +33,15 @@ class DoctorPatients implements Join<Doctor, String, Long, Long, DoctorEvent> {
     List<Long> joinedIds
 
     static hasMany = [
-            deprecatesIds: Long
+            deprecatesIds: Long,
     ]
 
     static constraints = {
         deprecatedById nullable: true
     }
 
-    static embedded = ['procedures', 'processingErrors']
-    static transients = ['aggregate', 'deprecatedBy', 'deprecates']
+    static embedded = ['procedures', 'processingErrors', ]
+    static transients = ['aggregate', 'deprecatedBy', 'deprecates', ]
+
+    @Override String toString() { "DoctorPatients($id, $aggregateId, $lastEventPosition)" }
 }

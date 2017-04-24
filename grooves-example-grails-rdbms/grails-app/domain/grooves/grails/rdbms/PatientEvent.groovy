@@ -1,12 +1,20 @@
 package grooves.grails.rdbms
 
+import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.events.DeprecatedBy
 import com.github.rahulsom.grooves.api.events.Deprecates
-import com.github.rahulsom.grooves.transformations.Event
-import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.events.RevertEvent
+import com.github.rahulsom.grooves.transformations.Event
 import groovy.json.JsonBuilder
+import groovy.transform.EqualsAndHashCode
 
+/**
+ * Represents Patient Events
+ *
+ * @author Rahul Somasunderam
+ */
+@EqualsAndHashCode
+@SuppressWarnings(['AbstractClassWithoutAbstractMethod', 'GrailsDomainReservedSqlKeywordName'])
 abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> {
 
     RevertEvent<Patient, Long, PatientEvent> revertedBy
@@ -19,53 +27,65 @@ abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> {
 
     static constraints = {
     }
+    @Override String toString() { "PatientEvent $id" }
 }
 
 @Event(Patient)
+@EqualsAndHashCode
 class PatientCreated extends PatientEvent {
     String name
 
     @Override
     String getAudit() { new JsonBuilder([name: name]).toString() }
+    @Override String toString() { "<$id> created" }
 }
 
 @Event(Patient)
+@EqualsAndHashCode
 class ProcedurePerformed extends PatientEvent {
     String code
     BigDecimal cost
 
     @Override
     String getAudit() { new JsonBuilder([code: code, cost: cost]).toString() }
+    @Override String toString() { "<$id> performed $code for $cost" }
 }
 
 @Event(Patient)
+@EqualsAndHashCode
 class PaymentMade extends PatientEvent {
     BigDecimal amount
 
     @Override
     String getAudit() { new JsonBuilder([amount: amount]).toString() }
+    @Override String toString() { "<$id> paid $amount" }
 }
 
-class PatientEventReverted extends PatientEvent implements RevertEvent<Patient, Long, PatientEvent> {
+@EqualsAndHashCode
+class PatientEventReverted extends PatientEvent
+        implements RevertEvent<Patient, Long, PatientEvent> {
     Long revertedEventId
 
     @Override
     String getAudit() { new JsonBuilder([revertedEvent: revertedEventId]).toString() }
+    @Override String toString() { "<$id> reverted $revertedEventId" }
 }
 
-
-class PatientDeprecatedBy extends PatientEvent implements DeprecatedBy<Patient, Long, PatientEvent> {
+@EqualsAndHashCode
+class PatientDeprecatedBy extends PatientEvent
+        implements DeprecatedBy<Patient, Long, PatientEvent> {
     PatientDeprecates converse
     Patient deprecator
 
     @Override String getAudit() { new JsonBuilder([deprecatedBy: deprecator.id]).toString() }
-    @Override String toString() { "<$id> deprecated by #${deprecator.id}"}
+    @Override String toString() { "<$id> deprecated by #${deprecator.id}" }
 }
 
+@EqualsAndHashCode
 class PatientDeprecates extends PatientEvent implements Deprecates<Patient, Long, PatientEvent> {
     PatientDeprecatedBy converse
     Patient deprecated
 
     @Override String getAudit() { new JsonBuilder([deprecates: deprecated.id]).toString() }
-    @Override String toString() { "<$id> deprecates #${deprecated.id}"}
+    @Override String toString() { "<$id> deprecates #${deprecated.id}" }
 }

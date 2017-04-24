@@ -1,12 +1,17 @@
 package grooves.grails.rdbms
 
 import groovy.transform.EqualsAndHashCode
-import groovy.transform.ToString
 
+/**
+ * Represents a Procedure performed on a patient
+ *
+ * @author Rahul Somasunderam
+ */
 @EqualsAndHashCode
+@SuppressWarnings(['GrailsDomainReservedSqlKeywordName'])
 class Procedure {
     static belongsTo = [
-        patientHealth: PatientHealth
+            patientHealth: PatientHealth,
     ]
 
     static mapping = {

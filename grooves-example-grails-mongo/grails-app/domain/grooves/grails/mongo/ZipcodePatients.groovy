@@ -1,10 +1,17 @@
 package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.snapshots.Join
+import groovy.transform.EqualsAndHashCode
 
+/**
+ * Represents a join between Zipcode and Patient
+ *
+ * @author Rahul Somasunderam
+ */
+@EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition',])
 class ZipcodePatients implements Join<Zipcode, String, Long, Long, ZipcodeEvent> {
 
-    static mapWith = "mongo"
+    static mapWith = 'mongo'
 
     String id
     Long lastEventPosition
@@ -26,19 +33,19 @@ class ZipcodePatients implements Join<Zipcode, String, Long, Long, ZipcodeEvent>
     List<Long> joinedIds
 
     static hasMany = [
-            deprecatesIds: Long
+            deprecatesIds: Long,
     ]
 
     static constraints = {
         deprecatedById nullable: true
     }
 
-    static embedded = ['procedures', 'processingErrors']
-    static transients = ['aggregate', 'deprecatedBy', 'deprecates']
-
+    static embedded = ['procedures', 'processingErrors',]
+    static transients = ['aggregate', 'deprecatedBy', 'deprecates',]
 
     @Override
     String toString() {
-        "ZipcodePatients{id=$id, lastEvent=($lastEventPosition, $lastEventTimestamp), aggregateId=$aggregateId}"
+        "ZipcodePatients{id=$id, lastEvent=($lastEventPosition, $lastEventTimestamp), " +
+                "aggregateId=$aggregateId}"
     }
 }

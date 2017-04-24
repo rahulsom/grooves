@@ -6,7 +6,13 @@ import grails.transaction.Transactional
 
 import static org.springframework.http.HttpStatus.NOT_FOUND
 
+/**
+ * HTTP API for Patient
+ *
+ * @author Rahul Somasunderam
+ */
 @Transactional(readOnly = true)
+@SuppressWarnings(['DuplicateStringLiteral'])
 class PatientController implements RxController {
 
     def index(Integer max) {
@@ -22,11 +28,12 @@ class PatientController implements RxController {
 
     def account(Patient patient) {
         log.info "$params"
+        def query = new PatientAccountQuery()
         def snapshot = params.version ?
-                new PatientAccountQuery().computeSnapshot(patient, params.long('version')) :
+                query.computeSnapshot(patient, params.long('version')) :
                 params['date'] ?
-                        new PatientAccountQuery().computeSnapshot(patient, params.date('date')) :
-                        new PatientAccountQuery().computeSnapshot(patient, Long.MAX_VALUE)
+                        query.computeSnapshot(patient, params.date('date')) :
+                        query.computeSnapshot(patient, Long.MAX_VALUE)
 
         snapshot.map {
             rx.respond(it)
@@ -35,11 +42,12 @@ class PatientController implements RxController {
 
     def health(Patient patient) {
         log.info "$params"
+        def query = new PatientHealthQuery()
         def snapshot = params.version ?
-                new PatientHealthQuery().computeSnapshot(patient, params.long('version')) :
+                query.computeSnapshot(patient, params.long('version')) :
                 params['date'] ?
-                        new PatientHealthQuery().computeSnapshot(patient, params.date('date')) :
-                        new PatientHealthQuery().computeSnapshot(patient, Long.MAX_VALUE)
+                        query.computeSnapshot(patient, params.date('date')) :
+                        query.computeSnapshot(patient, Long.MAX_VALUE)
 
         snapshot.map { s ->
             JSON.use('deep') {
@@ -52,8 +60,9 @@ class PatientController implements RxController {
         log.info "$params"
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'patient.label', default: 'Patient'), params.id])
-                redirect action: "index", method: "GET"
+                flash.message = message(code: 'default.not.found.message',
+                        args: [message(code: 'patient.label', default: 'Patient'), params.id])
+                redirect action: 'index', method: 'GET'
             }
             '*' { render status: NOT_FOUND }
         }

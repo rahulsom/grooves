@@ -5,16 +5,20 @@ import grooves.grails.rdbms.*
 
 import java.util.function.Consumer
 
+/**
+ * Initializes Application with usable data
+ */
+@SuppressWarnings(['DuplicateNumberLiteral', 'DuplicateStringLiteral'])
 class BootStrap {
 
     def init = { servletContext ->
-        createJohnLennon()
-        createRingoStarr()
-        createPaulMcCartney()
-        createGeorgeHarrison()
+        setupJohnLennon()
+        setupRingoStarr()
+        setupPaulMcCartney()
+        setupGeorgeHarrison()
     }
 
-    private Patient createJohnLennon() {
+    private Patient setupJohnLennon() {
         def patient = new Patient(uniqueId: '42').save(flush: true, failOnError: true)
 
         on(patient) {
@@ -34,7 +38,7 @@ class BootStrap {
         }
     }
 
-    private Patient createRingoStarr() {
+    private Patient setupRingoStarr() {
         def patient = new Patient(uniqueId: '43').save(flush: true, failOnError: true)
 
         on(patient) {
@@ -54,7 +58,7 @@ class BootStrap {
         }
     }
 
-    private Patient createPaulMcCartney() {
+    private Patient setupPaulMcCartney() {
         def patient = new Patient(uniqueId: '44').save(flush: true, failOnError: true)
 
         on(patient) {
@@ -71,7 +75,6 @@ class BootStrap {
             apply new PatientEventReverted(revertedEventId: pmt.id)
             apply new PaymentMade(amount: 60.00)
 
-
             snapshotWith new PatientAccountQuery()
             snapshotWith new PatientHealthQuery()
 
@@ -83,7 +86,7 @@ class BootStrap {
 
     }
 
-    private Patient createGeorgeHarrison() {
+    private Patient setupGeorgeHarrison() {
         def patient = new Patient(uniqueId: '45').save(flush: true, failOnError: true)
         def patient2 = new Patient(uniqueId: '46').save(flush: true, failOnError: true)
 
@@ -97,7 +100,8 @@ class BootStrap {
         }
 
         on(patient2) {
-            apply new PatientCreated(name: 'George Harrison, Member of the Most Excellent Order of the British Empire')
+            apply new PatientCreated(name:
+                    'George Harrison, Member of the Most Excellent Order of the British Empire')
             apply new PaymentMade(amount: 100.25)
 
             snapshotWith new PatientAccountQuery()
@@ -116,10 +120,12 @@ class BootStrap {
      * @return
      */
     private PatientDeprecatedBy merge(Patient self, Patient into) {
-        def e1 = new PatientDeprecatedBy(aggregate: self, createdBy: 'anonymous' , deprecator: into,
-                timestamp: currDate, position: PatientEvent.countByAggregate(self) + 1)
-        def e2 = new PatientDeprecates(aggregate: into, createdBy: 'anonymous' , deprecated: self,
-                timestamp: currDate, converse: e1, position: PatientEvent.countByAggregate(into) + 1)
+        def e1 = new PatientDeprecatedBy(aggregate: self, createdBy: 'anonymous', deprecator: into,
+                timestamp: currDate,
+                position: PatientEvent.countByAggregate(self) + 1, )
+        def e2 = new PatientDeprecates(aggregate: into, createdBy: 'anonymous', deprecated: self,
+                timestamp: currDate, converse: e1,
+                position: PatientEvent.countByAggregate(into) + 1, )
         e1.converse = e2
         e2.save(flush: true, failOnError: true)
         e2.converse
@@ -130,9 +136,10 @@ class BootStrap {
     Patient on(Patient patient, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer<PatientEvent>
         def positionSupplier = { PatientEvent.countByAggregate(patient) + 1 }
-        def userSupplier = {'anonymous'}
-        def dateSupplier = {currDate+=1; currDate}
-        new EventsDsl<Patient, Long, PatientEvent>().on(patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
+        def userSupplier = { 'anonymous' }
+        def dateSupplier = { currDate += 1; currDate }
+        new EventsDsl<Patient, Long, PatientEvent>().on(
+                patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
     }
 
     def destroy = {

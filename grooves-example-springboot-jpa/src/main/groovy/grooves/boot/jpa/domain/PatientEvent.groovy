@@ -1,18 +1,24 @@
 package grooves.boot.jpa.domain
 
+import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.events.DeprecatedBy
 import com.github.rahulsom.grooves.api.events.Deprecates
-import com.github.rahulsom.grooves.transformations.Event
-import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.events.RevertEvent
+import com.github.rahulsom.grooves.transformations.Event
 import groovy.json.JsonBuilder
 import groovy.transform.ToString
 
 import javax.persistence.*
 
+/**
+ * Domain Model for Patient Event
+ *
+ * @author Rahul Somasunderam
+ */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "eventType")
+@DiscriminatorColumn(name = 'eventType')
+@SuppressWarnings(['AbstractClassWithoutAbstractMethod'])
 abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> {
 
     @GeneratedValue @Id Long id
@@ -57,7 +63,8 @@ class PaymentMade extends PatientEvent {
 
 @Entity
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
-class PatientEventReverted extends PatientEvent implements RevertEvent<Patient, Long, PatientEvent> {
+class PatientEventReverted extends PatientEvent implements
+        RevertEvent<Patient, Long, PatientEvent> {
     Long revertedEventId
 
     @Override
@@ -65,7 +72,8 @@ class PatientEventReverted extends PatientEvent implements RevertEvent<Patient, 
 }
 
 @Entity
-class PatientDeprecatedBy extends PatientEvent implements DeprecatedBy<Patient, Long, PatientEvent> {
+class PatientDeprecatedBy extends PatientEvent implements
+        DeprecatedBy<Patient, Long, PatientEvent> {
     @OneToOne PatientDeprecates converse
     @OneToOne Patient deprecator
 

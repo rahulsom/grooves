@@ -8,9 +8,14 @@ import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 
+/**
+ * Queries for PatientHealth data
+ */
 @Query(aggregate = Patient, snapshot = PatientHealth)
 @GrailsCompileStatic
-class PatientHealthQuery implements GormQuerySupport<Patient, Long, PatientEvent, String, PatientHealth> {
+@SuppressWarnings(['DuplicateStringLiteral'])
+class PatientHealthQuery implements
+        GormQuerySupport<Patient, Long, PatientEvent, String, PatientHealth> {
 
     final Class<PatientHealth> snapshotClass = PatientHealth
     final Class<PatientEvent> eventClass = PatientEvent
@@ -49,11 +54,14 @@ class PatientHealthQuery implements GormQuerySupport<Patient, Long, PatientEvent
         CONTINUE
     }
 
+    @SuppressWarnings(['UnusedMethodParameter'])
     EventApplyOutcome applyPaymentMade(PaymentMade event, PatientHealth snapshot) {
         CONTINUE // Ignore payments
     }
 
-    EventApplyOutcome applyPatientAddedToZipcode(PatientAddedToZipcode event, PatientHealth snapshot) {
+    @SuppressWarnings(['UnusedMethodParameter'])
+    EventApplyOutcome applyPatientAddedToZipcode(
+            PatientAddedToZipcode event, PatientHealth snapshot) {
         CONTINUE // Ignore zip change
     }
 

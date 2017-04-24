@@ -1,14 +1,16 @@
 package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome
-import com.github.rahulsom.grooves.api.events.DisjoinEvent
-import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import com.github.rahulsom.grooves.grails.GormJoinSupport
-import grails.compiler.GrailsCompileStatic
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 
+/**
+ * Queries for Doctor Patient relationships
+ *
+ * @author Rahul Somasunderam
+ */
 class DoctorPatientsQuery implements GormJoinSupport<
         Doctor, Long, DoctorEvent, Long, Patient, String, DoctorPatients, DoctorGotPatient,
         DoctorLostPatient> {

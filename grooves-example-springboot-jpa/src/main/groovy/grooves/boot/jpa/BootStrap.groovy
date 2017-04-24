@@ -14,7 +14,11 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.function.Consumer
 import java.util.function.Supplier
 
+/**
+ * Initializes Application with usable data
+ */
 @Component
+@SuppressWarnings(['DuplicateNumberLiteral', 'DuplicateStringLiteral'])
 class BootStrap implements InitializingBean {
 
     @Autowired PatientRepository patientRepository
@@ -23,13 +27,13 @@ class BootStrap implements InitializingBean {
     @Autowired PatientHealthQuery patientHealthQuery
 
     void init() {
-        createJohnLennon()
-        createRingoStarr()
-        createPaulMcCartney()
-        createGeorgeHarrison()
+        setupJohnLennon()
+        setupRingoStarr()
+        setupPaulMcCartney()
+        setupGeorgeHarrison()
     }
 
-    private Patient createJohnLennon() {
+    private Patient setupJohnLennon() {
         def patient = patientRepository.save(new Patient(uniqueId: '42'))
 
         on(patient) {
@@ -49,7 +53,7 @@ class BootStrap implements InitializingBean {
         }
     }
 
-    private Patient createRingoStarr() {
+    private Patient setupRingoStarr() {
         def patient = patientRepository.save(new Patient(uniqueId: '43'))
 
         on(patient) {
@@ -69,7 +73,7 @@ class BootStrap implements InitializingBean {
         }
     }
 
-    private Patient createPaulMcCartney() {
+    private Patient setupPaulMcCartney() {
         def patient = patientRepository.save(new Patient(uniqueId: '44'))
 
         on(patient) {
@@ -86,7 +90,6 @@ class BootStrap implements InitializingBean {
             apply new PatientEventReverted(revertedEventId: pmt.id)
             apply new PaymentMade(amount: 60.00)
 
-
             snapshotWith patientAccountQuery
             snapshotWith patientHealthQuery
 
@@ -98,7 +101,7 @@ class BootStrap implements InitializingBean {
 
     }
 
-    private Patient createGeorgeHarrison() {
+    private Patient setupGeorgeHarrison() {
         def patient = patientRepository.save(new Patient(uniqueId: '45'))
         def patient2 = patientRepository.save(new Patient(uniqueId: '46'))
 
@@ -112,7 +115,8 @@ class BootStrap implements InitializingBean {
         }
 
         on(patient2) {
-            apply new PatientCreated(name: 'George Harrison, Member of the Most Excellent Order of the British Empire')
+            apply new PatientCreated(name:
+                    'George Harrison, Member of the Most Excellent Order of the British Empire')
             apply new PaymentMade(amount: 100.25)
 
             snapshotWith patientAccountQuery
@@ -131,12 +135,14 @@ class BootStrap implements InitializingBean {
      * @return
      */
     private PatientDeprecatedBy merge(Patient self, Patient into) {
-        def e1 = new PatientDeprecatedBy(aggregate: self, createdBy: 'anonymous' , deprecator: into,
-                timestamp: currDate, position: patientEventRepository.countByAggregateId(self.id) + 1)
-        def e2 = new PatientDeprecates(aggregate: into, createdBy: 'anonymous' , deprecated: self,
-                timestamp: currDate, converse: e1, position: patientEventRepository.countByAggregateId(into.id)+ 1)
+        def e1 = new PatientDeprecatedBy(aggregate: self, createdBy: 'anonymous', deprecator: into,
+                timestamp: currDate,
+                position: patientEventRepository.countByAggregateId(self.id) + 1, )
+        def e2 = new PatientDeprecates(aggregate: into, createdBy: 'anonymous', deprecated: self,
+                timestamp: currDate, converse: e1,
+                position: patientEventRepository.countByAggregateId(into.id) + 1, )
         e1.converse = e2
-        patientEventRepository.save([e1,e2])
+        patientEventRepository.save([e1, e2, ])
         e2.converse
     }
 
@@ -144,10 +150,13 @@ class BootStrap implements InitializingBean {
 
     Patient on(Patient patient, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
         def eventSaver = { patientEventRepository.save(it) } as Consumer
-        def positionSupplier = { patientEventRepository.countByAggregateId(patient.id) + 1 } as Supplier<Long>
+        def positionSupplier = {
+            patientEventRepository.countByAggregateId(patient.id) + 1
+        } as Supplier<Long>
         def userSupplier = { 'anonymous' }
         def dateSupplier = { currDate += 1; currDate }
-        new EventsDsl<Patient, Long, PatientEvent>().on(patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
+        new EventsDsl<Patient, Long, PatientEvent>().on(
+                patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
     }
 
     @Transactional

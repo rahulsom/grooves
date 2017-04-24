@@ -4,7 +4,13 @@ import grails.converters.JSON
 import grails.rx.web.RxController
 import grails.transaction.Transactional
 
+/**
+ * HTTP API for Zipcode
+ *
+ * @author Rahul Somasunderam
+ */
 @Transactional(readOnly = true)
+@SuppressWarnings(['DuplicateStringLiteral'])
 class ZipcodeController implements RxController {
 
     def index(Integer max) {
@@ -12,14 +18,14 @@ class ZipcodeController implements RxController {
         respond Zipcode.list(params), model: [zipcodeCount: Zipcode.count()]
     }
 
-    def show(Zipcode Zipcode) {
-        respond Zipcode
+    def show(Zipcode zipcode) {
+        respond zipcode
     }
 
-    def summary(Zipcode Zipcode) {
+    def summary(Zipcode zipcode) {
         def snapshot = params['date'] ?
-                new ZipcodeSummaryQuery().computeSnapshot(Zipcode, params.date('date')) :
-                new ZipcodeSummaryQuery().computeSnapshot(Zipcode, new Date())
+                new ZipcodeSummaryQuery().computeSnapshot(zipcode, params.date('date')) :
+                new ZipcodeSummaryQuery().computeSnapshot(zipcode, new Date())
 
         snapshot.map { s ->
             JSON.use('deep') {
@@ -28,12 +34,12 @@ class ZipcodeController implements RxController {
         }
     }
 
-    def patients(Zipcode Zipcode) {
+    def patients(Zipcode zipcode) {
         def snapshot = params['version'] ?
-                new ZipcodePatientsQuery().computeSnapshot(Zipcode, params.long('version')) :
+                new ZipcodePatientsQuery().computeSnapshot(zipcode, params.long('version')) :
                 params['date'] ?
-                        new ZipcodePatientsQuery().computeSnapshot(Zipcode, params.date('date')) :
-                        new ZipcodePatientsQuery().computeSnapshot(Zipcode, new Date())
+                        new ZipcodePatientsQuery().computeSnapshot(zipcode, params.date('date')) :
+                        new ZipcodePatientsQuery().computeSnapshot(zipcode, new Date())
         snapshot.map { s ->
             JSON.use('deep') {
                 rx.render(s as JSON)

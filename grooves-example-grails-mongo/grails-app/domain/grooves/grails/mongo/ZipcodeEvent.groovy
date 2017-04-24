@@ -1,12 +1,21 @@
 package grooves.grails.mongo
 
-import com.github.rahulsom.grooves.transformations.Event
+import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.events.DisjoinEvent
 import com.github.rahulsom.grooves.api.events.JoinEvent
 import com.github.rahulsom.grooves.api.events.RevertEvent
-import com.github.rahulsom.grooves.api.events.BaseEvent
+import com.github.rahulsom.grooves.transformations.Event
 import groovy.json.JsonBuilder
+import groovy.transform.EqualsAndHashCode
 
+/**
+ * Base Zipcode Event
+ *
+ * @author Rahul Somasunderam
+ */
+@SuppressWarnings(['DuplicateStringLiteral', 'AbstractClassWithoutAbstractMethod',
+        'GrailsDomainReservedSqlKeywordName', ])
+@EqualsAndHashCode(includes = ['aggregate', 'position'])
 abstract class ZipcodeEvent implements BaseEvent<Zipcode, Long, ZipcodeEvent> {
 
     RevertEvent<Zipcode, Long, ZipcodeEvent> revertedBy
@@ -19,9 +28,12 @@ abstract class ZipcodeEvent implements BaseEvent<Zipcode, Long, ZipcodeEvent> {
 
     static constraints = {
     }
+
+    @Override String toString() { "ZipcodeEvent($id, $aggregateId)" }
 }
 
 @Event(Zipcode)
+@EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeCreated extends ZipcodeEvent {
     String name
 
@@ -30,31 +42,37 @@ class ZipcodeCreated extends ZipcodeEvent {
 }
 
 @Event(Zipcode)
-class ZipcodeGotPatient extends ZipcodeEvent implements JoinEvent<Zipcode, Long, ZipcodeEvent, Patient> {
+@EqualsAndHashCode(includes = ['aggregate', 'position'])
+class ZipcodeGotPatient extends ZipcodeEvent implements
+        JoinEvent<Zipcode, Long, ZipcodeEvent, Patient> {
     Patient patient
 
     @Override String getAudit() { new JsonBuilder([patientId: joinAggregate?.id]).toString() }
     @Override Patient getJoinAggregate() { patient }
-    @Override void setJoinAggregate(Patient rollupAggregate) { this.patient = rollupAggregate}
+    @Override void setJoinAggregate(Patient rollupAggregate) { this.patient = rollupAggregate }
     @Override String toString() { "${aggregate} got ${patient}" }
 
     static transients = ['joinAggregate']
 }
 
 @Event(Zipcode)
-class ZipcodeLostPatient extends ZipcodeEvent implements DisjoinEvent<Zipcode, Long, ZipcodeEvent, Patient> {
+@EqualsAndHashCode(includes = ['aggregate', 'position'])
+class ZipcodeLostPatient extends ZipcodeEvent implements
+        DisjoinEvent<Zipcode, Long, ZipcodeEvent, Patient> {
     Patient patient
 
     @Override String getAudit() { new JsonBuilder([patientId: joinAggregate?.id]).toString() }
     @Override Patient getJoinAggregate() { patient }
-    @Override void setJoinAggregate(Patient rollupAggregate) { this.patient = rollupAggregate}
+    @Override void setJoinAggregate(Patient rollupAggregate) { this.patient = rollupAggregate }
     @Override String toString() { "${aggregate} lost ${patient}" }
 
     static transients = ['joinAggregate']
 }
 
 @Event(Zipcode)
-class ZipcodeGotDoctor extends ZipcodeEvent implements JoinEvent<Zipcode, Long, ZipcodeEvent, Doctor> {
+@EqualsAndHashCode(includes = ['aggregate', 'position'])
+class ZipcodeGotDoctor extends ZipcodeEvent implements
+        JoinEvent<Zipcode, Long, ZipcodeEvent, Doctor> {
     Doctor doctor
 
     @Override String getAudit() { new JsonBuilder([doctorId: joinAggregate?.id]).toString() }
@@ -66,7 +84,9 @@ class ZipcodeGotDoctor extends ZipcodeEvent implements JoinEvent<Zipcode, Long, 
 }
 
 @Event(Zipcode)
-class ZipcodeLostDoctor extends ZipcodeEvent implements DisjoinEvent<Zipcode, Long, ZipcodeEvent, Doctor> {
+@EqualsAndHashCode(includes = ['aggregate', 'position'])
+class ZipcodeLostDoctor extends ZipcodeEvent implements
+        DisjoinEvent<Zipcode, Long, ZipcodeEvent, Doctor> {
     Doctor doctor
 
     @Override String getAudit() { new JsonBuilder([doctorId: joinAggregate?.id]).toString() }

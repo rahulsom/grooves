@@ -12,6 +12,7 @@ buildscript {
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply from: '../gradle/codenarc/codenarc.gradle'
 
 jar {
     baseName = 'grooves-example-springboot-jpa'
@@ -31,7 +32,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-integration')
     compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.codehaus.groovy:groovy')
+    compile('org.codehaus.groovy:groovy-all')
     runtime('com.h2database:h2')
     testCompile('org.springframework.boot:spring-boot-starter-test')
 

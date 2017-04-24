@@ -3,6 +3,11 @@ package grooves.grails.mongo
 import grails.compiler.GrailsCompileStatic
 import rx.Observable
 
+/**
+ * Summarizes the patients' health within a zipcode
+ *
+ * @author Rahul Somasunderam
+ */
 @GrailsCompileStatic
 class ZipcodeSummaryQuery {
 
@@ -10,10 +15,14 @@ class ZipcodeSummaryQuery {
         new ZipcodePatientsQuery().computeSnapshot(aggregate, moment).
                 flatMap {
                     Observable.from(it.joinedIds).
-                            flatMap { new PatientHealthQuery().computeSnapshot(Patient.get(it), moment) }.
-                            reduce(createEmptySnapshot()) { ZipcodeSummary snapshot, PatientHealth health ->
-                                addHealthToSnapshot(health, snapshot)
-                                snapshot
+                            flatMap {
+                                def healthQuery = new PatientHealthQuery()
+                                healthQuery.computeSnapshot(Patient.get(it), moment)
+                            }.
+                            reduce(createEmptySnapshot()) {
+                                ZipcodeSummary snapshot, PatientHealth health ->
+                                    addHealthToSnapshot(health, snapshot)
+                                    snapshot
                             }
                 }
     }
@@ -31,6 +40,7 @@ class ZipcodeSummaryQuery {
         }
     }
 
+    @SuppressWarnings(['FactoryMethodName'])
     ZipcodeSummary createEmptySnapshot() {
         new ZipcodeSummary(deprecatesIds: [], procedureCounts: [])
     }

@@ -6,9 +6,13 @@ import grooves.grails.mongo.*
 
 import java.util.function.Consumer
 
+/**
+ * Initializes Application with usable data
+ */
+@SuppressWarnings(['DuplicateNumberLiteral', 'DuplicateStringLiteral', 'InsecureRandom'])
 class BootStrap {
 
-    public static final int    ONE_DAY    = 24 * 60 * 60 * 1000
+    public static final int ONE_DAY = 24 * 60 * 60 * 1000
     public static final String START_DATE = '2016-01-01'
 
     def init = { servletContext ->
@@ -16,12 +20,13 @@ class BootStrap {
             apply new ZipcodeCreated(name: 'Campbell, California', timestamp: date(START_DATE))
         }
         def santanaRow = on(new Zipcode(uniqueId: '95128').save(flush: true, failOnError: true)) {
-            apply new ZipcodeCreated(name: 'Santana Row, San Jose, California', timestamp: date(START_DATE))
+            apply new ZipcodeCreated(name: 'Santana Row, San Jose, California',
+                    timestamp: date(START_DATE),)
         }
-        createJohnLennon()
-        createRingoStarr()
-        createPaulMcCartney()
-        createGeorgeHarrison()
+        setupJohnLennon()
+        setupRingoStarr()
+        setupPaulMcCartney()
+        setupGeorgeHarrison()
 
         linkZipcodesAndPatients(campbell, santanaRow)
         linkZipcodesAndDoctors(campbell, santanaRow)
@@ -32,14 +37,17 @@ class BootStrap {
             def seed = i * 0.07 + 0.03
             def random = new Random((Long.MAX_VALUE * seed) as long)
 
-            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time + random.nextInt(ONE_DAY))
+            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time
+                    + random.nextInt(ONE_DAY))
 
             def doctor = new Doctor(uniqueId: "A${i}").save(flush: true, failOnError: true)
             on(doctor) {
-                apply new DoctorCreated(name: "${names.getMaleName(seed)} ${names.getLastName(seed)}")
+                apply new DoctorCreated(
+                        name: "${names.getMaleName(seed)} ${names.getLastName(seed)}")
             }
 
-            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time + random.nextInt(ONE_DAY))
+            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time
+                    + random.nextInt(ONE_DAY))
             def zipChanges = random.nextInt(4) + 1
             def zipcode = random.nextBoolean() ? campbell : santanaRow
             Zipcode lastZipcode = null
@@ -47,7 +55,8 @@ class BootStrap {
                 currDate += random.nextInt(10) + 1
                 on(doctor) {
                     if (lastZipcode) {
-                        apply new DoctorRemovedFromZipcode(joinAggregate: lastZipcode, timestamp: currDate)
+                        apply new DoctorRemovedFromZipcode(joinAggregate: lastZipcode,
+                                timestamp: currDate,)
                     }
                     apply new DoctorAddedToZipcode(joinAggregate: zipcode, timestamp: currDate)
                 }
@@ -70,20 +79,20 @@ class BootStrap {
             def seed = i * 0.05 + 0.12
             def random = new Random((Long.MAX_VALUE * seed) as long)
 
-            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time + random.nextInt(ONE_DAY))
+            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time
+                    + random.nextInt(ONE_DAY))
 
             def patient = new Patient(uniqueId: "I${i}").save(flush: true, failOnError: true)
             on(patient) {
-                apply new PatientCreated(name: "${names.getFemaleName(seed)} ${names.getLastName(seed)}")
+                def sp = delegate
+                apply new PatientCreated(
+                        name: "${names.getFemaleName(seed)} ${names.getLastName(seed)}")
                 def numberOfProcedures = random.nextInt(procedures.size())
-                for (int p = 0; p < numberOfProcedures; p++) {
-                    currDate += random.nextInt(5)
-                    def key = procedures.keySet().toList()[p]
-                    apply new ProcedurePerformed(code: key, cost: procedures[key])
-                }
+                setupProcedures(numberOfProcedures, sp, random)
             }
 
-            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time + random.nextInt(ONE_DAY))
+            currDate = new Date(Date.parse('yyyy-MM-dd', START_DATE).time
+                    + random.nextInt(ONE_DAY))
             def zipChanges = random.nextInt(4) + 1
             def zipcode = random.nextBoolean() ? campbell : santanaRow
             Zipcode lastZipcode = null
@@ -91,7 +100,8 @@ class BootStrap {
                 currDate += random.nextInt(10) + 1
                 on(patient) {
                     if (lastZipcode) {
-                        apply new PatientRemovedFromZipcode(joinAggregate: lastZipcode, timestamp: currDate)
+                        apply new PatientRemovedFromZipcode(joinAggregate: lastZipcode,
+                                timestamp: currDate,)
                     }
                     apply new PatientAddedToZipcode(joinAggregate: zipcode, timestamp: currDate)
                 }
@@ -108,6 +118,13 @@ class BootStrap {
             }
         }
     }
+    private void setupProcedures(int numberOfProcedures, EventsDsl.OnSpec sp, Random random) {
+        for (int p = 0; p < numberOfProcedures; p++) {
+            currDate += random.nextInt(5)
+            def key = procedures.keySet().toList()[p]
+            sp.apply new ProcedurePerformed(code: key, cost: procedures[key])
+        }
+    }
 
     def procedures = [
             FLUSHOT       : 32.40,
@@ -122,7 +139,7 @@ class BootStrap {
         Date.parse('yyyy-MM-dd', str)
     }
 
-    private Patient createJohnLennon() {
+    private Patient setupJohnLennon() {
         def patient = new Patient(uniqueId: '42').save(flush: true, failOnError: true)
 
         on(patient) {
@@ -142,7 +159,7 @@ class BootStrap {
         }
     }
 
-    private Patient createRingoStarr() {
+    private Patient setupRingoStarr() {
         def patient = new Patient(uniqueId: '43').save(flush: true, failOnError: true)
 
         on(patient) {
@@ -162,7 +179,7 @@ class BootStrap {
         }
     }
 
-    private Patient createPaulMcCartney() {
+    private Patient setupPaulMcCartney() {
         def patient = new Patient(uniqueId: '44').save(flush: true, failOnError: true)
 
         on(patient) {
@@ -179,7 +196,6 @@ class BootStrap {
             apply new PatientEventReverted(revertedEventId: pmt.id)
             apply new PaymentMade(amount: 60.00)
 
-
             snapshotWith new PatientAccountQuery()
             snapshotWith new PatientHealthQuery()
 
@@ -191,7 +207,7 @@ class BootStrap {
 
     }
 
-    private Patient createGeorgeHarrison() {
+    private Patient setupGeorgeHarrison() {
         def patient = new Patient(uniqueId: '45').save(flush: true, failOnError: true)
         def patient2 = new Patient(uniqueId: '46').save(flush: true, failOnError: true)
 
@@ -205,7 +221,8 @@ class BootStrap {
         }
 
         on(patient2) {
-            apply new PatientCreated(name: 'George Harrison, Member of the Most Excellent Order of the British Empire')
+            apply new PatientCreated(name:
+                    'George Harrison, Member of the Most Excellent Order of the British Empire')
             apply new PaymentMade(amount: 100.25)
 
             snapshotWith new PatientAccountQuery()
@@ -224,10 +241,12 @@ class BootStrap {
      * @return
      */
     private PatientDeprecatedBy merge(Patient self, Patient into) {
-        def e1 = new PatientDeprecatedBy(aggregate: self, createdBy: 'anonymous' , deprecator: into,
-                timestamp: currDate, position: PatientEvent.countByAggregate(self) + 1)
-        def e2 = new PatientDeprecates(aggregate: into, createdBy: 'anonymous' , deprecated: self,
-                timestamp: currDate, converse: e1, position: PatientEvent.countByAggregate(into) + 1)
+        def e1 = new PatientDeprecatedBy(aggregate: self, createdBy: 'anonymous', deprecator: into,
+                timestamp: currDate,
+                position: PatientEvent.countByAggregate(self) + 1,)
+        def e2 = new PatientDeprecates(aggregate: into, createdBy: 'anonymous', deprecated: self,
+                timestamp: currDate, converse: e1,
+                position: PatientEvent.countByAggregate(into) + 1,)
         e1.converse = e2
         e2.save(flush: true, failOnError: true)
         e2.converse
@@ -240,21 +259,24 @@ class BootStrap {
         def positionSupplier = { PatientEvent.countByAggregate(patient) + 1 }
         def userSupplier = { 'anonymous' }
         def dateSupplier = { currDate += 1; currDate }
-        new EventsDsl<Patient, Long, PatientEvent>().on(patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
+        new EventsDsl<Patient, Long, PatientEvent>().on(
+                patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
     }
 
     Zipcode on(Zipcode zipcode, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { ZipcodeEvent.countByAggregate(zipcode) + 1 }
         def userSupplier = { 'anonymous' }
-        new EventsDsl<Zipcode, Long, ZipcodeEvent>().on(zipcode, eventSaver, positionSupplier, userSupplier, closure)
+        new EventsDsl<Zipcode, Long, ZipcodeEvent>().on(
+                zipcode, eventSaver, positionSupplier, userSupplier, closure)
     }
 
     Doctor on(Doctor doctor, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { DoctorEvent.countByAggregate(doctor) + 1 }
         def userSupplier = { 'anonymous' }
-        new EventsDsl<Doctor, Long, DoctorEvent>().on(doctor, eventSaver, positionSupplier, userSupplier, closure)
+        new EventsDsl<Doctor, Long, DoctorEvent>().on(
+                doctor, eventSaver, positionSupplier, userSupplier, closure)
     }
 
     def destroy = {

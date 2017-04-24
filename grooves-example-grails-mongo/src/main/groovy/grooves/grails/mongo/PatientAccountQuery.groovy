@@ -1,16 +1,20 @@
 package grooves.grails.mongo
 
-import com.github.rahulsom.grooves.transformations.Query
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.grails.GormQuerySupport
+import com.github.rahulsom.grooves.transformations.Query
 import grails.compiler.GrailsCompileStatic
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 
+/**
+ * Queries for the PatientAccount
+ */
 @Query(aggregate = Patient, snapshot = PatientAccount)
 @GrailsCompileStatic
-class PatientAccountQuery implements GormQuerySupport<Patient, Long, PatientEvent, String, PatientAccount> {
+class PatientAccountQuery implements
+        GormQuerySupport<Patient, Long, PatientEvent, String, PatientAccount> {
 
     final Class<PatientAccount> snapshotClass = PatientAccount
     final Class<PatientEvent> eventClass = PatientEvent
@@ -55,7 +59,9 @@ class PatientAccountQuery implements GormQuerySupport<Patient, Long, PatientEven
         CONTINUE
     }
 
-    EventApplyOutcome applyPatientAddedToZipcode(PatientAddedToZipcode event, PatientAccount snapshot) {
+    @SuppressWarnings(['DuplicateStringLiteral', 'UnusedMethodParameter', ])
+    EventApplyOutcome applyPatientAddedToZipcode(
+            PatientAddedToZipcode event, PatientAccount snapshot) {
         CONTINUE // Ignore zip change
     }
 }

@@ -17,6 +17,11 @@ import javax.persistence.EntityManager
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 
+/**
+ * Query for Patient Health
+ *
+ * @author Rahul Somasunderam
+ */
 @Transactional
 @Component
 @Query(aggregate = Patient, snapshot = PatientHealth)
@@ -35,7 +40,8 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
     Observable<PatientHealth> getSnapshot(long maxPosition, Patient aggregate) {
         def snapshots = maxPosition == Long.MAX_VALUE ?
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
-                patientHealthRepository.findAllByAggregateIdAndLastEventPositionLessThan(aggregate.id, maxPosition)
+                patientHealthRepository.findAllByAggregateIdAndLastEventPositionLessThan(
+                        aggregate.id, maxPosition)
         snapshots ? Observable.just(snapshots[0]) : Observable.empty()
     }
 
@@ -43,7 +49,8 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
     Observable<PatientHealth> getSnapshot(Date maxTimestamp, Patient aggregate) {
         def snapshots = maxTimestamp == null ?
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
-                patientHealthRepository.findAllByAggregateIdAndLastEventTimestampLessThan(aggregate.id, maxTimestamp)
+                patientHealthRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
+                        aggregate.id, maxTimestamp)
         snapshots ? Observable.just(snapshots[0]) : Observable.empty()
     }
 
@@ -53,21 +60,26 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
     }
 
     @Override
-    Observable<PatientEvent> getUncomputedEvents(Patient patient, PatientHealth lastSnapshot, long version) {
-        Observable.from (patientEventRepository.getUncomputedEventsByVersion(patient, lastSnapshot?.lastEventPosition ?: 0L, version))
+    Observable<PatientEvent> getUncomputedEvents(
+            Patient patient, PatientHealth lastSnapshot, long version) {
+        Observable.from(patientEventRepository.getUncomputedEventsByVersion(
+                patient, lastSnapshot?.lastEventPosition ?: 0L, version))
     }
 
     @Override
-    Observable<PatientEvent> getUncomputedEvents(Patient patient, PatientHealth lastSnapshot, Date snapshotTime) {
+    Observable<PatientEvent> getUncomputedEvents(
+            Patient patient, PatientHealth lastSnapshot, Date snapshotTime) {
         Observable.from(
                 lastSnapshot?.lastEventTimestamp ?
-                        patientEventRepository.getUncomputedEventsByDateRange(patient, lastSnapshot.lastEventTimestamp, snapshotTime) :
-                        patientEventRepository.getUncomputedEventsUntilDate(patient, snapshotTime))
+                        patientEventRepository.getUncomputedEventsByDateRange(
+                                patient, lastSnapshot.lastEventTimestamp, snapshotTime) :
+                        patientEventRepository.getUncomputedEventsUntilDate(
+                                patient, snapshotTime))
     }
 
     @Override
     boolean shouldEventsBeApplied(PatientHealth snapshot) {
-        return true
+        true
     }
 
     @Override
@@ -83,7 +95,7 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
     @Override
     PatientEvent unwrapIfProxy(PatientEvent event) {
         entityManager.
-                unwrap(SessionImplementor.class).
+                unwrap(SessionImplementor).
                 persistenceContext.
                 unproxy(event) as PatientEvent
     }
@@ -104,6 +116,7 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
         CONTINUE
     }
 
+    @SuppressWarnings('UnusedMethodParameter')
     EventApplyOutcome applyPaymentMade(PaymentMade event, PatientHealth snapshot) {
         // Ignore payments
         CONTINUE

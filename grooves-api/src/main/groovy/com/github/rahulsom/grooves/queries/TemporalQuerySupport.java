@@ -106,13 +106,14 @@ public interface TemporalQuerySupport<
                                 })
                                 .map(ue -> new Tuple2<>(lastSnapshot, ue));
                     } else {
-                        return uncomputedEvents
+                        return uncomputedReverts
                                 .toList()
-                                .doOnNext(ue -> {
+                                .doOnNext(events -> {
                                     getLog().info("     Uncomputed reverts exist: "
-                                            + ue.stream()
-                                            .map(it -> it.getId().toString())
-                                            .collect(Collectors.joining(", ", "[\n    ", "\n]"))
+                                            + events.stream()
+                                            .map(EventT::toString)
+                                            .collect(Collectors.joining(
+                                                    ",\n    ", "[\n    ", "\n]"))
                                     );
                                 })
                                 .flatMap(ue ->

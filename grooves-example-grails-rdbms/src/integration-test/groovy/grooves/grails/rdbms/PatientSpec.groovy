@@ -6,6 +6,11 @@ import groovyx.net.http.ContentType
 import groovyx.net.http.RESTClient
 import org.springframework.beans.factory.annotation.Value
 
+/**
+ * Acceptance test that tests against Grails with Hibernate
+ *
+ * @author Rahul Somasunderam
+ */
 @Integration
 class PatientSpec extends AbstractPatientSpec {
 

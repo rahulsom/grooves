@@ -1,10 +1,18 @@
 package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
+import groovy.transform.EqualsAndHashCode
 
+/**
+ * Represents Accounts of a Patient
+ *
+ * @author Rahul Somasunderam
+ */
+@SuppressWarnings(['DuplicateNumberLiteral', 'DuplicateStringLiteral',])
+@EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition'])
 class PatientAccount implements Snapshot<Patient, String, Long, PatientEvent> {
 
-    static mapWith = "mongo"
+    static mapWith = 'mongo'
 
     String id
     Long lastEventPosition
@@ -29,13 +37,16 @@ class PatientAccount implements Snapshot<Patient, String, Long, PatientEvent> {
     String name
 
     static hasMany = [
-            deprecatesIds: Long
+            deprecatesIds: Long,
     ]
 
-    static embedded = ['deprecates', 'processingErrors']
-    static transients = ['aggregate', 'deprecatedBy', 'deprecates']
+    static embedded = ['deprecates', 'processingErrors',]
+    static transients = ['aggregate', 'deprecatedBy', 'deprecates',]
 
     static constraints = {
         deprecatedById nullable: true
     }
+
+    @Override String toString() { "PatientAccount($id, $aggregateId, $lastEventPosition, " +
+            "B: $balance, M: $moneyMade)" }
 }

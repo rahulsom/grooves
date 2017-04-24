@@ -7,6 +7,11 @@ import org.springframework.boot.context.embedded.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ContextConfiguration
 
+/**
+ * Acceptance test that tests against Springboot with JPA
+ *
+ * @author Rahul Somasunderam
+ */
 @ContextConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PatientSpec extends AbstractPatientSpec {

@@ -2,13 +2,18 @@ package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.grails.GormJoinSupport
-import grails.compiler.GrailsCompileStatic
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 
+/**
+ * Finds patients within a zipcode
+ *
+ * @author Rahul Somasunderam
+ */
 class ZipcodePatientsQuery implements GormJoinSupport<
-        Zipcode, Long, ZipcodeEvent, Long, Patient, String, ZipcodePatients, ZipcodeGotPatient, ZipcodeLostPatient> {
+        Zipcode, Long, ZipcodeEvent, Long, Patient, String, ZipcodePatients,
+        ZipcodeGotPatient, ZipcodeLostPatient> {
 
     final Class snapshotClass = ZipcodePatients
     final Class disjoinEventClass = ZipcodeLostPatient

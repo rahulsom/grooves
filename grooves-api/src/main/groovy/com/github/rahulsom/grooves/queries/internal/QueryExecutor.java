@@ -187,7 +187,7 @@ public class QueryExecutor<
                         String.valueOf(snapshot), String.valueOf(event), methodName,
                         String.valueOf(e1));
                 log.error(String.format("Exception thrown while calling exception handler. %s",
-                        String.valueOf(description)), e2);
+                        description), e2);
                 return EventApplyOutcome.RETURN;
             }
 

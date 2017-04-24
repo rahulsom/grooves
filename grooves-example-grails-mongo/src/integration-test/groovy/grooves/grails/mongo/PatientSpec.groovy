@@ -3,12 +3,15 @@ package grooves.grails.mongo
 import com.github.rahulsom.grooves.test.AbstractPatientSpec
 import grails.test.mixin.integration.Integration
 import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.RESTClient
 import org.springframework.beans.factory.annotation.Value
-import spock.lang.IgnoreRest
 import spock.lang.Unroll
 
+/**
+ * Acceptance test that tests against Grails with Hibernate and Mongo
+ *
+ * @author Rahul Somasunderam
+ */
 @Integration
 class PatientSpec extends AbstractPatientSpec {
 
@@ -28,7 +31,7 @@ class PatientSpec extends AbstractPatientSpec {
         expect:
         with(resp) {
             status == 200
-            contentType == "application/json"
+            contentType == 'application/json'
         }
         with(resp.data) {
             it.aggregateId == id
@@ -42,14 +45,15 @@ class PatientSpec extends AbstractPatientSpec {
     }
 
     @Unroll
+    @SuppressWarnings(['CyclomaticComplexity',])
     void "#location - version #version patients join works"() {
         given:
-        def resp = rest.get(path: "/zipcode/patients/${id}.json".toString(), params: [version: version])
+        def resp = rest.get(path: "/zipcode/patients/${id}.json", params: [version: version])
 
         expect:
         with(resp) {
             status == 200
-            contentType == "application/json"
+            contentType == 'application/json'
         }
         with(resp.data) {
             it.aggregateId == id
