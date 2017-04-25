@@ -35,4 +35,6 @@ class QueryUtil {
         return Collections.unmodifiableMap(retval);
     }
 
+    private QueryUtil() {
+    }
 }

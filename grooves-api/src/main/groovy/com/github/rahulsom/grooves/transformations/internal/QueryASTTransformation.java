@@ -43,7 +43,7 @@ public class QueryASTTransformation extends AbstractASTTransformation {
 
             eventClasses.forEach(eventClass -> {
                 final String methodName = "apply" + eventClass.getNameWithoutPackage();
-                log.fine("  -> Checking for " + String.valueOf(methodName));
+                log.fine("  -> Checking for " + methodName);
 
                 List<MethodNode> methodsByName =
                         theClassNode.getMethods().stream()
@@ -55,7 +55,7 @@ public class QueryASTTransformation extends AbstractASTTransformation {
                         eventClass.getName(), theSnapshot.getType().getName());
 
                 final String methodSignatureString = String.valueOf(methodSignature);
-                if (methodsByName.size() == 0) {
+                if (methodsByName.isEmpty()) {
                     addError(
                             String.format("Missing expected method %s", methodSignatureString),
                             annotationNode);

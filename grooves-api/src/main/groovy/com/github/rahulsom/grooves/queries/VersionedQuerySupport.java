@@ -103,23 +103,21 @@ public interface VersionedQuerySupport<
                     if (eventsAreForwardOnly) {
                         return uncomputedEvents
                                 .toList()
-                                .doOnNext(ue -> {
-                                    getLog().debug("     Events in pair: " + ue.stream()
-                                            .map(it -> it.getId().toString())
-                                            .collect(Collectors.joining(", ")));
-                                })
+                                .doOnNext(ue -> getLog().debug("     Events in pair: " + ue.stream()
+                                        .map(it -> it.getId().toString())
+                                        .collect(Collectors.joining(", "))))
                                 .map(ue -> new Tuple2<>(lastSnapshot, ue));
                     } else {
                         return uncomputedReverts
                                 .toList()
-                                .doOnNext(eventList -> {
+                                .doOnNext(eventList ->
                                     getLog().info("     Uncomputed reverts exist: "
                                             + eventList.stream()
                                             .map(EventT::toString)
                                             .collect(Collectors.joining(
                                                     ",\n    ", "[\n    ", "\n]"))
-                                    );
-                                })
+                                    )
+                                )
                                 .flatMap(ue ->
                                         getSnapshotAndEventsSince(aggregate, version, false));
                     }
@@ -134,11 +132,10 @@ public interface VersionedQuerySupport<
                             .toList();
 
             return uncomputedEvents
-                    .doOnNext(ue -> {
-                        getLog().debug("     Events in pair: " + ue.stream()
-                                .map(it -> it.getId().toString())
-                                .collect(Collectors.joining(", ")));
-                    }).map(ue -> new Tuple2<>(lastSnapshot, ue));
+                    .doOnNext(ue -> getLog().debug("     Events in pair: " + ue.stream()
+                            .map(it -> it.getId().toString())
+                            .collect(Collectors.joining(", "))))
+                    .map(ue -> new Tuple2<>(lastSnapshot, ue));
         }
 
     }
@@ -164,9 +161,8 @@ public interface VersionedQuerySupport<
     default Observable<SnapshotT> computeSnapshot(
             AggregateT aggregate, long version, boolean redirect) {
 
-        getLog().info(String.format("Computing snapshot for %s version %s",
-                String.valueOf(aggregate),
-                version == Long.MAX_VALUE ? "<LATEST>" : String.valueOf(version)));
+        getLog().info("Computing snapshot for {} version {}",
+                aggregate, version == Long.MAX_VALUE ? "<LATEST>" : version);
 
         return getSnapshotAndEventsSince(aggregate, version).flatMap(seTuple2 -> {
             List<EventT> events = seTuple2.getSecond();
@@ -201,7 +197,7 @@ public interface VersionedQuerySupport<
                             snapshot.setLastEvent(events.get(events.size() - 1));
                         }
 
-                        getLog().info("  --> Computed: " + String.valueOf(snapshot));
+                        getLog().info("  --> Computed: " + snapshot);
                     })
                     .flatMap(it -> {
                         EventT lastEvent = events.isEmpty() ? null : events.get(events.size() - 1);

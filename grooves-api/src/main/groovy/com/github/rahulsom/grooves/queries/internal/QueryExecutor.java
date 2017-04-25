@@ -104,7 +104,7 @@ public class QueryExecutor<
             if (!query.shouldEventsBeApplied(snapshot) || stopApplyingEvents.get()) {
                 return Observable.just(snapshot);
             } else {
-                log.debug("     -> Event: " + String.valueOf(event));
+                log.debug("     -> Event: {}", event);
 
                 if (event instanceof Deprecates) {
                     return applyDeprecates(

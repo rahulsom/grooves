@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
  * @param <EventT>      The type of the Event
  * @param <SnapshotIdT> The type of the Snapshot's id field
  * @param <SnapshotT>   The type of the Snapshot
+ *
  * @author Rahul Somasunderam
  */
 public interface TemporalQuerySupport<
@@ -43,6 +44,7 @@ public interface TemporalQuerySupport<
      *
      * @param aggregate    The aggregate for which the latest snapshot is desired
      * @param maxTimestamp The max last event timestamp allowed for the snapshot
+     *
      * @return An Observable that returns at most one snapshot
      */
     default Observable<SnapshotT> getLastUsableSnapshot(
@@ -66,6 +68,7 @@ public interface TemporalQuerySupport<
      *
      * @param aggregate The aggregate for which such data is desired
      * @param moment    The maximum timestamp of the last event
+     *
      * @return A Tuple containing the snapshot and the events
      */
     default Observable<Tuple2<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
@@ -79,9 +82,10 @@ public interface TemporalQuerySupport<
      *
      * @param aggregate            The aggregate for which such data is desired
      * @param moment               The moment for the desired snapshot
-     * @param reuseEarlierSnapshot Whether earlier snapshots can be reused for this computation.
-     *                             It is generally a good idea to set this to true unless there are
+     * @param reuseEarlierSnapshot Whether earlier snapshots can be reused for this computation. It
+     *                             is generally a good idea to set this to true unless there are
      *                             known reverts that demand this be set to false.
+     *
      * @return A Tuple containing the snapshot and the events
      */
     default Observable<Tuple2<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
@@ -99,23 +103,20 @@ public interface TemporalQuerySupport<
                     if (eventsAreForwardOnly) {
                         return uncomputedEvents
                                 .toList()
-                                .doOnNext(ue -> {
-                                    getLog().debug("     Events in pair: " + ue.stream()
-                                            .map(it -> it.getId().toString())
-                                            .collect(Collectors.joining(", ")));
-                                })
+                                .doOnNext(ue ->
+                                        getLog().debug("     Events in pair: " + ue.stream()
+                                                .map(it -> it.getId().toString())
+                                                .collect(Collectors.joining(", "))))
                                 .map(ue -> new Tuple2<>(lastSnapshot, ue));
                     } else {
                         return uncomputedReverts
                                 .toList()
-                                .doOnNext(events -> {
-                                    getLog().info("     Uncomputed reverts exist: "
-                                            + events.stream()
-                                            .map(EventT::toString)
-                                            .collect(Collectors.joining(
-                                                    ",\n    ", "[\n    ", "\n]"))
-                                    );
-                                })
+                                .doOnNext(events -> getLog().info("     Uncomputed reverts exist: "
+                                        + events.stream()
+                                        .map(EventT::toString)
+                                        .collect(Collectors.joining(
+                                                ",\n    ", "[\n    ", "\n]"))
+                                ))
                                 .flatMap(ue ->
                                         getSnapshotAndEventsSince(aggregate, moment, false));
 
@@ -133,11 +134,10 @@ public interface TemporalQuerySupport<
                             .toList();
 
             return uncomputedEvents
-                    .doOnNext(ue -> {
-                        getLog().debug("     Events in pair: " + ue.stream()
-                                .map(it -> it.getId().toString())
-                                .collect(Collectors.joining(", ")));
-                    }).map(ue -> new Tuple2<>(lastSnapshot, ue));
+                    .doOnNext(ue -> getLog().debug("     Events in pair: " + ue.stream()
+                            .map(it -> it.getId().toString())
+                            .collect(Collectors.joining(", "))))
+                    .map(ue -> new Tuple2<>(lastSnapshot, ue));
         }
 
 
@@ -150,12 +150,12 @@ public interface TemporalQuerySupport<
      * @param moment    The moment at which the snapshot is desired
      * @param redirect  If there has been a deprecation, redirect to the current aggregate's
      *                  snapshot. Defaults to true.
+     *
      * @return An Optional SnapshotType. Empty if cannot be computed.
      */
     default Observable<SnapshotT> computeSnapshot(
             AggregateT aggregate, Date moment, boolean redirect) {
-        getLog().info(String.format("Computing snapshot for %s at %s", String.valueOf(aggregate),
-                String.valueOf(moment)));
+        getLog().info("Computing snapshot for {} at {}", aggregate, moment);
 
         return getSnapshotAndEventsSince(aggregate, moment).flatMap(seTuple2 -> {
             List<EventT> events = seTuple2.getSecond();
@@ -190,7 +190,7 @@ public interface TemporalQuerySupport<
                         if (!events.isEmpty()) {
                             snapshotType.setLastEvent(events.get(events.size() - 1));
                         }
-                        getLog().info("  --> Computed: " + String.valueOf(snapshotType));
+                        getLog().info("  --> Computed: " + snapshotType);
                     })
                     .flatMap(it -> {
                         final EventT lastEvent =
@@ -215,6 +215,7 @@ public interface TemporalQuerySupport<
      *
      * @param aggregate The aggregate
      * @param moment    The moment at which the snapshot is desired
+     *
      * @return An Observable that returns at most one Snapshot
      */
     default Observable<SnapshotT> computeSnapshot(AggregateT aggregate, Date moment) {
