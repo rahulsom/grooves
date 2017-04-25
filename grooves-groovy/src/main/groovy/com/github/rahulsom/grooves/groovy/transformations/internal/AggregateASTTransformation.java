@@ -1,6 +1,6 @@
-package com.github.rahulsom.grooves.transformations.internal;
+package com.github.rahulsom.grooves.groovy.transformations.internal;
 
-import com.github.rahulsom.grooves.transformations.Aggregate;
+import com.github.rahulsom.grooves.groovy.transformations.Aggregate;
 import org.codehaus.groovy.ast.*;
 import org.codehaus.groovy.control.SourceUnit;
 import org.codehaus.groovy.transform.AbstractASTTransformation;
@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 /**
  * Registers an {@link com.github.rahulsom.grooves.api.AggregateType} as something that could later
  * be used for computing one or more {@link com.github.rahulsom.grooves.api.snapshots.Snapshot}s in
- * a class annotated as a {@link com.github.rahulsom.grooves.transformations.Query}.
+ * a class annotated as a {@link com.github.rahulsom.grooves.groovy.transformations.Query}.
  *
  * @author Rahul Somasunderam
  */

@@ -2,7 +2,7 @@ package grooves.boot.jpa.queries
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.queries.QuerySupport
-import com.github.rahulsom.grooves.transformations.Query
+import com.github.rahulsom.grooves.groovy.transformations.Query
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientAccountRepository
 import grooves.boot.jpa.util.VariableDepthCopier

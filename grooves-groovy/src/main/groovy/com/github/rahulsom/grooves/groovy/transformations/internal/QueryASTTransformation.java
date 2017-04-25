@@ -1,7 +1,7 @@
-package com.github.rahulsom.grooves.transformations.internal;
+package com.github.rahulsom.grooves.groovy.transformations.internal;
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
-import com.github.rahulsom.grooves.transformations.Query;
+import com.github.rahulsom.grooves.groovy.transformations.Query;
 import org.codehaus.groovy.ast.*;
 import org.codehaus.groovy.ast.expr.Expression;
 import org.codehaus.groovy.control.SourceUnit;

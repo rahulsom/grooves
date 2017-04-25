@@ -1,7 +1,7 @@
 package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.AggregateType
-import com.github.rahulsom.grooves.transformations.Aggregate
+import com.github.rahulsom.grooves.groovy.transformations.Aggregate
 import groovy.transform.EqualsAndHashCode
 
 /**

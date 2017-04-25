@@ -1,6 +1,6 @@
 package grooves.grails.rdbms
 
-import com.github.rahulsom.grooves.transformations.Query
+import com.github.rahulsom.grooves.groovy.transformations.Query
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.grails.GormQuerySupport
 import grails.compiler.GrailsCompileStatic

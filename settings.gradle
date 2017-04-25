@@ -1,6 +1,6 @@
 rootProject.name = 'grooves'
 
-def projects = ['api', 'grails']
+def projects = ['api', 'grails', 'groovy']
 def examples = ['grails-rdbms', 'grails-mongo', 'springboot-jpa', 'test']
 
 projects.each { include "grooves-${it}" }

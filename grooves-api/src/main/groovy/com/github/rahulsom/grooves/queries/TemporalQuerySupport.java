@@ -7,8 +7,8 @@ import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
+import com.github.rahulsom.grooves.queries.internal.Pair;
 import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
-import groovy.lang.Tuple2;
 import rx.Observable;
 
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ public interface TemporalQuerySupport<
      *
      * @return A Tuple containing the snapshot and the events
      */
-    default Observable<Tuple2<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
+    default Observable<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
             AggregateT aggregate, Date moment) {
         return getSnapshotAndEventsSince(aggregate, moment, true);
     }
@@ -88,7 +88,7 @@ public interface TemporalQuerySupport<
      *
      * @return A Tuple containing the snapshot and the events
      */
-    default Observable<Tuple2<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
+    default Observable<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
             AggregateT aggregate, Date moment, boolean reuseEarlierSnapshot) {
         if (reuseEarlierSnapshot) {
             return getLastUsableSnapshot(aggregate, moment).flatMap(lastSnapshot -> {
@@ -107,7 +107,7 @@ public interface TemporalQuerySupport<
                                         getLog().debug("     Events in pair: " + ue.stream()
                                                 .map(it -> it.getId().toString())
                                                 .collect(Collectors.joining(", "))))
-                                .map(ue -> new Tuple2<>(lastSnapshot, ue));
+                                .map(ue -> new Pair<>(lastSnapshot, ue));
                     } else {
                         return uncomputedReverts
                                 .toList()
@@ -137,7 +137,7 @@ public interface TemporalQuerySupport<
                     .doOnNext(ue -> getLog().debug("     Events in pair: " + ue.stream()
                             .map(it -> it.getId().toString())
                             .collect(Collectors.joining(", "))))
-                    .map(ue -> new Tuple2<>(lastSnapshot, ue));
+                    .map(ue -> new Pair<>(lastSnapshot, ue));
         }
 
 

@@ -1,6 +1,6 @@
-package com.github.rahulsom.grooves.transformations;
+package com.github.rahulsom.grooves.groovy.transformations;
 
-import com.github.rahulsom.grooves.transformations.internal.AggregateASTTransformation;
+import com.github.rahulsom.grooves.groovy.transformations.internal.AggregateASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformationClass;
 
 import java.lang.annotation.ElementType;

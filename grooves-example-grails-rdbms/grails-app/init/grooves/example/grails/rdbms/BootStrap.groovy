@@ -1,6 +1,7 @@
 package grooves.example.grails.rdbms
 
 import com.github.rahulsom.grooves.api.EventsDsl
+import com.github.rahulsom.grooves.groovy.GroovyEventsDsl
 import grooves.grails.rdbms.*
 
 import java.util.function.Consumer
@@ -138,7 +139,7 @@ class BootStrap {
         def positionSupplier = { PatientEvent.countByAggregate(patient) + 1 }
         def userSupplier = { 'anonymous' }
         def dateSupplier = { currDate += 1; currDate }
-        new EventsDsl<Patient, Long, PatientEvent>().on(
+        new GroovyEventsDsl<Patient, Long, PatientEvent>().on(
                 patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
     }
 

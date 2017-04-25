@@ -2,6 +2,7 @@ package grooves.example.grails.mongo
 
 import com.github.rahulsom.genealogy.NameDbUsa
 import com.github.rahulsom.grooves.api.EventsDsl
+import com.github.rahulsom.grooves.groovy.GroovyEventsDsl
 import grooves.grails.mongo.*
 
 import java.util.function.Consumer
@@ -259,7 +260,7 @@ class BootStrap {
         def positionSupplier = { PatientEvent.countByAggregate(patient) + 1 }
         def userSupplier = { 'anonymous' }
         def dateSupplier = { currDate += 1; currDate }
-        new EventsDsl<Patient, Long, PatientEvent>().on(
+        new GroovyEventsDsl<Patient, Long, PatientEvent>().on(
                 patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
     }
 
@@ -267,7 +268,7 @@ class BootStrap {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { ZipcodeEvent.countByAggregate(zipcode) + 1 }
         def userSupplier = { 'anonymous' }
-        new EventsDsl<Zipcode, Long, ZipcodeEvent>().on(
+        new GroovyEventsDsl<Zipcode, Long, ZipcodeEvent>().on(
                 zipcode, eventSaver, positionSupplier, userSupplier, closure)
     }
 
@@ -275,7 +276,7 @@ class BootStrap {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { DoctorEvent.countByAggregate(doctor) + 1 }
         def userSupplier = { 'anonymous' }
-        new EventsDsl<Doctor, Long, DoctorEvent>().on(
+        new GroovyEventsDsl<Doctor, Long, DoctorEvent>().on(
                 doctor, eventSaver, positionSupplier, userSupplier, closure)
     }
 

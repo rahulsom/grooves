@@ -2,7 +2,7 @@ package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.grails.GormQuerySupport
-import com.github.rahulsom.grooves.transformations.Query
+import com.github.rahulsom.grooves.groovy.transformations.Query
 import grails.compiler.GrailsCompileStatic
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 

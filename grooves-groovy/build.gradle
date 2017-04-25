@@ -4,8 +4,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
-        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
-        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
         classpath 'com.netflix.nebula:gradle-info-plugin:3.+'
     }
 }
@@ -16,9 +14,8 @@ apply plugin: 'nebula.info'
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(':grooves-groovy')
-    compileOnly 'org.grails:grails-datastore-gorm:6.0.7.RELEASE'
-    compileOnly 'org.grails:grails-datastore-gorm-rx:6.0.7.RELEASE'
+    compile project(':grooves-api')
+    compile 'org.codehaus.groovy:groovy:2.4.7'
 
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }

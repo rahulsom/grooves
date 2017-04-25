@@ -1,8 +1,8 @@
-package com.github.rahulsom.grooves.transformations;
+package com.github.rahulsom.grooves.groovy.transformations;
 
 import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
-import com.github.rahulsom.grooves.transformations.internal.QueryASTTransformation;
+import com.github.rahulsom.grooves.groovy.transformations.internal.QueryASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformationClass;
 
 import java.lang.annotation.ElementType;

@@ -8,8 +8,6 @@ import com.github.rahulsom.grooves.api.events.DeprecatedBy;
 import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
-import groovy.transform.CompileStatic;
-import groovy.transform.TypeCheckingMode;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.codehaus.groovy.runtime.InvokerHelper;
 import org.slf4j.Logger;
@@ -169,7 +167,6 @@ public class QueryExecutor<
                 });
     }
 
-    @CompileStatic(TypeCheckingMode.SKIP)
     private EventApplyOutcome callMethod(
             BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> util,
             String methodName,

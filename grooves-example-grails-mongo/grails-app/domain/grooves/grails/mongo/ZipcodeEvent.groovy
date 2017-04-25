@@ -4,7 +4,7 @@ import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.events.DisjoinEvent
 import com.github.rahulsom.grooves.api.events.JoinEvent
 import com.github.rahulsom.grooves.api.events.RevertEvent
-import com.github.rahulsom.grooves.transformations.Event
+import com.github.rahulsom.grooves.groovy.transformations.Event
 import groovy.json.JsonBuilder
 import groovy.transform.EqualsAndHashCode
 

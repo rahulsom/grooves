@@ -1,4 +1,4 @@
-package com.github.rahulsom.grooves
+package com.github.rahulsom.grooves.groovy.transformations
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import org.codehaus.groovy.control.MultipleCompilationErrorsException

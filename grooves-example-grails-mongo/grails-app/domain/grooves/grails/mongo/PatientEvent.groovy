@@ -1,7 +1,7 @@
 package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.events.*
-import com.github.rahulsom.grooves.transformations.Event
+import com.github.rahulsom.grooves.groovy.transformations.Event
 import groovy.json.JsonBuilder
 import groovy.transform.EqualsAndHashCode
 
