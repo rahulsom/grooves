@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
  * @param <EventT>      The type of the Event
  * @param <SnapshotIdT> The type of the Snapshot's id field
  * @param <SnapshotT>   The type of the Snapshot
+ *
  * @author Rahul Somasunderam
  */
 public class QueryExecutor<
@@ -46,6 +47,7 @@ public class QueryExecutor<
      * Applies all revert events from a list and returns the list with only valid forward events.
      *
      * @param events The list of events
+     *
      * @return An Observable of forward only events
      */
     @Override
@@ -113,19 +115,19 @@ public class QueryExecutor<
                             (DeprecatedBy<AggregateT, EventIdT, EventT>) event, snapshot));
                 } else {
                     String methodName = "apply" + event.getClass().getSimpleName();
-                    EventApplyOutcome retval = callMethod(query, methodName, snapshot, event);
-                    if (retval.equals(EventApplyOutcome.CONTINUE)) {
-                        return Observable.just(snapshot);
-                    } else if (retval.equals(EventApplyOutcome.RETURN)) {
-                        stopApplyingEvents.set(true);
-                        return Observable.just(snapshot);
-                    } else {
-                        throw new GroovesException(
-                                "Unexpected value from calling '" + methodName + "'");
-                    }
-
+                    return callMethod(query, methodName, snapshot, event)
+                            .flatMap(retval -> {
+                                if (retval.equals(EventApplyOutcome.CONTINUE)) {
+                                    return Observable.just(snapshot);
+                                } else if (retval.equals(EventApplyOutcome.RETURN)) {
+                                    stopApplyingEvents.set(true);
+                                    return Observable.just(snapshot);
+                                } else {
+                                    throw new GroovesException(
+                                            "Unexpected value from calling '" + methodName + "'");
+                                }
+                            });
                 }
-
             }
         })).flatMap(it -> it);
 
@@ -167,13 +169,13 @@ public class QueryExecutor<
                 });
     }
 
-    private EventApplyOutcome callMethod(
+    private Observable<EventApplyOutcome> callMethod(
             BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> util,
             String methodName,
             final SnapshotT snapshot,
             final EventT event) {
         try {
-            return (EventApplyOutcome) InvokerHelper.invokeMethod(
+            return (Observable<EventApplyOutcome>) InvokerHelper.invokeMethod(
                     util, methodName, new Object[]{util.unwrapIfProxy(event), snapshot});
         } catch (Exception e1) {
             try {
@@ -185,7 +187,7 @@ public class QueryExecutor<
                         String.valueOf(e1));
                 log.error(String.format("Exception thrown while calling exception handler. %s",
                         description), e2);
-                return EventApplyOutcome.RETURN;
+                return Observable.just(EventApplyOutcome.RETURN);
             }
 
         }

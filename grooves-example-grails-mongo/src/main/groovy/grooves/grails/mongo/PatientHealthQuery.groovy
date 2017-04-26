@@ -5,8 +5,10 @@ import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.grails.GormQuerySupport
 import grails.compiler.GrailsCompileStatic
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
+import rx.Observable
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
+import static rx.Observable.just
 
 /**
  * Queries for PatientHealth data
@@ -39,30 +41,34 @@ class PatientHealthQuery implements
     }
 
     @Override
-    EventApplyOutcome onException(Exception e, PatientHealth snapshot, PatientEvent event) {
+    Observable<EventApplyOutcome> onException(
+            Exception e, PatientHealth snapshot, PatientEvent event) {
         snapshot.processingErrors << e.message
-        CONTINUE
+        just CONTINUE
     }
 
-    EventApplyOutcome applyPatientCreated(PatientCreated event, PatientHealth snapshot) {
+    Observable<EventApplyOutcome> applyPatientCreated(
+            PatientCreated event, PatientHealth snapshot) {
         snapshot.name = event.name
-        CONTINUE
+        just CONTINUE
     }
 
-    EventApplyOutcome applyProcedurePerformed(ProcedurePerformed event, PatientHealth snapshot) {
+    Observable<EventApplyOutcome> applyProcedurePerformed(
+            ProcedurePerformed event, PatientHealth snapshot) {
         snapshot.addToProcedures(code: event.code, date: event.timestamp)
-        CONTINUE
+        just CONTINUE
     }
 
     @SuppressWarnings(['UnusedMethodParameter'])
-    EventApplyOutcome applyPaymentMade(PaymentMade event, PatientHealth snapshot) {
-        CONTINUE // Ignore payments
+    Observable<EventApplyOutcome> applyPaymentMade(
+            PaymentMade event, PatientHealth snapshot) {
+        just CONTINUE // Ignore payments
     }
 
     @SuppressWarnings(['UnusedMethodParameter'])
-    EventApplyOutcome applyPatientAddedToZipcode(
+    Observable<EventApplyOutcome> applyPatientAddedToZipcode(
             PatientAddedToZipcode event, PatientHealth snapshot) {
-        CONTINUE // Ignore zip change
+        just CONTINUE // Ignore zip change
     }
 
 }

@@ -107,7 +107,7 @@ public interface BaseQuery<
      * @param event    The event that resulted in an exception
      * @return The outcome of handling the exception
      */
-    EventApplyOutcome onException(Exception e, SnapshotT snapshot, EventT event);
+    Observable<EventApplyOutcome> onException(Exception e, SnapshotT snapshot, EventT event);
 
     /**
      * @return An executor that applies events.

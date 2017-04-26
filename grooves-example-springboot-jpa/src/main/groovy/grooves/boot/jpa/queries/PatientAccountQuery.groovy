@@ -15,6 +15,7 @@ import rx.Observable
 import javax.persistence.EntityManager
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
+import static rx.Observable.just
 
 /**
  * Query for Patient Account
@@ -138,25 +139,29 @@ class PatientAccountQuery implements
     }
 
     @Override
-    EventApplyOutcome onException(Exception e, PatientAccount snapshot, PatientEvent event) {
+    Observable<EventApplyOutcome> onException(
+            Exception e, PatientAccount snapshot, PatientEvent event) {
         snapshot.processingErrors++
-        CONTINUE
+        just CONTINUE
     }
 
-    EventApplyOutcome applyPatientCreated(PatientCreated event, PatientAccount snapshot) {
+    Observable<EventApplyOutcome> applyPatientCreated(
+            PatientCreated event, PatientAccount snapshot) {
         snapshot.name = event.name
-        CONTINUE
+        just CONTINUE
     }
 
-    EventApplyOutcome applyProcedurePerformed(ProcedurePerformed event, PatientAccount snapshot) {
+    Observable<EventApplyOutcome> applyProcedurePerformed(
+            ProcedurePerformed event, PatientAccount snapshot) {
         snapshot.balance += event.cost
-        CONTINUE
+        just CONTINUE
     }
 
-    EventApplyOutcome applyPaymentMade(PaymentMade event, PatientAccount snapshot) {
+    Observable<EventApplyOutcome> applyPaymentMade(
+            PaymentMade event, PatientAccount snapshot) {
         snapshot.balance -= event.amount
         snapshot.moneyMade += event.amount
-        CONTINUE
+        just CONTINUE
     }
 
 }

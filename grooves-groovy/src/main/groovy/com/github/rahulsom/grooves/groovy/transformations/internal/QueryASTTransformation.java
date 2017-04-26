@@ -7,6 +7,7 @@ import org.codehaus.groovy.ast.expr.Expression;
 import org.codehaus.groovy.control.SourceUnit;
 import org.codehaus.groovy.transform.AbstractASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformation;
+import rx.Observable;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +52,7 @@ public class QueryASTTransformation extends AbstractASTTransformation {
                                 .collect(Collectors.toList());
 
                 final String methodSignature = String.format("%s %s(%s event, %s snapshot)",
-                        ClassHelper.make(EventApplyOutcome.class).getName(), methodName,
+                        getObservableEventApplyOutcome(), methodName,
                         eventClass.getName(), theSnapshot.getType().getName());
 
                 final String methodSignatureString = String.valueOf(methodSignature);
@@ -63,8 +64,11 @@ public class QueryASTTransformation extends AbstractASTTransformation {
                     Optional<MethodNode> matchingMethod = methodsByName.stream()
                             .filter(implMethod -> {
                                 final Parameter[] parameters = implMethod.getParameters();
+                                final ClassNode returnType = implMethod.getReturnType();
                                 return parameters != null && parameters.length == 2
-                                        && implMethod.getReturnType().getName()
+                                        && returnType.getName()
+                                                .equals(Observable.class.getName())
+                                        && returnType.getGenericsTypes()[0].getType().getName()
                                                 .equals(EventApplyOutcome.class.getName())
                                         && parameters[0].getType().getName()
                                                 .equals(eventClass.getName())
@@ -74,7 +78,8 @@ public class QueryASTTransformation extends AbstractASTTransformation {
                             .findFirst();
 
                     if (!matchingMethod.isPresent()) {
-                        addError(String.format("Missing expected method %s", methodSignatureString),
+                        addError(String.format("Missing expected method %s. %s",
+                                methodSignatureString, "Signature was different when name matched"),
                                 annotationNode);
                     }
                 }
@@ -82,5 +87,10 @@ public class QueryASTTransformation extends AbstractASTTransformation {
 
         }
 
+    }
+
+    private String getObservableEventApplyOutcome() {
+        return ClassHelper.make(Observable.class).getName() + "<"
+                + ClassHelper.make(EventApplyOutcome.class).getName() + ">";
     }
 }

@@ -3,8 +3,10 @@ package grooves.grails.mongo
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.grails.GormJoinSupport
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
+import rx.Observable
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
+import static rx.Observable.just
 
 /**
  * Finds patients within a zipcode
@@ -41,7 +43,8 @@ class ZipcodePatientsQuery implements GormJoinSupport<
     }
 
     @Override
-    EventApplyOutcome onException(Exception e, ZipcodePatients snapshot, ZipcodeEvent event) {
-        CONTINUE
+    Observable<EventApplyOutcome> onException(
+            Exception e, ZipcodePatients snapshot, ZipcodeEvent event) {
+        just CONTINUE
     }
 }

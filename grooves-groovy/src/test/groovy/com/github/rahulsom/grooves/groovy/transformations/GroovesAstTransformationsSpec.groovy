@@ -4,34 +4,50 @@ import com.github.rahulsom.grooves.api.EventApplyOutcome
 import org.codehaus.groovy.control.MultipleCompilationErrorsException
 import org.codehaus.groovy.control.messages.SyntaxErrorMessage
 import rx.Observable
+import spock.lang.Shared
 import spock.lang.Specification
 
 class GroovesAstTransformationsSpec extends Specification {
 
     def 'test valid events'() {
         when:
-        def retval = new GroovyShell().evaluate(this.class.getResource('/valid/ValidES.groovy').text)
+        def retval = new GroovyShell().evaluate(compose('/ValidES.groovy'))
 
         then:
         notThrown(MultipleCompilationErrorsException)
         retval instanceof Observable
-        (retval as Observable).toBlocking().first() 
+        (retval as Observable).toBlocking().first()
     }
 
     def 'test missing events'() {
         when:
-        def retval = new GroovyShell().evaluate(this.class.getResource('/missing/MissingEvents.groovy').text)
+        def retval = new GroovyShell().evaluate(compose('/MissingEvents.groovy'))
 
         then:
         def exception = thrown(MultipleCompilationErrorsException)
         exception.errorCollector.errorCount == 2
-        exception.errorCollector.errors[0].class == SyntaxErrorMessage
-        def message = (exception.errorCollector.errors[0] as SyntaxErrorMessage).cause.message
-        message.split('\n').length == 2
-        message.split('\n')[0] ==
-                "Missing expected method ${EventApplyOutcome.name} applyCashDeposit(missing.CashDeposit event, missing.Balance snapshot)".toString()
-        exception.errorCollector.errors[1].class == SyntaxErrorMessage
+
+        when: 'I inspect the errors'
+        def errors = exception.errorCollector.errors
+
+        then:
+        errors[0] instanceof SyntaxErrorMessage
+        def message0 = (errors[0] as SyntaxErrorMessage).cause.message
+        message0.matches(/Missing expected method .+Observable<.+EventApplyOutcome> applyCashDeposit\(.+CashDeposit event, .+Balance snapshot\)\n.+/)
+
+        errors[1].class == SyntaxErrorMessage
+        def message1 = (errors[1] as SyntaxErrorMessage).cause.message
+        message1.matches(/Missing expected method .+Observable<.+EventApplyOutcome> applyCashWithdrawal\(.+CashWithdrawal event, .+Balance snapshot\)\n.+/)
         retval == null
 
     }
+
+    @Shared private static int packageId = 0
+
+    private String compose(String name) {
+        "package test.p${packageId++};\n" +
+                this.class.getResource('/domains.groovy').text +
+                this.class.getResource(name).text
+    }
+
 }

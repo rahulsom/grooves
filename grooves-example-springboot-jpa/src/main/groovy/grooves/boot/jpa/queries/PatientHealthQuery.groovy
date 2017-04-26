@@ -101,25 +101,29 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
     }
 
     @Override
-    EventApplyOutcome onException(Exception e, PatientHealth snapshot, PatientEvent event) {
+    Observable<EventApplyOutcome> onException(
+            Exception e, PatientHealth snapshot, PatientEvent event) {
         snapshot.processingErrors++
-        CONTINUE
+        Observable.just(CONTINUE)
     }
 
-    EventApplyOutcome applyPatientCreated(PatientCreated event, PatientHealth snapshot) {
+    Observable<EventApplyOutcome> applyPatientCreated(
+            PatientCreated event, PatientHealth snapshot) {
         snapshot.name = event.name
-        CONTINUE
+        Observable.just(CONTINUE)
     }
 
-    EventApplyOutcome applyProcedurePerformed(ProcedurePerformed event, PatientHealth snapshot) {
+    Observable<EventApplyOutcome> applyProcedurePerformed(
+            ProcedurePerformed event, PatientHealth snapshot) {
         snapshot.procedures << new Procedure(code: event.code, date: event.timestamp)
-        CONTINUE
+        Observable.just(CONTINUE)
     }
 
     @SuppressWarnings('UnusedMethodParameter')
-    EventApplyOutcome applyPaymentMade(PaymentMade event, PatientHealth snapshot) {
+    Observable<EventApplyOutcome> applyPaymentMade(
+            PaymentMade event, PatientHealth snapshot) {
         // Ignore payments
-        CONTINUE
+        Observable.just(CONTINUE)
     }
 
 }

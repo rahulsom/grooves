@@ -5,8 +5,10 @@ import com.github.rahulsom.grooves.grails.GormQuerySupport
 import com.github.rahulsom.grooves.groovy.transformations.Query
 import grails.compiler.GrailsCompileStatic
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
+import rx.Observable
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
+import static rx.Observable.just
 
 /**
  * Queries for the PatientAccount
@@ -38,30 +40,34 @@ class PatientAccountQuery implements
     }
 
     @Override
-    EventApplyOutcome onException(Exception e, PatientAccount snapshot, PatientEvent event) {
+    Observable<EventApplyOutcome> onException(
+            Exception e, PatientAccount snapshot, PatientEvent event) {
         snapshot.processingErrors << e.message
-        CONTINUE
+        just CONTINUE
     }
 
-    EventApplyOutcome applyPatientCreated(PatientCreated event, PatientAccount snapshot) {
+    Observable<EventApplyOutcome> applyPatientCreated(
+            PatientCreated event, PatientAccount snapshot) {
         snapshot.name = event.name
-        CONTINUE
+        just CONTINUE
     }
 
-    EventApplyOutcome applyProcedurePerformed(ProcedurePerformed event, PatientAccount snapshot) {
+    Observable<EventApplyOutcome> applyProcedurePerformed(
+            ProcedurePerformed event, PatientAccount snapshot) {
         snapshot.balance += event.cost
-        CONTINUE
+        just CONTINUE
     }
 
-    EventApplyOutcome applyPaymentMade(PaymentMade event, PatientAccount snapshot) {
+    Observable<EventApplyOutcome> applyPaymentMade(
+            PaymentMade event, PatientAccount snapshot) {
         snapshot.balance -= event.amount
         snapshot.moneyMade += event.amount
-        CONTINUE
+        just CONTINUE
     }
 
     @SuppressWarnings(['DuplicateStringLiteral', 'UnusedMethodParameter', ])
-    EventApplyOutcome applyPatientAddedToZipcode(
+    Observable<EventApplyOutcome> applyPatientAddedToZipcode(
             PatientAddedToZipcode event, PatientAccount snapshot) {
-        CONTINUE // Ignore zip change
+        just CONTINUE // Ignore zip change
     }
 }
