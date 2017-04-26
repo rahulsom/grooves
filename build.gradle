@@ -16,7 +16,9 @@ apply plugin: 'com.gradle.build-scan'
 apply plugin: 'me.champeau.buildscan-recipes'
 apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'org.sonarqube'
-apply plugin: 'nebula.nebula-release'
+//apply plugin: 'nebula.nebula-release'
+
+version = '0.1.1-SNAPSHOT'
 
 allprojects {
     group = 'com.github.rahulsom'
@@ -37,10 +39,10 @@ subprojects {
     }
 }
 
-tasks.release.dependsOn 'grooves-api:uploadArchives',
-        'grooves-groovy:uploadArchives',
-        'grooves-grails:uploadArchives',
-        'closeAndPromoteRepository'
+//tasks.release.dependsOn 'grooves-api:uploadArchives',
+//        'grooves-groovy:uploadArchives',
+//        'grooves-grails:uploadArchives',
+//        'closeAndPromoteRepository'
 
 project.afterEvaluate {
     project.tasks.findByName('closeAndPromoteRepository').mustRunAfter 'grooves-api:uploadArchives',
