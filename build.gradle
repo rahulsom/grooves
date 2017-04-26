@@ -8,6 +8,7 @@ buildscript {
         classpath 'com.gradle:build-scan-plugin:1.6'
         classpath 'me.champeau.gradle:buildscan-recipes-plugin:0.2.0'
         classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.3'
+        classpath 'com.netflix.nebula:nebula-release-plugin:4.2.0'
     }
 }
 
@@ -15,6 +16,7 @@ apply plugin: 'com.gradle.build-scan'
 apply plugin: 'me.champeau.buildscan-recipes'
 apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'org.sonarqube'
+apply plugin: 'nebula.nebula-release'
 
 allprojects {
     group = 'com.github.rahulsom'
@@ -35,17 +37,14 @@ subprojects {
     }
 }
 
-task release() {
-    description = 'Release artifacts to nexus'
-    dependsOn 'grooves-api:uploadArchives', 'grooves-grails:uploadArchives',
-            'closeAndPromoteRepository'
-    doLast {
-        println "Released $version"
-    }
-}
+tasks.release.dependsOn 'grooves-api:uploadArchives',
+        'grooves-groovy:uploadArchives',
+        'grooves-grails:uploadArchives',
+        'closeAndPromoteRepository'
 
 project.afterEvaluate {
     project.tasks.findByName('closeAndPromoteRepository').mustRunAfter 'grooves-api:uploadArchives',
+            'grooves-groovy:uploadArchives',
             'grooves-grails:uploadArchives'
 }
 
