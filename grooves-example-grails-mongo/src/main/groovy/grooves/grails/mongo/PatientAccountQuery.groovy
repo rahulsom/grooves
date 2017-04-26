@@ -65,7 +65,7 @@ class PatientAccountQuery implements
         just CONTINUE
     }
 
-    @SuppressWarnings(['DuplicateStringLiteral', 'UnusedMethodParameter', ])
+    @SuppressWarnings(['DuplicateStringLiteral', 'UnusedMethodParameter',])
     Observable<EventApplyOutcome> applyPatientAddedToZipcode(
             PatientAddedToZipcode event, PatientAccount snapshot) {
         just CONTINUE // Ignore zip change

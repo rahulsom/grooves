@@ -21,14 +21,17 @@ import java.util.List;
  * @param <EventIdT>           The type for the {@link EventT}'s id field
  * @param <EventT>             The base type for events that apply to {@link AggregateT}
  * @param <SnapshotIdT>        The type for the join's id field
- * @param <JoinedAggregateIdT> The type for the other id of aggregate that {@link AggregateT}
- *                             joins to
+ * @param <JoinedAggregateIdT> The type for the other id of aggregate that {@link AggregateT} joins
+ *                             to
  * @param <JoinedAggregateT>   The type for the other aggregate that {@link AggregateT} joins to
  * @param <SnapshotT>          The type of Snapshot that is computed
  * @param <JoinEventT>         The type of the Join Event
  * @param <DisjoinEventT>      The type of the disjoin event
+ *
  * @author Rahul Somasunderam
+ * @deprecated Use {@link RxEventSource} and {@link RxSnapshotSource} instead
  */
+@Deprecated
 public interface RxGormJoinSupport<
         AggregateT extends AggregateType & RxEntity<AggregateT>,
         EventIdT,
@@ -43,7 +46,8 @@ public interface RxGormJoinSupport<
         > extends
         JoinSupport<AggregateT, EventIdT, EventT, JoinedAggregateIdT, JoinedAggregateT,
                 SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT>,
-        RxGormQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        RxEventSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        RxSnapshotSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     @Override
     default Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> getExecutor() {
@@ -53,33 +57,33 @@ public interface RxGormJoinSupport<
 
     @Override
     default Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
-        return RxGormQuerySupport.super.getSnapshot(maxPosition, aggregate);
+        return RxSnapshotSource.super.getSnapshot(maxPosition, aggregate);
     }
 
     @Override
     default Observable<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
-        return RxGormQuerySupport.super.getSnapshot(maxTimestamp, aggregate);
+        return RxSnapshotSource.super.getSnapshot(maxTimestamp, aggregate);
     }
 
     @Override
     default void detachSnapshot(SnapshotT snapshot) {
-
+        // noop
     }
 
     @Override
     default Observable<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, long version) {
-        return RxGormQuerySupport.super.getUncomputedEvents(aggregate, lastSnapshot, version);
+        return RxEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, version);
     }
 
     @Override
     default Observable<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
-        return RxGormQuerySupport.super.getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
+        return RxEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
     }
 
     @Override
     default Observable<EventT> findEventsForAggregates(List<AggregateT> aggregates) {
-        return RxGormQuerySupport.super.findEventsForAggregates(aggregates);
-    }    
+        return RxEventSource.super.findEventsForAggregates(aggregates);
+    }
 }

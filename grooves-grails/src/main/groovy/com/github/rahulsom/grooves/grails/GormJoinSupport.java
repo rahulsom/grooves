@@ -27,8 +27,11 @@ import java.util.List;
  * @param <SnapshotT>          The type of Snapshot that is computed
  * @param <JoinEventT>         The type of the Join Event
  * @param <DisjoinEventT>      The type of the disjoin event
+ *
  * @author Rahul Somasunderam
+ * @deprecated Use {@link BlockingEventSource} and {@link BlockingSnapshotSource} instead
  */
+@Deprecated
 public interface GormJoinSupport<
         AggregateT extends AggregateType & GormEntity<AggregateT>,
         EventIdT,
@@ -43,7 +46,8 @@ public interface GormJoinSupport<
         > extends
         JoinSupport<AggregateT, EventIdT, EventT, JoinedAggregateIdT, JoinedAggregateT,
                 SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT>,
-        GormQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        BlockingEventSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        BlockingSnapshotSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     @Override
     default Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> getExecutor() {
@@ -53,33 +57,33 @@ public interface GormJoinSupport<
 
     @Override
     default Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
-        return GormQuerySupport.super.getSnapshot(maxPosition, aggregate);
+        return BlockingSnapshotSource.super.getSnapshot(maxPosition, aggregate);
     }
 
     @Override
     default Observable<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
-        return GormQuerySupport.super.getSnapshot(maxTimestamp, aggregate);
+        return BlockingSnapshotSource.super.getSnapshot(maxTimestamp, aggregate);
     }
 
     @Override
     default void detachSnapshot(SnapshotT snapshot) {
-
+        BlockingSnapshotSource.super.detachSnapshot(snapshot);
     }
 
     @Override
     default Observable<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, long version) {
-        return GormQuerySupport.super.getUncomputedEvents(aggregate, lastSnapshot, version);
+        return BlockingEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, version);
     }
 
     @Override
     default Observable<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
-        return GormQuerySupport.super.getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
+        return BlockingEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
     }
 
     @Override
     default Observable<EventT> findEventsForAggregates(List<AggregateT> aggregates) {
-        return GormQuerySupport.super.findEventsForAggregates(aggregates);
+        return BlockingEventSource.super.findEventsForAggregates(aggregates);
     }
 }
