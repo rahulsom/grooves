@@ -24,11 +24,11 @@ import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
  * @author Rahul Somasunderam
  */
 public interface RxEventSource<
-        AggregateT extends AggregateType & RxEntity<AggregateT>,
+        AggregateT extends AggregateType,
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT> & RxEntity<EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> & RxEntity<SnapshotT>
+        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
         > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     Class<EventT> getEventClass();

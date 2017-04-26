@@ -23,9 +23,9 @@ import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
  * @author Rahul Somasunderam
  */
 public interface RxSnapshotSource<
-        AggregateT extends AggregateType & RxEntity<AggregateT>,
+        AggregateT extends AggregateType,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT> & RxEntity<EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
         SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> & RxEntity<SnapshotT>
         > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {

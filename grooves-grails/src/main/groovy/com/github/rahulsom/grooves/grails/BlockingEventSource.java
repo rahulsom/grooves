@@ -25,12 +25,11 @@ import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
  * @author Rahul Somasunderam
  */
 public interface BlockingEventSource<
-        AggregateT extends AggregateType & GormEntity<AggregateT>,
+        AggregateT extends AggregateType,
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT> & GormEntity<EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> &
-                GormEntity<SnapshotT>
+        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
         > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
     @Override
     default Observable<EventT> getUncomputedEvents(
