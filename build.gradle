@@ -28,7 +28,7 @@ subprojects {
 
     checkstyle {
         configFile = rootProject.file('gradle/checkstyle/checkstyle.xml')
-        toolVersion ="7.6.1"
+        toolVersion = "7.6.1"
         showViolations = false
         maxWarnings = 0
         maxErrors = 0
@@ -56,4 +56,9 @@ buildScan {
 
 buildScanRecipes {
     recipes 'git-commit', 'git-status', 'travis-ci', 'gc-stats'
+}
+
+nexusStaging {
+    delayBetweenRetriesInMillis = 10000
+    numberOfRetries = 30
 }
