@@ -50,3 +50,7 @@ extraArchive {
     tests = true
     javadoc = true
 }
+
+nexus {
+    sign = false
+}
