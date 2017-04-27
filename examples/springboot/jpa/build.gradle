@@ -12,7 +12,7 @@ buildscript {
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
-apply from: '../gradle/codenarc/codenarc.gradle'
+apply from: "../../../gradle/codenarc/codenarc.gradle"
 
 jar {
     baseName = 'grooves-example-springboot-jpa'
