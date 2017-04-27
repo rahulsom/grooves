@@ -58,7 +58,7 @@ public class QueryExecutor<
                     String.format("     EventList: %s",
                             eventList.stream()
                                     .map(i -> i.getId().toString())
-                                    .collect(Collectors.joining(", ")))
+                                    .collect(Utils.JOIN_EVENT_IDS))
             );
             List<EventT> forwardEvents = new ArrayList<>();
             while (!eventList.isEmpty()) {
@@ -158,10 +158,9 @@ public class QueryExecutor<
                         && !it.getId().equals(event.getConverse().getId()))
                 .toSortedList((a, b) -> a.getTimestamp().compareTo(b.getTimestamp()))
                 .flatMap(sortedEvents -> {
-                    log.debug(sortedEvents.stream()
-                            .map(Object::toString)
-                            .collect(Collectors.joining(
-                                    ",\n    ", "     Sorted Events: [\n    ", "\n]")));
+                    log.debug("Sorted Events: " + sortedEvents.stream()
+                            .map(EventT::toString)
+                            .collect(Utils.JOIN_EVENTS));
                     Observable<EventT> forwardEventsSortedBackwards =
                             applyReverts(Observable.from(sortedEvents));
                     return applyEvents(util, newSnapshot, forwardEventsSortedBackwards,

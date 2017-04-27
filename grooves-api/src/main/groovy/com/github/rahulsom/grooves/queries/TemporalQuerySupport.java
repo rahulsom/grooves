@@ -5,10 +5,7 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.DeprecatedBy;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
-import com.github.rahulsom.grooves.queries.internal.BaseQuery;
-import com.github.rahulsom.grooves.queries.internal.Executor;
-import com.github.rahulsom.grooves.queries.internal.Pair;
-import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
+import com.github.rahulsom.grooves.queries.internal.*;
 import rx.Observable;
 
 import java.util.ArrayList;
@@ -103,13 +100,12 @@ public interface TemporalQuerySupport<
                                 getLog().info("     Uncomputed reverts exist: "
                                         + reverts.stream()
                                         .map(EventT::toString)
-                                        .collect(Collectors.joining(
-                                                ",\n    ", "[\n    ", "\n]")));
+                                        .collect(Utils.JOIN_EVENTS));
                                 return getSnapshotAndEventsSince(aggregate, moment, false);
                             } else {
                                 getLog().debug("     Events in pair: " + events.stream()
                                         .map(it -> it.getId().toString())
-                                        .collect(Collectors.joining(", ")));
+                                        .collect(Utils.JOIN_EVENT_IDS));
                                 return Observable.just(new Pair<>(lastSnapshot, events));
 
                             }
@@ -128,7 +124,7 @@ public interface TemporalQuerySupport<
             return uncomputedEvents
                     .doOnNext(ue -> getLog().debug("     Events in pair: " + ue.stream()
                             .map(it -> it.getId().toString())
-                            .collect(Collectors.joining(", "))))
+                            .collect(Utils.JOIN_EVENT_IDS)))
                     .map(ue -> new Pair<>(lastSnapshot, ue));
         }
 
