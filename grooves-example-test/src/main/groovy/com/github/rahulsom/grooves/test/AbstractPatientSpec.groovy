@@ -33,7 +33,7 @@ abstract class AbstractPatientSpec extends Specification {
     void "Paul McCartney's balance is correct at version #version"() {
         given:
         def resp = rest.get(path: '/patient/account/3.json',
-                params: [version: version, ]) as HttpResponseDecorator
+                query: [version: version, ]) as HttpResponseDecorator
 
         expect:
         with(resp) {
@@ -171,7 +171,7 @@ abstract class AbstractPatientSpec extends Specification {
     void "George Harrison's balance is correct at version #version"() {
         given:
         def resp = rest.get(path: '/patient/account/4.json',
-                params: [version: version, ]) as HttpResponseDecorator
+                query: [version: version, ]) as HttpResponseDecorator
 
         expect:
         with(resp) {
@@ -197,7 +197,7 @@ abstract class AbstractPatientSpec extends Specification {
     void "George Harrison MBE's balance is correct at version #version"() {
         given:
         def resp = rest.get(path: '/patient/account/5.json',
-                params: [version: version, ]) as HttpResponseDecorator
+                query: [version: version, ]) as HttpResponseDecorator
 
         expect:
         with(resp) {
