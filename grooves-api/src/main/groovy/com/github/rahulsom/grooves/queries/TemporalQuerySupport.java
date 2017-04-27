@@ -95,33 +95,25 @@ public interface TemporalQuerySupport<
                 final Observable<EventT> uncomputedEvents =
                         getUncomputedEvents(aggregate, lastSnapshot, moment);
 
-                final Observable<EventT> uncomputedReverts =
-                        uncomputedEvents
-                                .filter(it -> it instanceof RevertEvent);
-
-                return uncomputedReverts.isEmpty().flatMap(eventsAreForwardOnly -> {
-                    if (eventsAreForwardOnly) {
-                        return uncomputedEvents
-                                .toList()
-                                .doOnNext(ue ->
-                                        getLog().debug("     Events in pair: " + ue.stream()
-                                                .map(it -> it.getId().toString())
-                                                .collect(Collectors.joining(", "))))
-                                .map(ue -> new Pair<>(lastSnapshot, ue));
-                    } else {
-                        return uncomputedReverts
-                                .toList()
-                                .doOnNext(events -> getLog().info("     Uncomputed reverts exist: "
-                                        + events.stream()
+                return uncomputedEvents.toList()
+                        .flatMap(events -> {
+                            if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
+                                List<EventT> reverts = events.stream()
+                                        .filter(it -> it instanceof RevertEvent).collect(Collectors.toList());
+                                getLog().info("     Uncomputed reverts exist: "
+                                        + reverts.stream()
                                         .map(EventT::toString)
                                         .collect(Collectors.joining(
-                                                ",\n    ", "[\n    ", "\n]"))
-                                ))
-                                .flatMap(ue ->
-                                        getSnapshotAndEventsSince(aggregate, moment, false));
+                                                ",\n    ", "[\n    ", "\n]")));
+                                return getSnapshotAndEventsSince(aggregate, moment, false);
+                            } else {
+                                getLog().debug("     Events in pair: " + events.stream()
+                                        .map(it -> it.getId().toString())
+                                        .collect(Collectors.joining(", ")));
+                                return Observable.just(new Pair<>(lastSnapshot, events));
 
-                    }
-                });
+                            }
+                        });
 
             });
 

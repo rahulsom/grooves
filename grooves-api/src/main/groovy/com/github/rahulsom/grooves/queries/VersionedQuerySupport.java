@@ -95,33 +95,26 @@ public interface VersionedQuerySupport<
                 final Observable<EventT> uncomputedEvents =
                         getUncomputedEvents(aggregate, lastSnapshot, version);
 
-                final Observable<EventT> uncomputedReverts =
-                        uncomputedEvents
-                                .filter(it -> it instanceof RevertEvent);
-
-                return uncomputedReverts.isEmpty().flatMap(eventsAreForwardOnly -> {
-                    if (eventsAreForwardOnly) {
-                        return uncomputedEvents
-                                .toList()
-                                .doOnNext(ue -> getLog().debug("     Events in pair: " + ue.stream()
+                return uncomputedEvents.toList()
+                        .flatMap(events -> {
+                            if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
+                                List<EventT> reverts = events.stream()
+                                        .filter(it -> it instanceof RevertEvent).collect(Collectors.toList());
+                                getLog().info("     Uncomputed reverts exist: "
+                                        + reverts.stream()
+                                        .map(EventT::toString)
+                                        .collect(Collectors.joining(
+                                                ",\n    ", "[\n    ", "\n]")));
+                                return getSnapshotAndEventsSince(aggregate, version, false);
+                            } else {
+                                getLog().debug("     Events in pair: " + events.stream()
                                         .map(it -> it.getId().toString())
-                                        .collect(Collectors.joining(", "))))
-                                .map(ue -> new Pair<>(lastSnapshot, ue));
-                    } else {
-                        return uncomputedReverts
-                                .toList()
-                                .doOnNext(eventList ->
-                                    getLog().info("     Uncomputed reverts exist: "
-                                            + eventList.stream()
-                                            .map(EventT::toString)
-                                            .collect(Collectors.joining(
-                                                    ",\n    ", "[\n    ", "\n]"))
-                                    )
-                                )
-                                .flatMap(ue ->
-                                        getSnapshotAndEventsSince(aggregate, version, false));
-                    }
-                });
+                                        .collect(Collectors.joining(", ")));
+                                return Observable.just(new Pair<>(lastSnapshot, events));
+
+                            }
+                        });
+
             });
 
         } else {

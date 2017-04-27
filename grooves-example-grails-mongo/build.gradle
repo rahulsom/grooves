@@ -59,7 +59,7 @@ dependencies {
 
     compile "org.grails.plugins:rxjava"
 
-    compile project(':grooves-grails')
+    compile project(':grooves-gorm')
     testCompile project(':grooves-example-test')
     compile 'com.github.rahulsom:genealogy:1.3'
 }
