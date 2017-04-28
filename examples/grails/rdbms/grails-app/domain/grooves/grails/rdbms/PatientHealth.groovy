@@ -3,6 +3,10 @@ package grooves.grails.rdbms
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import rx.Observable
+
+import static rx.Observable.empty
+import static rx.Observable.just
 
 /**
  * Represents a patient's health
@@ -36,5 +40,10 @@ class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
     static constraints = {
         deprecatedBy nullable: true
     }
+
+    @Override Observable<Patient> getDeprecatedByObservable() {
+        deprecatedBy ? just(deprecatedBy) : empty()
+    }
+
 }
 

@@ -3,6 +3,10 @@ package grooves.grails.mongo
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import rx.Observable
+
+import static rx.Observable.empty
+import static rx.Observable.just
 
 /**
  * Represents the summary of all patients' health in a zipcode
@@ -25,6 +29,10 @@ class ZipcodeSummary implements Snapshot<Zipcode, String, Long, ZipcodeEvent> {
     Zipcode getAggregate() { Zipcode.get(aggregateId) }
     void setAggregate(Zipcode aggregate) { this.aggregateId = aggregate.id }
 
+    @Override
+    Observable<Zipcode> getDeprecatedByObservable() {
+        deprecatedBy ? just(deprecatedBy) : empty()
+    }
     Long deprecatedById
     Zipcode getDeprecatedBy() { Zipcode.get(deprecatedById) }
     void setDeprecatedBy(Zipcode aggregate) { deprecatedById = aggregate.id }

@@ -2,6 +2,10 @@ package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.snapshots.Join
 import groovy.transform.EqualsAndHashCode
+import rx.Observable
+
+import static rx.Observable.empty
+import static rx.Observable.just
 
 /**
  * Represents a join between Zipcode and Patient
@@ -22,6 +26,10 @@ class ZipcodePatients implements Join<Zipcode, String, Long, Long, ZipcodeEvent>
     Zipcode getAggregate() { Zipcode.get(aggregateId) }
     void setAggregate(Zipcode aggregate) { this.aggregateId = aggregate.id }
 
+    @Override
+    Observable<Zipcode> getDeprecatedByObservable() {
+        deprecatedBy ? just(deprecatedBy) : empty()
+    }
     Long deprecatedById
     Zipcode getDeprecatedBy() { Zipcode.get(deprecatedById) }
     void setDeprecatedBy(Zipcode aggregate) { deprecatedById = aggregate.id }

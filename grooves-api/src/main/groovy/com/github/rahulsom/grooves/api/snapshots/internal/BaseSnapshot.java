@@ -2,6 +2,7 @@ package com.github.rahulsom.grooves.api.snapshots.internal;
 
 import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
+import rx.Observable;
 
 import java.util.Set;
 
@@ -28,7 +29,7 @@ public interface BaseSnapshot<
 
     void setAggregate(AggregateT aggregate);
 
-    AggregateT getDeprecatedBy();
+    Observable<AggregateT> getDeprecatedByObservable();
 
     void setDeprecatedBy(AggregateT aggregate);
 
