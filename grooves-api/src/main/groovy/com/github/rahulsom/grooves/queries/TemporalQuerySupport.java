@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -181,20 +182,8 @@ public interface TemporalQuerySupport<
                         }
                         getLog().info("  --> Computed: " + snapshotType);
                     })
-                    .flatMap(it -> {
-                        final EventT lastEvent =
-                                events.isEmpty() ? null : events.get(events.size() - 1);
-
-                        final boolean redirectToDeprecator =
-                                it.getDeprecatedBy() != null
-                                        && lastEvent != null
-                                        && lastEvent instanceof DeprecatedBy
-                                        && redirect;
-
-                        return redirectToDeprecator ?
-                                computeSnapshot(it.getDeprecatedBy(), moment) :
-                                Observable.just(it);
-                    });
+                    .flatMap(it -> Utils.returnOrRedirect(redirect, events, it,
+                            () -> computeSnapshot(it.getDeprecatedBy(), moment)));
         });
 
     }
