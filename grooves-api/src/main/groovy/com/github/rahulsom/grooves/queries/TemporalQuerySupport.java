@@ -96,7 +96,8 @@ public interface TemporalQuerySupport<
                         .flatMap(events -> {
                             if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
                                 List<EventT> reverts = events.stream()
-                                        .filter(it -> it instanceof RevertEvent).collect(Collectors.toList());
+                                        .filter(it -> it instanceof RevertEvent).collect(
+                                                Collectors.toList());
                                 getLog().info("     Uncomputed reverts exist: "
                                         + reverts.stream()
                                         .map(EventT::toString)
