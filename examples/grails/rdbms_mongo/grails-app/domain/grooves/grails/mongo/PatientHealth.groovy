@@ -2,6 +2,10 @@ package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import groovy.transform.EqualsAndHashCode
+import rx.Observable
+
+import static rx.Observable.empty
+import static rx.Observable.just
 
 /**
  * Represents a patient's health
@@ -23,6 +27,10 @@ class PatientHealth implements Snapshot<Patient, String, Long, PatientEvent> {
     Patient getAggregate() { Patient.get(aggregateId) }
     void setAggregate(Patient aggregate) { this.aggregateId = aggregate.id }
 
+    @Override
+    Observable<Patient> getDeprecatedByObservable() {
+        deprecatedBy ? just(deprecatedBy) : empty()
+    }
     Long deprecatedById
     Patient getDeprecatedBy() { Patient.get(deprecatedById) }
     void setDeprecatedBy(Patient aggregate) { deprecatedById = aggregate.id }

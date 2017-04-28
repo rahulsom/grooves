@@ -1,10 +1,15 @@
 package grooves.boot.jpa.domain
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import groovy.transform.ToString
+import rx.Observable
 
 import javax.persistence.*
+
+import static rx.Observable.empty
+import static rx.Observable.just
 
 /**
  * Domain Model for Patient Health
@@ -29,4 +34,9 @@ class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
     String name
 
     int processingErrors = 0
+
+    @Override @JsonIgnore Observable<Patient> getDeprecatedByObservable() {
+        deprecatedBy ? just(deprecatedBy) : empty()
+    }
+
 }

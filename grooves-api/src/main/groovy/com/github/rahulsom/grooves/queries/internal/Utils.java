@@ -33,15 +33,22 @@ public class Utils {
         final EventT lastEvent =
                 events.isEmpty() ? null : events.get(events.size() - 1);
 
-        final boolean redirectToDeprecator =
-                it.getDeprecatedBy() != null
-                        && lastEvent != null
-                        && lastEvent instanceof DeprecatedBy
-                        && redirect;
+        return it.getDeprecatedByObservable()
+                .flatMap(deprecatedBy -> {
+                    final boolean redirectToDeprecator =
+                            lastEvent != null
+                                    && lastEvent instanceof DeprecatedBy
+                                    && redirect;
 
-        return redirectToDeprecator ?
-                redirectedSnapshot.get() :
-                Observable.just(it);
+                    return redirectToDeprecator ?
+                            redirectedSnapshot.get() :
+                            Observable.just(it);
+
+                })
+                .defaultIfEmpty(
+                        it
+                );
+
     }
 
 }

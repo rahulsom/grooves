@@ -2,6 +2,10 @@ package grooves.grails.rdbms
 
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import groovy.transform.EqualsAndHashCode
+import rx.Observable
+
+import static rx.Observable.empty
+import static rx.Observable.just
 
 /**
  * Represents the accounts of a Patient
@@ -37,4 +41,8 @@ class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
     }
 
     @Override String toString() { "PatientAccount($id, $aggregateId, $lastEventPosition)" }
+
+    @Override Observable<Patient> getDeprecatedByObservable() {
+        deprecatedBy ? just(deprecatedBy) : empty()
+    }
 }

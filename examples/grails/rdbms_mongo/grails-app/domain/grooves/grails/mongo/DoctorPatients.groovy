@@ -2,6 +2,10 @@ package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.snapshots.Join
 import groovy.transform.EqualsAndHashCode
+import rx.Observable
+
+import static rx.Observable.empty
+import static rx.Observable.just
 
 /**
  * Joins Doctor with Patients
@@ -22,6 +26,10 @@ class DoctorPatients implements Join<Doctor, String, Long, Long, DoctorEvent> {
     Doctor getAggregate() { Doctor.get(aggregateId) }
     void setAggregate(Doctor aggregate) { this.aggregateId = aggregate.id }
 
+    @Override
+    Observable<Doctor> getDeprecatedByObservable() {
+        deprecatedBy ? just(deprecatedBy) : empty()
+    }
     Long deprecatedById
     Doctor getDeprecatedBy() { Doctor.get(deprecatedById) }
     void setDeprecatedBy(Doctor aggregate) { deprecatedById = aggregate.id }

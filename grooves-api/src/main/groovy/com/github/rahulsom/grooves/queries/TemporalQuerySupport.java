@@ -183,7 +183,8 @@ public interface TemporalQuerySupport<
                         getLog().info("  --> Computed: " + snapshotType);
                     })
                     .flatMap(it -> Utils.returnOrRedirect(redirect, events, it,
-                            () -> computeSnapshot(it.getDeprecatedBy(), moment)));
+                            () -> it.getDeprecatedByObservable().flatMap(x -> computeSnapshot(x, moment))
+                    ));
         });
 
     }

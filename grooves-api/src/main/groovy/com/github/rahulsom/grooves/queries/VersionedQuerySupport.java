@@ -190,7 +190,8 @@ public interface VersionedQuerySupport<
                         getLog().info("  --> Computed: " + snapshot);
                     })
                     .flatMap(it -> Utils.returnOrRedirect(redirect, events, it,
-                            () -> computeSnapshot(it.getDeprecatedBy(), version)));
+                            () -> it.getDeprecatedByObservable().flatMap(x -> computeSnapshot(x, version))
+                    ));
         });
 
     }
