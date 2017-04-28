@@ -42,3 +42,9 @@ dependencies {
     compile project(':grooves-groovy')
     testCompile project(':grooves-example-test')
 }
+
+sonarqube {
+    properties {
+        property 'sonar.moduleKey', 'com.github.rahulsom:grooves:examples-springboot-jpa'
+    }
+}

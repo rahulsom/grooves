@@ -81,3 +81,9 @@ tasks.findByName('integrationTest').finalizedBy 'stopMongoDb'
 mongo {
     port 27018
 }
+
+sonarqube {
+    properties {
+        property 'sonar.moduleKey', 'com.github.rahulsom:grooves:examples-grails-rdbms_mongo'
+    }
+}

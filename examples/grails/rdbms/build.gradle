@@ -67,3 +67,9 @@ assets {
     minifyJs = true
     minifyCss = true
 }
+
+sonarqube {
+    properties {
+        property 'sonar.moduleKey', 'com.github.rahulsom:grooves:examples-grails-rdbms'
+    }
+}
