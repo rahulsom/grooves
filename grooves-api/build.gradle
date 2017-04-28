@@ -15,6 +15,7 @@ apply from: '../gradle/publishing.gradle'
 apply plugin: 'groovy'
 apply plugin: 'org.asciidoctor.convert'
 apply plugin: "org.ajoberstar.github-pages"
+apply from: '../gradle/jacoco.gradle'
 
 dependencies {
     compileOnly 'org.codehaus.groovy:groovy:2.4.7'
