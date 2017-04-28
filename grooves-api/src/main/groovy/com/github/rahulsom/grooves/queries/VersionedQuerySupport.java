@@ -189,15 +189,8 @@ public interface VersionedQuerySupport<
 
                         getLog().info("  --> Computed: " + snapshot);
                     })
-                    .flatMap(it -> {
-                        EventT lastEvent = events.isEmpty() ? null : events.get(events.size() - 1);
-                        return it.getDeprecatedBy() != null
-                                && lastEvent != null
-                                && lastEvent instanceof DeprecatedBy
-                                && redirect ?
-                                computeSnapshot(it.getDeprecatedBy(), version) :
-                                Observable.just(it);
-                    });
+                    .flatMap(it -> Utils.returnOrRedirect(redirect, events, it,
+                            () -> computeSnapshot(it.getDeprecatedBy(), version)));
         });
 
     }
