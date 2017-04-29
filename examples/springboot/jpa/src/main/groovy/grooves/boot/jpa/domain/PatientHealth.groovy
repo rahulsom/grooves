@@ -8,8 +8,7 @@ import rx.Observable
 
 import javax.persistence.*
 
-import static rx.Observable.empty
-import static rx.Observable.just
+import static rx.Observable.*
 
 /**
  * Domain Model for Patient Health
@@ -35,8 +34,16 @@ class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
 
     int processingErrors = 0
 
+    @Override @JsonIgnore Observable<Patient> getAggregateObservable() {
+        aggregate ? just(aggregate) : empty()
+    }
+
     @Override @JsonIgnore Observable<Patient> getDeprecatedByObservable() {
         deprecatedBy ? just(deprecatedBy) : empty()
+    }
+
+    @Override @JsonIgnore Observable<Patient> getDeprecatesObservable() {
+        from(deprecates.toList())
     }
 
 }

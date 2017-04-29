@@ -25,7 +25,7 @@ public interface BaseSnapshot<
 
     void setId(SnapshotIdT id);
 
-    AggregateT getAggregate();
+    Observable<AggregateT> getAggregateObservable();
 
     void setAggregate(AggregateT aggregate);
 
@@ -33,7 +33,7 @@ public interface BaseSnapshot<
 
     void setDeprecatedBy(AggregateT aggregate);
 
-    Set<AggregateT> getDeprecates();
+    Observable<AggregateT> getDeprecatesObservable();
 
     void setLastEvent(EventT event);
 }

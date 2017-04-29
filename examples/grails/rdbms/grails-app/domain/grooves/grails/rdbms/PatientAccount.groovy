@@ -4,8 +4,7 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import groovy.transform.EqualsAndHashCode
 import rx.Observable
 
-import static rx.Observable.empty
-import static rx.Observable.just
+import static rx.Observable.*
 
 /**
  * Represents the accounts of a Patient
@@ -22,7 +21,14 @@ class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
     Set<Patient> deprecates
 
     Long aggregateId
+
     Patient getAggregate() { Patient.get(aggregateId) }
+
+    @Override
+    Observable<Patient> getAggregateObservable() {
+        (aggregateId ? defer { just(aggregate) } : empty()) as Observable<Patient>
+    }
+
     void setAggregate(Patient aggregate) { aggregateId = aggregate.id }
 
     BigDecimal balance = 0.0
@@ -34,7 +40,7 @@ class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
             deprecates: Patient,
     ]
 
-    static transients = ['aggregate', ]
+    static transients = ['aggregate',]
 
     static constraints = {
         deprecatedBy nullable: true
@@ -44,5 +50,10 @@ class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
 
     @Override Observable<Patient> getDeprecatedByObservable() {
         deprecatedBy ? just(deprecatedBy) : empty()
+    }
+
+    @Override
+    Observable<Patient> getDeprecatesObservable() {
+        deprecates ? from(deprecates) : empty()
     }
 }

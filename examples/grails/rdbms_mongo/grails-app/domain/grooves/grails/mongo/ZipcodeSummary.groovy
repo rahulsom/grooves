@@ -5,7 +5,9 @@ import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import rx.Observable
 
+import static rx.Observable.defer
 import static rx.Observable.empty
+import static rx.Observable.from
 import static rx.Observable.just
 
 /**
@@ -25,6 +27,10 @@ class ZipcodeSummary implements Snapshot<Zipcode, String, Long, ZipcodeEvent> {
     Date lastEventTimestamp
     Set<String> processingErrors = []
 
+    @Override
+    Observable<Zipcode> getAggregateObservable() {
+        aggregateId ? defer { just aggregate } : empty()
+    }
     Long aggregateId
     Zipcode getAggregate() { Zipcode.get(aggregateId) }
     void setAggregate(Zipcode aggregate) { this.aggregateId = aggregate.id }
@@ -37,6 +43,10 @@ class ZipcodeSummary implements Snapshot<Zipcode, String, Long, ZipcodeEvent> {
     Zipcode getDeprecatedBy() { Zipcode.get(deprecatedById) }
     void setDeprecatedBy(Zipcode aggregate) { deprecatedById = aggregate.id }
 
+    @Override
+    Observable<Zipcode> getDeprecatesObservable() {
+        deprecatesIds ? from(deprecatesIds).flatMap { Zipcode.get it } : empty()
+    }
     Set<Long> deprecatesIds
     Set<Zipcode> getDeprecates() { deprecatesIds.collect { Zipcode.get(it) }.toSet() }
     void setDeprecates(Set<Zipcode> deprecates) { deprecatesIds = deprecates*.id }

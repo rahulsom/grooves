@@ -92,16 +92,16 @@ abstract class AbstractPatientSpec extends Specification {
         with(resp.data) {
             it.aggregateId == id || it.aggregate.id == id
             it.name == name
-            it.lastEventPosition == lastEventPosition
+            it.lastEventPosition == lastEventPos
             it.procedures.size() == codes.size()
             it.procedures*.code == codes
         }
 
         where:
-        id | name             || lastEventPosition | codes
-        1  | 'John Lennon'    || 6                 | ['FLUSHOT', 'GLUCOSETEST', 'ANNUALPHYSICAL',]
-        2  | 'Ringo Starr'    || 6                 | ['ANNUALPHYSICAL', 'GLUCOSETEST', 'FLUSHOT',]
-        3  | 'Paul McCartney' || 9                 | ['ANNUALPHYSICAL',]
+        id | name             || lastEventPos | codes
+        1  | 'John Lennon'    || 6            | ['FLUSHOT', 'GLUCOSETEST', 'ANNUALPHYSICAL', ]
+        2  | 'Ringo Starr'    || 6            | ['ANNUALPHYSICAL', 'GLUCOSETEST', 'FLUSHOT', ]
+        3  | 'Paul McCartney' || 9            | ['ANNUALPHYSICAL', ]
     }
 
     @Unroll

@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.github.rahulsom.grooves.queries.internal.Utils.stringifyEvents;
+
 /**
  * Default interface to help in building temporal snapshots.
  *
@@ -98,14 +100,10 @@ public interface TemporalQuerySupport<
                                         .filter(it -> it instanceof RevertEvent).collect(
                                                 Collectors.toList());
                                 getLog().info("     Uncomputed reverts exist: "
-                                        + reverts.stream()
-                                        .map(EventT::toString)
-                                        .collect(Utils.JOIN_EVENTS));
+                                        + stringifyEvents(reverts));
                                 return getSnapshotAndEventsSince(aggregate, moment, false);
                             } else {
-                                getLog().debug("     Events in pair: " + events.stream()
-                                        .map(it -> it.getId().toString())
-                                        .collect(Utils.JOIN_EVENT_IDS));
+                                getLog().debug("     Events in pair: " + stringifyEvents(events));
                                 return Observable.just(new Pair<>(lastSnapshot, events));
 
                             }
@@ -122,9 +120,7 @@ public interface TemporalQuerySupport<
                             .toList();
 
             return uncomputedEvents
-                    .doOnNext(ue -> getLog().debug("     Events in pair: " + ue.stream()
-                            .map(it -> it.getId().toString())
-                            .collect(Utils.JOIN_EVENT_IDS)))
+                    .doOnNext(ue -> getLog().debug("     Events in pair(2): " + stringifyEvents(ue)))
                     .map(ue -> new Pair<>(lastSnapshot, ue));
         }
 
@@ -149,42 +145,55 @@ public interface TemporalQuerySupport<
             List<EventT> events = seTuple2.getSecond();
             SnapshotT snapshot = seTuple2.getFirst();
 
-            if (events.stream().anyMatch(it -> it instanceof RevertEvent)
-                    && snapshot.getAggregate() != null) {
-                return Observable.empty();
+            getLog().info("Events: " + events);
+
+            if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
+                return snapshot
+                        .getAggregateObservable().flatMap(aggregate1 -> {
+                            getLog().info("Aggregate1: " + aggregate1);
+                            if (aggregate1 == null) {
+                                return computeSnapshotAndEvents(
+                                        aggregate, moment, redirect, events, snapshot);
+                            } else {
+                                return Observable.empty();
+                            }
+                        })
+                        .map(Observable::just)
+                        .defaultIfEmpty(computeSnapshotAndEvents(
+                                aggregate, moment, redirect, events, snapshot))
+                        .flatMap(it -> it);
             }
 
-            snapshot.setAggregate(aggregate);
-
-            Observable<EventT> forwardOnlyEvents =
-                    getExecutor().applyReverts(Observable.from(events))
-                            .toList()
-                            .map(Observable::just)
-                            .onErrorReturn(throwable -> getExecutor()
-                                    .applyReverts(
-                                            getSnapshotAndEventsSince(aggregate, moment, false)
-                                                    .flatMap(it -> Observable.from(it.getSecond()))
-                                    )
-                                    .toList()
-                            )
-                            .flatMap(it -> it)
-                            .flatMap(Observable::from);
-
-            final Observable<SnapshotT> snapshotTypeObservable =
-                    getExecutor().applyEvents(this, snapshot, forwardOnlyEvents, new ArrayList<>(),
-                            Collections.singletonList(aggregate));
-            return snapshotTypeObservable
-                    .doOnNext(snapshotType -> {
-                        if (!events.isEmpty()) {
-                            snapshotType.setLastEvent(events.get(events.size() - 1));
-                        }
-                        getLog().info("  --> Computed: " + snapshotType);
-                    })
-                    .flatMap(it -> Utils.returnOrRedirect(redirect, events, it,
-                            () -> it.getDeprecatedByObservable().flatMap(x -> computeSnapshot(x, moment))
-                    ));
+            return computeSnapshotAndEvents(aggregate, moment, redirect, events, snapshot);
         });
 
+    }
+
+    default Observable<SnapshotT> computeSnapshotAndEvents(
+            AggregateT aggregate,
+            Date moment,
+            boolean redirect,
+            List<EventT> events,
+            SnapshotT snapshot) {
+        snapshot.setAggregate(aggregate);
+
+        Observable<EventT> forwardOnlyEvents = Utils.getForwardOnlyEvents(events, getExecutor(),
+                () -> getSnapshotAndEventsSince(aggregate, moment, false));
+
+        final Observable<SnapshotT> snapshotTypeObservable =
+                getExecutor().applyEvents(this, snapshot, forwardOnlyEvents, new ArrayList<>(),
+                        Collections.singletonList(aggregate));
+        return snapshotTypeObservable
+                .doOnNext(snapshotType -> {
+                    if (!events.isEmpty()) {
+                        snapshotType.setLastEvent(events.get(events.size() - 1));
+                    }
+                    getLog().info("  --> Computed: " + snapshotType);
+                })
+                .flatMap(it -> Utils.returnOrRedirect(redirect, events, it,
+                        () -> it.getDeprecatedByObservable()
+                                .flatMap(x -> computeSnapshot(x, moment))
+                ));
     }
 
     /**
