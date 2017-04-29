@@ -16,14 +16,26 @@ import java.util.stream.Collectors;
  * @author Rahul Somasunderam
  */
 public class Utils {
-    private Utils() {
-    }
-
     public static final Collector<CharSequence, ?, String> JOIN_EVENTS =
             Collectors.joining(",\n    ", "[\n    ", "\n]");
     public static final Collector<CharSequence, ?, String> JOIN_EVENT_IDS =
             Collectors.joining(", ");
 
+    private Utils() {
+    }
+
+    /**
+     * Returns a snapshot or redirects to its deprecator.
+     *
+     * @param redirect           Whether a redirect is desirable
+     * @param events             The sequence of events
+     * @param it                 The snapshot
+     * @param redirectedSnapshot A computation for the redirected snapshot
+     * @param <SnapshotT>        The type of the snapshot
+     * @param <EventT>           The type of the event
+     *
+     * @return An observable of a snapshot.
+     */
     public static <
             SnapshotT extends BaseSnapshot,
             EventT extends BaseEvent

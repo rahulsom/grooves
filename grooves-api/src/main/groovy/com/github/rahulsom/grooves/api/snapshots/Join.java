@@ -11,7 +11,7 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
  * @param <JoinedAggregateIdT> The type for the other aggregate that {@link AggregateT} joins to
  * @param <EventIdT>           The type for the {@link EventT}'s id field
  * @param <EventT>             The base type for events that apply to {@link AggregateT}
- *                
+ *
  * @author Rahul Somasunderam
  */
 public interface Join<

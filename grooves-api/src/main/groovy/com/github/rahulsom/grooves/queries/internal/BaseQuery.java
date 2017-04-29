@@ -19,6 +19,7 @@ import java.util.List;
  * @param <EventT>      The Event type
  * @param <SnapshotIdT> The snapshot's id's type
  * @param <SnapshotT>   The snapshot type
+ *
  * @author Rahul Somasunderam
  */
 public interface BaseQuery<
@@ -46,6 +47,7 @@ public interface BaseQuery<
      *
      * @param maxPosition The position before which a snapshot is required
      * @param aggregate   The aggregate for which a snapshot is required
+     *
      * @return An observable that returns at most one Snapshot
      */
     Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate);
@@ -55,6 +57,7 @@ public interface BaseQuery<
      *
      * @param maxTimestamp The maximum timestamp of the snapshot
      * @param aggregate    The aggregate for which a snapshot is required
+     *
      * @return An observable that returns at most one Snapshot
      */
     Observable<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate);
@@ -70,6 +73,7 @@ public interface BaseQuery<
      * Decides whether applying more events is permitted on a snapshot.
      *
      * @param snapshot The snapshot
+     *
      * @return whether more events can be applied
      */
     boolean shouldEventsBeApplied(SnapshotT snapshot);
@@ -78,6 +82,7 @@ public interface BaseQuery<
      * Finds all events for a given list of aggregates.
      *
      * @param aggregates The list of aggregates
+     *
      * @return The list of events
      */
     Observable<EventT> findEventsForAggregates(List<AggregateT> aggregates);
@@ -95,6 +100,7 @@ public interface BaseQuery<
      * If an event is a proxied type, unwrap it and return an event type.
      *
      * @param event The event
+     *
      * @return An unproxied event
      */
     EventT unwrapIfProxy(EventT event);
@@ -105,6 +111,7 @@ public interface BaseQuery<
      * @param e        The exception
      * @param snapshot The snapshot
      * @param event    The event that resulted in an exception
+     *
      * @return The outcome of handling the exception
      */
     Observable<EventApplyOutcome> onException(Exception e, SnapshotT snapshot, EventT event);

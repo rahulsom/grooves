@@ -20,6 +20,7 @@ import java.util.List;
  * @param <SnapshotT>          The type of Snapshot that is computed
  * @param <JoinEventT>         The type of the Join Event
  * @param <DisjoinEventT>      The type of the disjoin event
+ *
  * @author Rahul Somasunderam
  */
 public class JoinExecutor<

@@ -16,6 +16,7 @@ import java.util.List;
  * @param <EventT>      The type of Event
  * @param <SnapshotIdT> The type of Snapshot Id
  * @param <SnapshotT>   The type of Snapshot
+ *
  * @author Rahul Somasunderam
  */
 public interface Executor<
@@ -29,6 +30,7 @@ public interface Executor<
      * Applies reverts to a list of events and then returns forward events.
      *
      * @param events The list of events
+     *
      * @return a list of events after the reverts have been applied
      */
     Observable<EventT> applyReverts(Observable<EventT> events);
@@ -41,6 +43,7 @@ public interface Executor<
      * @param events         The list of forward events
      * @param deprecatesList The list of Deprecate events
      * @param aggregates     The list of deprecated aggregates
+     *
      * @return The Snapshot that has been mutated
      */
     Observable<SnapshotT> applyEvents(

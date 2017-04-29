@@ -3,7 +3,6 @@ package com.github.rahulsom.grooves.api.snapshots;
 import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseJoin;
-import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
 
 /**
  * A special kind of {@link VersionedSnapshot} that stores information about joined entities.

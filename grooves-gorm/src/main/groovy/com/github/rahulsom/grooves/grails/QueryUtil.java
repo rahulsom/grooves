@@ -27,14 +27,14 @@ class QueryUtil {
             {"order", "asc"}
     });
 
+    private QueryUtil() {
+    }
+
     private static Map<String, Object> createMap(Object[][] entries) {
         final LinkedHashMap<String, Object> retval = new LinkedHashMap<>();
         for (Object[] row : entries) {
             retval.put((String) row[0], row[1]);
         }
         return Collections.unmodifiableMap(retval);
-    }
-
-    private QueryUtil() {
     }
 }

@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.groovy.transformations
 
-import com.github.rahulsom.grooves.api.EventApplyOutcome
 import org.codehaus.groovy.control.MultipleCompilationErrorsException
 import org.codehaus.groovy.control.messages.SyntaxErrorMessage
 import rx.Observable

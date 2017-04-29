@@ -24,6 +24,16 @@ public class EventsDsl<
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>> {
 
+    private static AtomicLong defaultPositionSupplier = new AtomicLong();
+
+    public static AtomicLong getDefaultPositionSupplier() {
+        return defaultPositionSupplier;
+    }
+
+    public static void setDefaultPositionSupplier(AtomicLong defaultPositionSupplier) {
+        EventsDsl.defaultPositionSupplier = defaultPositionSupplier;
+    }
+
     /**
      * Allows executing a consumer with some context to setup events.
      *
@@ -72,19 +82,15 @@ public class EventsDsl<
                 () -> "anonymous", Date::new, closure);
     }
 
-    public static AtomicLong getDefaultPositionSupplier() {
-        return defaultPositionSupplier;
-    }
-
-    public static void setDefaultPositionSupplier(AtomicLong defaultPositionSupplier) {
-        EventsDsl.defaultPositionSupplier = defaultPositionSupplier;
-    }
-
-    private static AtomicLong defaultPositionSupplier = new AtomicLong();
-
     public class OnSpec<
             SnapshotIdT,
             SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>> {
+        private AggregateT aggregate;
+        private Consumer entityConsumer;
+        private Supplier<Date> timestampSupplier;
+        private Supplier<String> userSupplier;
+        private Supplier<Long> positionSupplier;
+
         /**
          * Applies an event to an aggregate. This involves checking if any important fields are
          * missing and populating them based on the suppliers.
@@ -175,11 +181,5 @@ public class EventsDsl<
         public void setPositionSupplier(Supplier<Long> positionSupplier) {
             this.positionSupplier = positionSupplier;
         }
-
-        private AggregateT aggregate;
-        private Consumer entityConsumer;
-        private Supplier<Date> timestampSupplier;
-        private Supplier<String> userSupplier;
-        private Supplier<Long> positionSupplier;
     }
 }

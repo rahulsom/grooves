@@ -24,9 +24,8 @@ import java.util.logging.Logger;
 public class AggregateASTTransformation extends AbstractASTTransformation {
     private static final Class<Aggregate> MY_CLASS = Aggregate.class;
     private static final ClassNode MY_TYPE = ClassHelper.make(MY_CLASS);
-    private final Logger log = Logger.getLogger(getClass().getName());
-
     private static final Map<String, List<ClassNode>> EVENTS_FOR_AGGREGATE = new LinkedHashMap<>();
+    private final Logger log = Logger.getLogger(getClass().getName());
 
     static void addEventToAggregate(String aggregate, ClassNode event) {
         if (!EVENTS_FOR_AGGREGATE.containsKey(aggregate)) {

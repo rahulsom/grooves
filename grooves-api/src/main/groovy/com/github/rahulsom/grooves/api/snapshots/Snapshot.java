@@ -10,7 +10,7 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
  * @param <SnapshotIdT> The type for the snapshot's {@link #getId()} field
  * @param <EventIdT>    The type for the {@link EventT}'s id field
  * @param <EventT>      The base type for events that apply to {@link AggregateT}
- *                
+ *
  * @author Rahul Somasunderam
  */
 public interface Snapshot<

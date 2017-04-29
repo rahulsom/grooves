@@ -9,6 +9,7 @@ import com.github.rahulsom.grooves.api.AggregateType;
  * @param <EventIdT>         The Type for Event's {@link #getId} field
  * @param <EventT>           The parent event type
  * @param <JoinedAggregateT> The target aggregate
+ *
  * @author Rahul Somasunderam
  */
 public interface JoinEvent<
