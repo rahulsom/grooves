@@ -4,8 +4,7 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import groovy.transform.EqualsAndHashCode
 import rx.Observable
 
-import static rx.Observable.empty
-import static rx.Observable.just
+import static rx.Observable.*
 
 /**
  * Represents Accounts of a Patient
@@ -24,7 +23,14 @@ class PatientAccount implements Snapshot<Patient, String, Long, PatientEvent> {
     Set<String> processingErrors = []
 
     Long aggregateId
+
     Patient getAggregate() { Patient.get(aggregateId) }
+
+    @Override
+    Observable<Patient> getAggregateObservable() {
+        aggregateId ? defer { just aggregate } : empty()
+    }
+
     void setAggregate(Patient aggregate) { this.aggregateId = aggregate.id }
 
     @Override
@@ -32,11 +38,19 @@ class PatientAccount implements Snapshot<Patient, String, Long, PatientEvent> {
         deprecatedBy ? just(deprecatedBy) : empty()
     }
     Long deprecatedById
+
     Patient getDeprecatedBy() { Patient.get(deprecatedById) }
+
     void setDeprecatedBy(Patient aggregate) { deprecatedById = aggregate.id }
 
+    @Override
+    Observable<Patient> getDeprecatesObservable() {
+        deprecatesIds ? from(deprecatesIds).flatMap { Patient.get it } : empty()
+    }
     Set<Long> deprecatesIds
+
     Set<Patient> getDeprecates() { deprecatesIds.collect { Patient.get(it) }.toSet() }
+
     void setDeprecates(Set<Patient> deprecates) { deprecatesIds = deprecates*.id }
 
     BigDecimal balance = 0.0
@@ -55,6 +69,8 @@ class PatientAccount implements Snapshot<Patient, String, Long, PatientEvent> {
         deprecatedById nullable: true
     }
 
-    @Override String toString() { "PatientAccount($id, $aggregateId, $lastEventPosition, " +
-            "B: $balance, M: $moneyMade)" }
+    @Override String toString() {
+        "PatientAccount($id, $aggregateId, $lastEventPosition, " +
+                "B: $balance, M: $moneyMade)"
+    }
 }

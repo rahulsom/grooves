@@ -33,7 +33,17 @@ import static rx.Observable.just
     Account aggregate, deprecatedBy
     Set<Account> deprecates
 
+    @Override
+    Observable<Account> getAggregateObservable() {
+        (aggregate ? just(aggregate) : empty()) as Observable<Account>
+    }
+
     @Override Observable<Account> getDeprecatedByObservable() {
         (deprecatedBy ? just(deprecatedBy) : empty()) as Observable<Account>
+    }
+
+    @Override
+    Observable<Account> getDeprecatesObservable() {
+        Observable.from(deprecates.toList())
     }
 }

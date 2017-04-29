@@ -5,8 +5,7 @@ import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import rx.Observable
 
-import static rx.Observable.empty
-import static rx.Observable.just
+import static rx.Observable.*
 
 /**
  * Represents a patient's health
@@ -24,7 +23,14 @@ class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
     Set<Patient> deprecates
 
     Long aggregateId
+
     Patient getAggregate() { Patient.get(aggregateId) }
+
+    @Override
+    Observable<Patient> getAggregateObservable() {
+        aggregateId ? defer { just(aggregate) } : empty()
+    }
+
     void setAggregate(Patient aggregate) { aggregateId = aggregate.id }
     List<Procedure> procedures
 
@@ -45,5 +51,9 @@ class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
         deprecatedBy ? just(deprecatedBy) : empty()
     }
 
+    @Override
+    Observable<Patient> getDeprecatesObservable() {
+        deprecates ? from(deprecates.toList()) : empty()
+    }
 }
 

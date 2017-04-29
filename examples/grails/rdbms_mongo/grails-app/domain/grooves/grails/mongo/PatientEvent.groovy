@@ -34,7 +34,7 @@ class PatientCreated extends PatientEvent {
     String name
 
     @Override String getAudit() { new JsonBuilder([name: name]).toString() }
-    @Override String toString() { "<$id> created as ${name}" }
+    @Override String toString() { "<$id> ${timestamp.format('yyyy-MM-dd')} created as ${name}" }
 }
 
 @EqualsAndHashCode
@@ -45,7 +45,8 @@ class PatientAddedToZipcode extends PatientEvent implements
     @Override void setJoinAggregate(Zipcode rollupAggregate) { zipcode = rollupAggregate }
 
     @Override String getAudit() { new JsonBuilder([zipcodeId: joinAggregate?.id]).toString() }
-    @Override String toString() { "<$id> sent to zipcode ${zipcode.uniqueId}" }
+    @Override String toString() {
+        "<$id> ${timestamp.format('yyyy-MM-dd')} sent to zipcode ${zipcode.uniqueId}" }
 
     static transients = ['joinAggregate']
 }
@@ -58,7 +59,8 @@ class PatientRemovedFromZipcode extends PatientEvent implements
     @Override void setJoinAggregate(Zipcode rollupAggregate) { zipcode = rollupAggregate }
 
     @Override String getAudit() { new JsonBuilder([zipcodeId: joinAggregate?.id]).toString() }
-    @Override String toString() { "<$id> removed from zipcode ${zipcode.uniqueId}" }
+    @Override String toString() {
+        "<$id> ${timestamp.format('yyyy-MM-dd')} removed from zipcode ${zipcode.uniqueId}" }
 
     static transients = ['joinAggregate']
 }
@@ -70,7 +72,8 @@ class ProcedurePerformed extends PatientEvent {
     BigDecimal cost
 
     @Override String getAudit() { new JsonBuilder([code: code, cost: cost]).toString() }
-    @Override String toString() { "<$id> performed $code for \$ $cost" }
+    @Override String toString() {
+        "<$id> ${timestamp.format('yyyy-MM-dd')} performed $code for \$ $cost" }
 }
 
 @Event(Patient)
@@ -79,7 +82,7 @@ class PaymentMade extends PatientEvent {
     BigDecimal amount
 
     @Override String getAudit() { new JsonBuilder([amount: amount]).toString() }
-    @Override String toString() { "<$id> paid \$ $amount" }
+    @Override String toString() { "<$id> ${timestamp.format('yyyy-MM-dd')} paid \$ $amount" }
 }
 
 @EqualsAndHashCode
@@ -88,7 +91,8 @@ class PatientEventReverted extends PatientEvent implements
     Long revertedEventId
 
     @Override String getAudit() { new JsonBuilder([revertedEvent: revertedEventId]).toString() }
-    @Override String toString() { "<$id> reverted #$revertedEventId" }
+    @Override String toString() {
+        "<$id> ${timestamp.format('yyyy-MM-dd')} reverted #$revertedEventId" }
 }
 
 @EqualsAndHashCode
@@ -100,7 +104,8 @@ class PatientDeprecatedBy extends PatientEvent implements
     Patient deprecator
 
     @Override String getAudit() { new JsonBuilder([deprecatedBy: deprecator.id]).toString() }
-    @Override String toString() { "<$id> deprecated by #${deprecator.id}" }
+    @Override String toString() {
+        "<$id> ${timestamp.format('yyyy-MM-dd')} deprecated by #${deprecator.id}" }
 }
 
 @EqualsAndHashCode
@@ -112,5 +117,6 @@ class PatientDeprecates extends PatientEvent implements
     Patient deprecated
 
     @Override String getAudit() { new JsonBuilder([deprecates: deprecated.id]).toString() }
-    @Override String toString() { "<$id> deprecates #${deprecated.id}" }
+    @Override String toString() {
+        "<$id> ${timestamp.format('yyyy-MM-dd')} deprecates #${deprecated.id}" }
 }

@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.github.rahulsom.grooves.queries.internal.Utils.stringifyEventIds;
+import static com.github.rahulsom.grooves.queries.internal.Utils.stringifyEvents;
 import static rx.Observable.just;
 
 /**
@@ -55,12 +57,7 @@ public class QueryExecutor<
     public Observable<EventT> applyReverts(Observable<EventT> events) {
 
         return events.toList().flatMap(eventList -> {
-            log.debug(
-                    String.format("     EventList: %s",
-                            eventList.stream()
-                                    .map(i -> i.getId().toString())
-                                    .collect(Utils.JOIN_EVENT_IDS))
-            );
+            log.debug(String.format("     EventList: %s", stringifyEventIds(eventList)));
             List<EventT> forwardEvents = new ArrayList<>();
             while (!eventList.isEmpty()) {
                 EventT head = eventList.remove(eventList.size() - 1);
@@ -164,9 +161,7 @@ public class QueryExecutor<
                         && !it.getId().equals(event.getConverse().getId()))
                 .toSortedList((a, b) -> a.getTimestamp().compareTo(b.getTimestamp()))
                 .flatMap(sortedEvents -> {
-                    log.debug("Sorted Events: " + sortedEvents.stream()
-                            .map(EventT::toString)
-                            .collect(Utils.JOIN_EVENTS));
+                    log.debug("Sorted Events: " + stringifyEvents(sortedEvents));
                     Observable<EventT> forwardEventsSortedBackwards =
                             applyReverts(Observable.from(sortedEvents));
                     return applyEvents(util, newSnapshot, forwardEventsSortedBackwards,
