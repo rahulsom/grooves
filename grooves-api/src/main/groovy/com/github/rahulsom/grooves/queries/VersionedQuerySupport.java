@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.github.rahulsom.grooves.queries.internal.Utils.stringifyEvents;
+
 /**
  * Default interface to help in building versioned snapshots.
  *
@@ -98,14 +100,10 @@ public interface VersionedQuerySupport<
                                         .filter(it -> it instanceof RevertEvent).collect(
                                                 Collectors.toList());
                                 getLog().info("     Uncomputed reverts exist: "
-                                        + reverts.stream()
-                                        .map(EventT::toString)
-                                        .collect(Utils.JOIN_EVENTS));
+                                        + stringifyEvents(reverts));
                                 return getSnapshotAndEventsSince(aggregate, version, false);
                             } else {
-                                getLog().debug("     Events in pair: " + events.stream()
-                                        .map(it -> it.getId().toString())
-                                        .collect(Utils.JOIN_EVENT_IDS));
+                                getLog().debug("     Events in pair: " + stringifyEvents(events));
                                 return Observable.just(new Pair<>(lastSnapshot, events));
 
                             }
@@ -121,9 +119,7 @@ public interface VersionedQuerySupport<
                             .toList();
 
             return uncomputedEvents
-                    .doOnNext(ue -> getLog().debug("     Events in pair: " + ue.stream()
-                            .map(it -> it.getId().toString())
-                            .collect(Utils.JOIN_EVENT_IDS)))
+                    .doOnNext(ue -> getLog().debug("     Events in pair(2): " + stringifyEvents(ue)))
                     .map(ue -> new Pair<>(lastSnapshot, ue));
         }
 
@@ -157,42 +153,54 @@ public interface VersionedQuerySupport<
             List<EventT> events = seTuple2.getSecond();
             SnapshotT lastUsableSnapshot = seTuple2.getFirst();
 
-            if (events.stream().anyMatch(it -> it instanceof RevertEvent)
-                    && lastUsableSnapshot.getAggregate() != null) {
-                return Observable.empty();
+            getLog().info("Events: " + events);
+
+            if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
+                return lastUsableSnapshot
+                        .getAggregateObservable().flatMap(aggregate1 -> {
+                            getLog().info("Aggregate1: " + aggregate1);
+                            if (aggregate1 == null) {
+                                return computeSnapshotAndEvents(
+                                        aggregate, version, redirect, events, lastUsableSnapshot);
+                            } else {
+                                return Observable.empty();
+                            }
+                        })
+                        .map(Observable::just)
+                        .defaultIfEmpty(computeSnapshotAndEvents(
+                                aggregate, version, redirect, events, lastUsableSnapshot))
+                        .flatMap(it -> it);
             }
-            lastUsableSnapshot.setAggregate(aggregate);
-
-            Observable<EventT> forwardOnlyEvents =
-                    getExecutor().applyReverts(Observable.from(events))
-                            .toList()
-                            .map(Observable::just)
-                            .onErrorReturn(throwable -> getExecutor()
-                                    .applyReverts(
-                                            getSnapshotAndEventsSince(aggregate, version, false)
-                                                    .flatMap(it -> Observable.from(it.getSecond()))
-                                    )
-                                    .toList()
-                            )
-                            .flatMap(it -> it)
-                            .flatMap(Observable::from);
-
-            final Observable<SnapshotT> snapshotObservable =
-                    getExecutor().applyEvents(this, lastUsableSnapshot, forwardOnlyEvents,
-                            new ArrayList<>(), Collections.singletonList(aggregate));
-            return snapshotObservable
-                    .doOnNext(snapshot -> {
-                        if (!events.isEmpty()) {
-                            snapshot.setLastEvent(events.get(events.size() - 1));
-                        }
-
-                        getLog().info("  --> Computed: " + snapshot);
-                    })
-                    .flatMap(it -> Utils.returnOrRedirect(redirect, events, it,
-                            () -> it.getDeprecatedByObservable().flatMap(x -> computeSnapshot(x, version))
-                    ));
+            return computeSnapshotAndEvents(
+                    aggregate, version, redirect, events, lastUsableSnapshot);
         });
 
+    }
+
+    default Observable<SnapshotT> computeSnapshotAndEvents(
+            AggregateT aggregate, long version, boolean redirect, List<EventT> events,
+            SnapshotT lastUsableSnapshot) {
+        lastUsableSnapshot.setAggregate(aggregate);
+
+        Observable<EventT> forwardOnlyEvents = Utils.getForwardOnlyEvents(
+                events, getExecutor(), () -> getSnapshotAndEventsSince(aggregate, version, false)
+        );
+
+        final Observable<SnapshotT> snapshotObservable =
+                getExecutor().applyEvents(this, lastUsableSnapshot, forwardOnlyEvents,
+                        new ArrayList<>(), Collections.singletonList(aggregate));
+        return snapshotObservable
+                .doOnNext(snapshot -> {
+                    if (!events.isEmpty()) {
+                        snapshot.setLastEvent(events.get(events.size() - 1));
+                    }
+
+                    getLog().info("  --> Computed: " + snapshot);
+                })
+                .flatMap(it -> Utils.returnOrRedirect(redirect, events, it,
+                        () -> it.getDeprecatedByObservable()
+                                .flatMap(x -> computeSnapshot(x, version))
+                ));
     }
 
     /**

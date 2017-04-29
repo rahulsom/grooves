@@ -4,8 +4,7 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import groovy.transform.EqualsAndHashCode
 import rx.Observable
 
-import static rx.Observable.empty
-import static rx.Observable.just
+import static rx.Observable.*
 
 /**
  * Represents a patient's health
@@ -24,19 +23,34 @@ class PatientHealth implements Snapshot<Patient, String, Long, PatientEvent> {
     Set<String> processingErrors = []
 
     Long aggregateId
+
     Patient getAggregate() { Patient.get(aggregateId) }
+
+    @Override
+    Observable<Patient> getAggregateObservable() {
+        (aggregateId ? defer { just(aggregate) } : empty()) as Observable<Patient>
+    }
+
     void setAggregate(Patient aggregate) { this.aggregateId = aggregate.id }
 
     @Override
     Observable<Patient> getDeprecatedByObservable() {
-        deprecatedBy ? just(deprecatedBy) : empty()
+        deprecatedById ? defer { just(deprecatedBy) } : empty()
     }
     Long deprecatedById
+
     Patient getDeprecatedBy() { Patient.get(deprecatedById) }
+
     void setDeprecatedBy(Patient aggregate) { deprecatedById = aggregate.id }
 
+    @Override
+    Observable<Patient> getDeprecatesObservable() {
+        deprecatesIds ? from(deprecatesIds.toList()).flatMap { Patient.get(it) } : empty()
+    }
     Set<Long> deprecatesIds
+
     Set<Patient> getDeprecates() { deprecatesIds.collect { Patient.get(it) }.toSet() }
+
     void setDeprecates(Set<Patient> deprecates) { deprecatesIds = deprecates*.id }
 
     String name
@@ -63,5 +77,6 @@ class PatientHealth implements Snapshot<Patient, String, Long, PatientEvent> {
 class Procedure {
     String code
     Date date
+
     @Override String toString() { "Procedure($code, $date)" }
 }
