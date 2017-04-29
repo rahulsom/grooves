@@ -132,9 +132,9 @@ ruleset {
     }
 
     // rulesets/enhanced.xml
-    CloneWithoutCloneable
+    // CloneWithoutCloneable // prints too many warnings on console
     JUnitAssertEqualsConstantActualValue
-    UnsafeImplementationAsMap
+    // UnsafeImplementationAsMap // prints too many warnings on console
 
     // rulesets/exceptions.xml
     CatchArrayIndexOutOfBoundsException
