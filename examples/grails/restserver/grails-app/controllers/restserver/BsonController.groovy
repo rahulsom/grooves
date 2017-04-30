@@ -7,7 +7,7 @@ import org.grails.datastore.bson.query.BsonQuery
 /**
  * Performs Restful queries using BSON
  */
-class BsonController<T> extends RestfulController<T> {
+abstract class BsonController<T> extends RestfulController<T> {
     BsonController(Class<T> resource) {
         super(resource)
     }
@@ -19,5 +19,12 @@ class BsonController<T> extends RestfulController<T> {
         params.q ? BsonQuery.parse(resource, new JsonReader(params.q)).list(params) :
                 super.listAllResources(params)
     }
-
+    @Override
+    Object index(Integer max) {
+        params.max = Math.min(max ?: 10, 100)
+        [
+                ("${resourceName}Count".toString()): countResources(),
+                ("${resourceName}List".toString()): listAllResources(params)
+        ]
+    }
 }

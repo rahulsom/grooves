@@ -32,6 +32,13 @@ if (Environment.isDevelopmentMode() && targetDir != null) {
         }
     }
     logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
+    root(ERROR, ['STDOUT', 'FULL_STACKTRACE'])
 }
-root(ERROR, ['STDOUT'])
-logger 'org.springframework.web.filter.CommonsRequestLoggingFilter', DEBUG
+else {
+    root(ERROR, ['STDOUT'])
+}
+
+logger "com.github.rahulsom", DEBUG
+logger "grooves.example.rxrest", DEBUG
+logger 'grails.app.controllers.grooves.example.rxrest', DEBUG
+logger 'grails.app.conf.grooves.example.rxrest', INFO, ['STDOUT']

@@ -1,0 +1,46 @@
+import grooves.grails.restserver.*
+
+model {
+	PatientEvent patientEvent
+}
+
+json {
+    'class' patientEvent.class.simpleName
+    id patientEvent.id
+    timestamp patientEvent.timestamp.time
+    position patientEvent.position
+    aggregateId patientEvent.aggregate.id
+    createdBy patientEvent.createdBy
+
+    switch (patientEvent) {
+        case PatientCreated:
+            name ((patientEvent as PatientCreated).name)
+            break
+        case ProcedurePerformed:
+            code ((patientEvent as ProcedurePerformed).code)
+            cost ((patientEvent as ProcedurePerformed).cost)
+            break
+        case PaymentMade:
+            amount ((patientEvent as PaymentMade).amount)
+            break
+        case PatientEventReverted:
+            revertedEventId ((patientEvent as PatientEventReverted).revertedEventId)
+            break
+        case PatientDeprecatedBy:
+            deprecator {
+                id ((patientEvent as PatientDeprecatedBy).deprecator.id)
+            }
+            converse {
+                id ((patientEvent as PatientDeprecatedBy).converse.id)
+            }
+            break
+        case PatientDeprecates:
+            deprecated {
+                id ((patientEvent as PatientDeprecates).deprecated.id)
+            }
+            converse {
+                id ((patientEvent as PatientDeprecates).converse.id)
+            }
+            break
+    }
+}

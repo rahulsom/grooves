@@ -1,21 +1,17 @@
 ---
-server:
-    port: 8081
 grails:
+    gorm:
+        rest:
+            host: http://localhost:8081
+            readTimeout: 10000
+            query:
+                type: bson
     profile: rest-api
     codegen:
-        defaultPackage: restserver
+        defaultPackage: rxrest
     spring:
         transactionManagement:
             proxies: false
-    gorm:
-        # Whether to autowire entities. 
-        # Disabled by default for performance reasons.
-        autowire: false         
-        reactor:
-            # Whether to translate GORM events into Reactor events
-            # Disabled by default for performance reasons
-            events: false
 info:
     app:
         name: '@info.app.name@'
@@ -96,7 +92,7 @@ environments:
             url: jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
     production:
         dataSource:
-            dbCreate: create-drop
+            dbCreate: none
             url: jdbc:h2:./prodDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
             properties:
                 jmxEnabled: true
@@ -116,3 +112,11 @@ environments:
                 testOnReturn: false
                 jdbcInterceptors: ConnectionState
                 defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
+---
+grails:
+    mongodb:
+        host: localhost
+        port: 27020
+        #username: ""
+        #password: ""
+        #databaseName: "mydatabase"

@@ -8,7 +8,7 @@ def examples = [
         'springboot/jpa',
         'grails/rdbms',
         'grails/rdbms_mongo',
-        'grails/restserver',
+        'grails/restserver', 'grails/rxrest',
 ]
 
 examples.each { include "examples/${it}" }

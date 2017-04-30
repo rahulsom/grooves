@@ -15,11 +15,16 @@ class BootStrap {
     static class PatientLongConverter implements Converter<Long, Patient>{
         @Override Patient convert(Long source) { Patient.load source }
     }
+    static class StringDateConverter implements Converter<String, Date> {
+        @Override Date convert(String date) { Date.parse("yyyy-MM-dd'T'HH:mmZ", date) }
+    }
+
     def init = { servletContext ->
 
         (AbstractHibernateQuery.conversionService as DefaultConversionService).with {
             addConverter new PatientIntegerConverter()
             addConverter new PatientLongConverter()
+            addConverter new StringDateConverter()
         }
 
         setupJohnLennon()
