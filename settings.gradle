@@ -4,6 +4,11 @@ def projects = ['api', 'groovy', 'gorm',]
 projects.each { include "grooves-${it}" }
 
 include 'grooves-example-test'
-def examples = ['springboot/jpa', 'grails/rdbms', 'grails/rdbms_mongo',]
+def examples = [
+        'springboot/jpa',
+        'grails/rdbms',
+        'grails/rdbms_mongo',
+        'grails/restserver',
+]
 
 examples.each { include "examples/${it}" }

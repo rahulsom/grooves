@@ -120,7 +120,8 @@ public interface TemporalQuerySupport<
                             .toList();
 
             return uncomputedEvents
-                    .doOnNext(ue -> getLog().debug("     Events in pair(2): " + stringifyEvents(ue)))
+                    .doOnNext(ue ->
+                            getLog().debug("     Events in pair(2): " + stringifyEvents(ue)))
                     .map(ue -> new Pair<>(lastSnapshot, ue));
         }
 
