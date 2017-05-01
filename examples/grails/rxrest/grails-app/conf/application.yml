@@ -6,6 +6,8 @@ grails:
             readTimeout: 10000
             query:
                 type: bson
+            log:
+                level: TRACE
     profile: rest-api
     codegen:
         defaultPackage: rxrest

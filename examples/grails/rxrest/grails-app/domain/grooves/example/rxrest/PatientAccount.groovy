@@ -15,7 +15,7 @@ import static rx.Observable.*
 @SuppressWarnings(['DuplicateNumberLiteral'])
 class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
 
-    static mapWith = "mongo"
+    static mapWith = 'mongo'
 
     Long lastEventPosition
     Date lastEventTimestamp

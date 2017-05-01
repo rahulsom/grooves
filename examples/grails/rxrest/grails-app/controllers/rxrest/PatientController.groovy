@@ -4,9 +4,15 @@ import grails.rx.web.RxController
 import grooves.example.rxrest.ObjectRequest
 import grooves.example.rxrest.Patient
 import grooves.example.rxrest.PatientAccountQuery
+import grooves.example.rxrest.PatientHealthQuery
 
 import static org.springframework.http.HttpStatus.NOT_FOUND
 
+/**
+ * Serves up patient data
+ *
+ * @author Rahul Somasunderam
+ */
 @SuppressWarnings(['DuplicateStringLiteral'])
 class PatientController implements RxController {
 
@@ -25,7 +31,6 @@ class PatientController implements RxController {
         def query = new PatientAccountQuery()
         Patient.get(objectRequest.id).
                 flatMap { patient ->
-                    println patient
                     objectRequest.version ?
                             query.computeSnapshot(patient, objectRequest.version) :
                             objectRequest.date ?
@@ -33,26 +38,24 @@ class PatientController implements RxController {
                                     query.computeSnapshot(patient, Long.MAX_VALUE)
                 }.
                 map { patientAccount ->
-                    patientAccount.toString().length()
                     rx.respond patientAccount
                 }
     }
 
-//    def health(Patient patient) {
-//        def query = new PatientHealthQuery()
-//        def snapshot = params.version ?
-//                query.computeSnapshot(patient, params.long('version')) :
-//                params['date'] ?
-//                        query.computeSnapshot(patient, params.date('date')) :
-//                        query.computeSnapshot(patient, Long.MAX_VALUE)
-//
-//        snapshot.map { s ->
-//            s.toString().length()
-//            JSON.use('deep') {
-//                rx.render(s as JSON)
-//            }
-//        }
-//    }
+    def health(ObjectRequest objectRequest) {
+        def query = new PatientHealthQuery()
+        Patient.get(objectRequest.id).
+                flatMap { patient ->
+                    objectRequest.version ?
+                            query.computeSnapshot(patient, objectRequest.version) :
+                            objectRequest.date ?
+                                    query.computeSnapshot(patient, objectRequest.date) :
+                                    query.computeSnapshot(patient, Long.MAX_VALUE)
+                }.
+                map { patientHealth ->
+                    rx.respond patientHealth
+                }
+    }
 
     protected void notFound() {
         request.withFormat {

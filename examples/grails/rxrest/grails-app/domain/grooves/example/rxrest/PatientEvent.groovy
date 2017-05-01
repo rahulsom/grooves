@@ -5,9 +5,9 @@ import com.github.rahulsom.grooves.api.events.DeprecatedBy
 import com.github.rahulsom.grooves.api.events.Deprecates
 import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.groovy.transformations.Event
+import grails.gorm.rx.rest.RxRestEntity
 import groovy.json.JsonBuilder
 import groovy.transform.EqualsAndHashCode
-import grails.gorm.rx.rest.RxRestEntity
 
 /**
  * Represents Patient Events
@@ -30,7 +30,7 @@ class PatientEvent implements
     static constraints = {
     }
     @Override String toString() { "PatientEvent $id" }
-    @Override String getAudit() {"Unknown Event"}
+    @Override String getAudit() { "${id} Unknown Event" }
 }
 
 @Event(Patient)

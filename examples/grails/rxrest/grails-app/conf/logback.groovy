@@ -41,4 +41,4 @@ else {
 logger "com.github.rahulsom", DEBUG
 logger "grooves.example.rxrest", DEBUG
 logger 'grails.app.controllers.grooves.example.rxrest', DEBUG
-logger 'grails.app.conf.grooves.example.rxrest', INFO, ['STDOUT']
+logger 'grails.app.conf.grooves.example.rxrest', INFO

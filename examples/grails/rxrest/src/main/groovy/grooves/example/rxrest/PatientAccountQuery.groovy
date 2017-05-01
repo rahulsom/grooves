@@ -1,7 +1,6 @@
 package grooves.example.rxrest
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome
-import com.github.rahulsom.grooves.grails.RxGormQuerySupport
 import com.github.rahulsom.grooves.groovy.transformations.Query
 import grails.compiler.GrailsCompileStatic
 import rx.Observable

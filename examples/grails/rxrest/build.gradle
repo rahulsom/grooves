@@ -22,7 +22,7 @@ apply plugin:"org.grails.grails-web"
 apply plugin:"org.grails.plugins.views-json"
 apply plugin: "com.sourcemuse.mongo"
 apply from: "../../../gradle/codenarc/codenarc.gradle"
-apply from: "../../../gradle/cobertura.gradle"
+// apply from: "../../../gradle/cobertura.gradle"
 apply plugin: 'com.wiredforcode.spawn'
 
 repositories {
@@ -67,6 +67,7 @@ dependencies {
 
     compile 'org.grails.plugins:rx-gorm-rest-client:1.0.0.RELEASE'
     compile project(':grooves-gorm')
+    testCompile project(':grooves-example-test')
     compile "org.grails.plugins:rxjava"
     compile "org.grails.plugins:mongodb"
 
