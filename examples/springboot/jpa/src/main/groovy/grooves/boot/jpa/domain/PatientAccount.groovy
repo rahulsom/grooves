@@ -33,7 +33,7 @@ class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
 
     @Column(nullable = false) BigDecimal balance = 0.0
     @Column(nullable = false) BigDecimal moneyMade = 0.0
-    @Column(nullable = false) String name
+    String name
 
     int processingErrors = 0
 

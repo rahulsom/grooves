@@ -13,6 +13,7 @@ import org.codehaus.groovy.runtime.InvokerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
+import rx.functions.Func2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.github.rahulsom.grooves.queries.internal.Utils.stringifyEventIds;
 import static com.github.rahulsom.grooves.queries.internal.Utils.stringifyEvents;
+import static org.codehaus.groovy.runtime.InvokerHelper.invokeMethod;
 import static rx.Observable.just;
 
 /**
@@ -87,13 +89,16 @@ public class QueryExecutor<
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Observable<SnapshotT> applyEvents(
             final BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> query,
             SnapshotT initialSnapshot,
             Observable<EventT> events,
             final List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesList,
-            final List<AggregateT> aggregates) {
+            final List<AggregateT> aggregates, AggregateT aggregate) {
 
         final AtomicBoolean stopApplyingEvents = new AtomicBoolean(false);
 
@@ -102,15 +107,15 @@ public class QueryExecutor<
             if (!query.shouldEventsBeApplied(snapshot) || stopApplyingEvents.get()) {
                 return just(snapshot);
             } else {
-                log.debug("     -> Event: {}", event);
+                log.debug("     -> Applying Event: {}", event);
 
                 if (event instanceof Deprecates) {
                     return applyDeprecates(
                             (Deprecates<AggregateT, EventIdT, EventT>) event,
-                            query, aggregates, deprecatesList);
+                            query, aggregates, deprecatesList, aggregate);
                 } else if (event instanceof DeprecatedBy) {
-                    return just(applyDeprecatedBy(
-                            (DeprecatedBy<AggregateT, EventIdT, EventT>) event, snapshot));
+                    return applyDeprecatedBy(
+                            (DeprecatedBy<AggregateT, EventIdT, EventT>) event, snapshot);
                 } else {
                     String methodName = "apply" + event.getClass().getSimpleName();
                     return callMethod(query, methodName, snapshot, event)
@@ -122,6 +127,18 @@ public class QueryExecutor<
 
     }
 
+    /**
+     * Decides how to proceed after inspecting the response of a method that returns an
+     * {@link EventApplyOutcome}.
+     *
+     * @param stopApplyingEvents Whether a previous decision has been made to stop applying new
+     *                           events
+     * @param snapshot           The snapshot on which events are being added
+     * @param methodName         The name of the method that was called
+     * @param retval             The outcome of calling the method
+     *
+     * @return The snapshot after deciding what to do with the {@link EventApplyOutcome}
+     */
     private Observable<? extends SnapshotT> handleMethodResponse(
             AtomicBoolean stopApplyingEvents, SnapshotT snapshot, String methodName,
             EventApplyOutcome retval) {
@@ -136,46 +153,92 @@ public class QueryExecutor<
         }
     }
 
+    /**
+     * Applies a {@link DeprecatedBy} event to a snapshot.
+     *
+     * @param event    The {@link DeprecatedBy} event
+     * @param snapshot The snapshot computed until before this event
+     *
+     * @return The snapshot after applying the {@link DeprecatedBy} event
+     */
     @SuppressWarnings("GrMethodMayBeStatic")
-    SnapshotT applyDeprecatedBy(
+    Observable<SnapshotT> applyDeprecatedBy(
             final DeprecatedBy<AggregateT, EventIdT, EventT> event, SnapshotT snapshot) {
-        AggregateT newAggregate = event.getDeprecator();
-        snapshot.setDeprecatedBy(newAggregate);
-        return snapshot;
+        return event.getDeprecatorObservable().reduce(snapshot, (snapshotT, aggregateT) -> {
+            log.info("        -> {} will cause redirect to {}", event, aggregateT);
+            snapshotT.setDeprecatedBy(aggregateT);
+            return snapshotT;
+        });
     }
 
+    /**
+     * Applies a {@link Deprecates} event to a snapshot.
+     *
+     * @param event            The {@link Deprecates} event
+     * @param util             The Query Util instance
+     * @param allAggregates    All {@link AggregateType}s that have been deprecated by current
+     *                         aggregate
+     * @param deprecatesEvents The list of {@link Deprecates} events that have been collected so far
+     * @param aggregate        The current aggregate
+     *
+     * @return The snapshot after applying the {@link Deprecates} event
+     */
     Observable<SnapshotT> applyDeprecates(
             final Deprecates<AggregateT, EventIdT, EventT> event,
             final BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> util,
-            final List<AggregateT> aggregates,
-            final List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesList) {
+            final List<AggregateT> allAggregates,
+            final List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesEvents,
+            AggregateT aggregate) {
+
+        log.info("        -> {} will cause recomputation", event);
         final SnapshotT newSnapshot = util.createEmptySnapshot();
-        newSnapshot.setAggregate(event.getAggregate());
+        newSnapshot.setAggregate(aggregate);
 
-        AggregateT otherAggregate = event.getDeprecated();
-        util.addToDeprecates(newSnapshot, otherAggregate);
+        return event.getConverseObservable().flatMap(converse -> event.getDeprecatedObservable()
+                .flatMap(deprecatedAggregate -> {
+                    log.debug("        -> Deprecated Aggregate is: {}. Converse is: {}",
+                            deprecatedAggregate, converse);
+                    util.addToDeprecates(newSnapshot, deprecatedAggregate);
 
-        return util.findEventsForAggregates(
-                DefaultGroovyMethods.plus(aggregates, event.getDeprecated()))
-                .filter(it -> !it.getId().equals(event.getId())
-                        && !it.getId().equals(event.getConverse().getId()))
-                .toSortedList((a, b) -> a.getTimestamp().compareTo(b.getTimestamp()))
-                .flatMap(sortedEvents -> {
-                    log.debug("Sorted Events: " + stringifyEvents(sortedEvents));
-                    Observable<EventT> forwardEventsSortedBackwards =
-                            applyReverts(Observable.from(sortedEvents));
-                    return applyEvents(util, newSnapshot, forwardEventsSortedBackwards,
-                            DefaultGroovyMethods.plus(deprecatesList, event), aggregates);
-                });
+                    return util.findEventsForAggregates(
+                            DefaultGroovyMethods.plus(allAggregates, deprecatedAggregate))
+                            .filter(it -> !it.getId().equals(event.getId())
+                                    && !it.getId().equals(converse.getId()))
+                            .toSortedList((a, b) -> a.getTimestamp().compareTo(b.getTimestamp()))
+                            .flatMap(sortedEvents -> {
+                                log.debug("Reassembled Events: {}", stringifyEvents(sortedEvents));
+                                Observable<EventT> forwardEventsSortedBackwards =
+                                        applyReverts(Observable.from(sortedEvents));
+                                return applyEvents(
+                                        util,
+                                        newSnapshot,
+                                        forwardEventsSortedBackwards,
+                                        DefaultGroovyMethods.plus(deprecatesEvents, event),
+                                        allAggregates,
+                                        aggregate);
+                            });
+                }));
+
     }
 
-    private Observable<EventApplyOutcome> callMethod(
+    /**
+     * Calls a method on a Query Util instance.
+     *
+     * @param util       The Query Util instance
+     * @param methodName The method to be called
+     * @param snapshot   The snapshot to be passed to the method
+     * @param event      The event to be passed to the method
+     *
+     * @return An observable returned by the method, or the result of calling onException on the
+     * Util instance, or an Observable that asks to RETURN if that fails.
+     */
+    Observable<EventApplyOutcome> callMethod(
             BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> util,
             String methodName,
             final SnapshotT snapshot,
             final EventT event) {
         try {
-            return (Observable<EventApplyOutcome>) InvokerHelper.invokeMethod(
+            return (Observable<EventApplyOutcome>) invokeMethod(
                     util, methodName, new Object[]{util.unwrapIfProxy(event), snapshot});
         } catch (Exception e1) {
             try {

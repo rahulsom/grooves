@@ -22,9 +22,10 @@ class PatientController implements RxController {
     }
 
     def show(Long id) {
-        Patient.get(id).map {
-            rx.respond it
-        }
+        Patient.get(id).
+                map {
+                    rx.respond it
+                }
     }
 
     def account(ObjectRequest objectRequest) {

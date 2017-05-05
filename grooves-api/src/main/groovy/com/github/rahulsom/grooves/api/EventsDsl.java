@@ -127,19 +127,33 @@ public class EventsDsl<
          *
          * @return The snapshot after persisting
          */
-        public Observable<SnapshotT> snapshotWith(
+        public SnapshotT snapshotWith(
                 QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> queryUtil,
                 Consumer<SnapshotT> beforePersist) {
 
-            return queryUtil.computeSnapshot(aggregate, Long.MAX_VALUE).doOnNext(it -> {
-                beforePersist.accept(it);
-                entityConsumer.accept(it);
-            });
+
+            SnapshotT snapshotT = queryUtil
+                    .computeSnapshot(aggregate, Long.MAX_VALUE)
+                    .toBlocking()
+                    .single();
+
+            beforePersist.accept(snapshotT);
+            entityConsumer.accept(snapshotT);
+
+            return snapshotT;
         }
 
-        public Observable snapshotWith(
+        /**
+         * Computes and persists a snapshot based on a QueryUtil on the aggregate that this
+         * OnSpec applies on
+         *
+         * @param queryUtil The Query Util to compute the snapshot
+         *
+         * @return The snapshot after persisting
+         */
+        public SnapshotT snapshotWith(
                 QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> queryUtil) {
-            return snapshotWith(queryUtil, null);
+            return snapshotWith(queryUtil, snapshotT -> {});
         }
 
         public AggregateT getAggregate() {

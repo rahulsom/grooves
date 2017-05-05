@@ -20,6 +20,8 @@ import static rx.Observable.just
     Long id, position
     Date timestamp
     String createdBy, audit
+
+    Observable<Account> getAggregateObservable() { just(aggregate) }
 }
 
 @CompileStatic @Event(Account) class CashDeposit extends Transaction {}

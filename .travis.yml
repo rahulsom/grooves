@@ -2,7 +2,7 @@ sudo: false
 language: groovy
 jdk:
 - oraclejdk8
-install: "./gradlew assemble --parallel --scan --build-cache --configure-on-demand"
+install: "./gradlew assemble --scan --configure-on-demand"
 script: "./travis.sh"
 after_success: bash <(curl -s https://codecov.io/bash)
 before_cache:

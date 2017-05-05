@@ -109,7 +109,7 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
 
     Observable<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientHealth snapshot) {
-        snapshot.name = event.name
+        snapshot.name = snapshot.name ?: event.name
         Observable.just(CONTINUE)
     }
 

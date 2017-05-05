@@ -24,21 +24,22 @@ appender('STDOUT', ConsoleAppender) {
 
 def targetDir = BuildSettings.TARGET_DIR
 if (Environment.isDevelopmentMode() && targetDir != null) {
-    appender("FULL_STACKTRACE", FileAppender) {
+    appender('FULL_STACKTRACE', FileAppender) {
         file = "${targetDir}/stacktrace.log"
         append = true
         encoder(PatternLayoutEncoder) {
-            pattern = "%level %logger - %msg%n"
+            pattern = '%level %logger - %msg%n'
         }
     }
-    logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
-    root(ERROR, ['STDOUT', 'FULL_STACKTRACE'])
-}
-else {
-    root(ERROR, ['STDOUT'])
+    logger 'StackTrace', ERROR, ['FULL_STACKTRACE'], false
+    root ERROR, ['STDOUT', 'FULL_STACKTRACE']
+
+} else {
+    root ERROR, ['STDOUT']
 }
 
-logger "com.github.rahulsom", DEBUG
-logger "grooves.example.rxrest", DEBUG
+// logger 'grails.gorm.rx.rest.logging', TRACE
+logger 'com.github.rahulsom', DEBUG
+logger 'grooves.example.rxrest', DEBUG
 logger 'grails.app.controllers.grooves.example.rxrest', DEBUG
 logger 'grails.app.conf.grooves.example.rxrest', INFO

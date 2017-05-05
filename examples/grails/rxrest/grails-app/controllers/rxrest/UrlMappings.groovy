@@ -13,6 +13,7 @@ class UrlMappings {
 
         "/patient/account/$id(.$format)?"(controller: 'patient', action: 'account')
         "/patient/health/$id(.$format)?"(controller: 'patient', action: 'health')
+        "/patient/show/$id(.$format)?"(controller: 'patient', action: 'show')
 
         '/'(controller: 'application', action: 'index')
         '500'(view: '/error')

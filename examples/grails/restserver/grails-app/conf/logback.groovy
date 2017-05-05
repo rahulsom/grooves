@@ -35,3 +35,5 @@ if (Environment.isDevelopmentMode() && targetDir != null) {
 }
 root(ERROR, ['STDOUT'])
 logger 'org.springframework.web.filter.CommonsRequestLoggingFilter', DEBUG
+logger 'restserver', DEBUG
+logger 'grails.app.controllers.restserver', DEBUG

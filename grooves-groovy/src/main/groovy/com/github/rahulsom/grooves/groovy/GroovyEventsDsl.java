@@ -56,12 +56,41 @@ public class GroovyEventsDsl<
         return aggregate;
     }
 
+    /**
+     * Allows executing a consumer with some context to setup events.
+     * Defaults the timestamp to current time.
+     *
+     * @param aggregate        The aggregate on which the consumer must operate
+     * @param entityConsumer   A Consumer that decides what happens when apply is called on an
+     *                         entity
+     * @param positionSupplier A supplier which offers the default position number for an event
+     *                         when it is not provided
+     * @param userSupplier     A supplier that provides the User who created the event if it isn't
+     *                         set
+     * @param closure          The block of code to execute with the aggregate
+     *
+     * @return The aggregate after all the code has been executed
+     */
     public AggregateT on(
             AggregateT aggregate, Consumer entityConsumer, Supplier<Long> positionSupplier,
             Supplier<String> userSupplier, @DelegatesTo(OnSpec.class) Closure closure) {
         return on(aggregate, entityConsumer, positionSupplier, userSupplier, Date::new, closure);
     }
 
+    /**
+     * Allows executing a consumer with some context to setup events.
+     * Defaults the timestamp to current time.
+     * Defaults the user to "anonymous".
+     *
+     * @param aggregate        The aggregate on which the consumer must operate
+     * @param entityConsumer   A Consumer that decides what happens when apply is called on an
+     *                         entity
+     * @param positionSupplier A supplier which offers the default position number for an event
+     *                         when it is not provided
+     * @param closure          The block of code to execute with the aggregate
+     *
+     * @return The aggregate after all the code has been executed
+     */
     public AggregateT on(
             AggregateT aggregate, Consumer entityConsumer, Supplier<Long> positionSupplier,
             @DelegatesTo(OnSpec.class) Closure closure) {
@@ -69,6 +98,19 @@ public class GroovyEventsDsl<
                 closure);
     }
 
+    /**
+     * Allows executing a consumer with some context to setup events.
+     * Defaults the timestamp to current time.
+     * Defaults the user to "anonymous".
+     * Defaults the position to a monotonically increasing number.
+     *
+     * @param aggregate      The aggregate on which the consumer must operate
+     * @param entityConsumer A Consumer that decides what happens when apply is called on an
+     *                       entity
+     * @param closure        The block of code to execute with the aggregate
+     *
+     * @return The aggregate after all the code has been executed
+     */
     public AggregateT on(AggregateT aggregate, Consumer entityConsumer,
                          @DelegatesTo(OnSpec.class) Closure closure) {
         return on(aggregate, entityConsumer, () -> getDefaultPositionSupplier().incrementAndGet(),

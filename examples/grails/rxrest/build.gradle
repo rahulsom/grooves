@@ -87,9 +87,16 @@ import com.wiredforcode.gradle.spawn.*
 task startServer(type: SpawnProcessTask, dependsOn: ':examples/grails/restserver:assemble') {
     command "java -jar ${tasks.findByPath(':examples/grails/restserver:war').archivePath}"
     ready 'Grails application running at http://localhost:8081'
+    directory projectDir.absolutePath
 }
 
-task stopServer(type: KillProcessTask)
+startServer.doFirst {
+    file("${projectDir.absolutePath}/.pid.lock").delete()
+}
+
+task stopServer(type: KillProcessTask) {
+    directory projectDir.absolutePath
+}
 
 mongo {
     port 27020
