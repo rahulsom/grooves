@@ -5,7 +5,7 @@ import groovy.transform.CompileStatic
 import rx.Observable
 
 @CompileStatic @Query(aggregate = Account, snapshot = Balance)
-class MissingEventsQuery implements QuerySupport<Account, Long, Transaction, Long, Balance> {
+class MissingEventsQuery implements QuerySupport<Account, Long, Transaction, String, Balance> {
     @Override Balance createEmptySnapshot() { null }
     @Override Observable<Balance> getSnapshot(long maxPosition, Account aggregate) {
         Observable.empty()
