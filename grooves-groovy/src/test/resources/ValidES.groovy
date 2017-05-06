@@ -13,7 +13,6 @@ class ValidESQuery implements QuerySupport<Account, Long, Transaction, String, B
     @Override Observable<Balance> getSnapshot(Date maxTimestamp, Account aggregate) {
         Observable.empty()
     }
-    @Override void detachSnapshot(Balance snapshot) {}
     @Override Observable<Transaction> getUncomputedEvents(Account aggregate, Balance lastSnapshot, long version) {
         Observable.empty()
     }

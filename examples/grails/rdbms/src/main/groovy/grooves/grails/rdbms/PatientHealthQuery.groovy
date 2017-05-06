@@ -1,8 +1,8 @@
 package grooves.grails.rdbms
 
-import com.github.rahulsom.grooves.groovy.transformations.Query
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.grails.GormQuerySupport
+import com.github.rahulsom.grooves.groovy.transformations.Query
 import grails.compiler.GrailsCompileStatic
 import rx.Observable
 
@@ -62,4 +62,16 @@ class PatientHealthQuery implements
         just CONTINUE
     }
 
+    @Override PatientHealth detachSnapshot(PatientHealth snapshot) {
+        def retval = new PatientHealth(
+                lastEventPosition: snapshot.lastEventPosition,
+                lastEventTimestamp: snapshot.lastEventTimestamp,
+                deprecatedBy: snapshot.deprecatedBy,
+                aggregateId: snapshot.aggregateId,
+                name: snapshot.name,
+        )
+        snapshot.deprecates.each { retval.addToDeprecates it }
+        snapshot.procedures.each { retval.addToProcedures(code: it.code, date: it.date) }
+        retval
+    }
 }

@@ -41,4 +41,14 @@ class ZipcodePatientsQuery implements GormJoinSupport<
             Exception e, ZipcodePatients snapshot, ZipcodeEvent event) {
         just CONTINUE
     }
+
+    @Override
+    ZipcodePatients detachSnapshot(ZipcodePatients snapshot) {
+        if (snapshot.isAttached()) {
+            snapshot.discard()
+            snapshot.id = null
+        }
+        snapshot
+    }
+
 }

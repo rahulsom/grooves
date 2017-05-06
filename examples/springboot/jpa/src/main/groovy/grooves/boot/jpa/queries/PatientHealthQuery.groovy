@@ -1,12 +1,11 @@
 package grooves.boot.jpa.queries
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome
-import com.github.rahulsom.grooves.queries.QuerySupport
 import com.github.rahulsom.grooves.groovy.transformations.Query
+import com.github.rahulsom.grooves.queries.QuerySupport
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientEventRepository
 import grooves.boot.jpa.repositories.PatientHealthRepository
-import grooves.boot.jpa.util.VariableDepthCopier
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -42,7 +41,7 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
                 patientHealthRepository.findAllByAggregateIdAndLastEventPositionLessThan(
                         aggregate.id, maxPosition)
-        snapshots ? Observable.just(snapshots[0]) : Observable.empty()
+        snapshots ? just(detachSnapshot(snapshots[0])) : Observable.empty()
     }
 
     @Override
@@ -51,12 +50,7 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
                 patientHealthRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
                         aggregate.id, maxTimestamp)
-        snapshots ? Observable.just(snapshots[0]) : Observable.empty()
-    }
-
-    @Override
-    void detachSnapshot(PatientHealth snapshot) {
-        new VariableDepthCopier<PatientHealth>().copy(snapshot)
+        snapshots ? just(detachSnapshot(snapshots[0])) : Observable.empty()
     }
 
     @Override
@@ -118,4 +112,21 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
         just CONTINUE
     }
 
+    PatientHealth detachSnapshot(PatientHealth snapshot) {
+        def retval = new PatientHealth(
+                lastEventPosition: snapshot.lastEventPosition,
+                lastEventTimestamp: snapshot.lastEventTimestamp,
+                deprecatedBy: snapshot.deprecatedBy,
+                aggregate: snapshot.aggregate,
+                processingErrors: snapshot.processingErrors,
+                name: snapshot.name,
+                procedures: [],
+                deprecates: [],
+        )
+        snapshot.deprecates.each { retval.deprecates.add it }
+        snapshot.procedures.each {
+            retval.procedures.add(new Procedure(code: it.code, date: it.date))
+        }
+        retval
+    }
 }

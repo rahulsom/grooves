@@ -64,4 +64,14 @@ class PatientAccountQuery implements
             PatientAddedToZipcode event, PatientAccount snapshot) {
         just CONTINUE // Ignore zip change
     }
+
+    @Override
+    PatientAccount detachSnapshot(PatientAccount snapshot) {
+        if (snapshot.isAttached()) {
+            snapshot.discard()
+            snapshot.id = null
+        }
+        snapshot
+    }
+
 }

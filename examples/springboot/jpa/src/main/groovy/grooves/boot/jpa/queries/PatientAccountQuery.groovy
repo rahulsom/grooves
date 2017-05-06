@@ -1,11 +1,10 @@
 package grooves.boot.jpa.queries
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome
-import com.github.rahulsom.grooves.queries.QuerySupport
 import com.github.rahulsom.grooves.groovy.transformations.Query
+import com.github.rahulsom.grooves.queries.QuerySupport
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientAccountRepository
-import grooves.boot.jpa.util.VariableDepthCopier
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -48,7 +47,7 @@ class PatientAccountQuery implements
                 patientAccountRepository.findAllByAggregateId(aggregate.id) :
                 patientAccountRepository.findAllByAggregateIdAndLastEventPositionLessThan(
                         aggregate.id, maxPosition)
-        snapshots ? Observable.just(snapshots[0]) : Observable.empty()
+        snapshots ? just(detachSnapshot(snapshots[0])) : Observable.empty()
     }
 
     @Override
@@ -57,12 +56,7 @@ class PatientAccountQuery implements
                 patientAccountRepository.findAllByAggregateId(aggregate.id) :
                 patientAccountRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
                         aggregate.id, maxTimestamp)
-        snapshots ? Observable.just(snapshots[0]) : Observable.empty()
-    }
-
-    @Override
-    void detachSnapshot(PatientAccount snapshot) {
-        new VariableDepthCopier<PatientAccount>().copy(snapshot)
+        snapshots ? just(detachSnapshot(snapshots[0])) : Observable.empty()
     }
 
     @Override
@@ -155,4 +149,18 @@ class PatientAccountQuery implements
         just CONTINUE
     }
 
+    PatientAccount detachSnapshot(PatientAccount snapshot) {
+        def retval = new PatientAccount(
+                lastEventPosition: snapshot.lastEventPosition,
+                lastEventTimestamp: snapshot.lastEventTimestamp,
+                deprecatedBy: snapshot.deprecatedBy,
+                aggregate: snapshot.aggregate,
+                processingErrors: snapshot.processingErrors,
+                name: snapshot.name,
+                balance: snapshot.balance,
+                moneyMade: snapshot.moneyMade,
+        )
+        snapshot.deprecates.each { retval.deprecates.add it }
+        retval
+    }
 }

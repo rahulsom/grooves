@@ -54,8 +54,6 @@ public interface VersionedQuerySupport<
                                     it.getLastEventPosition() == 0 ? "<none>" :
                                             it.toString();
                     getLog().debug("  -> Last Usable Snapshot: " + snapshotAsString);
-                    detachSnapshot(it);
-
                     it.setAggregate(aggregate);
                 });
     }

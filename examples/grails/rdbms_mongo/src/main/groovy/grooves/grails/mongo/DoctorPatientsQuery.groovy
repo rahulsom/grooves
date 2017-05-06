@@ -41,4 +41,14 @@ class DoctorPatientsQuery implements GormJoinSupport<
             Exception e, DoctorPatients snapshot, DoctorEvent event) {
         just CONTINUE
     }
+
+    @Override
+    DoctorPatients detachSnapshot(DoctorPatients snapshot) {
+        if (snapshot.isAttached()) {
+            snapshot.discard()
+            snapshot.id = null
+        }
+        snapshot
+    }
+
 }

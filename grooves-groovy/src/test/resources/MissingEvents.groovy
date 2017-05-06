@@ -13,7 +13,6 @@ class MissingEventsQuery implements QuerySupport<Account, Long, Transaction, Str
     @Override Observable<Balance> getSnapshot(Date maxTimestamp, Account aggregate) {
         Observable.empty()
     }
-    @Override void detachSnapshot(Balance snapshot) {}
     @Override Observable<Transaction> getUncomputedEvents(Account aggregate, Balance lastSnapshot, long version) {
         Observable.empty()
     }

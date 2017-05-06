@@ -65,4 +65,12 @@ class PatientHealthQuery implements
         just CONTINUE // Ignore zip change
     }
 
+    @Override
+    PatientHealth detachSnapshot(PatientHealth snapshot) {
+        if (snapshot.isAttached()) {
+            snapshot.discard()
+            snapshot.id = null
+        }
+        snapshot
+    }
 }

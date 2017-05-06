@@ -63,13 +63,6 @@ public interface BaseQuery<
     Observable<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate);
 
     /**
-     * Detaches a snapshot from any state information from a persistence mechanism.
-     *
-     * @param snapshot The snapshot to be detached
-     */
-    void detachSnapshot(SnapshotT snapshot);
-
-    /**
      * Decides whether applying more events is permitted on a snapshot.
      *
      * @param snapshot The snapshot

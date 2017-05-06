@@ -9,7 +9,6 @@ import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
-import org.codehaus.groovy.runtime.InvokerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
@@ -88,6 +87,9 @@ public class QueryExecutor<
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Observable<SnapshotT> applyEvents(
             final BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> query,
@@ -123,6 +125,18 @@ public class QueryExecutor<
 
     }
 
+    /**
+     * Decides how to proceed after inspecting the response of a method that returns an
+     * {@link EventApplyOutcome}.
+     *
+     * @param stopApplyingEvents Whether a previous decision has been made to stop applying new
+     *                           events
+     * @param snapshot           The snapshot on which events are being added
+     * @param methodName         The name of the method that was called
+     * @param retval             The outcome of calling the method
+     *
+     * @return The snapshot after deciding what to do with the {@link EventApplyOutcome}
+     */
     private Observable<? extends SnapshotT> handleMethodResponse(
             AtomicBoolean stopApplyingEvents, SnapshotT snapshot, String methodName,
             EventApplyOutcome retval) {
@@ -137,6 +151,14 @@ public class QueryExecutor<
         }
     }
 
+    /**
+     * Applies a {@link DeprecatedBy} event to a snapshot.
+     *
+     * @param event    The {@link DeprecatedBy} event
+     * @param snapshot The snapshot computed until before this event
+     *
+     * @return The snapshot after applying the {@link DeprecatedBy} event
+     */
     @SuppressWarnings("GrMethodMayBeStatic")
     SnapshotT applyDeprecatedBy(
             final DeprecatedBy<AggregateT, EventIdT, EventT> event, SnapshotT snapshot) {
@@ -145,6 +167,18 @@ public class QueryExecutor<
         return snapshot;
     }
 
+    /**
+     * Applies a {@link Deprecates} event to a snapshot.
+     *
+     * @param event            The {@link Deprecates} event
+     * @param util             The Query Util instance
+     * @param allAggregates    All {@link AggregateType}s that have been deprecated by current
+     *                         aggregate
+     * @param deprecatesEvents The list of {@link Deprecates} events that have been collected so far
+     * @param aggregate        The current aggregate
+     *
+     * @return The snapshot after applying the {@link Deprecates} event
+     */
     Observable<SnapshotT> applyDeprecates(
             final Deprecates<AggregateT, EventIdT, EventT> event,
             final BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> util,
