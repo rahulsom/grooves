@@ -9,11 +9,9 @@ import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
-import org.codehaus.groovy.runtime.InvokerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
-import rx.functions.Func2;
 
 import java.util.ArrayList;
 import java.util.List;

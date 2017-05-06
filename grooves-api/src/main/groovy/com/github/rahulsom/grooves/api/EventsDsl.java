@@ -3,7 +3,6 @@ package com.github.rahulsom.grooves.api;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
-import rx.Observable;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;

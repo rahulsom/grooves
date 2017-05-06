@@ -34,8 +34,9 @@ class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
 
     String name
 
-    static hasMany = [deprecates: Patient,]
-    static fetchMode = [deprecates: 'eager',]
+    static hasMany = [
+            deprecates: Patient,
+    ]
 
     static transients = ['aggregate',]
 

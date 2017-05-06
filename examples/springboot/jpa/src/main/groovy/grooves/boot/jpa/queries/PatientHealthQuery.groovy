@@ -89,14 +89,12 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
     @Override
     Observable<EventApplyOutcome> onException(
             Exception e, PatientHealth snapshot, PatientEvent event) {
-        log.error "Could not apply event ${event.class}", e
         snapshot.processingErrors++
         just CONTINUE
     }
 
     Observable<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientHealth snapshot) {
-        log.error 'setting name'
         snapshot.name = snapshot.name ?: event.name
         just CONTINUE
     }
