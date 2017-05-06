@@ -35,8 +35,7 @@ abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> {
 class PatientCreated extends PatientEvent {
     String name
 
-    @Override
-    String getAudit() { new JsonBuilder([name: name]).toString() }
+    @Override String getAudit() { new JsonBuilder([name: name]).toString() }
     @Override String toString() { "<$id> created" }
 }
 
@@ -46,8 +45,7 @@ class ProcedurePerformed extends PatientEvent {
     String code
     BigDecimal cost
 
-    @Override
-    String getAudit() { new JsonBuilder([code: code, cost: cost]).toString() }
+    @Override String getAudit() { new JsonBuilder([code: code, cost: cost]).toString() }
     @Override String toString() { "<$id> performed $code for $cost" }
 }
 
@@ -56,8 +54,7 @@ class ProcedurePerformed extends PatientEvent {
 class PaymentMade extends PatientEvent {
     BigDecimal amount
 
-    @Override
-    String getAudit() { new JsonBuilder([amount: amount]).toString() }
+    @Override String getAudit() { new JsonBuilder([amount: amount]).toString() }
     @Override String toString() { "<$id> paid $amount" }
 }
 
@@ -66,8 +63,7 @@ class PatientEventReverted extends PatientEvent
         implements RevertEvent<Patient, Long, PatientEvent> {
     Long revertedEventId
 
-    @Override
-    String getAudit() { new JsonBuilder([revertedEvent: revertedEventId]).toString() }
+    @Override String getAudit() { new JsonBuilder([revertedEvent: revertedEventId]).toString() }
     @Override String toString() { "<$id> reverted $revertedEventId" }
 }
 

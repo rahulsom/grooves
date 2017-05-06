@@ -52,8 +52,7 @@ class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
         deprecatedBy ? just(deprecatedBy) : empty()
     }
 
-    @Override
-    Observable<Patient> getDeprecatesObservable() {
+    @Override Observable<Patient> getDeprecatesObservable() {
         deprecates ? from(deprecates) : empty()
     }
 }
