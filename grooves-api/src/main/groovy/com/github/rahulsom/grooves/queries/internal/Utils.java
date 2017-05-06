@@ -60,9 +60,7 @@ public class Utils {
                             Observable.just(it);
 
                 })
-                .defaultIfEmpty(
-                        it
-                );
+                .defaultIfEmpty(it);
 
     }
 

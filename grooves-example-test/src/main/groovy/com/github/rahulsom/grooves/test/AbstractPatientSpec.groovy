@@ -6,12 +6,17 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 /**
- * Base test to replicate across example projects
+ * Base test to replicate across example projects.
  *
  * @author Rahul Somasunderam
  */
 abstract class AbstractPatientSpec extends Specification {
 
+    /**
+     * Provides a preconfigured {@link RESTClient} that can be given a path to execute a HTTP query.
+     *
+     * @return Preconfigured RESTClient
+     */
     abstract RESTClient getRest()
 
     void "Patient List works"() {
@@ -99,9 +104,9 @@ abstract class AbstractPatientSpec extends Specification {
 
         where:
         id | name             || lastEventPos | codes
-        1  | 'John Lennon'    || 6            | ['FLUSHOT', 'GLUCOSETEST', 'ANNUALPHYSICAL', ]
-        2  | 'Ringo Starr'    || 6            | ['ANNUALPHYSICAL', 'GLUCOSETEST', 'FLUSHOT', ]
-        3  | 'Paul McCartney' || 9            | ['ANNUALPHYSICAL', ]
+        1  | 'John Lennon'    || 6            | ['FLUSHOT', 'GLUCOSETEST', 'ANNUALPHYSICAL',]
+        2  | 'Ringo Starr'    || 6            | ['ANNUALPHYSICAL', 'GLUCOSETEST', 'FLUSHOT',]
+        3  | 'Paul McCartney' || 9            | ['ANNUALPHYSICAL',]
     }
 
     @Unroll
@@ -239,7 +244,7 @@ abstract class AbstractPatientSpec extends Specification {
         }
 
         when:
-        resp = rest.get(path: '/patient/account/4.json')
+        resp = rest.get(path: '/patient/account/4.json') as HttpResponseDecorator
 
         then:
         with(resp) {
