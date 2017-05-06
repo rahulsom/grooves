@@ -16,6 +16,7 @@ import rx.Observable
 import javax.persistence.EntityManager
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
+import static rx.Observable.just
 
 /**
  * Query for Patient Health
@@ -104,26 +105,26 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
     Observable<EventApplyOutcome> onException(
             Exception e, PatientHealth snapshot, PatientEvent event) {
         snapshot.processingErrors++
-        Observable.just(CONTINUE)
+        just CONTINUE
     }
 
     Observable<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientHealth snapshot) {
-        snapshot.name = event.name
-        Observable.just(CONTINUE)
+        snapshot.name = snapshot.name ?: event.name
+        just CONTINUE
     }
 
     Observable<EventApplyOutcome> applyProcedurePerformed(
             ProcedurePerformed event, PatientHealth snapshot) {
         snapshot.procedures << new Procedure(code: event.code, date: event.timestamp)
-        Observable.just(CONTINUE)
+        just CONTINUE
     }
 
     @SuppressWarnings('UnusedMethodParameter')
     Observable<EventApplyOutcome> applyPaymentMade(
             PaymentMade event, PatientHealth snapshot) {
         // Ignore payments
-        Observable.just(CONTINUE)
+        just CONTINUE
     }
 
 }

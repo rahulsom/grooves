@@ -51,7 +51,7 @@ class PatientHealthQuery implements
 
     Observable<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientHealth snapshot) {
-        snapshot.name = event.name
+        snapshot.name = snapshot.name ?: event.name
         just CONTINUE
     }
 
