@@ -31,6 +31,8 @@ abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> {
     @Column(nullable = false) Long position
     @OneToOne Patient aggregate
 
+    Observable<Patient> getAggregateObservable() { just(aggregate) }
+
 }
 
 @Entity

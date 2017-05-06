@@ -22,6 +22,7 @@ abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> {
     Date timestamp
     Long position
     Patient aggregate
+    Observable<Patient> getAggregateObservable() { just(aggregate) }
 
     static transients = ['revertedBy']
 

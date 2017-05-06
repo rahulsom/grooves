@@ -8,6 +8,9 @@ import com.github.rahulsom.grooves.groovy.transformations.Event
 import groovy.json.JsonBuilder
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import rx.Observable
+
+import static rx.Observable.just
 
 /**
  * Represents an Event on a Doctor
@@ -24,6 +27,8 @@ abstract class DoctorEvent implements BaseEvent<Doctor, Long, DoctorEvent> {
     Date timestamp
     Long position
     Doctor aggregate
+
+    Observable<Doctor> getAggregateObservable() { just(aggregate) }
 
     static transients = ['revertedBy']
 
