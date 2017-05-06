@@ -3,7 +3,6 @@ package com.github.rahulsom.grooves.api;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
-import rx.Observable;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
@@ -26,12 +25,8 @@ public class EventsDsl<
 
     private static AtomicLong defaultPositionSupplier = new AtomicLong();
 
-    public static AtomicLong getDefaultPositionSupplier() {
+    protected static AtomicLong getDefaultPositionSupplier() {
         return defaultPositionSupplier;
-    }
-
-    public static void setDefaultPositionSupplier(AtomicLong defaultPositionSupplier) {
-        EventsDsl.defaultPositionSupplier = defaultPositionSupplier;
     }
 
     /**
@@ -96,11 +91,10 @@ public class EventsDsl<
          * missing and populating them based on the suppliers.
          *
          * @param event The event to be applied
-         * @param <T>   The Type of event
          *
          * @return The event after persisting
          */
-        public <T extends EventT> T apply(T event) {
+        public EventT apply(EventT event) {
             event.setAggregate(aggregate);
 
             if (event.getCreatedBy() == null) {
@@ -127,19 +121,33 @@ public class EventsDsl<
          *
          * @return The snapshot after persisting
          */
-        public Observable<SnapshotT> snapshotWith(
+        public SnapshotT snapshotWith(
                 QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> queryUtil,
                 Consumer<SnapshotT> beforePersist) {
 
-            return queryUtil.computeSnapshot(aggregate, Long.MAX_VALUE).doOnNext(it -> {
-                beforePersist.accept(it);
-                entityConsumer.accept(it);
-            });
+
+            SnapshotT snapshotT = queryUtil
+                    .computeSnapshot(aggregate, Long.MAX_VALUE)
+                    .toBlocking()
+                    .single();
+
+            beforePersist.accept(snapshotT);
+            entityConsumer.accept(snapshotT);
+
+            return snapshotT;
         }
 
-        public Observable snapshotWith(
+        /**
+         * Computes and persists a snapshot based on a QueryUtil on the aggregate that this
+         * OnSpec applies on
+         *
+         * @param queryUtil The Query Util to compute the snapshot
+         *
+         * @return The snapshot after persisting
+         */
+        public SnapshotT snapshotWith(
                 QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> queryUtil) {
-            return snapshotWith(queryUtil, null);
+            return snapshotWith(queryUtil, snapshotT -> {});
         }
 
         public AggregateT getAggregate() {
@@ -150,32 +158,16 @@ public class EventsDsl<
             this.aggregate = aggregate;
         }
 
-        public Consumer getEntityConsumer() {
-            return entityConsumer;
-        }
-
         public void setEntityConsumer(Consumer entityConsumer) {
             this.entityConsumer = entityConsumer;
-        }
-
-        public Supplier<Date> getTimestampSupplier() {
-            return timestampSupplier;
         }
 
         public void setTimestampSupplier(Supplier<Date> timestampSupplier) {
             this.timestampSupplier = timestampSupplier;
         }
 
-        public Supplier<String> getUserSupplier() {
-            return userSupplier;
-        }
-
         public void setUserSupplier(Supplier<String> userSupplier) {
             this.userSupplier = userSupplier;
-        }
-
-        public Supplier<Long> getPositionSupplier() {
-            return positionSupplier;
         }
 
         public void setPositionSupplier(Supplier<Long> positionSupplier) {
