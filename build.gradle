@@ -16,7 +16,7 @@ apply plugin: 'com.gradle.build-scan'
 apply plugin: 'me.champeau.buildscan-recipes'
 apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'org.sonarqube'
-// apply plugin: 'nebula.nebula-release'
+//apply plugin: 'nebula.nebula-release'
 
 allprojects {
     group = 'com.github.rahulsom'
