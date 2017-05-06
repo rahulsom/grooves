@@ -1,6 +1,7 @@
 package com.github.rahulsom.grooves.api.events;
 
 import com.github.rahulsom.grooves.api.AggregateType;
+import rx.Observable;
 
 /**
  * Aggregate deprecation event.
@@ -17,7 +18,7 @@ import com.github.rahulsom.grooves.api.AggregateType;
  */
 public interface DeprecatedBy<AggregateT extends AggregateType, EventIdT, EventT>
         extends BaseEvent<AggregateT, EventIdT, EventT> {
-    Deprecates<AggregateT, EventIdT, EventT> getConverse();
+    Observable<Deprecates<AggregateT, EventIdT, EventT>> getConverseObservable();
 
-    AggregateT getDeprecator();
+    Observable<AggregateT> getDeprecatorObservable();
 }

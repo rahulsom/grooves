@@ -4,6 +4,9 @@ import com.github.rahulsom.grooves.api.events.*
 import com.github.rahulsom.grooves.groovy.transformations.Event
 import groovy.json.JsonBuilder
 import groovy.transform.EqualsAndHashCode
+import rx.Observable
+
+import static rx.Observable.just
 
 /**
  * Represents a Patient Event
@@ -103,6 +106,9 @@ class PatientDeprecatedBy extends PatientEvent implements
     ]
     Patient deprecator
 
+    Observable<PatientDeprecates> getConverseObservable() { just(converse) }
+    Observable<Patient> getDeprecatorObservable() { just(deprecator) }
+
     @Override String getAudit() { new JsonBuilder([deprecatedBy: deprecator.id]).toString() }
     @Override String toString() {
         "<$id> ${timestamp.format('yyyy-MM-dd')} deprecated by #${deprecator.id}" }
@@ -115,6 +121,9 @@ class PatientDeprecates extends PatientEvent implements
             converse: PatientDeprecatedBy,
     ]
     Patient deprecated
+
+    Observable<PatientDeprecatedBy> getConverseObservable() { just(converse) }
+    Observable<Patient> getDeprecatedObservable() { just(deprecated) }
 
     @Override String getAudit() { new JsonBuilder([deprecates: deprecated.id]).toString() }
     @Override String toString() {

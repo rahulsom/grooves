@@ -101,7 +101,7 @@ public interface VersionedQuerySupport<
                                         + stringifyEvents(reverts));
                                 return getSnapshotAndEventsSince(aggregate, version, false);
                             } else {
-                                getLog().debug("     Events in pair: " + stringifyEvents(events));
+                                getLog().debug("     Events since last snapshot: " + stringifyEvents(events));
                                 return Observable.just(new Pair<>(lastSnapshot, events));
 
                             }
@@ -117,7 +117,7 @@ public interface VersionedQuerySupport<
                             .toList();
 
             return uncomputedEvents
-                    .doOnNext(ue -> getLog().debug("     Events in pair(2): " + stringifyEvents(ue)))
+                    .doOnNext(ue -> getLog().debug("     Events since origin: " + stringifyEvents(ue)))
                     .map(ue -> new Pair<>(lastSnapshot, ue));
         }
 
@@ -186,7 +186,7 @@ public interface VersionedQuerySupport<
 
         final Observable<SnapshotT> snapshotObservable =
                 getExecutor().applyEvents(this, lastUsableSnapshot, forwardOnlyEvents,
-                        new ArrayList<>(), Collections.singletonList(aggregate));
+                        new ArrayList<>(), Collections.singletonList(aggregate), aggregate);
         return snapshotObservable
                 .doOnNext(snapshot -> {
                     if (!events.isEmpty()) {

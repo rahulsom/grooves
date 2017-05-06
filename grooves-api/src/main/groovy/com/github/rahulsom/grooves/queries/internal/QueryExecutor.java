@@ -96,7 +96,7 @@ public class QueryExecutor<
             SnapshotT initialSnapshot,
             Observable<EventT> events,
             final List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesList,
-            final List<AggregateT> aggregates) {
+            final List<AggregateT> aggregates, AggregateT aggregate) {
 
         final AtomicBoolean stopApplyingEvents = new AtomicBoolean(false);
 
@@ -105,15 +105,15 @@ public class QueryExecutor<
             if (!query.shouldEventsBeApplied(snapshot) || stopApplyingEvents.get()) {
                 return just(snapshot);
             } else {
-                log.debug("     -> Event: {}", event);
+                log.debug("     -> Applying Event: {}", event);
 
                 if (event instanceof Deprecates) {
                     return applyDeprecates(
                             (Deprecates<AggregateT, EventIdT, EventT>) event,
-                            query, aggregates, deprecatesList);
+                            query, aggregates, deprecatesList, aggregate);
                 } else if (event instanceof DeprecatedBy) {
-                    return just(applyDeprecatedBy(
-                            (DeprecatedBy<AggregateT, EventIdT, EventT>) event, snapshot));
+                    return applyDeprecatedBy(
+                            (DeprecatedBy<AggregateT, EventIdT, EventT>) event, snapshot);
                 } else {
                     String methodName = "apply" + event.getClass().getSimpleName();
                     return callMethod(query, methodName, snapshot, event)
@@ -160,11 +160,13 @@ public class QueryExecutor<
      * @return The snapshot after applying the {@link DeprecatedBy} event
      */
     @SuppressWarnings("GrMethodMayBeStatic")
-    SnapshotT applyDeprecatedBy(
+    Observable<SnapshotT> applyDeprecatedBy(
             final DeprecatedBy<AggregateT, EventIdT, EventT> event, SnapshotT snapshot) {
-        AggregateT newAggregate = event.getDeprecator();
-        snapshot.setDeprecatedBy(newAggregate);
-        return snapshot;
+        return event.getDeprecatorObservable().reduce(snapshot, (snapshotT, aggregateT) -> {
+            log.info("        -> {} will cause redirect to {}", event, aggregateT);
+            snapshotT.setDeprecatedBy(aggregateT);
+            return snapshotT;
+        });
     }
 
     /**
@@ -182,26 +184,39 @@ public class QueryExecutor<
     Observable<SnapshotT> applyDeprecates(
             final Deprecates<AggregateT, EventIdT, EventT> event,
             final BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> util,
-            final List<AggregateT> aggregates,
-            final List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesList) {
+            final List<AggregateT> allAggregates,
+            final List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesEvents,
+            AggregateT aggregate) {
+
+        log.info("        -> {} will cause recomputation", event);
         final SnapshotT newSnapshot = util.createEmptySnapshot();
-        newSnapshot.setAggregate(event.getAggregate());
+        newSnapshot.setAggregate(aggregate);
 
-        AggregateT otherAggregate = event.getDeprecated();
-        util.addToDeprecates(newSnapshot, otherAggregate);
+        return event.getConverseObservable().flatMap(converse -> event.getDeprecatedObservable()
+                .flatMap(deprecatedAggregate -> {
+                    log.debug("        -> Deprecated Aggregate is: {}. Converse is: {}",
+                            deprecatedAggregate, converse);
+                    util.addToDeprecates(newSnapshot, deprecatedAggregate);
 
-        return util.findEventsForAggregates(
-                DefaultGroovyMethods.plus(aggregates, event.getDeprecated()))
-                .filter(it -> !it.getId().equals(event.getId())
-                        && !it.getId().equals(event.getConverse().getId()))
-                .toSortedList((a, b) -> a.getTimestamp().compareTo(b.getTimestamp()))
-                .flatMap(sortedEvents -> {
-                    log.debug("Sorted Events: " + stringifyEvents(sortedEvents));
-                    Observable<EventT> forwardEventsSortedBackwards =
-                            applyReverts(Observable.from(sortedEvents));
-                    return applyEvents(util, newSnapshot, forwardEventsSortedBackwards,
-                            DefaultGroovyMethods.plus(deprecatesList, event), aggregates);
-                });
+                    return util.findEventsForAggregates(
+                            DefaultGroovyMethods.plus(allAggregates, deprecatedAggregate))
+                            .filter(it -> !it.getId().equals(event.getId())
+                                    && !it.getId().equals(converse.getId()))
+                            .toSortedList((a, b) -> a.getTimestamp().compareTo(b.getTimestamp()))
+                            .flatMap(sortedEvents -> {
+                                log.debug("Reassembled Events: {}", stringifyEvents(sortedEvents));
+                                Observable<EventT> forwardEventsSortedBackwards =
+                                        applyReverts(Observable.from(sortedEvents));
+                                return applyEvents(
+                                        util,
+                                        newSnapshot,
+                                        forwardEventsSortedBackwards,
+                                        DefaultGroovyMethods.plus(deprecatesEvents, event),
+                                        allAggregates,
+                                        aggregate);
+                            });
+                }));
+
     }
 
     /**

@@ -51,7 +51,7 @@ public class JoinExecutor<
             SnapshotT initialSnapshot,
             Observable<EventT> events,
             List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesList,
-            List<AggregateT> aggregates) {
+            List<AggregateT> aggregates, AggregateT aggregate) {
 
 
         // s -> snapshotObservable
@@ -59,15 +59,15 @@ public class JoinExecutor<
             if (!query.shouldEventsBeApplied(snapshot)) {
                 return Observable.just(snapshot);
             } else {
-                log.debug("     -> Event: " + event.toString());
+                log.debug("     -> Applying Event: {}", event);
 
                 if (event instanceof Deprecates) {
                     return applyDeprecates((Deprecates<AggregateT, EventIdT, EventT>) event,
-                            query, aggregates, deprecatesList);
+                            query, aggregates, deprecatesList, aggregate);
                 } else if (event instanceof DeprecatedBy) {
-                    return Observable.just(applyDeprecatedBy(
+                    return applyDeprecatedBy(
                             (DeprecatedBy<AggregateT, EventIdT, EventT>) event,
-                            initialSnapshot));
+                            initialSnapshot);
                 } else if (classJoinE.isAssignableFrom(event.getClass())) {
                     initialSnapshot.getJoinedIds().add(
                             ((JoinEventT) event).getJoinAggregate().getId());
