@@ -97,15 +97,6 @@ public interface BaseQuery<
     void addToDeprecates(SnapshotT snapshot, AggregateT deprecatedAggregate);
 
     /**
-     * If an event is a proxied type, unwrap it and return an event type.
-     *
-     * @param event The event
-     *
-     * @return An unproxied event
-     */
-    EventT unwrapIfProxy(EventT event);
-
-    /**
      * Exception handler when applying events.
      *
      * @param e        The exception

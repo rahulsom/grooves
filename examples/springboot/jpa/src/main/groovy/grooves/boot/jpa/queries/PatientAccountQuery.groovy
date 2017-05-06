@@ -6,7 +6,6 @@ import com.github.rahulsom.grooves.groovy.transformations.Query
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientAccountRepository
 import grooves.boot.jpa.util.VariableDepthCopier
-import org.hibernate.engine.spi.SessionImplementor
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -128,14 +127,6 @@ class PatientAccountQuery implements
     @Override
     void addToDeprecates(PatientAccount snapshot, Patient deprecatedAggregate) {
         snapshot.deprecates << deprecatedAggregate
-    }
-
-    @Override
-    PatientEvent unwrapIfProxy(PatientEvent event) {
-        entityManager.
-                unwrap(SessionImplementor).
-                persistenceContext.
-                unproxy(event) as PatientEvent
     }
 
     @Override

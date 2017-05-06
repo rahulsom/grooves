@@ -7,7 +7,6 @@ import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientEventRepository
 import grooves.boot.jpa.repositories.PatientHealthRepository
 import grooves.boot.jpa.util.VariableDepthCopier
-import org.hibernate.engine.spi.SessionImplementor
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -91,14 +90,6 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
     @Override
     void addToDeprecates(PatientHealth snapshot, Patient deprecatedAggregate) {
         snapshot.deprecates << deprecatedAggregate
-    }
-
-    @Override
-    PatientEvent unwrapIfProxy(PatientEvent event) {
-        entityManager.
-                unwrap(SessionImplementor).
-                persistenceContext.
-                unproxy(event) as PatientEvent
     }
 
     @Override

@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.github.rahulsom.grooves.queries.internal.Utils.stringifyEventIds;
 import static com.github.rahulsom.grooves.queries.internal.Utils.stringifyEvents;
+import static org.codehaus.groovy.runtime.InvokerHelper.invokeMethod;
 import static rx.Observable.just;
 
 /**
@@ -169,14 +170,25 @@ public class QueryExecutor<
                 });
     }
 
-    private Observable<EventApplyOutcome> callMethod(
+    /**
+     * Calls a method on a Query Util instance.
+     *
+     * @param util       The Query Util instance
+     * @param methodName The method to be called
+     * @param snapshot   The snapshot to be passed to the method
+     * @param event      The event to be passed to the method
+     *
+     * @return An observable returned by the method, or the result of calling onException on the
+     * Util instance, or an Observable that asks to RETURN if that fails.
+     */
+    Observable<EventApplyOutcome> callMethod(
             BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> util,
             String methodName,
             final SnapshotT snapshot,
             final EventT event) {
         try {
-            return (Observable<EventApplyOutcome>) InvokerHelper.invokeMethod(
-                    util, methodName, new Object[]{util.unwrapIfProxy(event), snapshot});
+            return (Observable<EventApplyOutcome>) invokeMethod(
+                    util, methodName, new Object[]{event, snapshot});
         } catch (Exception e1) {
             try {
                 return util.onException(e1, snapshot, event);

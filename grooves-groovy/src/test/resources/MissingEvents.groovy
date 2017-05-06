@@ -25,7 +25,7 @@ class MissingEventsQuery implements QuerySupport<Account, Long, Transaction, Str
         Observable.empty()
     }
     @Override void addToDeprecates(Balance snapshot, Account deprecatedAggregate) {}
-    @Override Transaction unwrapIfProxy(Transaction event) { event }
+
     @Override Observable<EventApplyOutcome> onException(Exception e, Balance snapshot, Transaction event) {
         null
     }

@@ -4,7 +4,6 @@ import com.github.rahulsom.grooves.groovy.transformations.Query
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.grails.GormQuerySupport
 import grails.compiler.GrailsCompileStatic
-import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 import rx.Observable
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
@@ -31,11 +30,6 @@ class PatientAccountQuery implements
     @Override
     void addToDeprecates(PatientAccount snapshot, Patient deprecatedAggregate) {
         snapshot.addToDeprecates(deprecatedAggregate)
-    }
-
-    @Override
-    PatientEvent unwrapIfProxy(PatientEvent event) {
-        GrailsHibernateUtil.unwrapIfProxy(event) as PatientEvent
     }
 
     @Override

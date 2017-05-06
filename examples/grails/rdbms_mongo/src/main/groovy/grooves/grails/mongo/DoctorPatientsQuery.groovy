@@ -2,7 +2,6 @@ package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.grails.GormJoinSupport
-import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 import rx.Observable
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
@@ -35,11 +34,6 @@ class DoctorPatientsQuery implements GormJoinSupport<
     @Override
     void addToDeprecates(DoctorPatients snapshot, Doctor deprecatedAggregate) {
         // ignore for now
-    }
-
-    @Override
-    DoctorEvent unwrapIfProxy(DoctorEvent event) {
-        GrailsHibernateUtil.unwrapIfProxy(event) as DoctorEvent
     }
 
     @Override
