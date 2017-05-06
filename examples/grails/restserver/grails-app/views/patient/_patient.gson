@@ -1,0 +1,7 @@
+import grooves.grails.restserver.Patient
+
+model {
+	Patient patient
+}
+
+json g.render(patient)

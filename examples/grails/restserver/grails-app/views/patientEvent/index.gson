@@ -1,0 +1,8 @@
+import grooves.grails.restserver.PatientEvent
+
+model {
+	Iterable<PatientEvent> patientEventList
+}
+
+json tmpl.patientEvent(patientEventList ?: [])
+
