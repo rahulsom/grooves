@@ -13,9 +13,11 @@ import static rx.Observable.*
  */
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition'])
 @SuppressWarnings(['DuplicateNumberLiteral'])
-class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
+class PatientAccount implements Snapshot<Patient, String, Long, PatientEvent> {
 
     static mapWith = 'mongo'
+
+    String id
 
     Long lastEventPosition
     Date lastEventTimestamp

@@ -1,13 +1,11 @@
 package grooves.boot.jpa.queries
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome
-import com.github.rahulsom.grooves.queries.QuerySupport
 import com.github.rahulsom.grooves.groovy.transformations.Query
+import com.github.rahulsom.grooves.queries.QuerySupport
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientEventRepository
 import grooves.boot.jpa.repositories.PatientHealthRepository
-import grooves.boot.jpa.util.VariableDepthCopier
-import org.hibernate.engine.spi.SessionImplementor
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -16,6 +14,7 @@ import rx.Observable
 import javax.persistence.EntityManager
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
+import static rx.Observable.just
 
 /**
  * Query for Patient Health
@@ -42,7 +41,7 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
                 patientHealthRepository.findAllByAggregateIdAndLastEventPositionLessThan(
                         aggregate.id, maxPosition)
-        snapshots ? Observable.just(snapshots[0]) : Observable.empty()
+        snapshots ? just(detachSnapshot(snapshots[0])) : Observable.empty()
     }
 
     @Override
@@ -51,12 +50,7 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
                 patientHealthRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
                         aggregate.id, maxTimestamp)
-        snapshots ? Observable.just(snapshots[0]) : Observable.empty()
-    }
-
-    @Override
-    void detachSnapshot(PatientHealth snapshot) {
-        new VariableDepthCopier<PatientHealth>().copy(snapshot)
+        snapshots ? just(detachSnapshot(snapshots[0])) : Observable.empty()
     }
 
     @Override
@@ -93,37 +87,48 @@ class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Lo
     }
 
     @Override
-    PatientEvent unwrapIfProxy(PatientEvent event) {
-        entityManager.
-                unwrap(SessionImplementor).
-                persistenceContext.
-                unproxy(event) as PatientEvent
-    }
-
-    @Override
     Observable<EventApplyOutcome> onException(
             Exception e, PatientHealth snapshot, PatientEvent event) {
+        log.error "Could not apply event ${event.class}", e
         snapshot.processingErrors++
-        Observable.just(CONTINUE)
+        just CONTINUE
     }
 
     Observable<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientHealth snapshot) {
+        log.error 'setting name'
         snapshot.name = snapshot.name ?: event.name
-        Observable.just(CONTINUE)
+        just CONTINUE
     }
 
     Observable<EventApplyOutcome> applyProcedurePerformed(
             ProcedurePerformed event, PatientHealth snapshot) {
         snapshot.procedures << new Procedure(code: event.code, date: event.timestamp)
-        Observable.just(CONTINUE)
+        just CONTINUE
     }
 
     @SuppressWarnings('UnusedMethodParameter')
     Observable<EventApplyOutcome> applyPaymentMade(
             PaymentMade event, PatientHealth snapshot) {
         // Ignore payments
-        Observable.just(CONTINUE)
+        just CONTINUE
     }
 
+    PatientHealth detachSnapshot(PatientHealth snapshot) {
+        def retval = new PatientHealth(
+                lastEventPosition: snapshot.lastEventPosition,
+                lastEventTimestamp: snapshot.lastEventTimestamp,
+                deprecatedBy: snapshot.deprecatedBy,
+                aggregate: snapshot.aggregate,
+                processingErrors: snapshot.processingErrors,
+                name: snapshot.name,
+                procedures: [],
+                deprecates: [],
+        )
+        snapshot.deprecates.each { retval.deprecates.add it }
+        snapshot.procedures.each {
+            retval.procedures.add(new Procedure(code: it.code, date: it.date))
+        }
+        retval
+    }
 }

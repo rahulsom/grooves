@@ -16,7 +16,9 @@ import java.util.function.Consumer
 import java.util.function.Supplier
 
 /**
- * Initializes Application with usable data
+ * Initializes Application with usable data.
+ *
+ * @author Rahul Somasunderam
  */
 @Component
 @SuppressWarnings(['DuplicateNumberLiteral', 'DuplicateStringLiteral'])

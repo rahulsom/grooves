@@ -66,11 +66,6 @@ public interface RxGormJoinSupport<
     }
 
     @Override
-    default void detachSnapshot(SnapshotT snapshot) {
-        // noop
-    }
-
-    @Override
     default Observable<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, long version) {
         return RxEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, version);

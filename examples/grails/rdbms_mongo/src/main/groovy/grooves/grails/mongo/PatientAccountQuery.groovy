@@ -4,7 +4,6 @@ import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.grails.GormQuerySupport
 import com.github.rahulsom.grooves.groovy.transformations.Query
 import grails.compiler.GrailsCompileStatic
-import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 import rx.Observable
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
@@ -32,11 +31,6 @@ class PatientAccountQuery implements
     @Override
     void addToDeprecates(PatientAccount snapshot, Patient deprecatedAggregate) {
         snapshot.addToDeprecatesIds(deprecatedAggregate.id)
-    }
-
-    @Override
-    PatientEvent unwrapIfProxy(PatientEvent event) {
-        GrailsHibernateUtil.unwrapIfProxy(event) as PatientEvent
     }
 
     @Override
@@ -70,4 +64,14 @@ class PatientAccountQuery implements
             PatientAddedToZipcode event, PatientAccount snapshot) {
         just CONTINUE // Ignore zip change
     }
+
+    @Override
+    PatientAccount detachSnapshot(PatientAccount snapshot) {
+        if (snapshot.isAttached()) {
+            snapshot.discard()
+            snapshot.id = null
+        }
+        snapshot
+    }
+
 }

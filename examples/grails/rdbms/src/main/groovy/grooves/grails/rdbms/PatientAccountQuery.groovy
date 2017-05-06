@@ -1,10 +1,11 @@
 package grooves.grails.rdbms
 
-import com.github.rahulsom.grooves.groovy.transformations.Query
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.grails.GormQuerySupport
+import com.github.rahulsom.grooves.groovy.transformations.Query
 import grails.compiler.GrailsCompileStatic
-import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
+import grails.converters.JSON
+import groovy.json.JsonSlurper
 import rx.Observable
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
@@ -31,11 +32,6 @@ class PatientAccountQuery implements
     @Override
     void addToDeprecates(PatientAccount snapshot, Patient deprecatedAggregate) {
         snapshot.addToDeprecates(deprecatedAggregate)
-    }
-
-    @Override
-    PatientEvent unwrapIfProxy(PatientEvent event) {
-        GrailsHibernateUtil.unwrapIfProxy(event) as PatientEvent
     }
 
     @Override
@@ -67,4 +63,8 @@ class PatientAccountQuery implements
 
     final Class<PatientAccount> snapshotClass = PatientAccount
     final Class<PatientEvent> eventClass = PatientEvent
+
+    @Override PatientAccount detachSnapshot(PatientAccount snapshot) {
+        new JsonSlurper().parseText((snapshot as JSON).toString()) as PatientAccount
+    }
 }

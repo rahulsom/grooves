@@ -58,9 +58,4 @@ public interface RxSnapshotSource<
                         new Object[]{aggregate.getId(), maxTimestamp, LATEST_BY_POSITION}));
     }
 
-    @Override
-    default void detachSnapshot(SnapshotT snapshot) {
-        // noop
-    }
-
 }

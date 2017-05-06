@@ -2,7 +2,6 @@ package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.grails.GormJoinSupport
-import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 import rx.Observable
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
@@ -38,13 +37,18 @@ class ZipcodePatientsQuery implements GormJoinSupport<
     }
 
     @Override
-    ZipcodeEvent unwrapIfProxy(ZipcodeEvent event) {
-        GrailsHibernateUtil.unwrapIfProxy(event) as ZipcodeEvent
-    }
-
-    @Override
     Observable<EventApplyOutcome> onException(
             Exception e, ZipcodePatients snapshot, ZipcodeEvent event) {
         just CONTINUE
     }
+
+    @Override
+    ZipcodePatients detachSnapshot(ZipcodePatients snapshot) {
+        if (snapshot.isAttached()) {
+            snapshot.discard()
+            snapshot.id = null
+        }
+        snapshot
+    }
+
 }

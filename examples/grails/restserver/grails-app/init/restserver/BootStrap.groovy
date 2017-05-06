@@ -8,6 +8,11 @@ import org.springframework.core.convert.support.DefaultConversionService
 import java.util.function.Consumer
 import java.util.function.Supplier
 
+/**
+ * Initializes Application with usable data.
+ *
+ * @author Rahul Somasunderam
+ */
 class BootStrap {
     static class PatientIntegerConverter implements Converter<Integer, Patient>{
         @Override Patient convert(Integer source) { Patient.load source }

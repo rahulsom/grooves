@@ -26,12 +26,8 @@ public class EventsDsl<
 
     private static AtomicLong defaultPositionSupplier = new AtomicLong();
 
-    public static AtomicLong getDefaultPositionSupplier() {
+    protected static AtomicLong getDefaultPositionSupplier() {
         return defaultPositionSupplier;
-    }
-
-    public static void setDefaultPositionSupplier(AtomicLong defaultPositionSupplier) {
-        EventsDsl.defaultPositionSupplier = defaultPositionSupplier;
     }
 
     /**
@@ -96,11 +92,10 @@ public class EventsDsl<
          * missing and populating them based on the suppliers.
          *
          * @param event The event to be applied
-         * @param <T>   The Type of event
          *
          * @return The event after persisting
          */
-        public <T extends EventT> T apply(T event) {
+        public EventT apply(EventT event) {
             event.setAggregate(aggregate);
 
             if (event.getCreatedBy() == null) {
@@ -164,32 +159,16 @@ public class EventsDsl<
             this.aggregate = aggregate;
         }
 
-        public Consumer getEntityConsumer() {
-            return entityConsumer;
-        }
-
         public void setEntityConsumer(Consumer entityConsumer) {
             this.entityConsumer = entityConsumer;
-        }
-
-        public Supplier<Date> getTimestampSupplier() {
-            return timestampSupplier;
         }
 
         public void setTimestampSupplier(Supplier<Date> timestampSupplier) {
             this.timestampSupplier = timestampSupplier;
         }
 
-        public Supplier<String> getUserSupplier() {
-            return userSupplier;
-        }
-
         public void setUserSupplier(Supplier<String> userSupplier) {
             this.userSupplier = userSupplier;
-        }
-
-        public Supplier<Long> getPositionSupplier() {
-            return positionSupplier;
         }
 
         public void setPositionSupplier(Supplier<Long> positionSupplier) {

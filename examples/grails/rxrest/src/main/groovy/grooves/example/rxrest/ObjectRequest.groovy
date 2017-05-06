@@ -1,5 +1,6 @@
 package grooves.example.rxrest
 
+import grails.databinding.BindingFormat
 import grails.validation.Validateable
 
 /**
@@ -9,6 +10,6 @@ import grails.validation.Validateable
  */
 class ObjectRequest implements Validateable {
     Long id
-    Date date
+    @BindingFormat('yyyy-MM-dd') Date date
     Long version
 }

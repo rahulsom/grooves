@@ -12,6 +12,7 @@ import java.util.List;
 
 import static com.github.rahulsom.grooves.grails.QueryUtil.INCREMENTAL_BY_POSITION;
 import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
+import static rx.Observable.from;
 
 /**
  * Supplies Events from an Rx Gorm Source.
@@ -63,13 +64,22 @@ public interface RxEventSource<
                         new Object[]{aggregate, snapshotTime, INCREMENTAL_BY_POSITION}));
     }
 
+    Observable<AggregateT> reattachAggregate(AggregateT aggregate);
+
     @Override
     default Observable<EventT> findEventsForAggregates(List<AggregateT> aggregates) {
-        //noinspection unchecked
-        return (Observable<EventT>) invokeStaticMethod(
-                getEventClass(),
-                "findAllByAggregateInList",
-                new Object[]{aggregates, INCREMENTAL_BY_POSITION});
+        return from(aggregates)
+                .flatMap(this::reattachAggregate)
+                .toList()
+                .flatMap(reattachedAggregates -> {
+                    getLog().info("Finding events for aggregates: {}",
+                            reattachedAggregates);
+                    //noinspection unchecked
+                    return (Observable<EventT>) invokeStaticMethod(
+                            getEventClass(),
+                            "findAllByAggregateInList",
+                            new Object[]{reattachedAggregates, INCREMENTAL_BY_POSITION});
+                });
     }
 
 }

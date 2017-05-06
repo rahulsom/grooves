@@ -54,8 +54,6 @@ public interface TemporalQuerySupport<
                             it.getLastEventTimestamp() == null ? "<none>" :
                                     it.toString();
                     getLog().debug("  -> Last Usable Snapshot: " + snapshotAsString);
-                    detachSnapshot(it);
-
                     it.setAggregate(aggregate);
                 });
     }

@@ -37,3 +37,8 @@ if (Environment.isDevelopmentMode() && targetDir != null) {
 else {
     root(ERROR, ['STDOUT'])
 }
+
+logger "com.github.rahulsom", DEBUG
+logger "grooves.example.grails", DEBUG
+logger "grooves.grails", DEBUG
+logger 'grails.app.controllers.grooves.grails.mongo', DEBUG

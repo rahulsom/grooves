@@ -239,7 +239,7 @@ public class QueryExecutor<
             final EventT event) {
         try {
             return (Observable<EventApplyOutcome>) invokeMethod(
-                    util, methodName, new Object[]{util.unwrapIfProxy(event), snapshot});
+                    util, methodName, new Object[]{event, snapshot});
         } catch (Exception e1) {
             try {
                 return util.onException(e1, snapshot, event);

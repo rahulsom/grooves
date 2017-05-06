@@ -18,7 +18,7 @@ class PatientController implements RxController {
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond Patient.list(params), model: [patientCount: Patient.count()]
+        respond Patient.list(params)
     }
 
     def show(Long id) {

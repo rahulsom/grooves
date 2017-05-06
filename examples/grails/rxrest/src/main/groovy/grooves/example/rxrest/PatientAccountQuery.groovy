@@ -16,7 +16,7 @@ import static rx.Observable.just
 @Query(aggregate = Patient, snapshot = PatientAccount)
 @GrailsCompileStatic
 class PatientAccountQuery implements
-        MyGroovesSupport<Patient, Long, PatientEvent, Long, PatientAccount> {
+        MyGroovesSupport<Patient, Long, PatientEvent, String, PatientAccount> {
 
     @Override
     PatientAccount createEmptySnapshot() { new PatientAccount(deprecates: []) }
@@ -29,11 +29,6 @@ class PatientAccountQuery implements
     @Override
     void addToDeprecates(PatientAccount snapshot, Patient deprecatedAggregate) {
         snapshot.addToDeprecates(deprecatedAggregate)
-    }
-
-    @Override
-    PatientEvent unwrapIfProxy(PatientEvent event) {
-        event
     }
 
     @Override
@@ -65,4 +60,19 @@ class PatientAccountQuery implements
 
     final Class<PatientAccount> snapshotClass = PatientAccount
     final Class<PatientEvent> eventClass = PatientEvent
+
+    @Override
+    PatientAccount detachSnapshot(PatientAccount snapshot) {
+        if (snapshot.isAttached()) {
+            snapshot.discard()
+            snapshot.id = null
+        }
+        snapshot
+    }
+
+    @Override
+    Observable<Patient> reattachAggregate(Patient aggregate) {
+        Patient.get(aggregate.id)
+    }
+
 }
