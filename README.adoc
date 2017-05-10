@@ -1,4 +1,8 @@
 = Grooves
 
-Groovy + Event Sourcing
+Event Sourcing Library for Java.
+Grooves formerly meant Groovy Event Sourcing.
+In its present form, it can support just about any JVM language.
+1.0 goals include documentation and testing for Java, Groovy and Kotlin.
+Documentation is still a work in progress, but you can see whats available https://rahulsom.github.io/grooves/[here].
 
