@@ -1,8 +1,10 @@
 = Grooves
 Rahul Somasunderam <rahul.som@gmail.com>
 :stem:
+:toc: left
+:sectnums:
 
-Groovy + Event Sourcing
+Event Sourcing for Groovy
 
 == Introduction
 
@@ -17,11 +19,15 @@ An aggregate is a type of object that you are interested in managing data about.
 A classic example would be a bank account.
 
 Event::
-An event is an atomic change that needs to occur on the account.
+An event is an atomic change that needs to occur on the aggregate.
 A suitable example for the bank account would be a transaction.
 It could be an ATM withdrawal, or a check deposit, or an electronic payment.
 Most events can be applied while only looking ahead.
 When there is a `revert` event or a `merge` (which is represented as a `deprecates` and a `deprecatedBy` events), that doesn't hold true.
+
+We will not be modifying the aggregate in our data store.
+We will however, store the event in the data store so we know when we read to read it a certain way.
+
 
 Snapshot::
 A snapshot is a way of looking at the state of an aggregate at a point in time.
@@ -33,10 +39,64 @@ A command is an input which causes an event to be stored.
 Query::
 A query is a computation that needs to be performed in order to obtain a snapshot from the events.
 
+This is how we'll be representing events in the documentation.
+
+[esdiag]
+....
+|Type,ID,Description
+  + 1 2016-01-02 created as John Lennon
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-05 paid $ 100.25
+....
+
+The aggregate is represented by the rectangle.
+It says its type and its id in the box.
+Above the box is a description of the aggregate.
+
+The circles with numbers represent events that are applied on the aggregate.
+They are reasonably spaced apart to show the flow of time.
+The spacing is not necessarily linear.
+However when there are multiple aggregates shown together, the time lines will be in sync.
+
+[esdiag]
+....
+|Patient,1,John Lennon
+  + 1 2016-01-02 created as John Lennon
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-08 paid $ 100.25
+  + 5 2016-01-19 paid $ 100.25
+|Patient,1,Ringo Starr
+  + 1 2016-01-10 created as Ringo Starr
+  + 2 2016-01-11 performed FLUSHOT for $ 32.40
+  + 3 2016-01-12 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-19 paid $ 100.25
+....
+
+When the time of two events is exactly the same, then they are displayed like this.
+
+[esdiag]
+....
+|Patient,1,John Lennon
+  + 1 2016-01-02 created as John Lennon
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-04 performed ANNUALPHYSICAL for $ 140.23
+  + 5 2016-01-05 paid $ 100.25
+....
+
+A query performs a computation like the one below.
+
 [stem]
 ++++
 S_N = f(S_0, [E_1 .. E_(N)])
 ++++
+
+Where
+
+* stem:[S_N] is the Snapshot computed by applying the first `N` events.
+* stem:[S_0] is the empty snapshot.
 
 Most of the time this also holds true
 
@@ -53,11 +113,131 @@ While the theory is very simple, in practice, it's a little more complicated.
 The functions that you see above are very simple at first glance, but implementing an entire system based on it requires some patterns.
 That is the problem that Grooves aims to solve.
 
+=== Completeness of Queries
+
 When applying events on a Snapshot, you need to be sure that you have handled every single event type.
 Let's say you've got 3 types of events for an aggregate and 2 snapshots.
 If you add a new event type, you need to handle it in the computation of both snapshots.
 When a language has case classes, it's easier to achieve this.
-Alas, Groovy doesn't have case classes.
+Alas, Groovy and Java do not have case classes.
+
+There are some special kinds of Events that require a lot of complex handling:
+
+=== Reverting Events
+
+Some times events are entered into an aggregate's timeline in error.
+This could be a system error, or a human error.
+When this happens, for the business logic to make sense, the system should behave as if that event never occurred.
+However, for auditing purposes, and for preserving a reasonable system, the original event as well as the moment the error was detected need to be tracked.
+
+[esdiag]
+....
+|Patient,1,Paul McCartney
+  + 1 2016-01-02 created as Paul McCartney
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  - 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-05 paid $ 100.25
+  + 5 2016-01-15 reverted 3
+....
+
+In the diagram above, we see that event 3 was performed, and later after event 4, we realized that 3 should not have occurred.
+Now, we insert a special event, 5, that causes a revert of 3.
+Once the system processes the data correctly, this is equivalent to what follows.
+
+[esdiag]
+....
+|Patient,1,Paul McCartney
+  + 1 2016-01-02 created as Paul McCartney
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 4 2016-01-05 paid $ 100.25
+  + 5 2016-01-15 .
+....
+
+Depending on how many mistakes people and systems make, this could be much more complicated.
+For example, you might be able to revert a revert event.
+
+[esdiag]
+....
+|Patient,1,Paul McCartney
+  + 1 2016-01-02 created as Paul McCartney
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-05 paid $ 100.25
+  - 5 2016-01-15 reverted 3
+  + 6 2016-01-16 reverted 5
+....
+
+This should be interpreted as 6 cancels out 5, so 5 can no more cancel out 3.
+
+[esdiag]
+....
+|Patient,1,Paul McCartney
+  + 1 2016-01-02 created as Paul McCartney
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-05 paid $ 100.25
+  + 5 2016-01-15 .
+  + 6 2016-01-16 .
+....
+
+=== Merging Aggregates
+
+`DeprecatedBy` and `Deprecates` is a pair of events that work together on aggregates of the same type.
+Sometimes, real world things merge together.
+For example, companies get merged or acquired.
+Sometimes, you accidentally create two aggregates that represent the same thing.
+
+[esdiag]
+....
+|Patient,4,Farrokh Bulsara
+  + 1 2016-01-02 created as Farrokh Bulsara
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 7 2016-01-09 deprecates 5 converse 6
+  + 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93
+|Patient,5,Freddie Mercury
+  + 4 2016-01-05 created as Freddie Mercury
+  + 5 2016-01-05 paid $ 100.25
+  + 6 2016-01-09 deprecated by 4 converse 7
+....
+
+In this case, we created two patients that actually represent the same person.
+Then we realized that this needs to be the same person.
+
+[esdiag]
+....
+|Patient,4,Farrokh Bulsara
+  + 1 2016-01-02 created as Farrokh Bulsara
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 5 2016-01-05 paid $ 100.25
+  + 6 2016-01-09 .
+  + 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93
+....
+
+=== Reverting Merges
+
+[esdiag]
+....
+|Patient,4,Tina Fey
+  + 1 2016-01-02 created as Farrokh Bulsara
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 7 2016-01-09 deprecates 5 converse 6
+  + 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93
+|Patient,5,Sarah Palin
+  + 4 2016-01-05 created as Freddie Mercury
+  + 5 2016-01-05 paid $ 100.25
+  + 6 2016-01-09 deprecated by 4 converse 7
+....
+
+=== Performing joins
+
+Bar
+
+=== Performing disjoins
+
+Bar
 
 == How Grooves solves it
 
