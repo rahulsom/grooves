@@ -13,7 +13,6 @@ class ValidESQuery implements QuerySupport<Account, Long, Transaction, String, B
     @Override Observable<Balance> getSnapshot(Date maxTimestamp, Account aggregate) {
         Observable.empty()
     }
-    @Override void detachSnapshot(Balance snapshot) {}
     @Override Observable<Transaction> getUncomputedEvents(Account aggregate, Balance lastSnapshot, long version) {
         Observable.empty()
     }
@@ -25,7 +24,7 @@ class ValidESQuery implements QuerySupport<Account, Long, Transaction, String, B
         Observable.empty()
     }
     @Override void addToDeprecates(Balance snapshot, Account deprecatedAggregate) {}
-    @Override Transaction unwrapIfProxy(Transaction event) { event }
+
     @Override Observable<EventApplyOutcome> onException(Exception e, Balance snapshot, Transaction event) {
         Observable.just(EventApplyOutcome.CONTINUE)
     }

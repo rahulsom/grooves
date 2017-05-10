@@ -1,7 +1,10 @@
-spring.jpa.properties.hibernate.enable_lazy_load_no_trans: true
+spring:
+    jpa.properties.hibernate.enable_lazy_load_no_trans: true
+    output.ansi.enabled: ALWAYS
 logging:
     pattern:
-        console: "%d %-5level %logger : %msg%n"
+        console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wex"
     level:
-        org.springframework: WARN
-        org.hibernate: WARN
+        root: ERROR
+        com.github.rahulsom: DEBUG
+        grooves.boot: DEBUG

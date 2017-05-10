@@ -22,11 +22,9 @@ class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
 
     Long aggregateId
 
-    Patient getAggregate() { Patient.get(aggregateId) }
-
     @Override
     Observable<Patient> getAggregateObservable() {
-        (aggregateId ? defer { just(aggregate) } : empty()) as Observable<Patient>
+        aggregateId ? defer { just(Patient.get(aggregateId)) } : empty()
     }
 
     void setAggregate(Patient aggregate) { aggregateId = aggregate.id }
@@ -52,8 +50,7 @@ class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
         deprecatedBy ? just(deprecatedBy) : empty()
     }
 
-    @Override
-    Observable<Patient> getDeprecatesObservable() {
+    @Override Observable<Patient> getDeprecatesObservable() {
         deprecates ? from(deprecates) : empty()
     }
 }

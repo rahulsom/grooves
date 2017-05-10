@@ -4,7 +4,6 @@ import com.github.rahulsom.grooves.groovy.transformations.Query
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.grails.GormQuerySupport
 import grails.compiler.GrailsCompileStatic
-import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 import rx.Observable
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
@@ -36,11 +35,6 @@ class PatientHealthQuery implements
     }
 
     @Override
-    PatientEvent unwrapIfProxy(PatientEvent event) {
-        GrailsHibernateUtil.unwrapIfProxy(event) as PatientEvent
-    }
-
-    @Override
     Observable<EventApplyOutcome> onException(
             Exception e, PatientHealth snapshot, PatientEvent event) {
         snapshot.processingErrors << e.message
@@ -49,7 +43,7 @@ class PatientHealthQuery implements
 
     Observable<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientHealth snapshot) {
-        snapshot.name = event.name
+        snapshot.name = snapshot.name ?: event.name
         just CONTINUE
     }
 
@@ -71,4 +65,12 @@ class PatientHealthQuery implements
         just CONTINUE // Ignore zip change
     }
 
+    @Override
+    PatientHealth detachSnapshot(PatientHealth snapshot) {
+        if (snapshot.isAttached()) {
+            snapshot.discard()
+            snapshot.id = null
+        }
+        snapshot
+    }
 }

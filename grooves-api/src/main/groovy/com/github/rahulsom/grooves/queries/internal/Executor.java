@@ -38,18 +38,20 @@ public interface Executor<
     /**
      * Applies forward events on a snapshot
      *
-     * @param query          The query that demands the events to be applied.
-     * @param snapshot       The snapshot to be mutated
-     * @param events         The list of forward events
-     * @param deprecatesList The list of Deprecate events
-     * @param aggregates     The list of deprecated aggregates
+     * @param query           The query that demands the events to be applied.
+     * @param initialSnapshot The snapshot to be mutated
+     * @param events          The list of forward events
+     * @param deprecatesList  The list of Deprecate events
+     * @param aggregates      The list of deprecated aggregates
+     * @param aggregate       The aggregate on which we are currently working
      *
      * @return The Snapshot that has been mutated
      */
     Observable<SnapshotT> applyEvents(
             BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> query,
-            SnapshotT snapshot,
+            SnapshotT initialSnapshot,
             Observable<EventT> events,
             List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesList,
-            List<AggregateT> aggregates);
+            List<AggregateT> aggregates,
+            AggregateT aggregate);
 }

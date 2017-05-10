@@ -13,8 +13,11 @@ import java.util.function.Consumer
 @SuppressWarnings(['DuplicateNumberLiteral', 'DuplicateStringLiteral', 'InsecureRandom'])
 class BootStrap {
 
-    public static final int ONE_DAY = 24 * 60 * 60 * 1000
-    public static final String START_DATE = '2016-01-01'
+    private static final int ONE_DAY = 24 * 60 * 60 * 1000
+    private static final String START_DATE = '2016-01-01'
+
+    private final PatientAccountQuery patientAccountQuery = new PatientAccountQuery()
+    private final PatientHealthQuery patientHealthQuery = new PatientHealthQuery()
 
     def init = { servletContext ->
         def campbell = on(new Zipcode(uniqueId: '95008').save(flush: true, failOnError: true)) {
@@ -32,6 +35,7 @@ class BootStrap {
         linkZipcodesAndPatients(campbell, santanaRow)
         linkZipcodesAndDoctors(campbell, santanaRow)
     }
+
     private void linkZipcodesAndDoctors(Zipcode campbell, Zipcode santanaRow) {
         def names = NameDbUsa.instance
         for (int i = 0; i < 10; i++) {
@@ -149,14 +153,14 @@ class BootStrap {
             apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
             apply new PaymentMade(amount: 100.25)
 
-            snapshotWith new PatientAccountQuery()
-            snapshotWith new PatientHealthQuery()
+            snapshotWith patientAccountQuery
+            snapshotWith patientHealthQuery
 
             apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
             apply new PaymentMade(amount: 180.00)
 
-            snapshotWith new PatientAccountQuery()
-            snapshotWith new PatientHealthQuery()
+            snapshotWith patientAccountQuery
+            snapshotWith patientHealthQuery
         }
     }
 
@@ -169,14 +173,14 @@ class BootStrap {
             apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
             apply new PaymentMade(amount: 100.25)
 
-            snapshotWith new PatientAccountQuery()
-            snapshotWith new PatientHealthQuery()
+            snapshotWith patientAccountQuery
+            snapshotWith patientHealthQuery
 
             apply new ProcedurePerformed(code: 'FLUSHOT', cost: 32.40)
             apply new PaymentMade(amount: 180.00)
 
-            snapshotWith new PatientAccountQuery()
-            snapshotWith new PatientHealthQuery()
+            snapshotWith patientAccountQuery
+            snapshotWith patientHealthQuery
         }
     }
 
@@ -191,19 +195,19 @@ class BootStrap {
             apply new PatientEventReverted(revertedEventId: gluc.id)
             def pmt = apply new PaymentMade(amount: 30.00)
 
-            snapshotWith new PatientAccountQuery()
-            snapshotWith new PatientHealthQuery()
+            snapshotWith patientAccountQuery
+            snapshotWith patientHealthQuery
 
             apply new PatientEventReverted(revertedEventId: pmt.id)
             apply new PaymentMade(amount: 60.00)
 
-            snapshotWith new PatientAccountQuery()
-            snapshotWith new PatientHealthQuery()
+            snapshotWith patientAccountQuery
+            snapshotWith patientHealthQuery
 
             apply new PaymentMade(amount: 60.00)
 
-            snapshotWith new PatientAccountQuery()
-            snapshotWith new PatientHealthQuery()
+            snapshotWith patientAccountQuery
+            snapshotWith patientHealthQuery
         }
 
     }
@@ -217,8 +221,8 @@ class BootStrap {
             apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
             apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
 
-            snapshotWith new PatientAccountQuery()
-            snapshotWith new PatientHealthQuery()
+            snapshotWith patientAccountQuery
+            snapshotWith patientHealthQuery
         }
 
         on(patient2) {
@@ -226,8 +230,8 @@ class BootStrap {
                     'George Harrison, Member of the Most Excellent Order of the British Empire')
             apply new PaymentMade(amount: 100.25)
 
-            snapshotWith new PatientAccountQuery()
-            snapshotWith new PatientHealthQuery()
+            snapshotWith patientAccountQuery
+            snapshotWith patientHealthQuery
         }
 
         currDate += 1

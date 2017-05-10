@@ -34,6 +34,9 @@ public interface BlockingSnapshotSource<
         SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> &
                 GormEntity<SnapshotT>
         > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+
+    SnapshotT detachSnapshot(SnapshotT snapshot);
+
     @Override
     default Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
         return Observable.defer(() -> {
@@ -47,8 +50,9 @@ public interface BlockingSnapshotSource<
                             getSnapshotClass(),
                             "findAllByAggregateIdAndLastEventPositionLessThan",
                             new Object[]{aggregate.getId(), maxPosition, LATEST_BY_POSITION}));
+
             return DefaultGroovyMethods.asBoolean(snapshots) ?
-                    Observable.just(snapshots.get(0)) :
+                    Observable.just(detachSnapshot(snapshots.get(0))) :
                     Observable.empty();
         });
     }
@@ -67,18 +71,9 @@ public interface BlockingSnapshotSource<
                             "findAllByAggregateIdAndLastEventTimestampLessThan",
                             new Object[]{aggregate.getId(), maxTimestamp, LATEST_BY_TIMESTAMP}));
             return DefaultGroovyMethods.asBoolean(snapshots) ?
-                    Observable.just(snapshots.get(0)) :
+                    Observable.just(detachSnapshot(snapshots.get(0))) :
                     Observable.empty();
         });
-    }
-
-    @Override
-    default void detachSnapshot(SnapshotT snapshot) {
-        if (snapshot.isAttached()) {
-            snapshot.discard();
-            snapshot.setId(null);
-        }
-
     }
 
     Class<SnapshotT> getSnapshotClass();

@@ -7,6 +7,9 @@ import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.groovy.transformations.Event
 import groovy.json.JsonBuilder
 import groovy.transform.EqualsAndHashCode
+import rx.Observable
+
+import static rx.Observable.just
 
 /**
  * Base Zipcode Event
@@ -23,6 +26,7 @@ abstract class ZipcodeEvent implements BaseEvent<Zipcode, Long, ZipcodeEvent> {
     Date timestamp
     Long position
     Zipcode aggregate
+    Observable<Zipcode> getAggregateObservable() { just(aggregate) }
 
     static transients = ['revertedBy']
 

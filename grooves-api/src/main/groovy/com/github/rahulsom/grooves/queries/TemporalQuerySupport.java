@@ -54,8 +54,6 @@ public interface TemporalQuerySupport<
                             it.getLastEventTimestamp() == null ? "<none>" :
                                     it.toString();
                     getLog().debug("  -> Last Usable Snapshot: " + snapshotAsString);
-                    detachSnapshot(it);
-
                     it.setAggregate(aggregate);
                 });
     }
@@ -103,7 +101,7 @@ public interface TemporalQuerySupport<
                                         + stringifyEvents(reverts));
                                 return getSnapshotAndEventsSince(aggregate, moment, false);
                             } else {
-                                getLog().debug("     Events in pair: " + stringifyEvents(events));
+                                getLog().debug("     Events since last snapshot: " + stringifyEvents(events));
                                 return Observable.just(new Pair<>(lastSnapshot, events));
 
                             }
@@ -120,7 +118,8 @@ public interface TemporalQuerySupport<
                             .toList();
 
             return uncomputedEvents
-                    .doOnNext(ue -> getLog().debug("     Events in pair(2): " + stringifyEvents(ue)))
+                    .doOnNext(ue ->
+                            getLog().debug("     Events since origin: " + stringifyEvents(ue)))
                     .map(ue -> new Pair<>(lastSnapshot, ue));
         }
 
@@ -182,7 +181,7 @@ public interface TemporalQuerySupport<
 
         final Observable<SnapshotT> snapshotTypeObservable =
                 getExecutor().applyEvents(this, snapshot, forwardOnlyEvents, new ArrayList<>(),
-                        Collections.singletonList(aggregate));
+                        Collections.singletonList(aggregate), aggregate);
         return snapshotTypeObservable
                 .doOnNext(snapshotType -> {
                     if (!events.isEmpty()) {

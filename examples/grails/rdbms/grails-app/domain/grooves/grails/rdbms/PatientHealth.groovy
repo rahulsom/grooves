@@ -26,9 +26,8 @@ class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
 
     Patient getAggregate() { Patient.get(aggregateId) }
 
-    @Override
-    Observable<Patient> getAggregateObservable() {
-        aggregateId ? defer { just(aggregate) } : empty()
+    @Override Observable<Patient> getAggregateObservable() {
+        just aggregate
     }
 
     void setAggregate(Patient aggregate) { aggregateId = aggregate.id }

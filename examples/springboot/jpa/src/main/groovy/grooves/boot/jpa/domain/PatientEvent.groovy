@@ -7,8 +7,11 @@ import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.groovy.transformations.Event
 import groovy.json.JsonBuilder
 import groovy.transform.ToString
+import rx.Observable
 
 import javax.persistence.*
+
+import static rx.Observable.just
 
 /**
  * Domain Model for Patient Event
@@ -27,6 +30,8 @@ abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> {
     @Column(nullable = false) Date timestamp
     @Column(nullable = false) Long position
     @OneToOne Patient aggregate
+
+    Observable<Patient> getAggregateObservable() { just(aggregate) }
 
 }
 
@@ -77,6 +82,9 @@ class PatientDeprecatedBy extends PatientEvent implements
     @OneToOne PatientDeprecates converse
     @OneToOne Patient deprecator
 
+    Observable<PatientDeprecates> getConverseObservable() { just(converse) }
+    Observable<Patient> getDeprecatorObservable() { just(deprecator) }
+
     @Override String getAudit() { new JsonBuilder([deprecatedBy: deprecator.id]).toString() }
 }
 
@@ -84,6 +92,9 @@ class PatientDeprecatedBy extends PatientEvent implements
 class PatientDeprecates extends PatientEvent implements Deprecates<Patient, Long, PatientEvent> {
     @OneToOne PatientDeprecatedBy converse
     @OneToOne Patient deprecated
+
+    Observable<PatientDeprecatedBy> getConverseObservable() { just(converse) }
+    Observable<Patient> getDeprecatedObservable() { just(deprecated) }
 
     @Override String getAudit() { new JsonBuilder([deprecates: deprecated.id]).toString() }
 }

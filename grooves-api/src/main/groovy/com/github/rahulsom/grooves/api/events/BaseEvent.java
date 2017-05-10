@@ -1,6 +1,7 @@
 package com.github.rahulsom.grooves.api.events;
 
 import com.github.rahulsom.grooves.api.AggregateType;
+import rx.Observable;
 
 import java.util.Date;
 
@@ -14,7 +15,7 @@ import java.util.Date;
  * @author Rahul Somasunderam
  */
 public interface BaseEvent<AggregateT extends AggregateType, EventIdT, EventT> {
-    AggregateT getAggregate();
+    Observable<AggregateT> getAggregateObservable();
 
     void setAggregate(AggregateT aggregate);
 

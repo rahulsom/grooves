@@ -56,3 +56,6 @@ crashlytics.properties
 crashlytics-build.properties
 
 .gradletasknamecache
+
+### Other stuff
+.pid.lock

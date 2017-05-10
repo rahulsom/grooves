@@ -63,13 +63,6 @@ public interface BaseQuery<
     Observable<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate);
 
     /**
-     * Detaches a snapshot from any state information from a persistence mechanism.
-     *
-     * @param snapshot The snapshot to be detached
-     */
-    void detachSnapshot(SnapshotT snapshot);
-
-    /**
      * Decides whether applying more events is permitted on a snapshot.
      *
      * @param snapshot The snapshot
@@ -95,15 +88,6 @@ public interface BaseQuery<
      * @param deprecatedAggregate The aggregate that is deprecated
      */
     void addToDeprecates(SnapshotT snapshot, AggregateT deprecatedAggregate);
-
-    /**
-     * If an event is a proxied type, unwrap it and return an event type.
-     *
-     * @param event The event
-     *
-     * @return An unproxied event
-     */
-    EventT unwrapIfProxy(EventT event);
 
     /**
      * Exception handler when applying events.
