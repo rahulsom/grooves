@@ -11,6 +11,8 @@ buildscript {
     }
 }
 
+version = '0.1'
+
 apply plugin: "eclipse"
 apply plugin: "idea"
 apply plugin: "war"
