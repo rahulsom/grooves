@@ -59,3 +59,9 @@ bootRun {
     jvmArgs('-Dspring.output.ansi.enabled=always')
     addResources = true
 }
+
+sonarqube {
+    properties {
+        property 'sonar.moduleKey', 'com.github.rahulsom:grooves:examples-grails-restserver'
+    }
+}
