@@ -10,7 +10,7 @@ if [ "$TRAVIS_PULL_REQUEST" = false ]; then
             -Dsonar.login=$SONAR_TOKEN \
             -Dsonar.host.url=https://sonarqube.com \
             -Dsonar.organization=rahulsom-github
-    ./gradlew uploadArchives --scan --build-cache --configure-on-demand
+    ./gradlew snapshot --scan --build-cache --configure-on-demand
   else
     ./gradlew check --scan --build-cache --configure-on-demand
   fi
