@@ -31,7 +31,8 @@ public interface MyGroovesSupport<
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT> & RxEntity<EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> & GormEntity<SnapshotT>
+        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> &
+                GormEntity<SnapshotT>
         > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
         BlockingSnapshotSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
         RxEventSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {

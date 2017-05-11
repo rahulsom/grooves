@@ -97,11 +97,12 @@ public interface TemporalQuerySupport<
                                 List<EventT> reverts = events.stream()
                                         .filter(it -> it instanceof RevertEvent).collect(
                                                 Collectors.toList());
-                                getLog().info("     Uncomputed reverts exist: "
-                                        + stringifyEvents(reverts));
+                                getLog().info("     Uncomputed reverts exist: {}",
+                                        stringifyEvents(reverts));
                                 return getSnapshotAndEventsSince(aggregate, moment, false);
                             } else {
-                                getLog().debug("     Events since last snapshot: " + stringifyEvents(events));
+                                getLog().debug("     Events since last snapshot: {}",
+                                        stringifyEvents(events));
                                 return Observable.just(new Pair<>(lastSnapshot, events));
 
                             }
@@ -124,6 +125,18 @@ public interface TemporalQuerySupport<
         }
 
 
+    }
+
+    /**
+     * Computes a snapshot for specified version of an aggregate.
+     *
+     * @param aggregate The aggregate
+     * @param moment    The moment at which the snapshot is desired
+     *
+     * @return An Observable that returns at most one Snapshot
+     */
+    default Observable<SnapshotT> computeSnapshot(AggregateT aggregate, Date moment) {
+        return computeSnapshot(aggregate, moment, true);
     }
 
     /**
@@ -168,20 +181,32 @@ public interface TemporalQuerySupport<
 
     }
 
+    /**
+     * Computes snapshot and events based on the last usable snapshot.
+     *
+     * @param aggregate          The aggregate on which we are working
+     * @param moment             The moment for which we desire a snapshot
+     * @param redirect           Whether a redirect should be performed if the aggregate has been
+     *                           deprecated by another aggregate
+     * @param events             The list of events
+     * @param lastUsableSnapshot The last known usable snapshot
+     *
+     * @return An observable of the snapshot
+     */
     default Observable<SnapshotT> computeSnapshotAndEvents(
             AggregateT aggregate,
             Date moment,
             boolean redirect,
             List<EventT> events,
-            SnapshotT snapshot) {
-        snapshot.setAggregate(aggregate);
+            SnapshotT lastUsableSnapshot) {
+        lastUsableSnapshot.setAggregate(aggregate);
 
         Observable<EventT> forwardOnlyEvents = Utils.getForwardOnlyEvents(events, getExecutor(),
                 () -> getSnapshotAndEventsSince(aggregate, moment, false));
 
         final Observable<SnapshotT> snapshotTypeObservable =
-                getExecutor().applyEvents(this, snapshot, forwardOnlyEvents, new ArrayList<>(),
-                        Collections.singletonList(aggregate), aggregate);
+                getExecutor().applyEvents(this, lastUsableSnapshot, forwardOnlyEvents,
+                        new ArrayList<>(), Collections.singletonList(aggregate), aggregate);
         return snapshotTypeObservable
                 .doOnNext(snapshotType -> {
                     if (!events.isEmpty()) {
@@ -193,18 +218,6 @@ public interface TemporalQuerySupport<
                         () -> it.getDeprecatedByObservable()
                                 .flatMap(x -> computeSnapshot(x, moment))
                 ));
-    }
-
-    /**
-     * Computes a snapshot for specified version of an aggregate.
-     *
-     * @param aggregate The aggregate
-     * @param moment    The moment at which the snapshot is desired
-     *
-     * @return An Observable that returns at most one Snapshot
-     */
-    default Observable<SnapshotT> computeSnapshot(AggregateT aggregate, Date moment) {
-        return computeSnapshot(aggregate, moment, true);
     }
 
     default Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT

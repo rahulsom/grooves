@@ -228,7 +228,7 @@ public class QueryExecutor<
      * @param event      The event to be passed to the method
      *
      * @return An observable returned by the method, or the result of calling onException on the
-     * Util instance, or an Observable that asks to RETURN if that fails.
+     *         Util instance, or an Observable that asks to RETURN if that fails.
      */
     Observable<EventApplyOutcome> callMethod(
             BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> util,

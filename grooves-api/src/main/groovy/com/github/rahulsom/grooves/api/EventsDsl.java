@@ -139,7 +139,7 @@ public class EventsDsl<
 
         /**
          * Computes and persists a snapshot based on a QueryUtil on the aggregate that this
-         * OnSpec applies on
+         * OnSpec applies on.
          *
          * @param queryUtil The Query Util to compute the snapshot
          *
@@ -147,7 +147,7 @@ public class EventsDsl<
          */
         public SnapshotT snapshotWith(
                 QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> queryUtil) {
-            return snapshotWith(queryUtil, snapshotT -> {});
+            return snapshotWith(queryUtil, snapshotT -> { });
         }
 
         public AggregateT getAggregate() {

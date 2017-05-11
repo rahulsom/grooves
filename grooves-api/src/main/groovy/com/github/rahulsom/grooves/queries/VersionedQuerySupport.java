@@ -97,11 +97,12 @@ public interface VersionedQuerySupport<
                                 List<EventT> reverts = events.stream()
                                         .filter(it -> it instanceof RevertEvent).collect(
                                                 Collectors.toList());
-                                getLog().info("     Uncomputed reverts exist: "
-                                        + stringifyEvents(reverts));
+                                getLog().info("     Uncomputed reverts exist: {}",
+                                        stringifyEvents(reverts));
                                 return getSnapshotAndEventsSince(aggregate, version, false);
                             } else {
-                                getLog().debug("     Events since last snapshot: " + stringifyEvents(events));
+                                getLog().debug("     Events since last snapshot: {}",
+                                        stringifyEvents(events));
                                 return Observable.just(new Pair<>(lastSnapshot, events));
 
                             }
@@ -117,7 +118,8 @@ public interface VersionedQuerySupport<
                             .toList();
 
             return uncomputedEvents
-                    .doOnNext(ue -> getLog().debug("     Events since origin: " + stringifyEvents(ue)))
+                    .doOnNext(ue -> getLog().debug("     Events since origin: {}",
+                            stringifyEvents(ue)))
                     .map(ue -> new Pair<>(lastSnapshot, ue));
         }
 
@@ -130,6 +132,19 @@ public interface VersionedQuerySupport<
 
     Observable<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, long version);
+
+
+    /**
+     * Computes a snapshot for specified version of an aggregate.
+     *
+     * @param aggregate The aggregate
+     * @param version   The version number, starting at 1
+     *
+     * @return An Observable that returns at most one Snapshot
+     */
+    default Observable<SnapshotT> computeSnapshot(AggregateT aggregate, long version) {
+        return computeSnapshot(aggregate, version, true);
+    }
 
     /**
      * Computes a snapshot for specified version of an aggregate.
@@ -175,6 +190,18 @@ public interface VersionedQuerySupport<
 
     }
 
+    /**
+     * Computes snapshot and events based on the last usable snapshot.
+     *
+     * @param aggregate          The aggregate on which we are working
+     * @param version            The version that we desire
+     * @param redirect           Whether a redirect should be performed if the aggregate has been
+     *                           deprecated by another aggregate
+     * @param events             The list of events
+     * @param lastUsableSnapshot The last known usable snapshot
+     *
+     * @return An observable of the snapshot
+     */
     default Observable<SnapshotT> computeSnapshotAndEvents(
             AggregateT aggregate, long version, boolean redirect, List<EventT> events,
             SnapshotT lastUsableSnapshot) {
@@ -199,18 +226,6 @@ public interface VersionedQuerySupport<
                         () -> it.getDeprecatedByObservable()
                                 .flatMap(x -> computeSnapshot(x, version))
                 ));
-    }
-
-    /**
-     * Computes a snapshot for specified version of an aggregate.
-     *
-     * @param aggregate The aggregate
-     * @param version   The version number, starting at 1
-     *
-     * @return An Observable that returns at most one Snapshot
-     */
-    default Observable<SnapshotT> computeSnapshot(AggregateT aggregate, long version) {
-        return computeSnapshot(aggregate, version, true);
     }
 
 }
