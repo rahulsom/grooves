@@ -34,10 +34,11 @@ A snapshot is a way of looking at the state of an aggregate at a point in time.
 In our banking example, this could be your account balance.
 
 Command::
-A command is an input which causes an event to be stored.
+A command is an input which causes one or more events to be stored.
+It typically represents a broad intention of the user.
 
 Query::
-A query is a computation that needs to be performed in order to obtain a snapshot from the events.
+A query is a computation that needs to be performed in order to obtain a snapshot.
 
 This is how we'll be representing events in the documentation.
 
@@ -307,15 +308,15 @@ The difference between a disjoin and a revert is the same as the difference betw
 == How Grooves solves it
 
 Grooves assumes nothing about your persistence framework or whether you're building a webapp or a batch application.
-Grooves only offers three things
+Grooves only offers some tools to help you build your own event sourced system.
 
-* Interfaces for the Aggregate, Event (and its subtypes) and Snapshot.
-* Annotations to mark these and AST Transformations to ensure all event types are covered in a Query implementation.
-* A Trait that helps write queries to compute snapshots.
+* Interfaces for the Aggregate, Event (and its special subtypes) and Snapshot.
+* A set of interfaces with default methods that help you write queries.
+* _If you're using groovy_, annotations to mark these and AST Transformations to ensure all event types are covered in a Query implementation.
 
 This allows you to use Grooves with a lot of different frameworks.
 There are examples in the repository for some options you could use.
 
 == Building an Event Sourcing System with Grooves
 
-???
+TODO

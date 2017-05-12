@@ -79,5 +79,12 @@ class Constants {
             fill: white;
             font-weight: bold;
         }
+        .event.Join circle {
+            stroke-width: 2;
+            stroke: #e6c300;
+        }
+        .event.Disjoin circle {
+            stroke-width: 2;
+        }
         '''
 }

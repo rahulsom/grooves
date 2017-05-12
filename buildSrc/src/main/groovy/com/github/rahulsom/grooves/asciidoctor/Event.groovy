@@ -66,7 +66,10 @@ class Event {
                     def xContactOffset = type == EventType.Disjoin ? -10 : 10
                     def y1 = (y + other.y) / 2
 
-                    def yOffset = y > other.y ? 20 : -20
+                    def yOffset = y > other.y ? 10 : -10
+                    if (type == EventType.DeprecatedBy) {
+                        yOffset *= 2
+                    }
 
                     def pathParams = [
                             d                 : "M${x} ${y} Q ${x1 + x} $y1, ${other.x + xContactOffset} ${other.y + yOffset}",
@@ -81,7 +84,7 @@ class Event {
                     }
                     if (type == EventType.Disjoin) {
                         pathParams.put 'stroke', 'gray'
-                        pathParams.put 'stroke-dasharray', '5, 15'
+                        pathParams.put 'stroke-dasharray', '2, 5'
 
                     }
                     if (type == EventType.Join) {
