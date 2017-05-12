@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" height="100" width="800.0">
-  <!--Generated on Fri May 12 04:33:42 UTC 2017 from
+  <!--Generated on Fri May 12 04:53:00 UTC 2017 from
 |Patient,4,Farrokh Bulsara
   - 1 2016-01-02 created as Farrokh Bulsara (Normal)
   - 2 2016-01-03 performed FLUSHOT for $ 32.40 (Normal)
@@ -75,6 +75,13 @@
             fill: white;
             font-weight: bold;
         }
+        .event.Join circle {
+            stroke-width: 2;
+            stroke: #e6c300;
+        }
+        .event.Disjoin circle {
+            stroke-width: 2;
+        }
         /* ]]> */</style>
   <rect x="0" y="0" width="800.0" height="100" class="background"/>
   <defs>
@@ -86,7 +93,7 @@
   <!--|Patient,4,Farrokh Bulsara-->
   <!-- -->
   <!--   aggregate-->
-  <g id="aggregate291892934">
+  <g id="aggregate258089848">
     <rect x="10" y="45" width="100" height="40" class="aggregate"/>
     <text x="15" y="63" class="aggregateText">Patient</text>
     <text x="15" y="81" class="aggregateText">4</text>
@@ -94,38 +101,38 @@
     <line x1="110" y1="65" x2="700.0" y2="65" class="eventLine" marker-end="url(#triangle)"/>
   </g>
   <!--  - 1 2016-01-02 created as Farrokh Bulsara (Normal)-->
-  <g id="event1543668480" class="event Normal">
+  <g id="event351233734" class="event Normal">
     <circle cx="210" cy="65" r="13" stroke-dasharray="5, 5" class="eventCreated Normal"/>
     <circle cx="210" cy="65" r="10" class="event Normal "/>
     <text x="210" y="65" class="eventId" text-anchor="middle" alignment-baseline="central">1</text>
   </g>
   <!--  - 2 2016-01-03 performed FLUSHOT for $ 32.40 (Normal)-->
-  <g id="event242346425" class="event Normal">
+  <g id="event1259408095" class="event Normal">
     <circle cx="260" cy="65" r="10" class="event Normal "/>
     <text x="260" y="65" class="eventId" text-anchor="middle" alignment-baseline="central">2</text>
   </g>
   <!--  - 3 2016-01-04 performed GLUCOSETEST for $ 78.93 (Normal)-->
-  <g id="event1290851160" class="event Normal">
+  <g id="event372636981" class="event Normal">
     <circle cx="310" cy="65" r="10" class="event Normal "/>
     <text x="310" y="65" class="eventId" text-anchor="middle" alignment-baseline="central">3</text>
   </g>
   <!--  - 5 2016-01-05 paid $ 100.25 (Normal)-->
-  <g id="event1918703582" class="event Normal">
+  <g id="event139617640" class="event Normal">
     <circle cx="360" cy="65" r="10" class="event Normal "/>
     <text x="360" y="65" class="eventId" text-anchor="middle" alignment-baseline="central">5</text>
   </g>
   <!--  - 6 2016-01-09 deprecated by 4 converse 7 (DeprecatedBy)-->
-  <g id="event982487062" class="event DeprecatedBy">
+  <g id="event1734667250" class="event DeprecatedBy">
     <circle cx="510" cy="65" r="10" class="event DeprecatedBy "/>
     <text x="510" y="65" class="eventId" text-anchor="middle" alignment-baseline="central">6</text>
   </g>
   <!--  - 7 2016-01-09 deprecates 5 converse 6 (Deprecates)-->
-  <g id="event993168095" class="event Deprecates">
+  <g id="event618676787" class="event Deprecates">
     <circle cx="520" cy="47.67949192431123" r="10" class="event Deprecates "/>
     <text x="520" y="47.67949192431123" class="eventId" text-anchor="middle" alignment-baseline="central">7</text>
   </g>
   <!--  - 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93 (Normal)-->
-  <g id="event1905452274" class="event Normal">
+  <g id="event495308751" class="event Normal">
     <circle cx="610" cy="65" r="10" class="event Normal "/>
     <text x="610" y="65" class="eventId" text-anchor="middle" alignment-baseline="central">8</text>
   </g>
