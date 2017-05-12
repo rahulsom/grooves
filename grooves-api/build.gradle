@@ -14,7 +14,7 @@ apply plugin: 'com.bmuschko.nexus'
 apply from: '../gradle/publishing.gradle'
 apply plugin: 'groovy'
 apply plugin: 'org.asciidoctor.convert'
-apply plugin: "org.ajoberstar.github-pages"
+apply plugin: 'org.ajoberstar.github-pages'
 apply from: '../gradle/jacoco.gradle'
 
 dependencies {

@@ -1,0 +1,14 @@
+repositories {
+    jcenter()
+    maven { url 'http://dl.bintray.com/aalmiray/kordamp' }
+}
+
+apply plugin: 'groovy'
+
+dependencies {
+    compile 'org.asciidoctor:asciidoctorj:1.5.0'
+    compileOnly ('org.kordamp.gipsy:gipsy:0.4.0') {
+        exclude module: 'groovy-all'
+    }
+    compile localGroovy()
+}
