@@ -644,32 +644,69 @@ Sometimes, you accidentally create two aggregates that represent the same thing.
 </div>
 <div class="paragraph">
 <p>In this case, we created two patients that actually represent the same person.
-Then we realized that this needs to be the same person.</p>
+Then we realized that this needs to be the same person.
+While reading this, we would treat it as if it was like this.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="4e85367bef598611859b577ddc280c84.svg" alt="4e85367bef598611859b577ddc280c84">
+<img src="f79a179e0a2de351c01d38d36186fe51.svg" alt="f79a179e0a2de351c01d38d36186fe51">
 </div>
+</div>
+<div class="paragraph">
+<p>Typically we cannot apply any new events after 6 on Aggregate 5.
+The exception to the rule is when we&#8217;re reverting the merge.
+That might not always be true.
+Some systems might choose to continue adding events on an aggregate like 5.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_reverting_merges">2.4. Reverting Merges</h3>
+<div class="paragraph">
+<p>Lets assume we got confused with a pair of aggregates like these and performed a merge like this.</p>
+</div>
 <div class="imageblock">
 <div class="content">
-<img src="bb93f20ac6579bffe7ae991a48fc636a.svg" alt="bb93f20ac6579bffe7ae991a48fc636a">
+<img src="6639efd5d8236a3533f65f426cf99470.svg" alt="6639efd5d8236a3533f65f426cf99470">
+</div>
+</div>
+<div class="paragraph">
+<p>The correct way of reverting fixing this mistake, would be to perform a pair of reverts.
+This is complicated, but necessary in order to make the reads on both aggregates result in the merge being ignored.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="7d3d75bed3ddef7def269e60ef207caf.svg" alt="7d3d75bed3ddef7def269e60ef207caf">
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_performing_joins">2.5. Performing joins</h3>
 <div class="paragraph">
-<p>Bar</p>
+<p>In an event sourced system, even joins are just events.
+That way we can preserve their temporal changes.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="59036613283381d2563e69d7f3ed5054.svg" alt="59036613283381d2563e69d7f3ed5054">
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_performing_disjoins">2.6. Performing disjoins</h3>
 <div class="paragraph">
-<p>Bar</p>
+<p>Since joins can change with time, you could have a situation where you need to perform a <code>disjoin</code>.
+In our example here, Mr Spock stops being the Science Officer when he becomes captain.
+For that to happen, we need to represent that the relationship between the department Science and Mr Spock is severed at a point in time.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="10667adea4082b2cd5513a2934df52c4.svg" alt="10667adea4082b2cd5513a2934df52c4">
+</div>
+</div>
+<div class="paragraph">
+<p>You might be tempted to reuse the revert capability here.
+A disjoin is different from a revert.
+The difference between a disjoin and a revert is the same as the difference between a divorce and an annulment.</p>
 </div>
 </div>
 </div>
@@ -711,7 +748,7 @@ There are examples in the repository for some options you could use.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-12 00:52:19 UTC
+Last updated 2017-05-12 04:22:55 UTC
 </div>
 </div>
 <script type="text/x-mathjax-config">
