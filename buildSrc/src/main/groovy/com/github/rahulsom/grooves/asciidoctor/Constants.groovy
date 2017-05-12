@@ -60,7 +60,7 @@ class Constants {
             fill: grey;
         }
         .event circle.reverted {
-            fill: lightgrey;
+            fill: lightgrey !important;
         }
         
         .event.DeprecatedBy circle {

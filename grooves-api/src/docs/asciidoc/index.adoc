@@ -203,6 +203,7 @@ Sometimes, you accidentally create two aggregates that represent the same thing.
 
 In this case, we created two patients that actually represent the same person.
 Then we realized that this needs to be the same person.
+While reading this, we would treat it as if it was like this.
 
 [esdiag]
 ....
@@ -211,33 +212,97 @@ Then we realized that this needs to be the same person.
   + 2 2016-01-03 performed FLUSHOT for $ 32.40
   + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
   + 5 2016-01-05 paid $ 100.25
-  + 6 2016-01-09 .
+  + 6 2016-01-09 deprecated by 4 converse 7
+  + 7 2016-01-09 deprecates 5 converse 6
   + 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93
 ....
 
+Typically we cannot apply any new events after 6 on Aggregate 5.
+The exception to the rule is when we're reverting the merge.
+That might not always be true.
+Some systems might choose to continue adding events on an aggregate like 5.
+
 === Reverting Merges
+
+Lets assume we got confused with a pair of aggregates like these and performed a merge like this.
 
 [esdiag]
 ....
 |Patient,4,Tina Fey
-  + 1 2016-01-02 created as Farrokh Bulsara
+  + 1 2016-01-02 created as Tina Fey
   + 2 2016-01-03 performed FLUSHOT for $ 32.40
   + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
   + 7 2016-01-09 deprecates 5 converse 6
   + 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93
 |Patient,5,Sarah Palin
-  + 4 2016-01-05 created as Freddie Mercury
+  + 4 2016-01-05 created as Sarah Palin
   + 5 2016-01-05 paid $ 100.25
   + 6 2016-01-09 deprecated by 4 converse 7
 ....
 
+The correct way of reverting fixing this mistake, would be to perform a pair of reverts.
+This is complicated, but necessary in order to make the reads on both aggregates result in the merge being ignored.
+
+[esdiag]
+....
+|Patient,4,Tina Fey
+  + 1 2016-01-02 created as Tina Fey
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  - 7 2016-01-09 deprecates 5 converse 6
+  + 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93
+  + 9 2016-01-12 reverted 7
+|Patient,5,Sarah Palin
+  + 4 2016-01-05 created as Sarah Palin
+  + 5 2016-01-05 paid $ 100.25
+  - 6 2016-01-09 deprecated by 4 converse 7
+  + 10 2016-01-12 reverted 6
+....
+
 === Performing joins
 
-Bar
+In an event sourced system, even joins are just events.
+That way we can preserve their temporal changes.
+
+[esdiag]
+....
+|Department,1,Engineering
+  + 1 2016-01-02 created as Farrokh Bulsara
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 7 2016-01-05 joins 5 converse 5
+  + 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93
+|Employee,5,Scotty
+  + 4 2016-01-05 created as Scotty
+  + 5 2016-01-05 joins 1 converse 7
+....
 
 === Performing disjoins
 
-Bar
+Since joins can change with time, you could have a situation where you need to perform a `disjoin`.
+In our example here, Mr Spock stops being the Science Officer when he becomes captain.
+For that to happen, we need to represent that the relationship between the department Science and Mr Spock is severed at a point in time.
+
+[esdiag]
+....
+|Department,1,Science
+  + 1 2016-01-02 created as Science
+  + 1a 2016-01-03 .
+  + 5 2016-01-05 joins 5 converse 4
+  + 7 2016-01-10 disjoins 5 converse 6
+|Department,2,Command
+  + 2 2016-01-02 created as Command
+  + 9 2016-01-10 joins 5 converse 8
+|Employee,5,Mr Spock
+  + 3 2016-01-05 created as Mr Spock
+  + 4 2016-01-05 joins by 1 converse 5
+  + 6 2016-01-10 disjoins by 1 converse 7
+  + 8 2016-01-10 joins by 2 converse 9
+....
+
+You might be tempted to reuse the revert capability here.
+A disjoin is different from a revert.
+The difference between a disjoin and a revert is the same as the difference between a divorce and an annulment.
 
 == How Grooves solves it
 

@@ -63,8 +63,8 @@ class SvgBuilder {
             case ~/.*revert.*/: type = EventType.Revert; break
             case ~/.*deprecates.*/: type = EventType.Deprecates; break
             case ~/.*deprecated.*/: type = EventType.DeprecatedBy; break
-            case ~/.*join.*/: type = EventType.Join; break
             case ~/.*disjoin.*/: type = EventType.Disjoin; break
+            case ~/.*join.*/: type = EventType.Join; break
         }
         type
     }

@@ -56,6 +56,41 @@ class Event {
                         'stroke-width': this.reverted ? 0.2 : 2
             }
 
+            if (type == EventType.DeprecatedBy || type == EventType.Join || type == EventType.Disjoin) {
+                def otherId = description.split(' ')[-1]
+                def other = svgBuilder.allEvents.find { it.id == otherId }
+
+                if (other.x && other.y) {
+
+                    def x1 = (type == EventType.Disjoin ? -30 : 30) * Math.abs(other.y - y) / eventLineHeight
+                    def xContactOffset = type == EventType.Disjoin ? -10 : 10
+                    def y1 = (y + other.y) / 2
+
+                    def yOffset = y > other.y ? 20 : -20
+
+                    def pathParams = [
+                            d                 : "M${x} ${y} Q ${x1 + x} $y1, ${other.x + xContactOffset} ${other.y + yOffset}",
+                            stroke            : "blue",
+                            fill              : "transparent",
+                            'stroke-dasharray': '5, 5',
+                            'stroke-width'    : this.reverted ? 0.2 : 2
+                    ]
+
+                    if (type == EventType.DeprecatedBy) {
+                        pathParams.put 'marker-end', "url(#triangle)"
+                    }
+                    if (type == EventType.Disjoin) {
+                        pathParams.put 'stroke', 'gray'
+                        pathParams.put 'stroke-dasharray', '5, 15'
+
+                    }
+                    if (type == EventType.Join) {
+                        pathParams.put 'stroke', '#e6c300'
+                    }
+                    builder.path pathParams
+                }
+            }
+
             def revertedClass = this.reverted ? 'reverted' : ''
 
             if (description.contains('created')) {
