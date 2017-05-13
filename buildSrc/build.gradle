@@ -7,6 +7,7 @@ apply plugin: 'groovy'
 
 dependencies {
     compile 'org.asciidoctor:asciidoctorj:1.5.0'
+    compile 'com.github.sommeri:less4j:1.17.2'
     compileOnly ('org.kordamp.gipsy:gipsy:0.4.0') {
         exclude module: 'groovy-all'
     }

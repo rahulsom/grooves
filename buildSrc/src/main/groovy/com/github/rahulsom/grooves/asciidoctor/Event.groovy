@@ -31,7 +31,8 @@ class Event {
 
         def xOffset = svgBuilder.dates[date]
         builder.mkp.comment(toString())
-        builder.g(id: "event${identityHashCode(this)}", class: "event ${this.type.name()}") {
+        def revertedClass = this.reverted ? 'reverted' : ''
+        builder.g(id: "event${identityHashCode(this)}", class: "event ${this.type.name()} ${revertedClass}") {
             def x = 10 + aggregateWidth * 2 + xOffset * eventSpace as int
             def y = index * eventLineHeight + offset + aggregateHeight / 2 as int
 
@@ -48,12 +49,7 @@ class Event {
 
                 def x1 = reverted.x + (x - reverted.x) / 2
                 def y1 = y - ((x - reverted.x) / 3)
-                builder.path d: "M${x} ${y} Q $x1 $y1, ${reverted.x + 15} ${reverted.y - 15}",
-                        stroke: "red",
-                        fill: "transparent",
-                        'stroke-dasharray': '5, 5',
-                        'marker-end': "url(#triangle)",
-                        'stroke-width': this.reverted ? 0.2 : 2
+                builder.path d: "M${x} ${y} Q $x1 $y1, ${reverted.x + 15} ${reverted.y - 15}"
             }
 
             if (type == EventType.DeprecatedBy || type == EventType.Join || type == EventType.Disjoin) {
@@ -71,41 +67,17 @@ class Event {
                         yOffset *= 2
                     }
 
-                    def pathParams = [
-                            d                 : "M${x} ${y} Q ${x1 + x} $y1, ${other.x + xContactOffset} ${other.y + yOffset}",
-                            stroke            : "blue",
-                            fill              : "transparent",
-                            'stroke-dasharray': '5, 5',
-                            'stroke-width'    : this.reverted ? 0.2 : 2
-                    ]
-
-                    if (type == EventType.DeprecatedBy) {
-                        pathParams.put 'marker-end', "url(#triangle)"
-                    }
-                    if (type == EventType.Disjoin) {
-                        pathParams.put 'stroke', 'gray'
-                        pathParams.put 'stroke-dasharray', '2, 5'
-
-                    }
-                    if (type == EventType.Join) {
-                        pathParams.put 'stroke', '#e6c300'
-                    }
-                    builder.path pathParams
+                    builder.path d: "M${x} ${y} Q ${x1 + x} $y1, ${other.x + xContactOffset} ${other.y + yOffset}"
                 }
             }
 
-            def revertedClass = this.reverted ? 'reverted' : ''
-
             if (description.contains('created')) {
-                builder.circle cx: x, cy: y, r: 13, 'stroke-dasharray': '5, 5',
+                builder.circle cx: x, cy: y, r: 14, 'stroke-dasharray': '2, 5',
                         class: "eventCreated ${this.type.name()}"
             }
 
             builder.circle cx: x, cy: y, r: 10, class: "event ${this.type.name()} ${revertedClass}"
-
-            builder.text this.id, x: x, y: y, class: "eventId",
-                    'text-anchor': 'middle',
-                    'alignment-baseline': 'central'
+            builder.text this.id, x: x, y: y, class: "eventId"
         }
     }
 

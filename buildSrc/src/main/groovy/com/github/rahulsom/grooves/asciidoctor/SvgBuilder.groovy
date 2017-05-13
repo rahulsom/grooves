@@ -4,6 +4,8 @@ import groovy.xml.StreamingMarkupBuilder
 import groovy.xml.XmlUtil
 import static Constants.*
 
+import com.github.sommeri.less4j.core.ThreadUnsafeLessCompiler
+
 /**
  * Builds an SVG from a text representation of an event sourced aggregate.
  *
@@ -75,7 +77,9 @@ class SvgBuilder {
                     height: aggregates.size() * eventLineHeight,
                     width: dates.values().max() * eventSpace + 4 * aggregateWidth) {
                 mkp.comment "Generated on ${new Date()} from\n${aggregates.join('\n')}\n"
-                buildStyle(builder, CSS)
+
+                buildStyle(builder, new ThreadUnsafeLessCompiler().compile(LESS).css)
+
                 builder.rect x: 0, y: 0,
                         width: dates.values().max() * eventSpace + 4 * aggregateWidth ,
                         height: aggregates.size() * eventLineHeight ,

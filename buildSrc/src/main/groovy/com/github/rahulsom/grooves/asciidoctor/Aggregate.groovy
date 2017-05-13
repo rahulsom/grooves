@@ -23,14 +23,13 @@ class Aggregate {
 
     void buildSvg(builder, Map<Date, Double> dates) {
         builder.mkp.comment "   aggregate"
-        builder.g(id: "aggregate${identityHashCode(this)}") {
+        builder.g(id: "aggregate${identityHashCode(this)}", class: 'aggregate') {
             def y = index * eventLineHeight + offset
 
-            builder.rect x: 10, y: y, width: aggregateWidth, height: aggregateHeight,
-                    class: 'aggregate'
-            builder.text type.toString(), x: 15, y: y + textLineHeight, class: 'aggregateText'
-            builder.text id, x: 15, y: y + textLineHeight * 2, class: 'aggregateText'
-            builder.text description, x: 10, y: y - 5, class: 'aggregateHeader'
+            builder.rect x: 10, y: y, width: aggregateWidth, height: aggregateHeight
+            builder.text type.toString(), x: 15, y: y + textLineHeight, class: 'type'
+            builder.text id, x: 15, y: y + textLineHeight * 2, class: 'id'
+            builder.text description, x: 10, y: y - 5, class: 'description'
 
             def yMid = index * eventLineHeight + offset + aggregateHeight / 2
 

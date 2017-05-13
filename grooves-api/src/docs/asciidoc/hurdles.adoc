@@ -1,0 +1,200 @@
+== Hurdles
+
+While the theory is very simple, in practice, it's a little more complicated.
+The functions that you see above are very simple at first glance, but implementing an entire system based on it requires some patterns.
+That is the problem that Grooves aims to solve.
+
+=== Completeness of Queries
+
+When applying events on a Snapshot, you need to be sure that you have handled every single event type.
+Let's say you've got 3 types of events for an aggregate and 2 snapshots.
+If you add a new event type, you need to handle it in the computation of both snapshots.
+When a language has case classes, it's easier to achieve this.
+Alas, Groovy and Java do not have case classes.
+
+There are some special kinds of Events that require a lot of complex handling:
+
+=== Reverting Events
+
+Some times events are entered into an aggregate's timeline in error.
+This could be a system error, or a human error.
+When this happens, for the business logic to make sense, the system should behave as if that event never occurred.
+However, for auditing purposes, and for preserving a reasonable system, the original event as well as the moment the error was detected need to be tracked.
+
+[esdiag]
+....
+|Patient,1,Paul McCartney
+  + 1 2016-01-02 created as Paul McCartney
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  - 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-05 paid $ 100.25
+  + 5 2016-01-15 reverted 3
+....
+
+In the diagram above, we see that event 3 was performed, and later after event 4, we realized that 3 should not have occurred.
+Now, we insert a special event, 5, that causes a revert of 3.
+Once the system processes the data correctly, this is equivalent to what follows.
+
+[esdiag]
+....
+|Patient,1,Paul McCartney
+  + 1 2016-01-02 created as Paul McCartney
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 4 2016-01-05 paid $ 100.25
+  + 5 2016-01-15 .
+....
+
+Depending on how many mistakes people and systems make, this could be much more complicated.
+For example, you might be able to revert a revert event.
+
+[esdiag]
+....
+|Patient,1,Paul McCartney
+  + 1 2016-01-02 created as Paul McCartney
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-05 paid $ 100.25
+  - 5 2016-01-15 reverted 3
+  + 6 2016-01-16 reverted 5
+....
+
+This should be interpreted as 6 cancels out 5, so 5 can no more cancel out 3.
+
+[esdiag]
+....
+|Patient,1,Paul McCartney
+  + 1 2016-01-02 created as Paul McCartney
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-05 paid $ 100.25
+  + 5 2016-01-15 .
+  + 6 2016-01-16 .
+....
+
+=== Merging Aggregates
+
+`DeprecatedBy` and `Deprecates` is a pair of events that work together on aggregates of the same type.
+Sometimes, real world things merge together.
+For example, companies get merged or acquired.
+Sometimes, you accidentally create two aggregates that represent the same thing.
+
+[esdiag]
+....
+|Patient,4,Farrokh Bulsara
+  + 1 2016-01-02 created as Farrokh Bulsara
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 7 2016-01-09 deprecates 5 converse 6
+  + 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93
+|Patient,5,Freddie Mercury
+  + 4 2016-01-05 created as Freddie Mercury
+  + 5 2016-01-05 paid $ 100.25
+  + 6 2016-01-09 deprecated by 4 converse 7
+....
+
+In this case, we created two patients that actually represent the same person.
+Then we realized that this needs to be the same person.
+While reading this, we would treat it as if it was like this.
+
+[esdiag]
+....
+|Patient,4,Farrokh Bulsara
+  + 1 2016-01-02 created as Farrokh Bulsara
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  - 4 2016-01-05 created as Freddie Mercury
+  + 5 2016-01-05 paid $ 100.25
+  + 6 2016-01-09 deprecated by 4 converse 7
+  + 7 2016-01-09 deprecates 5 converse 6
+  + 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93
+....
+
+4 is grayed out because it's a creation event, and, this is the second creation event for the aggregate.
+We will read that event, but not apply it in any meaningful way.
+
+Typically we cannot apply any new events after 6 on Aggregate 5.
+The exception to the rule is when we're reverting the merge.
+That might not always be true.
+Some systems might choose to continue adding events on an aggregate like 5.
+
+=== Reverting Merges
+
+Lets assume we got confused with a pair of aggregates like these and performed a merge like this.
+
+[esdiag]
+....
+|Patient,4,Tina Fey
+  + 1 2016-01-02 created as Tina Fey
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 7 2016-01-09 deprecates 5 converse 6
+  + 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93
+|Patient,5,Sarah Palin
+  + 4 2016-01-05 created as Sarah Palin
+  + 5 2016-01-05 paid $ 100.25
+  + 6 2016-01-09 deprecated by 4 converse 7
+....
+
+The correct way of reverting fixing this mistake, would be to perform a pair of reverts.
+This is complicated, but necessary in order to make the reads on both aggregates result in the merge being ignored.
+
+[esdiag]
+....
+|Patient,4,Tina Fey
+  + 1 2016-01-02 created as Tina Fey
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  - 7 2016-01-09 deprecates 5 converse 6
+  + 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93
+  + 9 2016-01-12 reverted 7
+|Patient,5,Sarah Palin
+  + 4 2016-01-05 created as Sarah Palin
+  + 5 2016-01-05 paid $ 100.25
+  - 6 2016-01-09 deprecated by 4 converse 7
+  + 10 2016-01-12 reverted 6
+....
+
+=== Performing joins
+
+In an event sourced system, even joins are just events.
+That way we can preserve their temporal changes.
+
+[esdiag]
+....
+|Department,1,Engineering
+  + 1 2016-01-02 created as Farrokh Bulsara
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 7 2016-01-05 joins 5 converse 5
+  + 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93
+|Employee,5,Scotty
+  + 4 2016-01-05 created as Scotty
+  + 5 2016-01-05 joins 1 converse 7
+....
+
+=== Performing disjoins
+
+Since joins can change with time, you could have a situation where you need to perform a `disjoin`.
+In our example here, Mr Spock stops being the Science Officer when he becomes captain.
+For that to happen, we need to represent that the relationship between the department Science and Mr Spock is severed at a point in time.
+
+[esdiag]
+....
+|Department,1,Science
+  + 1 2016-01-02 created as Science
+  + 1a 2016-01-03 .
+  + 5 2016-01-05 joins 5 converse 4
+  + 7 2016-01-10 disjoins 5 converse 6
+|Department,2,Command
+  + 2 2016-01-02 created as Command
+  + 9 2016-01-10 joins 5 converse 8
+|Employee,5,Mr Spock
+  + 3 2016-01-05 created as Mr Spock
+  + 4 2016-01-05 joins by 1 converse 5
+  + 6 2016-01-10 disjoins by 1 converse 7
+  + 8 2016-01-10 joins by 2 converse 9
+....
+
+You might be tempted to reuse the revert capability here.
+A disjoin is different from a revert.
+The difference between a disjoin and a revert is the same as the difference between a divorce and an annulment.

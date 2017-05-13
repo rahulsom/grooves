@@ -1,0 +1,127 @@
+@fixedWidthFont: Menlo, monospace;
+@serifFont: "Times New Roman", serif;
+@lightStroke: 0.2;
+@darkStroke: 2;
+@goldColor: #e6c300;
+
+.background {
+    fill: #FCFCFC;
+    stroke-width: @lightStroke;
+    stroke: grey;
+}
+
+.aggregate {
+    rect {
+        fill: azure;
+        stroke-width: @lightStroke;
+        stroke: grey;
+    }
+    text {
+        font-family: @fixedWidthFont;
+        font-size: 14px;
+    }
+    .description {
+        font-family: @serifFont;
+        font-size: 16px;
+        font-style: italic;
+    }
+    line {
+        stroke: grey;
+        stroke-width: @lightStroke;
+    }
+
+}
+
+.event {
+    path {
+        fill: transparent;
+        stroke-width: @darkStroke;
+    }
+    circle {
+        fill: azure;
+        stroke-width: @lightStroke;
+        stroke: grey;
+    }
+    text {
+        font-family: @fixedWidthFont;
+        font-size: 12px;
+        stroke: grey;
+        stroke-width: 0.1;
+        fill: grey;
+        text-anchor: middle;
+        alignment-baseline: central;
+    }
+    circle.reverted {
+        fill: lightgrey !important;
+    }
+}
+
+.event.reverted {
+    path {
+        stroke-width: @lightStroke;
+    }
+}
+
+.event.Revert {
+    circle {
+        fill: #ffe5e5;
+    }
+    path {
+        stroke: red;
+        stroke-dasharray: 5, 5;
+        marker-end: url(#triangle);
+    }
+}
+
+.eventCreated {
+    fill: #FCFCFC;
+    stroke-width: 1 !important;
+    stroke: #222;
+}
+
+.event.DeprecatedBy {
+    circle {
+        fill: black;
+    }
+    text {
+        fill: white;
+        stroke-width: 0;
+        font-weight: 100;
+    }
+    path {
+        stroke: blue;
+        stroke-dasharray: 5, 5;
+        marker-end: url(#triangle);
+    }
+}
+
+.event.Deprecates {
+    circle {
+        fill: @goldColor;
+    }
+    text {
+        fill: white;
+        font-weight: bold;
+    }
+}
+
+.event.Join {
+    circle {
+        stroke-width: @darkStroke;
+        stroke: @goldColor;
+    }
+    path {
+        stroke: @goldColor;
+        stroke-dasharray: 5, 5;
+    }
+}
+
+.event.Disjoin {
+    circle {
+        stroke-width: @darkStroke;
+    }
+    path {
+        stroke: gray;
+        stroke-dasharray: 2, 5;
+    }
+}

@@ -1,0 +1,117 @@
+== Introduction
+
+Event Sourcing is a way of storing data for flexible retrieval.
+The principle behind Event Sourcing is very simple.
+We treat our database like a log file.
+It is a record of everything that happened as events, and we read these events in order to compute the state of things like we do while debugging an application from the logs.
+
+=== Event Sourcing Concepts
+
+Here are some things that we will need to get familiar with, that are relevant to Event Sourcing.
+
+==== Aggregate
+
+An aggregate is a type of object that you are interested in managing data about.
+A classic example would be a bank account.
+
+==== Event
+
+An event is an atomic change that needs to occur on the aggregate.
+A suitable example for the bank account would be a transaction.
+It could be an ATM withdrawal, or a check deposit, or an electronic payment.
+Most events can be applied while only looking ahead.
+When there is a `revert` event or a `merge` (which is represented as a `deprecates` and a `deprecatedBy` events), that doesn't hold true.
+
+We will not be modifying the aggregate in our data store.
+We will however, store the event in the data store so we know when we read to read it a certain way.
+
+==== Snapshot
+
+A snapshot is a way of looking at the state of an aggregate at a point in time.
+In our banking example, this could be your account balance.
+
+=== CQRS
+
+Event Sourcing works particularly well with CQRS - Command Query Responsibility Segregation.
+There are a couple of types of objects that are relevant to Event Sourcing and CQRS.
+
+==== Command
+A command is an input which causes one or more events to be stored.
+It typically represents a broad intention of the user.
+
+==== Query
+A query is a computation that needs to be performed in order to obtain a snapshot.
+
+A query performs a computation like the one below.
+
+[stem]
+++++
+S_N = f(S_0, [E_1 .. E_(N)])
+++++
+
+Where
+
+* stem:[S_N] is the Snapshot computed by applying the first `N` events.
+* stem:[S_0] is the empty snapshot.
+
+Most of the time this also holds true
+
+[stem]
+++++
+S_N = f(S_k, [E_(k+1) .. E_(N)])
+++++
+
+The second one holds true only for forward events.
+
+=== Representing Events
+
+This is how we'll be representing events in the documentation.
+
+[esdiag]
+....
+|Type,ID,Description
+  + 1 2016-01-02 created as John Lennon
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-05 paid $ 100.25
+....
+
+The aggregate is represented by the rectangle.
+It says its type and its id in the box.
+Above the box is a description of the aggregate.
+
+The circles with numbers represent events that are applied on the aggregate.
+They are reasonably spaced apart to show the flow of time.
+The spacing is not necessarily linear.
+However when there are multiple aggregates shown together, the time lines will be in sync.
+
+Creation events will have a dotted circle around them.
+It doesn't mean anything special.
+
+[esdiag]
+....
+|Patient,1,John Lennon
+  + 1 2016-01-02 created as John Lennon
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-08 paid $ 100.25
+  + 5 2016-01-19 paid $ 100.25
+|Patient,1,Ringo Starr
+  + 1 2016-01-10 created as Ringo Starr
+  + 2 2016-01-11 performed FLUSHOT for $ 32.40
+  + 3 2016-01-12 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-19 paid $ 100.25
+....
+
+When the time of two events is exactly the same, then they are displayed like this.
+
+[esdiag]
+....
+|Patient,1,John Lennon
+  + 1 2016-01-02 created as John Lennon
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-04 performed ANNUALPHYSICAL for $ 140.23
+  + 5 2016-01-05 paid $ 100.25
+....
+
