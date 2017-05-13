@@ -1,8 +1,29 @@
 = Grooves
 
 Event Sourcing Library for Java.
+
 Grooves formerly meant Groovy Event Sourcing.
 In its present form, it can support just about any JVM language.
 1.0 goals include documentation and testing for Java, Groovy and Kotlin.
 Documentation is still a work in progress, but you can see whats available https://rahulsom.github.io/grooves/[here].
+
+== Examples
+
+examples/grails/rdbms::
+    link:examples/grails/rdbms[This] uses grails (with groovy) backed by Hibernate (through GORM).
+
+examples/grails/rdbms_mongo::
+    link:examples/grails/rdbms_mongo[This] uses grails (with groovy) backed by Hibernate (through GORM) for events and aggregates and MongoDB (through GORM) for snapshots.
+
+examples/grails/restserver::
+    link:examples/grails/restserver[This] is not exactly an example.
+    It is a helper for examples/grails/rxrest
+
+examples/grails/rxrest::
+    link:examples/grails/rxrest[This] uses RESTful endpoints for aggregates and events.
+    It uses Mongo for snapshots.
+
+examples/springboot/jpa::
+    link:examples/springboot/jpa[This] uses Springboot and JPA repositories for everything.
+    All the code is written in groovy.
 
