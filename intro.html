@@ -5,8 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.3">
-<meta name="author" content="Rahul Somasunderam">
-<title>Grooves</title>
+<title>Introduction</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -418,49 +417,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 .show-for-print{display:inherit!important}}
 </style>
 </head>
-<body class="article toc2 toc-left">
+<body class="article">
 <div id="header">
-<h1>Grooves</h1>
-<div class="details">
-<span id="author" class="author">Rahul Somasunderam</span><br>
-<span id="email" class="email"><a href="mailto:rahul.som@gmail.com">rahul.som@gmail.com</a></span><br>
-</div>
-<div id="toc" class="toc2">
-<div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#_introduction">1. Introduction</a>
-<ul class="sectlevel2">
-<li><a href="#_event_sourcing_concepts">1.1. Event Sourcing Concepts</a></li>
-<li><a href="#_cqrs">1.2. CQRS</a></li>
-<li><a href="#_representing_events">1.3. Representing Events</a></li>
-</ul>
-</li>
-<li><a href="#_hurdles">2. Hurdles</a>
-<ul class="sectlevel2">
-<li><a href="#_completeness_of_queries">2.1. Completeness of Queries</a></li>
-<li><a href="#_reverting_events">2.2. Reverting Events</a></li>
-<li><a href="#_merging_aggregates">2.3. Merging Aggregates</a></li>
-<li><a href="#_reverting_merges">2.4. Reverting Merges</a></li>
-<li><a href="#_performing_joins">2.5. Performing joins</a></li>
-<li><a href="#_performing_disjoins">2.6. Performing disjoins</a></li>
-</ul>
-</li>
-<li><a href="#_how_grooves_solves_it">3. How Grooves solves it</a></li>
-<li><a href="#_building_an_event_sourcing_system_with_grooves">4. Building an Event Sourcing System with Grooves</a></li>
-</ul>
-</div>
 </div>
 <div id="content">
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph">
-<p>Formerly, Groovy + Event Sourcing.
-Now, Event Sourcing for Java.</p>
-</div>
-</div>
-</div>
 <div class="sect1">
-<h2 id="_introduction">1. Introduction</h2>
+<h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Event Sourcing is a way of storing data for flexible retrieval.
@@ -469,19 +431,19 @@ We treat our database like a log file.
 It is a record of everything that happened as events, and we read these events in order to compute the state of things like we do while debugging an application from the logs.</p>
 </div>
 <div class="sect2">
-<h3 id="_event_sourcing_concepts">1.1. Event Sourcing Concepts</h3>
+<h3 id="_event_sourcing_concepts">Event Sourcing Concepts</h3>
 <div class="paragraph">
 <p>Here are some things that we will need to get familiar with, that are relevant to Event Sourcing.</p>
 </div>
 <div class="sect3">
-<h4 id="_aggregate">1.1.1. Aggregate</h4>
+<h4 id="_aggregate">Aggregate</h4>
 <div class="paragraph">
 <p>An aggregate is a type of object that you are interested in managing data about.
 A classic example would be a bank account.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_event">1.1.2. Event</h4>
+<h4 id="_event">Event</h4>
 <div class="paragraph">
 <p>An event is an atomic change that needs to occur on the aggregate.
 A suitable example for the bank account would be a transaction.
@@ -495,7 +457,7 @@ We will however, store the event in the data store so we know when we read to re
 </div>
 </div>
 <div class="sect3">
-<h4 id="_snapshot">1.1.3. Snapshot</h4>
+<h4 id="_snapshot">Snapshot</h4>
 <div class="paragraph">
 <p>A snapshot is a way of looking at the state of an aggregate at a point in time.
 In our banking example, this could be your account balance.</p>
@@ -503,20 +465,20 @@ In our banking example, this could be your account balance.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_cqrs">1.2. CQRS</h3>
+<h3 id="_cqrs">CQRS</h3>
 <div class="paragraph">
 <p>Event Sourcing works particularly well with CQRS - Command Query Responsibility Segregation.
 There are a couple of types of objects that are relevant to Event Sourcing and CQRS.</p>
 </div>
 <div class="sect3">
-<h4 id="_command">1.2.1. Command</h4>
+<h4 id="_command">Command</h4>
 <div class="paragraph">
 <p>A command is an input which causes one or more events to be stored.
 It typically represents a broad intention of the user.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_query">1.2.2. Query</h4>
+<h4 id="_query">Query</h4>
 <div class="paragraph">
 <p>A query is a computation that needs to be performed in order to obtain a snapshot.</p>
 </div>
@@ -555,7 +517,7 @@ It typically represents a broad intention of the user.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_representing_events">1.3. Representing Events</h3>
+<h3 id="_representing_events">Representing Events</h3>
 <div class="paragraph">
 <p>This is how we&#8217;ll be representing events in the documentation.</p>
 </div>
@@ -595,208 +557,11 @@ It doesn&#8217;t mean anything special.</p>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_hurdles">2. Hurdles</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>While the theory is very simple, in practice, it&#8217;s a little more complicated.
-The functions that you see above are very simple at first glance, but implementing an entire system based on it requires some patterns.
-That is the problem that Grooves aims to solve.</p>
-</div>
-<div class="sect2">
-<h3 id="_completeness_of_queries">2.1. Completeness of Queries</h3>
-<div class="paragraph">
-<p>When applying events on a Snapshot, you need to be sure that you have handled every single event type.
-Let&#8217;s say you&#8217;ve got 3 types of events for an aggregate and 2 snapshots.
-If you add a new event type, you need to handle it in the computation of both snapshots.
-When a language has case classes, it&#8217;s easier to achieve this.
-Alas, Groovy and Java do not have case classes.</p>
-</div>
-<div class="paragraph">
-<p>There are some special kinds of Events that require a lot of complex handling:</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_reverting_events">2.2. Reverting Events</h3>
-<div class="paragraph">
-<p>Some times events are entered into an aggregate&#8217;s timeline in error.
-This could be a system error, or a human error.
-When this happens, for the business logic to make sense, the system should behave as if that event never occurred.
-However, for auditing purposes, and for preserving a reasonable system, the original event as well as the moment the error was detected need to be tracked.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="3df648703ef161fd2b0b24f42b1f9f03.svg" alt="3df648703ef161fd2b0b24f42b1f9f03">
-</div>
-</div>
-<div class="paragraph">
-<p>In the diagram above, we see that event 3 was performed, and later after event 4, we realized that 3 should not have occurred.
-Now, we insert a special event, 5, that causes a revert of 3.
-Once the system processes the data correctly, this is equivalent to what follows.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="a80b55a10c3a9de2c0f82ceefda2beeb.svg" alt="a80b55a10c3a9de2c0f82ceefda2beeb">
-</div>
-</div>
-<div class="paragraph">
-<p>Depending on how many mistakes people and systems make, this could be much more complicated.
-For example, you might be able to revert a revert event.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="55be4d8eb17a4f3dca4ab373c07c108f.svg" alt="55be4d8eb17a4f3dca4ab373c07c108f">
-</div>
-</div>
-<div class="paragraph">
-<p>This should be interpreted as 6 cancels out 5, so 5 can no more cancel out 3.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="74ab7a024d401a631df5d6759fba0eee.svg" alt="74ab7a024d401a631df5d6759fba0eee">
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_merging_aggregates">2.3. Merging Aggregates</h3>
-<div class="paragraph">
-<p><code>DeprecatedBy</code> and <code>Deprecates</code> is a pair of events that work together on aggregates of the same type.
-Sometimes, real world things merge together.
-For example, companies get merged or acquired.
-Sometimes, you accidentally create two aggregates that represent the same thing.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="e6c029e81724bdfd0d349159152d4748.svg" alt="e6c029e81724bdfd0d349159152d4748">
-</div>
-</div>
-<div class="paragraph">
-<p>In this case, we created two patients that actually represent the same person.
-Then we realized that this needs to be the same person.
-While reading this, we would treat it as if it was like this.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="548e52456d87641564e125081e774e90.svg" alt="548e52456d87641564e125081e774e90">
-</div>
-</div>
-<div class="paragraph">
-<p>4 is grayed out because it&#8217;s a creation event, and, this is the second creation event for the aggregate.
-We will read that event, but not apply it in any meaningful way.</p>
-</div>
-<div class="paragraph">
-<p>Typically we cannot apply any new events after 6 on Aggregate 5.
-The exception to the rule is when we&#8217;re reverting the merge.
-That might not always be true.
-Some systems might choose to continue adding events on an aggregate like 5.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_reverting_merges">2.4. Reverting Merges</h3>
-<div class="paragraph">
-<p>Lets assume we got confused with a pair of aggregates like these and performed a merge like this.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="6639efd5d8236a3533f65f426cf99470.svg" alt="6639efd5d8236a3533f65f426cf99470">
-</div>
-</div>
-<div class="paragraph">
-<p>The correct way of reverting fixing this mistake, would be to perform a pair of reverts.
-This is complicated, but necessary in order to make the reads on both aggregates result in the merge being ignored.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="7d3d75bed3ddef7def269e60ef207caf.svg" alt="7d3d75bed3ddef7def269e60ef207caf">
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_performing_joins">2.5. Performing joins</h3>
-<div class="paragraph">
-<p>In an event sourced system, even joins are just events.
-That way we can preserve their temporal changes.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="59036613283381d2563e69d7f3ed5054.svg" alt="59036613283381d2563e69d7f3ed5054">
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_performing_disjoins">2.6. Performing disjoins</h3>
-<div class="paragraph">
-<p>Since joins can change with time, you could have a situation where you need to perform a <code>disjoin</code>.
-In our example here, Mr Spock stops being the Science Officer when he becomes captain.
-For that to happen, we need to represent that the relationship between the department Science and Mr Spock is severed at a point in time.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="10667adea4082b2cd5513a2934df52c4.svg" alt="10667adea4082b2cd5513a2934df52c4">
-</div>
-</div>
-<div class="paragraph">
-<p>You might be tempted to reuse the revert capability here.
-A disjoin is different from a revert.
-The difference between a disjoin and a revert is the same as the difference between a divorce and an annulment.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_how_grooves_solves_it">3. How Grooves solves it</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Grooves assumes nothing about your persistence framework or whether you&#8217;re building a webapp or a batch application.
-Grooves only offers some tools to help you build your own event sourced system.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Interfaces for the Aggregate, Event (and its special subtypes) and Snapshot.</p>
-</li>
-<li>
-<p>A set of interfaces with default methods that help you write queries.</p>
-</li>
-<li>
-<p><em>If you&#8217;re using groovy</em>, annotations to mark these and AST Transformations to ensure all event types are covered in a Query implementation.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>This allows you to use Grooves with a lot of different frameworks.
-There are examples in the repository for some options you could use.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_building_an_event_sourcing_system_with_grooves">4. Building an Event Sourcing System with Grooves</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>TODO</p>
-</div>
-</div>
-</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Last updated 2017-05-13 18:12:39 UTC
 </div>
 </div>
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  tex2jax: {
-    inlineMath: [["\\(", "\\)"]],
-    displayMath: [["\\[", "\\]"]],
-    ignoreClass: "nostem|nolatexmath"
-  },
-  asciimath2jax: {
-    delimiters: [["\\$", "\\$"]],
-    ignoreClass: "nostem|noasciimath"
-  },
-  TeX: { equationNumbers: { autoNumber: "none" } }
-});
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.5.3/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 </body>
 </html>
