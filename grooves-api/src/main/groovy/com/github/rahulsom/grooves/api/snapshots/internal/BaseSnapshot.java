@@ -4,8 +4,6 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import rx.Observable;
 
-import java.util.Set;
-
 /**
  * Marks a class as a snapshot. This makes no assumption about the type of snapshot.
  *

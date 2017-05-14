@@ -11,6 +11,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import static rx.Observable.just;
+
 /**
  * Utility objects and methods to help with Queries.
  *
@@ -42,24 +44,19 @@ public class Utils {
     public static <
             SnapshotT extends BaseSnapshot,
             EventT extends BaseEvent
-            > Observable<? extends SnapshotT> returnOrRedirect(
+            > Observable<SnapshotT> returnOrRedirect(
             boolean redirect, List<EventT> events, SnapshotT it,
-            Supplier<Observable<? extends SnapshotT>> redirectedSnapshot) {
+            Supplier<Observable<SnapshotT>> redirectedSnapshot) {
         final EventT lastEvent =
                 events.isEmpty() ? null : events.get(events.size() - 1);
 
+        final boolean redirectToDeprecator =
+                lastEvent != null
+                        && lastEvent instanceof DeprecatedBy
+                        && redirect;
+
         return it.getDeprecatedByObservable()
-                .flatMap(deprecatedBy -> {
-                    final boolean redirectToDeprecator =
-                            lastEvent != null
-                                    && lastEvent instanceof DeprecatedBy
-                                    && redirect;
-
-                    return redirectToDeprecator ?
-                            redirectedSnapshot.get() :
-                            Observable.just(it);
-
-                })
+                .flatMap(deprecatedBy -> redirectToDeprecator ? redirectedSnapshot.get() : just(it))
                 .defaultIfEmpty(it);
 
     }
@@ -125,7 +122,7 @@ public class Utils {
      *
      * @return A String representation of events
      */
-    public static <EventT extends BaseEvent> String stringifyEventIds(List<EventT> events) {
+    static <EventT extends BaseEvent> String stringifyEventIds(List<EventT> events) {
         return events.stream()
                 .map(i -> i.getId().toString())
                 .collect(Utils.JOIN_EVENT_IDS);

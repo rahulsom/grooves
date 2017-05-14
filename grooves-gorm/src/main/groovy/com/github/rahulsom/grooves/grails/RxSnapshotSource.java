@@ -9,7 +9,7 @@ import rx.Observable;
 
 import java.util.Date;
 
-import static com.github.rahulsom.grooves.grails.QueryUtil.LATEST_BY_POSITION;
+import static com.github.rahulsom.grooves.grails.QueryUtil.*;
 import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
 
 /**
@@ -38,11 +38,11 @@ public interface RxSnapshotSource<
         //noinspection unchecked
         return (Observable<SnapshotT>) (maxPosition == Long.MAX_VALUE ?
                 invokeStaticMethod(getSnapshotClass(),
-                        "findAllByAggregateId",
+                        SNAPSHOTS_BY_AGGREGATE,
                         new Object[]{aggregate.getId(), LATEST_BY_POSITION}) :
                 invokeStaticMethod(
                         getSnapshotClass(),
-                        "findAllByAggregateIdAndLastEventPositionLessThan",
+                        SNAPSHOTS_BY_POSITION,
                         new Object[]{aggregate.getId(), maxPosition, LATEST_BY_POSITION}));
     }
 
@@ -51,10 +51,10 @@ public interface RxSnapshotSource<
         //noinspection unchecked
         return (Observable<SnapshotT>) (maxTimestamp == null ?
                 invokeStaticMethod(getSnapshotClass(),
-                        "findAllByAggregateId",
+                        SNAPSHOTS_BY_AGGREGATE,
                         new Object[]{aggregate.getId(), LATEST_BY_POSITION}) :
                 invokeStaticMethod(getSnapshotClass(),
-                        "findAllByAggregateIdAndLastEventTimestampLessThan",
+                        SNAPSHOTS_BY_TIMETTAMP,
                         new Object[]{aggregate.getId(), maxTimestamp, LATEST_BY_POSITION}));
     }
 

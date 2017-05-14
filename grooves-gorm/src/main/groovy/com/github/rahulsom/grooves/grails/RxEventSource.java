@@ -10,7 +10,7 @@ import rx.Observable;
 import java.util.Date;
 import java.util.List;
 
-import static com.github.rahulsom.grooves.grails.QueryUtil.INCREMENTAL_BY_POSITION;
+import static com.github.rahulsom.grooves.grails.QueryUtil.*;
 import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
 import static rx.Observable.from;
 
@@ -44,26 +44,32 @@ public interface RxEventSource<
         //noinspection unchecked
         return (Observable<EventT>) invokeStaticMethod(
                 getEventClass(),
-                "findAllByAggregateAndPositionGreaterThanAndPositionLessThanEquals",
+                UNCOMPUTED_EVENTS_BY_VERSION,
                 new Object[]{aggregate, position, version, INCREMENTAL_BY_POSITION});
     }
 
     @Override
     default Observable<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
+        final Date lastEventTimestamp = lastSnapshot.getLastEventTimestamp();
+        final String method = lastEventTimestamp == null ?
+                UNCOMPUTED_EVENTS_BEFORE_DATE :
+                UNCOMPUTED_EVENTS_BY_DATE_RANGE;
+        final Object[] params = lastEventTimestamp == null ?
+                new Object[]{aggregate, snapshotTime, INCREMENTAL_BY_TIMESTAMP} :
+                new Object[]{aggregate, lastEventTimestamp, snapshotTime, INCREMENTAL_BY_TIMESTAMP};
+
         //noinspection unchecked
-        return (Observable<EventT>) (lastSnapshot.getLastEventTimestamp() != null ?
-                invokeStaticMethod(
-                        getEventClass(),
-                        "findAllByAggregateAndTimestampGreaterThanAndTimestampLessThanEquals",
-                        new Object[]{aggregate, lastSnapshot.getLastEventTimestamp(),
-                                snapshotTime, INCREMENTAL_BY_POSITION}) :
-                invokeStaticMethod(
-                        getEventClass(),
-                        "findAllByAggregateAndTimestampLessThanEquals",
-                        new Object[]{aggregate, snapshotTime, INCREMENTAL_BY_POSITION}));
+        return (Observable<EventT>) invokeStaticMethod(getEventClass(), method, params);
     }
 
+    /**
+     * Hook to turn a proxy for an aggregate into an aggregate.
+     *
+     * @param aggregate The aggregate that may or may not be a proxy
+     *
+     * @return An observable of the aggregate
+     */
     Observable<AggregateT> reattachAggregate(AggregateT aggregate);
 
     @Override
@@ -72,12 +78,10 @@ public interface RxEventSource<
                 .flatMap(this::reattachAggregate)
                 .toList()
                 .flatMap(reattachedAggregates -> {
-                    getLog().info("Finding events for aggregates: {}",
-                            reattachedAggregates);
                     //noinspection unchecked
                     return (Observable<EventT>) invokeStaticMethod(
                             getEventClass(),
-                            "findAllByAggregateInList",
+                            EVENTS_BY_AGGREGATES,
                             new Object[]{reattachedAggregates, INCREMENTAL_BY_POSITION});
                 });
     }

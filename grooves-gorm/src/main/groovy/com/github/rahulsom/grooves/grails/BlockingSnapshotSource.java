@@ -13,6 +13,7 @@ import java.util.List;
 
 import static com.github.rahulsom.grooves.grails.QueryUtil.LATEST_BY_POSITION;
 import static com.github.rahulsom.grooves.grails.QueryUtil.LATEST_BY_TIMESTAMP;
+import static com.github.rahulsom.grooves.grails.QueryUtil.SNAPSHOTS_BY_AGGREGATE;
 import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
 
 /**
@@ -44,11 +45,11 @@ public interface BlockingSnapshotSource<
             List<SnapshotT> snapshots = (List<SnapshotT>) (maxPosition == Long.MAX_VALUE ?
                     invokeStaticMethod(
                             getSnapshotClass(),
-                            "findAllByAggregateId",
+                            SNAPSHOTS_BY_AGGREGATE,
                             new Object[]{aggregate.getId(), LATEST_BY_POSITION}) :
                     invokeStaticMethod(
                             getSnapshotClass(),
-                            "findAllByAggregateIdAndLastEventPositionLessThan",
+                            QueryUtil.SNAPSHOTS_BY_POSITION,
                             new Object[]{aggregate.getId(), maxPosition, LATEST_BY_POSITION}));
 
             return DefaultGroovyMethods.asBoolean(snapshots) ?
@@ -64,11 +65,11 @@ public interface BlockingSnapshotSource<
             List<SnapshotT> snapshots = (List<SnapshotT>) (maxTimestamp == null ?
                     invokeStaticMethod(
                             getSnapshotClass(),
-                            "findAllByAggregateId",
+                            SNAPSHOTS_BY_AGGREGATE,
                             new Object[]{aggregate.getId(), LATEST_BY_TIMESTAMP}) :
                     invokeStaticMethod(
                             getSnapshotClass(),
-                            "findAllByAggregateIdAndLastEventTimestampLessThan",
+                            QueryUtil.SNAPSHOTS_BY_TIMETTAMP,
                             new Object[]{aggregate.getId(), maxTimestamp, LATEST_BY_TIMESTAMP}));
             return DefaultGroovyMethods.asBoolean(snapshots) ?
                     Observable.just(detachSnapshot(snapshots.get(0))) :

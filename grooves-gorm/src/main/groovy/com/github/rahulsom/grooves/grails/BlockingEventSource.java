@@ -10,9 +10,10 @@ import rx.Observable;
 import java.util.Date;
 import java.util.List;
 
-import static com.github.rahulsom.grooves.grails.QueryUtil.INCREMENTAL_BY_POSITION;
-import static com.github.rahulsom.grooves.grails.QueryUtil.INCREMENTAL_BY_TIMESTAMP;
+import static com.github.rahulsom.grooves.grails.QueryUtil.*;
 import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
+import static rx.Observable.defer;
+import static rx.Observable.from;
 
 /**
  * Supplies Events from a Blocking Gorm Source.
@@ -32,54 +33,53 @@ public interface BlockingEventSource<
         SnapshotIdT,
         SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
         > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+
     @Override
     default Observable<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, long version) {
-        return Observable.defer(() -> {
-            final long position = lastSnapshot == null ? 0 :
-                    lastSnapshot.getLastEventPosition() == null ? 0 :
-                            lastSnapshot.getLastEventPosition();
-            //noinspection unchecked
-            return Observable.from((List<EventT>) invokeStaticMethod(
-                    getEventClass(),
-                    "findAllByAggregateAndPositionGreaterThanAndPositionLessThanEquals",
-                    new Object[]{aggregate, position, version, INCREMENTAL_BY_POSITION}
-                    )
-            );
-        });
+        final long position =
+                lastSnapshot == null || lastSnapshot.getLastEventPosition() == null ? 0 :
+                        lastSnapshot.getLastEventPosition();
+        //noinspection unchecked
+        return defer(() -> from((List<EventT>) invokeStaticMethod(
+                getEventClass(),
+                UNCOMPUTED_EVENTS_BY_VERSION,
+                new Object[]{aggregate, position, version, INCREMENTAL_BY_POSITION}
+        )));
     }
 
     @Override
     default Observable<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
-        return Observable.defer(() -> {
-            final Date lastEventTimestamp = lastSnapshot.getLastEventTimestamp();
-            //noinspection unchecked
-            return Observable.from((List<EventT>) (lastEventTimestamp == null ?
-                    invokeStaticMethod(
-                            getEventClass(),
-                            "findAllByAggregateAndTimestampLessThanEquals",
-                            new Object[]{aggregate, snapshotTime, INCREMENTAL_BY_TIMESTAMP}) :
-                    invokeStaticMethod(
-                            getEventClass(),
-                            "findAllByAggregateAndTimestampGreaterThanAndTimestampLessThanEquals",
-                            new Object[]{aggregate, lastEventTimestamp,
-                                    snapshotTime, INCREMENTAL_BY_TIMESTAMP})));
-        });
+        final Date lastEventTimestamp = lastSnapshot.getLastEventTimestamp();
+        final String method = lastEventTimestamp == null ?
+                UNCOMPUTED_EVENTS_BEFORE_DATE :
+                UNCOMPUTED_EVENTS_BY_DATE_RANGE;
+        final Object[] params = lastEventTimestamp == null ?
+                new Object[]{aggregate, snapshotTime, INCREMENTAL_BY_TIMESTAMP} :
+                new Object[]{aggregate, lastEventTimestamp, snapshotTime, INCREMENTAL_BY_TIMESTAMP};
+        //noinspection unchecked
+        return defer(() ->
+                from((List<EventT>) invokeStaticMethod(getEventClass(), method, params)));
     }
 
     @Override
     default Observable<EventT> findEventsForAggregates(List<AggregateT> aggregates) {
         //noinspection unchecked
-        return Observable.defer(() -> Observable.from(
+        return defer(() -> from(
                 (List<EventT>) invokeStaticMethod(
                         getEventClass(),
-                        "findAllByAggregateInList",
+                        EVENTS_BY_AGGREGATES,
                         new Object[]{aggregates, INCREMENTAL_BY_TIMESTAMP}
                 )
         ));
     }
 
+    /**
+     * The class of events that this returns.
+     *
+     * @return The class of events
+     */
     Class<EventT> getEventClass();
 
 }
