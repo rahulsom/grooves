@@ -48,10 +48,9 @@ class PatientCreated extends PatientEvent {
 class PatientAddedToZipcode extends PatientEvent implements
         JoinEvent<Patient, Long, PatientEvent, Zipcode> {
     Zipcode zipcode
-    @Override Zipcode getJoinAggregate() { zipcode }
-    @Override void setJoinAggregate(Zipcode rollupAggregate) { zipcode = rollupAggregate }
+    @Override Observable<Zipcode> getJoinAggregateObservable() { just zipcode }
 
-    @Override String getAudit() { new JsonBuilder([zipcodeId: joinAggregate?.id]).toString() }
+    @Override String getAudit() { new JsonBuilder([zipcodeId: zipcode?.id]).toString() }
     @Override String toString() {
         "<${aggregateId}.$id> $ts sent to zipcode ${zipcode.uniqueId}" }
 
@@ -62,10 +61,9 @@ class PatientAddedToZipcode extends PatientEvent implements
 class PatientRemovedFromZipcode extends PatientEvent implements
         DisjoinEvent<Patient, Long, PatientEvent, Zipcode> {
     Zipcode zipcode
-    @Override Zipcode getJoinAggregate() { zipcode }
-    @Override void setJoinAggregate(Zipcode rollupAggregate) { zipcode = rollupAggregate }
+    @Override Observable<Zipcode> getJoinAggregateObservable() { just zipcode }
 
-    @Override String getAudit() { new JsonBuilder([zipcodeId: joinAggregate?.id]).toString() }
+    @Override String getAudit() { new JsonBuilder([zipcodeId: zipcode?.id]).toString() }
     @Override String toString() {
         "<${aggregateId}.$id> $ts removed from zipcode ${zipcode.uniqueId}" }
 

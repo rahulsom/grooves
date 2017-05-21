@@ -60,18 +60,18 @@ class BootStrap {
                 currDate += random.nextInt(10) + 1
                 on(doctor) {
                     if (lastZipcode) {
-                        apply new DoctorRemovedFromZipcode(joinAggregate: lastZipcode,
+                        apply new DoctorRemovedFromZipcode(zipcode: lastZipcode,
                                 timestamp: currDate,)
                     }
-                    apply new DoctorAddedToZipcode(joinAggregate: zipcode, timestamp: currDate)
+                    apply new DoctorAddedToZipcode(zipcode: zipcode, timestamp: currDate)
                 }
                 if (lastZipcode) {
                     on(lastZipcode) {
-                        apply new ZipcodeLostDoctor(joinAggregate: doctor, timestamp: currDate)
+                        apply new ZipcodeLostDoctor(doctor: doctor, timestamp: currDate)
                     }
                 }
                 on(zipcode) {
-                    apply new ZipcodeGotDoctor(joinAggregate: doctor, timestamp: currDate)
+                    apply new ZipcodeGotDoctor(doctor: doctor, timestamp: currDate)
                 }
                 lastZipcode = zipcode
                 zipcode = zipcode == campbell ? santanaRow : campbell
@@ -105,18 +105,18 @@ class BootStrap {
                 currDate += random.nextInt(10) + 1
                 on(patient) {
                     if (lastZipcode) {
-                        apply new PatientRemovedFromZipcode(joinAggregate: lastZipcode,
+                        apply new PatientRemovedFromZipcode(zipcode: lastZipcode,
                                 timestamp: currDate,)
                     }
-                    apply new PatientAddedToZipcode(joinAggregate: zipcode, timestamp: currDate)
+                    apply new PatientAddedToZipcode(zipcode: zipcode, timestamp: currDate)
                 }
                 if (lastZipcode) {
                     on(lastZipcode) {
-                        apply new ZipcodeLostPatient(joinAggregate: patient, timestamp: currDate)
+                        apply new ZipcodeLostPatient(patient: patient, timestamp: currDate)
                     }
                 }
                 on(zipcode) {
-                    apply new ZipcodeGotPatient(joinAggregate: patient, timestamp: currDate)
+                    apply new ZipcodeGotPatient(patient: patient, timestamp: currDate)
                 }
                 lastZipcode = zipcode
                 zipcode = zipcode == campbell ? santanaRow : campbell

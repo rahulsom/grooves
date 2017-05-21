@@ -1,6 +1,7 @@
 package com.github.rahulsom.grooves.api.events;
 
 import com.github.rahulsom.grooves.api.AggregateType;
+import rx.Observable;
 
 /**
  * Breaks a join from {@link AggregateT} to {@link DisjoinedAggregateT} that had existed earlier.
@@ -19,7 +20,6 @@ public interface DisjoinEvent<
         DisjoinedAggregateT extends AggregateType>
         extends BaseEvent<AggregateT, EventIdT, EventT> {
 
-    DisjoinedAggregateT getJoinAggregate();
+    Observable<DisjoinedAggregateT> getJoinAggregateObservable();
 
-    void setJoinAggregate(DisjoinedAggregateT rollupAggregate);
 }

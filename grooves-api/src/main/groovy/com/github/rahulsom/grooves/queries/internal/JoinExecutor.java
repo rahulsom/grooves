@@ -69,19 +69,26 @@ public class JoinExecutor<
                             (DeprecatedBy<AggregateT, EventIdT, EventT>) event,
                             initialSnapshot);
                 } else if (classJoinE.isAssignableFrom(event.getClass())) {
-                    initialSnapshot.getJoinedIds().add(
-                            ((JoinEventT) event).getJoinAggregate().getId());
-                    return Observable.just(initialSnapshot);
+                    JoinEventT joinEvent = (JoinEventT) event;
+                    return joinEvent
+                            .getJoinAggregateObservable()
+                            .map(joinedAggregate -> {
+                                initialSnapshot.getJoinedIds().add(joinedAggregate.getId());
+                                return initialSnapshot;
+                            });
                 } else if (classDisjoinE.isAssignableFrom(event.getClass())) {
-                    initialSnapshot.getJoinedIds().remove(
-                            ((DisjoinEventT) event).getJoinAggregate().getId());
-                    return Observable.just(initialSnapshot);
+                    DisjoinEventT disjoinEvent = (DisjoinEventT) event;
+                    return disjoinEvent
+                            .getJoinAggregateObservable()
+                            .map(joinedAggregate -> {
+                                initialSnapshot.getJoinedIds().remove(joinedAggregate.getId());
+                                return initialSnapshot;
+                            });
                 } else {
                     return Observable.just(initialSnapshot);
                 }
             }
         })).flatMap(it -> it);
-
 
     }
 }

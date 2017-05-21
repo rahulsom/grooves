@@ -1,6 +1,7 @@
 package com.github.rahulsom.grooves.api.events;
 
 import com.github.rahulsom.grooves.api.AggregateType;
+import rx.Observable;
 
 /**
  * Creates a join from {@link AggregateT} to {@link JoinedAggregateT} that had not existed earlier.
@@ -19,7 +20,6 @@ public interface JoinEvent<
         JoinedAggregateT extends AggregateType>
         extends BaseEvent<AggregateT, EventIdT, EventT> {
 
-    JoinedAggregateT getJoinAggregate();
+    Observable<JoinedAggregateT> getJoinAggregateObservable();
 
-    void setJoinAggregate(JoinedAggregateT rollupAggregate);
 }
