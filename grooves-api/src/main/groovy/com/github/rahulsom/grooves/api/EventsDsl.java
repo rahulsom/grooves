@@ -3,6 +3,8 @@ package com.github.rahulsom.grooves.api;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
@@ -24,6 +26,8 @@ public class EventsDsl<
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>> {
 
     private static AtomicLong defaultPositionSupplier = new AtomicLong();
+
+    private static final Logger log = LoggerFactory.getLogger(EventsDsl.class);
 
     protected static AtomicLong getDefaultPositionSupplier() {
         return defaultPositionSupplier;
@@ -133,6 +137,8 @@ public class EventsDsl<
 
             beforePersist.accept(snapshotT);
             entityConsumer.accept(snapshotT);
+
+            log.info("Persisted {}", snapshotT);
 
             return snapshotT;
         }

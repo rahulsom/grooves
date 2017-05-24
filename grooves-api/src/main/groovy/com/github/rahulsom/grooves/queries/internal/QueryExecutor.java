@@ -57,7 +57,7 @@ public class QueryExecutor<
     public Observable<EventT> applyReverts(Observable<EventT> events) {
 
         return events.toList().flatMap(eventList -> {
-            log.debug(String.format("     EventList: %s", stringifyEventIds(eventList)));
+            log.debug("     Event Ids: {}", stringifyEventIds(eventList));
             List<EventT> forwardEvents = new ArrayList<>();
             while (!eventList.isEmpty()) {
                 EventT head = eventList.remove(eventList.size() - 1);
@@ -162,9 +162,9 @@ public class QueryExecutor<
     @SuppressWarnings("GrMethodMayBeStatic")
     Observable<SnapshotT> applyDeprecatedBy(
             final DeprecatedBy<AggregateT, EventIdT, EventT> event, SnapshotT snapshot) {
-        return event.getDeprecatorObservable().reduce(snapshot, (snapshotT, aggregateT) -> {
-            log.info("        -> {} will cause redirect to {}", event, aggregateT);
-            snapshotT.setDeprecatedBy(aggregateT);
+        return event.getDeprecatorObservable().reduce(snapshot, (snapshotT, aggregate) -> {
+            log.info("        -> {} will cause redirect to {}", event, aggregate);
+            snapshotT.setDeprecatedBy(aggregate);
             return snapshotT;
         });
     }

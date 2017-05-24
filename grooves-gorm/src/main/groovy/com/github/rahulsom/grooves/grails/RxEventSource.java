@@ -38,9 +38,9 @@ public interface RxEventSource<
     @Override
     default Observable<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, long version) {
-        final long position = lastSnapshot == null ? 0 :
-                lastSnapshot.getLastEventPosition() == null ? 0 :
-                        lastSnapshot.getLastEventPosition();
+        final long position = lastSnapshot == null || lastSnapshot.getLastEventPosition() == null ?
+                0 : lastSnapshot.getLastEventPosition();
+
         //noinspection unchecked
         return (Observable<EventT>) invokeStaticMethod(
                 getEventClass(),

@@ -9,6 +9,7 @@ def examples = [
         'grails/rdbms',
         'grails/rdbms_mongo',
         'grails/restserver', 'grails/rxrest',
+        'grails/rxmongo',
 ]
 
 examples.each { include "examples/${it}" }

@@ -13,7 +13,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.github.rahulsom.grooves.queries.internal.Utils.returnOrRedirect;
 import static com.github.rahulsom.grooves.queries.internal.Utils.stringifyEvents;
+import static rx.Observable.empty;
 
 /**
  * Default interface to help in building temporal snapshots.
@@ -53,7 +55,7 @@ public interface TemporalQuerySupport<
                     final String snapshotAsString =
                             it.getLastEventTimestamp() == null ? "<none>" :
                                     it.toString();
-                    getLog().debug("  -> Last Usable Snapshot: " + snapshotAsString);
+                    getLog().debug("  -> Last Usable Snapshot: {}", snapshotAsString);
                     it.setAggregate(aggregate);
                 });
     }
@@ -120,7 +122,7 @@ public interface TemporalQuerySupport<
 
             return uncomputedEvents
                     .doOnNext(ue ->
-                            getLog().debug("     Events since origin: " + stringifyEvents(ue)))
+                            getLog().debug("     Events since origin: {}", stringifyEvents(ue)))
                     .map(ue -> new Pair<>(lastSnapshot, ue));
         }
 
@@ -157,19 +159,15 @@ public interface TemporalQuerySupport<
             List<EventT> events = seTuple2.getSecond();
             SnapshotT snapshot = seTuple2.getFirst();
 
-            getLog().info("Events: " + events);
+            getLog().info("Events: {}", events);
 
             if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
                 return snapshot
-                        .getAggregateObservable().flatMap(aggregate1 -> {
-                            getLog().info("Aggregate1: " + aggregate1);
-                            if (aggregate1 == null) {
-                                return computeSnapshotAndEvents(
-                                        aggregate, moment, redirect, events, snapshot);
-                            } else {
-                                return Observable.empty();
-                            }
-                        })
+                        .getAggregateObservable().flatMap(aggregate1 ->
+                                aggregate1 == null ?
+                                        computeSnapshotAndEvents(
+                                                aggregate, moment, redirect, events, snapshot) :
+                                        empty())
                         .map(Observable::just)
                         .defaultIfEmpty(computeSnapshotAndEvents(
                                 aggregate, moment, redirect, events, snapshot))
@@ -208,13 +206,13 @@ public interface TemporalQuerySupport<
                 getExecutor().applyEvents(this, lastUsableSnapshot, forwardOnlyEvents,
                         new ArrayList<>(), Collections.singletonList(aggregate), aggregate);
         return snapshotTypeObservable
-                .doOnNext(snapshotType -> {
+                .doOnNext(snapshot -> {
                     if (!events.isEmpty()) {
-                        snapshotType.setLastEvent(events.get(events.size() - 1));
+                        snapshot.setLastEvent(events.get(events.size() - 1));
                     }
-                    getLog().info("  --> Computed: " + snapshotType);
+                    getLog().info("  --> Computed: {}", snapshot);
                 })
-                .flatMap(it -> Utils.returnOrRedirect(redirect, events, it,
+                .flatMap(it -> returnOrRedirect(redirect, events, it,
                         () -> it.getDeprecatedByObservable()
                                 .flatMap(x -> computeSnapshot(x, moment))
                 ));
