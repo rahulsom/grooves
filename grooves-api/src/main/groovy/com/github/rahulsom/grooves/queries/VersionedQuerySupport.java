@@ -12,7 +12,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.github.rahulsom.grooves.queries.internal.Utils.returnOrRedirect;
 import static com.github.rahulsom.grooves.queries.internal.Utils.stringifyEvents;
+import static rx.Observable.empty;
 
 /**
  * Default interface to help in building versioned snapshots.
@@ -53,7 +55,7 @@ public interface VersionedQuerySupport<
                             it.getLastEventPosition() == null ? "<none>" :
                                     it.getLastEventPosition() == 0 ? "<none>" :
                                             it.toString();
-                    getLog().debug("  -> Last Usable Snapshot: " + snapshotAsString);
+                    getLog().debug("  -> Last Usable Snapshot: {}", snapshotAsString);
                     it.setAggregate(aggregate);
                 });
     }
@@ -166,19 +168,15 @@ public interface VersionedQuerySupport<
             List<EventT> events = seTuple2.getSecond();
             SnapshotT lastUsableSnapshot = seTuple2.getFirst();
 
-            getLog().info("Events: " + events);
+            getLog().info("Events: {}", events);
 
             if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
                 return lastUsableSnapshot
-                        .getAggregateObservable().flatMap(aggregate1 -> {
-                            getLog().info("Aggregate1: " + aggregate1);
-                            if (aggregate1 == null) {
-                                return computeSnapshotAndEvents(
-                                        aggregate, version, redirect, events, lastUsableSnapshot);
-                            } else {
-                                return Observable.empty();
-                            }
-                        })
+                        .getAggregateObservable()
+                        .flatMap(aggregate1 -> aggregate1 == null ?
+                                computeSnapshotAndEvents(
+                                        aggregate, version, redirect, events, lastUsableSnapshot) :
+                                empty())
                         .map(Observable::just)
                         .defaultIfEmpty(computeSnapshotAndEvents(
                                 aggregate, version, redirect, events, lastUsableSnapshot))
@@ -220,9 +218,9 @@ public interface VersionedQuerySupport<
                         snapshot.setLastEvent(events.get(events.size() - 1));
                     }
 
-                    getLog().info("  --> Computed: " + snapshot);
+                    getLog().info("  --> Computed: {}", snapshot);
                 })
-                .flatMap(it -> Utils.returnOrRedirect(redirect, events, it,
+                .flatMap(it -> returnOrRedirect(redirect, events, it,
                         () -> it.getDeprecatedByObservable()
                                 .flatMap(x -> computeSnapshot(x, version))
                 ));

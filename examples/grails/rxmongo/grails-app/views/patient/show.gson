@@ -1,0 +1,7 @@
+import rxmongo.Patient
+
+model {
+	Patient patient
+}
+
+json tmpl.patient(patient)

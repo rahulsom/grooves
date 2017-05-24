@@ -28,13 +28,19 @@ link:examples/grails/rdbms[examples/grails/rdbms]::
 link:examples/grails/rdbms_mongo[examples/grails/rdbms_mongo]::
    This uses grails (with groovy) backed by Hibernate (through GORM) for events and aggregates and MongoDB (through GORM) for snapshots.
 
+link:examples/grails/rxmongo[examples/grails/rxmongo]::
+   This uses grails (with groovy) backed by MongoDB (through GORM).
+   The API is entirely reactive.
+   It is based on https://gorm.grails.org/6.0.x/rx/manual/[rx-gorm-mongo].
+
 link:examples/grails/restserver[examples/grails/restserver]::
    This is not exactly an example.
     It is a helper for examples/grails/rxrest
 
 link:examples/grails/rxrest[examples/grails/rxrest]::
    This uses RESTful endpoints for aggregates and events.
-    It uses Mongo for snapshots.
+   It uses Mongo for snapshots.
+   The RESTful part is based on http://gorm.grails.org/latest/rx/rest-client/manual/index.html[rx-gorm-rest].
 
 link:examples/springboot/jpa[examples/springboot/jpa]::
    This uses Springboot and JPA repositories for everything.
