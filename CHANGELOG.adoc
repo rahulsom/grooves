@@ -1,0 +1,31 @@
+= Changelog
+
+== 0.2.0 (Unreleased)
+* Joins are now reactive too.
+  This removes the need for reattach methods.
+* Examples now contains `rx-mongo`.
+
+== 0.1.1
+* Improve RX support for `rx-gorm-rest`.
+  A lot of APIs were returning non observable types.
+  Most meaningful calls now return Observables.
+* Reduce alignment of API with `gorm-hibernate`.
+* Documentation now includes diagrams that are generated from text representation of events.
+
+== 0.1.0
+* Versioning delegated to nebula.release plugin
+* Initial pass of documentation on gh-pages
+* RxJava introduced into API.
+  This should allow using reactive sources.
+* Most API code is now in Java.
+  This should improve type support in the IDE significantly.
+  Also this opens up the possibility of using Java as a language for users.
+* Build system does a lot more static analysis of code.
+
+== 0.0.2
+* Temporal and Versioned Snapshots are now different.
+* Joins are now supported as a special kind of snapshot.
+
+== 0.0.1
+* Supports Groovy and GORM.
+* Contains examples for `rdbms`, `mongo`+`rdbms` and `springboot-jpa`.

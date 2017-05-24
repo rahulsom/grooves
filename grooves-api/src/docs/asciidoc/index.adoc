@@ -1,8 +1,8 @@
 = Grooves
-Rahul Somasunderam <rahul.som@gmail.com>
 :stem:
 :toc: left
 :sectnums:
+:nofooter:
 
 Formerly, Groovy + Event Sourcing.
 Now, Event Sourcing for Java.
@@ -23,6 +23,6 @@ Grooves only offers some tools to help you build your own event sourced system.
 This allows you to use Grooves with a lot of different frameworks.
 There are examples in the repository for some options you could use.
 
-== Building an Event Sourcing System with Grooves
+== Building with Grooves
 
 TODO
