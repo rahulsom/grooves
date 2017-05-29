@@ -94,6 +94,30 @@ startServer.doFirst {
     file("${projectDir.absolutePath}/.pid.lock").delete()
 }
 
+int statusOfUrl(String url) {
+    int status = -1
+    try {
+        content = url.toURL().openConnection().with { conn ->
+            readTimeout = 10000
+            status = responseCode
+        }
+    } catch (Exception ignore) {
+        // ignore
+    }
+    status
+}
+
+startServer.doLast {
+    int attempt = 0
+    while (attempt < 20) {
+        println "Waiting (${++attempt})..."
+        if (statusOfUrl('http://localhost:8081/patient') == 200) {
+            break
+        }
+        sleep 5000
+    }
+}
+
 task stopServer(type: KillProcessTask) {
     directory projectDir.absolutePath
 }
