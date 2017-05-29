@@ -28,13 +28,14 @@ import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
  * @author Rahul Somasunderam
  */
 public interface BlockingSnapshotSource<
-        AggregateT extends AggregateType,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> &
+        SnapshotT extends Snapshot<AggregateIdT,AggregateT, SnapshotIdT, EventIdT, EventT> &
                 GormEntity<SnapshotT>
-        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        > extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     SnapshotT detachSnapshot(SnapshotT snapshot);
 

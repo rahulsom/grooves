@@ -1,6 +1,6 @@
 package rxmongo
 
-import com.github.rahulsom.grooves.api.snapshots.Snapshot
+import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
 import grails.gorm.rx.mongodb.RxMongoEntity
 import groovy.transform.EqualsAndHashCode
 import rx.Observable
@@ -15,7 +15,7 @@ import static rx.Observable.*
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition'])
 @SuppressWarnings(['DuplicateNumberLiteral'])
 class PatientAccount implements RxMongoEntity<PatientAccount>,
-        Snapshot<Patient, String, String, PatientEvent> {
+        JavaSnapshot<String, Patient, String, String, PatientEvent> {
 
     String id
     Long lastEventPosition

@@ -25,24 +25,27 @@ import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
  * @author Rahul Somasunderam
  */
 public interface VersionedJoinSupport<
-        AggregateT extends AggregateType,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         JoinedAggregateIdT,
-        JoinedAggregateT extends AggregateType,
+        JoinedAggregateT extends AggregateType<JoinedAggregateIdT>,
         SnapshotIdT,
-        SnapshotT extends VersionedJoin<AggregateT, SnapshotIdT, JoinedAggregateIdT,
-                EventIdT, EventT>,
-        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>
+        SnapshotT extends VersionedJoin<AggregateIdT, AggregateT, SnapshotIdT,
+                JoinedAggregateIdT, EventIdT, EventT>,
+        JoinEventT extends JoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
+                JoinedAggregateIdT, JoinedAggregateT>,
+        DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
+                JoinedAggregateIdT, JoinedAggregateT>
         > extends
-        VersionedQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        VersionedQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
     Class<JoinEventT> getJoinEventClass();
 
     Class<DisjoinEventT> getDisjoinEventClass();
 
     @Override
-    default Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
+    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
             > getExecutor() {
         return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
     }

@@ -13,7 +13,7 @@ import static rx.Observable.just
  * @author Rahul Somasunderam
  */
 class ZipcodePatientsQuery implements GormJoinSupport<
-        Zipcode, Long, ZipcodeEvent, Long, Patient, String, ZipcodePatients,
+        Long, Zipcode, Long, ZipcodeEvent, Long, Patient, String, ZipcodePatients,
         ZipcodeGotPatient, ZipcodeLostPatient> {
 
     final Class snapshotClass = ZipcodePatients

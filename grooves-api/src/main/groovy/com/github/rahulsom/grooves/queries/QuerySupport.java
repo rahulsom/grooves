@@ -18,17 +18,19 @@ import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
  * @author Rahul Somasunderam
  */
 public interface QuerySupport<
-        AggregateT extends AggregateType,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
+        SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
         >
         extends
-        TemporalQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        VersionedQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        TemporalQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        VersionedQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
-    default Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> getExecutor() {
+    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            SnapshotT> getExecutor() {
         return new QueryExecutor<>();
     }
 

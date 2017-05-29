@@ -1,6 +1,6 @@
 package grooves.grails.rdbms
 
-import com.github.rahulsom.grooves.api.snapshots.Snapshot
+import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import rx.Observable
@@ -15,7 +15,7 @@ import static rx.Observable.*
 @ToString
 @SuppressWarnings(['DuplicateStringLiteral'])
 @EqualsAndHashCode(includes = ['aggregate', 'lastEventPosition'])
-class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
+class PatientHealth implements JavaSnapshot<Long, Patient, Long, Long, PatientEvent> {
 
     Long lastEventPosition
     Date lastEventTimestamp

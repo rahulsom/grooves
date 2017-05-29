@@ -1,6 +1,7 @@
 package grooves.example.javaee;
 
 import com.github.rahulsom.grooves.api.EventsDsl;
+import com.github.rahulsom.grooves.api.OnSpec;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import grooves.example.javaee.domain.*;
 import grooves.example.javaee.queries.PatientAccountQuery;
@@ -210,7 +211,7 @@ public class BootStrap {
         }
     }
 
-    private Patient on(Patient patient, Consumer<EventsDsl.OnSpec> closure) {
+    private Patient on(Patient patient, Consumer<OnSpec> closure) {
         Consumer eventSaver = patientEvent -> {
             if (patientEvent instanceof PatientEvent) {
                 ((PatientEvent) patientEvent).setId(idGenerator++);
@@ -241,7 +242,7 @@ public class BootStrap {
                     return currDate;
                 };
 
-        return new EventsDsl<Patient, Long, PatientEvent>()
+        return new EventsDsl<Long, Patient, Long, PatientEvent>()
                 .on(patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure);
     }
 

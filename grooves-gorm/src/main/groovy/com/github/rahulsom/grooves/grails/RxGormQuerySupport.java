@@ -26,14 +26,20 @@ import java.util.List;
  */
 @Deprecated
 public interface RxGormQuerySupport<
-        AggregateT extends AggregateType & RxEntity<AggregateT>,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT> & RxEntity<AggregateT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT> & RxEntity<EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>
+                & RxEntity<EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> & RxEntity<SnapshotT>
-        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        RxSnapshotSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        RxEventSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
+                & RxEntity<SnapshotT>
+        > extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+        SnapshotT>,
+        RxSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT>,
+        RxEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT> {
 
     @Override
     default Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {

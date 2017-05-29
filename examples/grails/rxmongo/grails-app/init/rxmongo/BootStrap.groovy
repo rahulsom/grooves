@@ -1,8 +1,7 @@
 package rxmongo
 
-import com.github.rahulsom.grooves.api.EventsDsl
+import com.github.rahulsom.grooves.api.OnSpec
 import com.github.rahulsom.grooves.groovy.GroovyEventsDsl
-import grooves.grails.rdbms.*
 
 import java.util.function.Consumer
 
@@ -144,14 +143,15 @@ class BootStrap {
 
     Date currDate = Date.parse('yyyy-MM-dd', '2016-01-01')
 
-    Patient on(Patient patient, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
-        def eventSaver = { it.save(flush: true, failOnError: true).toBlocking().single()
+    Patient on(Patient patient, @DelegatesTo(OnSpec) Closure closure) {
+        def eventSaver = {
+            it.save(flush: true, failOnError: true).toBlocking().single()
         } as Consumer<PatientEvent>
         def positionSupplier = {
             (PatientEvent.countByAggregate(patient).toBlocking().single()?.longValue() ?: 0l) + 1 }
         def userSupplier = { 'anonymous' }
         def dateSupplier = { currDate += 1; currDate }
-        new GroovyEventsDsl<Patient, String, PatientEvent>().on(
+        new GroovyEventsDsl<String, Patient, String, PatientEvent>().on(
                 patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
     }
 

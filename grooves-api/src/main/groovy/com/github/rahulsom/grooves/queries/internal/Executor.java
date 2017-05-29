@@ -20,11 +20,12 @@ import java.util.List;
  * @author Rahul Somasunderam
  */
 public interface Executor<
-        AggregateT extends AggregateType,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
+        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
         > {
     /**
      * Applies reverts to a list of events and then returns forward events.
@@ -48,10 +49,10 @@ public interface Executor<
      * @return The Snapshot that has been mutated
      */
     Observable<SnapshotT> applyEvents(
-            BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> query,
+            BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> query,
             SnapshotT initialSnapshot,
             Observable<EventT> events,
-            List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesList,
+            List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
             List<AggregateT> aggregates,
             AggregateT aggregate);
 }

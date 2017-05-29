@@ -29,14 +29,15 @@ import static rx.Observable.empty;
  * @author Rahul Somasunderam
  */
 public interface TemporalQuerySupport<
-        AggregateT extends AggregateType,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-        >
+        SnapshotT extends TemporalSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
+                EventT>>
         extends
-        BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     /**
      * Finds the last usable snapshot. For a given maxTimestamp, finds a snapshot whose last event
@@ -218,7 +219,7 @@ public interface TemporalQuerySupport<
                 ));
     }
 
-    default Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
+    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
             > getExecutor() {
         return new QueryExecutor<>();
     }

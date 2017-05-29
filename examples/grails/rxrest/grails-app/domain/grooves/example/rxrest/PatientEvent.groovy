@@ -20,9 +20,9 @@ import static rx.Observable.just
 @EqualsAndHashCode
 @SuppressWarnings(['AbstractClassWithoutAbstractMethod', 'GrailsDomainReservedSqlKeywordName'])
 class PatientEvent implements
-        RxRestEntity<PatientEvent>, BaseEvent<Patient, Long, PatientEvent> {
+        RxRestEntity<PatientEvent>, BaseEvent<Long, Patient, Long, PatientEvent> {
 
-    RevertEvent<Patient, Long, PatientEvent> revertedBy
+    RevertEvent<Long, Patient, Long, PatientEvent> revertedBy
     String createdBy
     Date timestamp
     Long position
@@ -73,7 +73,7 @@ class PaymentMade extends PatientEvent {
 
 @EqualsAndHashCode
 class PatientEventReverted extends PatientEvent
-        implements RevertEvent<Patient, Long, PatientEvent> {
+        implements RevertEvent<Long, Patient, Long, PatientEvent> {
     Long revertedEventId
 
     @Override
@@ -83,7 +83,7 @@ class PatientEventReverted extends PatientEvent
 
 @EqualsAndHashCode
 class PatientDeprecatedBy extends PatientEvent
-        implements DeprecatedBy<Patient, Long, PatientEvent> {
+        implements DeprecatedBy<Long, Patient, Long, PatientEvent> {
     PatientDeprecates converse
     Patient deprecator
 
@@ -91,7 +91,7 @@ class PatientDeprecatedBy extends PatientEvent
     @Override String toString() { "<$id> deprecated by #${deprecator?.id}" }
 
     @Override
-    Observable<Deprecates<Patient, Long, PatientEvent>> getConverseObservable() {
+    Observable<Deprecates<Long, Patient, Long, PatientEvent>> getConverseObservable() {
         just converse
     }
 
@@ -102,7 +102,8 @@ class PatientDeprecatedBy extends PatientEvent
 }
 
 @EqualsAndHashCode
-class PatientDeprecates extends PatientEvent implements Deprecates<Patient, Long, PatientEvent> {
+class PatientDeprecates extends PatientEvent
+        implements Deprecates<Long, Patient, Long, PatientEvent> {
     PatientDeprecatedBy converse
     Patient deprecated
 
@@ -110,7 +111,7 @@ class PatientDeprecates extends PatientEvent implements Deprecates<Patient, Long
     @Override String toString() { "<$id> deprecates #${deprecated?.id}" }
 
     @Override
-    Observable<DeprecatedBy<Patient, Long, PatientEvent>> getConverseObservable() {
+    Observable<DeprecatedBy<Long, Patient, Long, PatientEvent>> getConverseObservable() {
         just converse
     }
 

@@ -22,8 +22,8 @@ import static rx.Observable.from;
 import static rx.Observable.just;
 
 public interface CustomQuerySupport<
-        SnapshotT extends Snapshot<Patient, Long, Long, PatientEvent> & Serializable
-        > extends QuerySupport<Patient, Long, PatientEvent, Long, SnapshotT> {
+        SnapshotT extends Snapshot<Long, Patient, Long, Long, PatientEvent> & Serializable
+        > extends QuerySupport<Long, Patient, Long, PatientEvent, Long, SnapshotT> {
 
     Database getDatabase();
 

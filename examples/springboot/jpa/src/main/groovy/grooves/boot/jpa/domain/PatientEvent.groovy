@@ -22,10 +22,10 @@ import static rx.Observable.just
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = 'eventType')
 @SuppressWarnings(['AbstractClassWithoutAbstractMethod'])
-abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> {
+abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEvent> {
 
     @GeneratedValue @Id Long id
-    @Transient RevertEvent<Patient, Long, PatientEvent> revertedBy
+    @Transient RevertEvent<Long, Patient, Long, PatientEvent> revertedBy
     @Column(nullable = false) String createdBy
     @Column(nullable = false) Date timestamp
     @Column(nullable = false) Long position
@@ -69,7 +69,7 @@ class PaymentMade extends PatientEvent {
 @Entity
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
 class PatientEventReverted extends PatientEvent implements
-        RevertEvent<Patient, Long, PatientEvent> {
+        RevertEvent<Long, Patient, Long, PatientEvent> {
     Long revertedEventId
 
     @Override
@@ -78,7 +78,7 @@ class PatientEventReverted extends PatientEvent implements
 
 @Entity
 class PatientDeprecatedBy extends PatientEvent implements
-        DeprecatedBy<Patient, Long, PatientEvent> {
+        DeprecatedBy<Long, Patient, Long, PatientEvent> {
     @OneToOne PatientDeprecates converse
     @OneToOne Patient deprecator
 
@@ -89,7 +89,8 @@ class PatientDeprecatedBy extends PatientEvent implements
 }
 
 @Entity
-class PatientDeprecates extends PatientEvent implements Deprecates<Patient, Long, PatientEvent> {
+class PatientDeprecates extends PatientEvent
+        implements Deprecates<Long, Patient, Long, PatientEvent> {
     @OneToOne PatientDeprecatedBy converse
     @OneToOne Patient deprecated
 

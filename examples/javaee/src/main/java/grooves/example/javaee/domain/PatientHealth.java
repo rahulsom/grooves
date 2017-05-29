@@ -1,6 +1,6 @@
 package grooves.example.javaee.domain;
 
-import com.github.rahulsom.grooves.api.snapshots.Snapshot;
+import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot;
 import rx.Observable;
 
 import javax.xml.bind.annotation.XmlTransient;
@@ -12,7 +12,8 @@ import java.util.List;
 import static rx.Observable.from;
 import static rx.Observable.just;
 
-public class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent>, Serializable {
+public class PatientHealth
+        implements JavaSnapshot<Long, Patient, Long, Long, PatientEvent>, Serializable {
     List<Procedure> procedures = new ArrayList<>();
     private Long id;
     private Patient aggregate;

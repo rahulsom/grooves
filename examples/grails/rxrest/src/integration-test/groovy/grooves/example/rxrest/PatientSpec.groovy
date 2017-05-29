@@ -18,6 +18,7 @@ class PatientSpec extends AbstractPatientSpec {
     void setupSpec() {
         for (int i = 0; i < 10; i ++) {
             try {
+                sleep 5000
                 rest.get path: '/patient.json'
                 rest.get path: '/patient/account/1.json'
                 def resp = rest.get path: '/patient/health/1.json'

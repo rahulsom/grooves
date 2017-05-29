@@ -26,15 +26,19 @@ import java.util.List;
  */
 @Deprecated
 public interface GormQuerySupport<
-        AggregateT extends AggregateType & GormEntity<AggregateT>,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT> & GormEntity<AggregateT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT> & GormEntity<EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT> &
+                GormEntity<EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> &
+        SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT> &
                 GormEntity<SnapshotT>
-        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        BlockingEventSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        BlockingSnapshotSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        > extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+        SnapshotT>,
+        BlockingEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        BlockingSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT> {
 
     @Override
     default Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
@@ -55,7 +59,8 @@ public interface GormQuerySupport<
     @Override
     default Observable<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
-        return BlockingEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
+        return BlockingEventSource.super.getUncomputedEvents(aggregate, lastSnapshot,
+                snapshotTime);
     }
 
     @Override

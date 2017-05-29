@@ -24,18 +24,21 @@ import java.util.List;
  * @author Rahul Somasunderam
  */
 public class JoinExecutor<
-        AggregateT extends AggregateType,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         JoinedAggregateIdT,
         JoinedAggregateT extends AggregateType<JoinedAggregateIdT>,
         SnapshotIdT,
-        SnapshotT extends BaseJoin<AggregateT, SnapshotIdT, JoinedAggregateIdT,
+        SnapshotT extends BaseJoin<AggregateIdT, AggregateT, SnapshotIdT, JoinedAggregateIdT,
                 EventIdT, EventT>,
-        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>>
+        JoinEventT extends JoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
+                JoinedAggregateIdT, JoinedAggregateT>,
+        DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
+                JoinedAggregateIdT, JoinedAggregateT>>
         extends
-        QueryExecutor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        QueryExecutor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     private final Class<JoinEventT> classJoinE;
     private final Class<DisjoinEventT> classDisjoinE;
@@ -47,10 +50,10 @@ public class JoinExecutor<
 
     @Override
     public Observable<SnapshotT> applyEvents(
-            BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> query,
+            BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> query,
             SnapshotT initialSnapshot,
             Observable<EventT> events,
-            List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesList,
+            List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
             List<AggregateT> aggregates, AggregateT aggregate) {
 
 
@@ -62,11 +65,12 @@ public class JoinExecutor<
                 log.debug("     -> Applying Event: {}", event);
 
                 if (event instanceof Deprecates) {
-                    return applyDeprecates((Deprecates<AggregateT, EventIdT, EventT>) event,
+                    return applyDeprecates((Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>)
+                                    event,
                             query, aggregates, deprecatesList, aggregate);
                 } else if (event instanceof DeprecatedBy) {
                     return applyDeprecatedBy(
-                            (DeprecatedBy<AggregateT, EventIdT, EventT>) event,
+                            (DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT>) event,
                             initialSnapshot);
                 } else if (classJoinE.isAssignableFrom(event.getClass())) {
                     JoinEventT joinEvent = (JoinEventT) event;

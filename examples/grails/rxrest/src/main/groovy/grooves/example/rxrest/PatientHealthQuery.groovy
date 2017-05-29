@@ -16,7 +16,7 @@ import static rx.Observable.just
 @Query(aggregate = Patient, snapshot = PatientHealth)
 @GrailsCompileStatic
 class PatientHealthQuery implements
-        MyGroovesSupport<Patient, Long, PatientEvent, String, PatientHealth> {
+        MyGroovesSupport<Long, Patient, Long, PatientEvent, String, PatientHealth> {
 
     final Class<PatientHealth> snapshotClass = PatientHealth
     final Class<PatientEvent> eventClass = PatientEvent

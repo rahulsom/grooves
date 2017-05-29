@@ -23,11 +23,12 @@ import java.util.List;
  * @author Rahul Somasunderam
  */
 public interface BaseQuery<
-        AggregateT extends AggregateType,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
+        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
         > {
 
     default Logger getLog() {
@@ -103,5 +104,5 @@ public interface BaseQuery<
     /**
      * @return An executor that applies events.
      */
-    Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> getExecutor();
+    Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> getExecutor();
 }

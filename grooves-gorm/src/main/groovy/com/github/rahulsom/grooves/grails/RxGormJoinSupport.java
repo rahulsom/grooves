@@ -33,24 +33,29 @@ import java.util.List;
  */
 @Deprecated
 public interface RxGormJoinSupport<
-        AggregateT extends AggregateType & RxEntity<AggregateT>,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT> & RxEntity<AggregateT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT> & RxEntity<EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT> & RxEntity<EventT>,
         JoinedAggregateIdT,
-        JoinedAggregateT extends AggregateType & RxEntity<JoinedAggregateT>,
+        JoinedAggregateT extends AggregateType<JoinedAggregateIdT> & RxEntity<JoinedAggregateT>,
         SnapshotIdT,
-        SnapshotT extends Join<AggregateT, SnapshotIdT, JoinedAggregateIdT,
+        SnapshotT extends Join<AggregateIdT, AggregateT, SnapshotIdT, JoinedAggregateIdT,
                 EventIdT, EventT> & RxEntity<SnapshotT>,
-        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>
+        JoinEventT extends JoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
+                JoinedAggregateIdT, JoinedAggregateT>,
+        DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
+                JoinedAggregateIdT, JoinedAggregateT>
         > extends
-        JoinSupport<AggregateT, EventIdT, EventT, JoinedAggregateIdT, JoinedAggregateT,
-                SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT>,
-        RxEventSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        RxSnapshotSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        JoinSupport<AggregateIdT, AggregateT, EventIdT, EventT, JoinedAggregateIdT,
+                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT>,
+        RxEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        RxSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT> {
 
     @Override
-    default Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> getExecutor() {
+    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            SnapshotT> getExecutor() {
         //noinspection unchecked
         return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
     }

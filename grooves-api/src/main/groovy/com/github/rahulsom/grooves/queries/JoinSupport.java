@@ -25,25 +25,27 @@ import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
  * @author Rahul Somasunderam
  */
 public interface JoinSupport<
-        AggregateT extends AggregateType,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         JoinedAggregateIdT,
-        JoinedAggregateT extends AggregateType,
+        JoinedAggregateT extends AggregateType<JoinedAggregateIdT>,
         SnapshotIdT,
-        SnapshotT extends Join<AggregateT, SnapshotIdT, JoinedAggregateIdT, EventIdT,
+        SnapshotT extends Join<AggregateIdT, AggregateT, SnapshotIdT, JoinedAggregateIdT, EventIdT,
                 EventT>,
-        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>
-        >
+        JoinEventT extends JoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
+                JoinedAggregateIdT, JoinedAggregateT>,
+        DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
+                JoinedAggregateIdT, JoinedAggregateT>>
         extends
-        VersionedJoinSupport<AggregateT, EventIdT, EventT, JoinedAggregateIdT,
+        VersionedJoinSupport<AggregateIdT, AggregateT, EventIdT, EventT, JoinedAggregateIdT,
                 JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT>,
-        TemporalJoinSupport<AggregateT, EventIdT, EventT, JoinedAggregateIdT,
+        TemporalJoinSupport<AggregateIdT, AggregateT, EventIdT, EventT, JoinedAggregateIdT,
                 JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT> {
 
     @Override
-    default Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
+    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
             > getExecutor() {
         return new JoinExecutor(getJoinEventClass(), getDisjoinEventClass());
     }

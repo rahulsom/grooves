@@ -1,6 +1,6 @@
 package grooves.boot.jpa
 
-import com.github.rahulsom.grooves.api.EventsDsl
+import com.github.rahulsom.grooves.api.OnSpec
 import com.github.rahulsom.grooves.groovy.GroovyEventsDsl
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.queries.PatientAccountQuery
@@ -151,14 +151,14 @@ class BootStrap implements InitializingBean {
 
     Date currDate = Date.parse('yyyy-MM-dd', '2016-01-01')
 
-    Patient on(Patient patient, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
+    Patient on(Patient patient, @DelegatesTo(OnSpec) Closure closure) {
         def eventSaver = { patientEventRepository.save(it) } as Consumer
         def positionSupplier = {
             patientEventRepository.countByAggregateId(patient.id) + 1
         } as Supplier<Long>
         def userSupplier = { 'anonymous' }
         def dateSupplier = { currDate += 1; currDate }
-        new GroovyEventsDsl<Patient, Long, PatientEvent>().on(
+        new GroovyEventsDsl<Long, Patient, Long, PatientEvent>().on(
                 patient, eventSaver, positionSupplier, userSupplier, dateSupplier,
                 closure)
     }

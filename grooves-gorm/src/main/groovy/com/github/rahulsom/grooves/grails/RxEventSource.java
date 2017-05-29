@@ -26,12 +26,15 @@ import static rx.Observable.from;
  * @author Rahul Somasunderam
  */
 public interface RxEventSource<
-        AggregateT extends AggregateType,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT> & RxEntity<EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT> &
+                RxEntity<EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
+        > extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+        SnapshotT> {
 
     Class<EventT> getEventClass();
 

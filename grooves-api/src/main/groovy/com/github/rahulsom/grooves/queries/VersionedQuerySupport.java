@@ -28,14 +28,16 @@ import static rx.Observable.empty;
  * @author Rahul Somasunderam
  */
 public interface VersionedQuerySupport<
-        AggregateT extends AggregateType,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
+        SnapshotT extends VersionedSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
+                EventT>
         >
         extends
-        BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     /**
      * Finds the last usable snapshot. For a given maxPosition, finds a snapshot that's older than
@@ -127,7 +129,7 @@ public interface VersionedQuerySupport<
 
     }
 
-    default Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
+    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
             > getExecutor() {
         return new QueryExecutor<>();
     }

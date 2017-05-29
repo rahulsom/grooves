@@ -1,6 +1,6 @@
 package grooves.example.rxrest
 
-import com.github.rahulsom.grooves.api.snapshots.Snapshot
+import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
 import groovy.transform.EqualsAndHashCode
 import rx.Observable
 
@@ -14,7 +14,7 @@ import static rx.Observable.from
  */
 @SuppressWarnings(['DuplicateStringLiteral',])
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition',])
-class PatientHealth implements Snapshot<Patient, String, Long, PatientEvent> {
+class PatientHealth implements JavaSnapshot<Long, Patient, String, Long, PatientEvent> {
 
     static mapWith = 'mongo'
 

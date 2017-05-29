@@ -5,7 +5,7 @@ import groovy.transform.CompileStatic
 import rx.Observable
 
 @CompileStatic @Query(aggregate = Account, snapshot = Balance)
-class ValidESQuery implements QuerySupport<Account, Long, Transaction, String, Balance> {
+class ValidESQuery implements QuerySupport<Long, Account, Long, Transaction, String, Balance> {
     @Override Balance createEmptySnapshot() { new Balance() }
     @Override Observable<Balance> getSnapshot(long maxPosition, Account aggregate) {
         Observable.empty()

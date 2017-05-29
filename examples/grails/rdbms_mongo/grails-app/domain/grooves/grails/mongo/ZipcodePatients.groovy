@@ -1,6 +1,6 @@
 package grooves.grails.mongo
 
-import com.github.rahulsom.grooves.api.snapshots.Join
+import com.github.rahulsom.grooves.api.snapshots.JavaJoin
 import groovy.transform.EqualsAndHashCode
 import rx.Observable
 
@@ -12,7 +12,7 @@ import static rx.Observable.*
  * @author Rahul Somasunderam
  */
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition',])
-class ZipcodePatients implements Join<Zipcode, String, Long, Long, ZipcodeEvent> {
+class ZipcodePatients implements JavaJoin<Long, Zipcode, String, Long, Long, ZipcodeEvent> {
 
     static mapWith = 'mongo'
 

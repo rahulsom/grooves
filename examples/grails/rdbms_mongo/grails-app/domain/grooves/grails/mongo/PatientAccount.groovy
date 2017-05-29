@@ -1,6 +1,6 @@
 package grooves.grails.mongo
 
-import com.github.rahulsom.grooves.api.snapshots.Snapshot
+import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
 import groovy.transform.EqualsAndHashCode
 import rx.Observable
 
@@ -13,7 +13,7 @@ import static rx.Observable.*
  */
 @SuppressWarnings(['DuplicateNumberLiteral', 'DuplicateStringLiteral',])
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition'])
-class PatientAccount implements Snapshot<Patient, String, Long, PatientEvent> {
+class PatientAccount implements JavaSnapshot<Long, Patient, String, Long, PatientEvent> {
 
     static mapWith = 'mongo'
 

@@ -27,12 +27,13 @@ import static rx.Observable.from;
  * @author Rahul Somasunderam
  */
 public interface BlockingEventSource<
-        AggregateT extends AggregateType,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT> & GormEntity<EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT> & GormEntity<EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
+        > extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     @Override
     default Observable<EventT> getUncomputedEvents(

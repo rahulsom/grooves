@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import static rx.Observable.just;
 
 public class PatientDeprecatedBy extends PatientEvent implements
-        DeprecatedBy<Patient, Long, PatientEvent> {
+        DeprecatedBy<Long, Patient, Long, PatientEvent> {
     private PatientDeprecates converse;
     private Patient deprecator;
 

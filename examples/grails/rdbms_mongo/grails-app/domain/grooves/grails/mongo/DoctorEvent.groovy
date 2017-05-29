@@ -20,9 +20,9 @@ import static rx.Observable.just
 @SuppressWarnings(['AbstractClassWithoutAbstractMethod', 'GrailsDomainReservedSqlKeywordName'])
 @ToString
 @EqualsAndHashCode(includes = ['aggregate', 'position', 'createdBy'])
-abstract class DoctorEvent implements BaseEvent<Doctor, Long, DoctorEvent> {
+abstract class DoctorEvent implements BaseEvent<Long, Doctor, Long, DoctorEvent> {
 
-    RevertEvent<Doctor, Long, DoctorEvent> revertedBy
+    RevertEvent<Long, Doctor, Long, DoctorEvent> revertedBy
     String createdBy
     Date timestamp
     Long position
@@ -48,7 +48,7 @@ class DoctorCreated extends DoctorEvent {
 @Event(Doctor)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class DoctorGotPatient extends DoctorEvent
-        implements JoinEvent<Doctor, Long, DoctorEvent, Patient> {
+        implements JoinEvent<Long, Doctor, Long, DoctorEvent, Long, Patient> {
     Patient patient
     @Override Observable<Patient> getJoinAggregateObservable() { just patient }
 
@@ -59,7 +59,7 @@ class DoctorGotPatient extends DoctorEvent
 @Event(Doctor)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class DoctorLostPatient extends DoctorEvent
-        implements DisjoinEvent<Doctor, Long, DoctorEvent, Patient> {
+        implements DisjoinEvent<Long, Doctor, Long, DoctorEvent, Long, Patient> {
     Patient patient
     @Override Observable<Patient> getJoinAggregateObservable() { just patient }
 
@@ -69,7 +69,7 @@ class DoctorLostPatient extends DoctorEvent
 
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class DoctorAddedToZipcode extends DoctorEvent
-        implements JoinEvent<Doctor, Long, DoctorEvent, Zipcode> {
+        implements JoinEvent<Long, Doctor, Long, DoctorEvent, Long, Zipcode> {
     Zipcode zipcode
     @Override Observable<Zipcode> getJoinAggregateObservable() { just(zipcode) }
 
@@ -81,7 +81,7 @@ class DoctorAddedToZipcode extends DoctorEvent
 
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class DoctorRemovedFromZipcode extends DoctorEvent
-        implements DisjoinEvent<Doctor, Long, DoctorEvent, Zipcode> {
+        implements DisjoinEvent<Long, Doctor, Long, DoctorEvent, Long, Zipcode> {
     Zipcode zipcode
     @Override Observable<Zipcode> getJoinAggregateObservable() { just(zipcode) }
 

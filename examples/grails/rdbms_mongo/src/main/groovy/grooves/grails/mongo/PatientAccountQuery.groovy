@@ -15,7 +15,7 @@ import static rx.Observable.just
 @Query(aggregate = Patient, snapshot = PatientAccount)
 @GrailsCompileStatic
 class PatientAccountQuery implements
-        GormQuerySupport<Patient, Long, PatientEvent, String, PatientAccount> {
+        GormQuerySupport<Long, Patient, Long, PatientEvent, String, PatientAccount> {
 
     final Class<PatientAccount> snapshotClass = PatientAccount
     final Class<PatientEvent> eventClass = PatientEvent

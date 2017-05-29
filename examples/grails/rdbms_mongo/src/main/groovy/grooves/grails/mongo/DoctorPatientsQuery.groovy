@@ -13,6 +13,7 @@ import static rx.Observable.just
  * @author Rahul Somasunderam
  */
 class DoctorPatientsQuery implements GormJoinSupport<
+        Long,
         Doctor, Long, DoctorEvent, Long, Patient, String, DoctorPatients, DoctorGotPatient,
         DoctorLostPatient> {
 

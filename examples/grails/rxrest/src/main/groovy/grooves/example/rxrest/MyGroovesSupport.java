@@ -27,15 +27,16 @@ import java.util.List;
  * @author Rahul Somasunderam
  */
 public interface MyGroovesSupport<
-        AggregateT extends AggregateType & RxEntity<AggregateT>,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT> & RxEntity<AggregateT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT> & RxEntity<EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT> & RxEntity<EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> &
+        SnapshotT extends Snapshot<AggregateIdT,AggregateT, SnapshotIdT, EventIdT, EventT> &
                 GormEntity<SnapshotT>
-        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        BlockingSnapshotSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        RxEventSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        > extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        BlockingSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        RxEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     @Override
     default Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {

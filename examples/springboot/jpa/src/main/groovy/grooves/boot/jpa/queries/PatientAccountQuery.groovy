@@ -24,7 +24,7 @@ import static rx.Observable.just
 @Component
 @Query(aggregate = Patient, snapshot = PatientAccount)
 class PatientAccountQuery implements
-        QuerySupport<Patient, Long, PatientEvent, Long, PatientAccount> {
+        QuerySupport<Long, Patient, Long, PatientEvent, Long, PatientAccount> {
 
     public static final String AGGREGATE = 'aggregate'
     public static final String POSITION = 'position'

@@ -20,10 +20,10 @@ import static rx.Observable.just
 @EqualsAndHashCode
 @SuppressWarnings(['AbstractClassWithoutAbstractMethod', 'GrailsDomainReservedSqlKeywordName'])
 class PatientEvent implements RxMongoEntity<PatientEvent>,
-        BaseEvent<Patient, String, PatientEvent> {
+        BaseEvent<String, Patient, String, PatientEvent> {
 
     String id
-    RevertEvent<Patient, String, PatientEvent> revertedBy
+    RevertEvent<String, Patient, String, PatientEvent> revertedBy
     String createdBy
     Date timestamp
     Long position
@@ -69,7 +69,7 @@ class PaymentMade extends PatientEvent {
 
 @EqualsAndHashCode
 class PatientEventReverted extends PatientEvent
-        implements RevertEvent<Patient, String, PatientEvent> {
+        implements RevertEvent<String, Patient, String, PatientEvent> {
     String revertedEventId
 
     @Override String getAudit() { new JsonBuilder([revertedEvent: revertedEventId]).toString() }
@@ -78,7 +78,7 @@ class PatientEventReverted extends PatientEvent
 
 @EqualsAndHashCode
 class PatientDeprecatedBy extends PatientEvent
-        implements DeprecatedBy<Patient, String, PatientEvent> {
+        implements DeprecatedBy<String, Patient, String, PatientEvent> {
     PatientDeprecates converse
     Patient deprecator
 
@@ -90,7 +90,8 @@ class PatientDeprecatedBy extends PatientEvent
 }
 
 @EqualsAndHashCode
-class PatientDeprecates extends PatientEvent implements Deprecates<Patient, String, PatientEvent> {
+class PatientDeprecates extends PatientEvent
+        implements Deprecates<String, Patient, String, PatientEvent> {
     PatientDeprecatedBy converse
     Patient deprecated
 
