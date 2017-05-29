@@ -18,7 +18,7 @@ import rx.Observable;
  */
 public interface DeprecatedBy<AggregateT extends AggregateType, EventIdT, EventT>
         extends BaseEvent<AggregateT, EventIdT, EventT> {
-    Observable<Deprecates<AggregateT, EventIdT, EventT>> getConverseObservable();
+    <T extends Deprecates<AggregateT, EventIdT, EventT>> Observable<T> getConverseObservable();
 
     Observable<AggregateT> getDeprecatorObservable();
 }

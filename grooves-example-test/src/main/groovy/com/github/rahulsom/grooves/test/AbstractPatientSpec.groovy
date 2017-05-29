@@ -21,7 +21,7 @@ abstract class AbstractPatientSpec extends Specification {
 
     void "Patient List works"() {
         when:
-        def resp = rest.get(path: '/patient.json') as HttpResponseDecorator
+        def resp = rest.get(path: 'patient') as HttpResponseDecorator
 
         then:
         with(resp) {
@@ -37,7 +37,7 @@ abstract class AbstractPatientSpec extends Specification {
     @Unroll
     void "Paul McCartney's balance is correct at version #version"() {
         given:
-        def resp = rest.get(path: '/patient/account/3.json',
+        def resp = rest.get(path: 'patient/account/3',
                 query: [version: version,]) as HttpResponseDecorator
 
         expect:
@@ -66,7 +66,7 @@ abstract class AbstractPatientSpec extends Specification {
     @Unroll
     void "#name - Show works"() {
         given:
-        def resp = rest.get(path: "/patient/show/${id}.json") as HttpResponseDecorator
+        def resp = rest.get(path: "patient/show/${id}") as HttpResponseDecorator
 
         expect:
         with(resp) {
@@ -87,7 +87,7 @@ abstract class AbstractPatientSpec extends Specification {
     @Unroll
     void "#name - Health works"() {
         given:
-        def resp = rest.get(path: "/patient/health/${id}.json") as HttpResponseDecorator
+        def resp = rest.get(path: "patient/health/${id}") as HttpResponseDecorator
 
         expect:
         with(resp) {
@@ -112,7 +112,7 @@ abstract class AbstractPatientSpec extends Specification {
     @Unroll
     void "#name by Version #version - Health works"() {
         given:
-        def resp = rest.get(path: "/patient/health/${id}.json",
+        def resp = rest.get(path: "patient/health/${id}",
                 query: [version: version,]) as HttpResponseDecorator
 
         expect:
@@ -147,7 +147,7 @@ abstract class AbstractPatientSpec extends Specification {
     @Unroll
     def "#name by Date #date - Health works"() {
         given:
-        def resp = rest.get(path: "/patient/health/${id}.json",
+        def resp = rest.get(path: "patient/health/${id}",
                 query: [date: date,]) as HttpResponseDecorator
 
         expect:
@@ -175,7 +175,7 @@ abstract class AbstractPatientSpec extends Specification {
     @Unroll
     void "George Harrison's balance is correct at version #version"() {
         given:
-        def resp = rest.get(path: '/patient/account/4.json',
+        def resp = rest.get(path: 'patient/account/4',
                 query: [version: version,]) as HttpResponseDecorator
 
         expect:
@@ -201,7 +201,7 @@ abstract class AbstractPatientSpec extends Specification {
     @Unroll
     void "George Harrison MBE's balance is correct at version #version"() {
         given:
-        def resp = rest.get(path: '/patient/account/5.json',
+        def resp = rest.get(path: 'patient/account/5',
                 query: [version: version,]) as HttpResponseDecorator
 
         expect:
@@ -226,7 +226,7 @@ abstract class AbstractPatientSpec extends Specification {
         HttpResponseDecorator resp = null
 
         when:
-        resp = rest.get(path: '/patient/account/5.json') as HttpResponseDecorator
+        resp = rest.get(path: 'patient/account/5') as HttpResponseDecorator
 
         then:
         with(resp) {
@@ -239,12 +239,12 @@ abstract class AbstractPatientSpec extends Specification {
             it.balance == 148.68
             it.moneyMade == 100.25
             it.lastEventPosition == 3
-            Date.parse('yyyy-MM-dd', it.lastEventTimestamp.toString()[0..10]).
-                    format('yyyyMMdd') == '20160128'
+
+            getDate(it.lastEventTimestamp)?.format('yyyyMMdd') == '20160128'
         }
 
         when:
-        resp = rest.get(path: '/patient/account/4.json') as HttpResponseDecorator
+        resp = rest.get(path: 'patient/account/4') as HttpResponseDecorator
 
         then:
         with(resp) {
@@ -257,8 +257,20 @@ abstract class AbstractPatientSpec extends Specification {
             it.balance == 148.68
             it.moneyMade == 100.25
             it.lastEventPosition == 3
-            Date.parse('yyyy-MM-dd', it.lastEventTimestamp.toString()[0..10]).
-                    format('yyyyMMdd') == '20160128'
+
+            getDate(it.lastEventTimestamp)?.format('yyyyMMdd') ==  '20160128'
         }
     }
+
+    @SuppressWarnings(['Instanceof', ])
+    static Date getDate(def ts) {
+        if (ts instanceof String) {
+            Date.parse('yyyy-MM-dd', ts[0..10])
+        } else if (ts instanceof Long) {
+            new Date(ts)
+        } else {
+            null
+        }
+    }
+
 }
