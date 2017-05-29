@@ -67,11 +67,11 @@ int statusOfUrl(String url) {
 cargoStartLocal.doLast {
     int attempt = 0
     while (attempt < 20) {
-        sleep 5000
         println "Waiting (${++attempt})..."
         if (statusOfUrl('http://localhost:8080/grooves-jee/patient') == 200) {
             break
         }
+        sleep 5000
     }
 }
 
