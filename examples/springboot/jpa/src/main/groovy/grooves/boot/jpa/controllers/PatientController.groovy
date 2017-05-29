@@ -28,17 +28,17 @@ class PatientController {
     @Autowired PatientAccountQuery patientAccountQuery
     @Autowired PatientHealthQuery patientHealthQuery
 
-    @GetMapping('/patient.json')
+    @GetMapping('/patient')
     List<Patient> patient() {
         patientRepository.findAll()
     }
 
-    @GetMapping('/patient/show/{id}.json')
+    @GetMapping('/patient/show/{id}')
     Patient patient(@PathVariable Long id) {
         patientRepository.getOne(id)
     }
 
-    @GetMapping('/patient/account/{id}.json')
+    @GetMapping('/patient/account/{id}')
     ResponseEntity<?> account(
             @PathVariable Long id,
             @RequestParam(required = false) Long version,
@@ -58,7 +58,7 @@ class PatientController {
 
     }
 
-    @GetMapping('/patient/health/{id}.json')
+    @GetMapping('/patient/health/{id}')
     ResponseEntity<?> health(
             @PathVariable Long id,
             @RequestParam(required = false) Long version,

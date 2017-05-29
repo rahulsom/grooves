@@ -8,11 +8,11 @@ import com.github.rahulsom.grooves.api.events.DeprecatedBy;
 import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.github.rahulsom.grooves.queries.internal.Utils.stringifyEventIds;
 import static com.github.rahulsom.grooves.queries.internal.Utils.stringifyEvents;
-import static org.codehaus.groovy.runtime.InvokerHelper.invokeMethod;
+import static rx.Observable.from;
 import static rx.Observable.just;
 
 /**
@@ -83,7 +83,7 @@ public class QueryExecutor<
 
             assert forwardEvents.stream().noneMatch(it -> it instanceof RevertEvent);
 
-            return Observable.from(forwardEvents);
+            return from(forwardEvents);
         });
     }
 
@@ -176,7 +176,8 @@ public class QueryExecutor<
      * @param util             The Query Util instance
      * @param allAggregates    All {@link AggregateType}s that have been deprecated by current
      *                         aggregate
-     * @param deprecatesEvents The list of {@link Deprecates} events that have been collected so far
+     * @param deprecatesEvents The list of {@link Deprecates} events that have been collected so
+     *                         far
      * @param aggregate        The current aggregate
      *
      * @return The snapshot after applying the {@link Deprecates} event
@@ -198,25 +199,31 @@ public class QueryExecutor<
                             deprecatedAggregate, converse);
                     util.addToDeprecates(newSnapshot, deprecatedAggregate);
 
-                    return util.findEventsForAggregates(
-                            DefaultGroovyMethods.plus(allAggregates, deprecatedAggregate))
+                    return util.findEventsForAggregates(plus(allAggregates, deprecatedAggregate))
                             .filter(it -> !it.getId().equals(event.getId())
                                     && !it.getId().equals(converse.getId()))
                             .toSortedList((a, b) -> a.getTimestamp().compareTo(b.getTimestamp()))
                             .flatMap(sortedEvents -> {
                                 log.debug("Reassembled Events: {}", stringifyEvents(sortedEvents));
                                 Observable<EventT> forwardEventsSortedBackwards =
-                                        applyReverts(Observable.from(sortedEvents));
+                                        applyReverts(from(sortedEvents));
                                 return applyEvents(
                                         util,
                                         newSnapshot,
                                         forwardEventsSortedBackwards,
-                                        DefaultGroovyMethods.plus(deprecatesEvents, event),
+                                        plus(deprecatesEvents, event),
                                         allAggregates,
                                         aggregate);
                             });
                 }));
 
+    }
+
+    private static <T> List<T> plus(List<T> list, T element) {
+        List<T> retval = new ArrayList<>();
+        retval.addAll(list);
+        retval.add(element);
+        return retval;
     }
 
     /**
@@ -236,8 +243,9 @@ public class QueryExecutor<
             final SnapshotT snapshot,
             final EventT event) {
         try {
-            return (Observable<EventApplyOutcome>) invokeMethod(
-                    util, methodName, new Object[]{event, snapshot});
+            final Method method =
+                    util.getClass().getMethod(methodName, event.getClass(), snapshot.getClass());
+            return (Observable<EventApplyOutcome>) method.invoke(util, event, snapshot);
         } catch (Exception e1) {
             try {
                 return util.onException(e1, snapshot, event);

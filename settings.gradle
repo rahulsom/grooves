@@ -6,6 +6,7 @@ projects.each { include "grooves-${it}" }
 include 'grooves-example-test'
 def examples = [
         'springboot/jpa',
+        'javaee',
         'grails/rdbms',
         'grails/rdbms_mongo',
         'grails/restserver', 'grails/rxrest',
