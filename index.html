@@ -556,7 +556,7 @@ It typically represents a broad intention of the user.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="198c4c59ac774bcb90bca39786033990.svg" alt="198c4c59ac774bcb90bca39786033990">
+<img src="SimpleEvents.svg" alt="SimpleEvents">
 </div>
 </div>
 <div class="paragraph">
@@ -576,7 +576,7 @@ It doesn&#8217;t mean anything special.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="dd1730350e8c9d15c2a495b64189313b.svg" alt="dd1730350e8c9d15c2a495b64189313b">
+<img src="ParallelEvents.svg" alt="ParallelEvents">
 </div>
 </div>
 <div class="paragraph">
@@ -584,7 +584,7 @@ It doesn&#8217;t mean anything special.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="e257456a5323f85faaaa6793a1547503.svg" alt="e257456a5323f85faaaa6793a1547503">
+<img src="ConcurrentEvents.svg" alt="ConcurrentEvents">
 </div>
 </div>
 </div>
@@ -621,7 +621,7 @@ However, for auditing purposes, and for preserving a reasonable system, the orig
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="3df648703ef161fd2b0b24f42b1f9f03.svg" alt="3df648703ef161fd2b0b24f42b1f9f03">
+<img src="RevertEvent.svg" alt="RevertEvent">
 </div>
 </div>
 <div class="paragraph">
@@ -631,7 +631,7 @@ Once the system processes the data correctly, this is equivalent to what follows
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="a80b55a10c3a9de2c0f82ceefda2beeb.svg" alt="a80b55a10c3a9de2c0f82ceefda2beeb">
+<img src="RevertEventEffective.svg" alt="RevertEventEffective">
 </div>
 </div>
 <div class="paragraph">
@@ -640,7 +640,7 @@ For example, you might be able to revert a revert event.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="55be4d8eb17a4f3dca4ab373c07c108f.svg" alt="55be4d8eb17a4f3dca4ab373c07c108f">
+<img src="RevertOnRevert.svg" alt="RevertOnRevert">
 </div>
 </div>
 <div class="paragraph">
@@ -648,7 +648,7 @@ For example, you might be able to revert a revert event.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="74ab7a024d401a631df5d6759fba0eee.svg" alt="74ab7a024d401a631df5d6759fba0eee">
+<img src="RevertOnRevertEffective.svg" alt="RevertOnRevertEffective">
 </div>
 </div>
 </div>
@@ -662,7 +662,7 @@ Sometimes, you accidentally create two aggregates that represent the same thing.
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="e6c029e81724bdfd0d349159152d4748.svg" alt="e6c029e81724bdfd0d349159152d4748">
+<img src="MergeAggregates.svg" alt="MergeAggregates">
 </div>
 </div>
 <div class="paragraph">
@@ -672,7 +672,7 @@ While reading this, we would treat it as if it was like this.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="548e52456d87641564e125081e774e90.svg" alt="548e52456d87641564e125081e774e90">
+<img src="MergeAggregatesEffective.svg" alt="MergeAggregatesEffective">
 </div>
 </div>
 <div class="paragraph">
@@ -693,7 +693,7 @@ Some systems might choose to continue adding events on an aggregate like 5.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="6639efd5d8236a3533f65f426cf99470.svg" alt="6639efd5d8236a3533f65f426cf99470">
+<img src="RevertMergeBefore.svg" alt="RevertMergeBefore">
 </div>
 </div>
 <div class="paragraph">
@@ -702,7 +702,7 @@ This is complicated, but necessary in order to make the reads on both aggregates
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="7d3d75bed3ddef7def269e60ef207caf.svg" alt="7d3d75bed3ddef7def269e60ef207caf">
+<img src="RevertMergeAfter.svg" alt="RevertMergeAfter">
 </div>
 </div>
 </div>
@@ -714,7 +714,7 @@ That way we can preserve their temporal changes.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="59036613283381d2563e69d7f3ed5054.svg" alt="59036613283381d2563e69d7f3ed5054">
+<img src="JoinExample.svg" alt="JoinExample">
 </div>
 </div>
 </div>
@@ -727,7 +727,7 @@ For that to happen, we need to represent that the relationship between the depar
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="10667adea4082b2cd5513a2934df52c4.svg" alt="10667adea4082b2cd5513a2934df52c4">
+<img src="DisjoinExample.svg" alt="DisjoinExample">
 </div>
 </div>
 <div class="paragraph">
