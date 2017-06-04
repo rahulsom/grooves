@@ -21,7 +21,7 @@ This could be a system error, or a human error.
 When this happens, for the business logic to make sense, the system should behave as if that event never occurred.
 However, for auditing purposes, and for preserving a reasonable system, the original event as well as the moment the error was detected need to be tracked.
 
-[esdiag]
+[esdiag,RevertEvent]
 ....
 |Patient,1,Paul McCartney
   + 1 2016-01-02 created as Paul McCartney
@@ -35,7 +35,7 @@ In the diagram above, we see that event 3 was performed, and later after event 4
 Now, we insert a special event, 5, that causes a revert of 3.
 Once the system processes the data correctly, this is equivalent to what follows.
 
-[esdiag]
+[esdiag,RevertEventEffective]
 ....
 |Patient,1,Paul McCartney
   + 1 2016-01-02 created as Paul McCartney
@@ -47,7 +47,7 @@ Once the system processes the data correctly, this is equivalent to what follows
 Depending on how many mistakes people and systems make, this could be much more complicated.
 For example, you might be able to revert a revert event.
 
-[esdiag]
+[esdiag,RevertOnRevert]
 ....
 |Patient,1,Paul McCartney
   + 1 2016-01-02 created as Paul McCartney
@@ -60,7 +60,7 @@ For example, you might be able to revert a revert event.
 
 This should be interpreted as 6 cancels out 5, so 5 can no more cancel out 3.
 
-[esdiag]
+[esdiag,RevertOnRevertEffective]
 ....
 |Patient,1,Paul McCartney
   + 1 2016-01-02 created as Paul McCartney
@@ -78,7 +78,7 @@ Sometimes, real world things merge together.
 For example, companies get merged or acquired.
 Sometimes, you accidentally create two aggregates that represent the same thing.
 
-[esdiag]
+[esdiag,MergeAggregates]
 ....
 |Patient,4,Farrokh Bulsara
   + 1 2016-01-02 created as Farrokh Bulsara
@@ -96,7 +96,7 @@ In this case, we created two patients that actually represent the same person.
 Then we realized that this needs to be the same person.
 While reading this, we would treat it as if it was like this.
 
-[esdiag]
+[esdiag,MergeAggregatesEffective]
 ....
 |Patient,4,Farrokh Bulsara
   + 1 2016-01-02 created as Farrokh Bulsara
@@ -121,7 +121,7 @@ Some systems might choose to continue adding events on an aggregate like 5.
 
 Lets assume we got confused with a pair of aggregates like these and performed a merge like this.
 
-[esdiag]
+[esdiag,RevertMergeBefore]
 ....
 |Patient,4,Tina Fey
   + 1 2016-01-02 created as Tina Fey
@@ -138,7 +138,7 @@ Lets assume we got confused with a pair of aggregates like these and performed a
 The correct way of reverting fixing this mistake, would be to perform a pair of reverts.
 This is complicated, but necessary in order to make the reads on both aggregates result in the merge being ignored.
 
-[esdiag]
+[esdiag,RevertMergeAfter]
 ....
 |Patient,4,Tina Fey
   + 1 2016-01-02 created as Tina Fey
@@ -159,7 +159,7 @@ This is complicated, but necessary in order to make the reads on both aggregates
 In an event sourced system, even joins are just events.
 That way we can preserve their temporal changes.
 
-[esdiag]
+[esdiag,JoinExample]
 ....
 |Department,1,Engineering
   + 1 2016-01-02 created as Farrokh Bulsara
@@ -178,7 +178,7 @@ Since joins can change with time, you could have a situation where you need to p
 In our example here, Mr Spock stops being the Science Officer when he becomes captain.
 For that to happen, we need to represent that the relationship between the department Science and Mr Spock is severed at a point in time.
 
-[esdiag]
+[esdiag,DisjoinExample]
 ....
 |Department,1,Science
   + 1 2016-01-02 created as Science

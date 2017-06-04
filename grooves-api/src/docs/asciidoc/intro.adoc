@@ -67,7 +67,7 @@ The second one holds true only for forward events.
 
 This is how we'll be representing events in the documentation.
 
-[esdiag]
+[esdiag,SimpleEvents]
 ....
 |Type,ID,Description
   + 1 2016-01-02 created as John Lennon
@@ -88,7 +88,7 @@ However when there are multiple aggregates shown together, the time lines will b
 Creation events will have a dotted circle around them.
 It doesn't mean anything special.
 
-[esdiag]
+[esdiag,ParallelEvents]
 ....
 |Patient,1,John Lennon
   + 1 2016-01-02 created as John Lennon
@@ -105,7 +105,7 @@ It doesn't mean anything special.
 
 When the time of two events is exactly the same, then they are displayed like this.
 
-[esdiag]
+[esdiag,ConcurrentEvents]
 ....
 |Patient,1,John Lennon
   + 1 2016-01-02 created as John Lennon
