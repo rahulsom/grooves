@@ -36,9 +36,12 @@ public class JoinExecutor<
         JoinEventT extends JoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
                 JoinedAggregateIdT, JoinedAggregateT>,
         DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
-                JoinedAggregateIdT, JoinedAggregateT>>
+                JoinedAggregateIdT, JoinedAggregateT>,
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+                QueryT>
+        >
         extends
-        QueryExecutor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        QueryExecutor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
 
     private final Class<JoinEventT> classJoinE;
     private final Class<DisjoinEventT> classDisjoinE;
@@ -50,7 +53,7 @@ public class JoinExecutor<
 
     @Override
     public Observable<SnapshotT> applyEvents(
-            BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> query,
+            QueryT query,
             SnapshotT initialSnapshot,
             Observable<EventT> events,
             List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,

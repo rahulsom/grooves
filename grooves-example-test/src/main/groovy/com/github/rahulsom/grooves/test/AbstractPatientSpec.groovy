@@ -2,6 +2,7 @@ package com.github.rahulsom.grooves.test
 
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.RESTClient
+import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -10,6 +11,7 @@ import spock.lang.Unroll
  *
  * @author Rahul Somasunderam
  */
+@SuppressWarnings(['UnnecessaryGetter'])
 abstract class AbstractPatientSpec extends Specification {
 
     /**
@@ -18,6 +20,15 @@ abstract class AbstractPatientSpec extends Specification {
      * @return Preconfigured RESTClient
      */
     abstract RESTClient getRest()
+
+    @Shared List<String> ids
+
+    void setup() {
+        if (!ids) {
+            def resp = rest.get(path: 'patient') as HttpResponseDecorator
+            ids = resp.data*.id
+        }
+    }
 
     void "Patient List works"() {
         when:
@@ -36,8 +47,11 @@ abstract class AbstractPatientSpec extends Specification {
 
     @Unroll
     void "Paul McCartney's balance is correct at version #version"() {
+        getRest()
+        def id = ids[3 - 1]
+
         given:
-        def resp = rest.get(path: 'patient/account/3',
+        def resp = rest.get(path: "patient/account/${id}",
                 query: [version: version,]) as HttpResponseDecorator
 
         expect:
@@ -65,8 +79,10 @@ abstract class AbstractPatientSpec extends Specification {
 
     @Unroll
     void "#name - Show works"() {
+        getRest()
+        def theId = ids[id - 1]
         given:
-        def resp = rest.get(path: "patient/show/${id}") as HttpResponseDecorator
+        def resp = rest.get(path: "patient/show/${theId}") as HttpResponseDecorator
 
         expect:
         with(resp) {
@@ -74,7 +90,7 @@ abstract class AbstractPatientSpec extends Specification {
             contentType == 'application/json'
         }
         with(resp.data) {
-            it.id == id
+            it.id == theId
             it.uniqueId == uniqueId
         }
 
@@ -86,8 +102,10 @@ abstract class AbstractPatientSpec extends Specification {
 
     @Unroll
     void "#name - Health works"() {
+        getRest()
+        def theId = ids[id - 1]
         given:
-        def resp = rest.get(path: "patient/health/${id}") as HttpResponseDecorator
+        def resp = rest.get(path: "patient/health/${theId}") as HttpResponseDecorator
 
         expect:
         with(resp) {
@@ -95,7 +113,7 @@ abstract class AbstractPatientSpec extends Specification {
             contentType == 'application/json'
         }
         with(resp.data) {
-            it.aggregateId == id || it.aggregate.id == id
+            it.aggregateId == theId || it.aggregate.id == theId
             it.name == name
             it.lastEventPosition == lastEventPos
             it.procedures.size() == codes.size()
@@ -111,8 +129,10 @@ abstract class AbstractPatientSpec extends Specification {
 
     @Unroll
     void "#name by Version #version - Health works"() {
+        getRest()
+        def theId = ids[id - 1]
         given:
-        def resp = rest.get(path: "patient/health/${id}",
+        def resp = rest.get(path: "patient/health/${theId}",
                 query: [version: version,]) as HttpResponseDecorator
 
         expect:
@@ -121,7 +141,7 @@ abstract class AbstractPatientSpec extends Specification {
             contentType == 'application/json'
         }
         with(resp.data) {
-            it.aggregateId == id || it.aggregate.id == id
+            it.aggregateId == theId || it.aggregate.id == theId
             it.name == name
             it.lastEventPosition == version
             it.procedures.size() == codes.size()
@@ -146,9 +166,11 @@ abstract class AbstractPatientSpec extends Specification {
 
     @Unroll
     def "#name by Date #date - Health works"() {
+        getRest()
+        def theId = ids[id - 1]
         given:
-        def resp = rest.get(path: "patient/health/${id}",
-                query: [date: date,]) as HttpResponseDecorator
+        def resp = rest.get(path: "patient/health/${theId}",
+                query: [date: "${date}T00:00:00.000Z",]) as HttpResponseDecorator
 
         expect:
         with(resp) {
@@ -156,7 +178,7 @@ abstract class AbstractPatientSpec extends Specification {
             contentType == 'application/json'
         }
         with(resp.data) {
-            it.aggregateId == id || it.aggregate.id == id
+            it.aggregateId == theId || it.aggregate.id == theId
             it.name == name
             it.lastEventPosition == lastEventPos
             it.procedures.size() == codes.size()
@@ -174,8 +196,12 @@ abstract class AbstractPatientSpec extends Specification {
 
     @Unroll
     void "George Harrison's balance is correct at version #version"() {
+        getRest()
+        def theId4 = ids[4 - 1]
+        def theAggregateId = ids[aggregateId - 1]
+        def theDeprecatedIds = deprecatedIds?.collect { ids[it - 1] } ?: null
         given:
-        def resp = rest.get(path: 'patient/account/4',
+        def resp = rest.get(path: "patient/account/${theId4}",
                 query: [version: version,]) as HttpResponseDecorator
 
         expect:
@@ -186,8 +212,8 @@ abstract class AbstractPatientSpec extends Specification {
         with(resp.data) {
             it.balance == balance
             it.moneyMade == moneyMade
-            it.deprecatesIds == deprecatedIds || it.deprecates*.id == deprecatedIds
-            it.aggregateId == aggregateId || it.aggregate.id == aggregateId
+            it.deprecatesIds == theDeprecatedIds || it.deprecates*.id == theDeprecatedIds
+            it.aggregateId == theAggregateId || it.aggregate.id == theAggregateId
         }
 
         where:
@@ -200,8 +226,11 @@ abstract class AbstractPatientSpec extends Specification {
 
     @Unroll
     void "George Harrison MBE's balance is correct at version #version"() {
+        getRest()
+        def theId5 = ids[5 - 1]
+        def theId4 = ids[4 - 1]
         given:
-        def resp = rest.get(path: 'patient/account/5',
+        def resp = rest.get(path: "patient/account/${theId5}",
                 query: [version: version,]) as HttpResponseDecorator
 
         expect:
@@ -212,6 +241,8 @@ abstract class AbstractPatientSpec extends Specification {
         with(resp.data) {
             it.balance == balance
             it.moneyMade == moneyMade
+            it.aggregateId == theId5 || it.aggregate.id == theId5
+            deprecatedIds == null || it.deprecates*.id == [theId4] || it.deprecatesIds == [theId4]
         }
 
         where:
@@ -222,11 +253,14 @@ abstract class AbstractPatientSpec extends Specification {
     }
 
     void "George Harrison and George Harrison MBE are merged"() {
-        given:
-        HttpResponseDecorator resp = null
+        getRest()
+        HttpResponseDecorator resp
+        def theId5 = ids[5 - 1]
+        def theId4 = ids[4 - 1]
+        def theId4AsRange = [theId4]
 
         when:
-        resp = rest.get(path: 'patient/account/5') as HttpResponseDecorator
+        resp = rest.get(path: "patient/account/${theId5}") as HttpResponseDecorator
 
         then:
         with(resp) {
@@ -234,8 +268,8 @@ abstract class AbstractPatientSpec extends Specification {
             contentType == 'application/json'
         }
         with(resp.data) {
-            it.aggregateId == 5 || it.aggregate.id == 5
-            it.deprecatesIds == [4,] || it.deprecates*.id == [4,]
+            it.aggregateId == theId5 || it.aggregate.id == theId5
+            it.deprecatesIds == theId4AsRange || it.deprecates*.id == theId4AsRange
             it.balance == 148.68
             it.moneyMade == 100.25
             it.lastEventPosition == 3
@@ -244,7 +278,7 @@ abstract class AbstractPatientSpec extends Specification {
         }
 
         when:
-        resp = rest.get(path: 'patient/account/4') as HttpResponseDecorator
+        resp = rest.get(path: "patient/account/${theId4}") as HttpResponseDecorator
 
         then:
         with(resp) {
@@ -252,17 +286,17 @@ abstract class AbstractPatientSpec extends Specification {
             contentType == 'application/json'
         }
         with(resp.data) {
-            it.aggregateId == 5 || it.aggregate.id == 5
-            it.deprecatesIds == [4,] || it.deprecates*.id == [4,]
+            it.aggregateId == theId5 || it.aggregate.id == theId5
+            it.deprecatesIds == theId4AsRange || it.deprecates*.id == theId4AsRange
             it.balance == 148.68
             it.moneyMade == 100.25
             it.lastEventPosition == 3
 
-            getDate(it.lastEventTimestamp)?.format('yyyyMMdd') ==  '20160128'
+            getDate(it.lastEventTimestamp)?.format('yyyyMMdd') == '20160128'
         }
     }
 
-    @SuppressWarnings(['Instanceof', ])
+    @SuppressWarnings(['Instanceof',])
     static Date getDate(def ts) {
         if (ts instanceof String) {
             Date.parse('yyyy-MM-dd', ts[0..10])

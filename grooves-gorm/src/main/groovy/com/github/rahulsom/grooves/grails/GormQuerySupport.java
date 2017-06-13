@@ -4,6 +4,7 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
+import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import org.grails.datastore.gorm.GormEntity;
 import rx.Observable;
 
@@ -33,12 +34,15 @@ public interface GormQuerySupport<
                 GormEntity<EventT>,
         SnapshotIdT,
         SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT> &
-                GormEntity<SnapshotT>
+                GormEntity<SnapshotT>,
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT, QueryT>
         > extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-        SnapshotT>,
-        BlockingEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        SnapshotT, QueryT>,
+        BlockingEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+                QueryT>,
         BlockingSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT> {
+                SnapshotT, QueryT> {
 
     @Override
     default Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {

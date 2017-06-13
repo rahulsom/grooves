@@ -7,6 +7,7 @@ import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.queries.internal.*;
 import rx.Observable;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -35,9 +36,11 @@ public interface TemporalQuerySupport<
         EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         SnapshotIdT,
         SnapshotT extends TemporalSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
-                EventT>>
+                EventT>,
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+                QueryT>>
         extends
-        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
 
     /**
      * Finds the last usable snapshot. For a given maxTimestamp, finds a snapshot whose last event
@@ -102,7 +105,8 @@ public interface TemporalQuerySupport<
                                                 Collectors.toList());
                                 getLog().info("     Uncomputed reverts exist: {}",
                                         stringifyEvents(reverts));
-                                return getSnapshotAndEventsSince(aggregate, moment, false);
+                                return getSnapshotAndEventsSince(
+                                        aggregate, moment, false);
                             } else {
                                 getLog().debug("     Events since last snapshot: {}",
                                         stringifyEvents(events));
@@ -154,7 +158,8 @@ public interface TemporalQuerySupport<
      */
     default Observable<SnapshotT> computeSnapshot(
             AggregateT aggregate, Date moment, boolean redirect) {
-        getLog().info("Computing snapshot for {} at {}", aggregate, moment);
+        getLog().info("Computing snapshot for {} at {}", aggregate,
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(moment));
 
         return getSnapshotAndEventsSince(aggregate, moment).flatMap(seTuple2 -> {
             List<EventT> events = seTuple2.getSecond();
@@ -204,7 +209,7 @@ public interface TemporalQuerySupport<
                 () -> getSnapshotAndEventsSince(aggregate, moment, false));
 
         final Observable<SnapshotT> snapshotTypeObservable =
-                getExecutor().applyEvents(this, lastUsableSnapshot, forwardOnlyEvents,
+                getExecutor().applyEvents((QueryT) this, lastUsableSnapshot, forwardOnlyEvents,
                         new ArrayList<>(), Collections.singletonList(aggregate), aggregate);
         return snapshotTypeObservable
                 .doOnNext(snapshot -> {
@@ -219,7 +224,7 @@ public interface TemporalQuerySupport<
                 ));
     }
 
-    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
+    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT
             > getExecutor() {
         return new QueryExecutor<>();
     }

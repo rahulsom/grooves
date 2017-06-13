@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
 import static rx.Observable.just;
 
-public class PatientHealthQuery implements CustomQuerySupport<PatientHealth> {
+public class PatientHealthQuery implements CustomQuerySupport<PatientHealth, PatientHealthQuery> {
 
     @Inject
     private Database database;

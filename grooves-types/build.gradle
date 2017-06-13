@@ -20,7 +20,7 @@ apply from: '../gradle/jacoco.gradle'
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 dependencies {
-    compileOnly 'org.codehaus.groovy:groovy:2.4.7'
+    compileOnly 'org.codehaus.groovy:groovy:2.4.8'
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     compile 'org.slf4j:slf4j-api:1.7.22'

@@ -6,6 +6,7 @@ import com.github.rahulsom.grooves.api.events.DisjoinEvent;
 import com.github.rahulsom.grooves.api.events.JoinEvent;
 import com.github.rahulsom.grooves.api.snapshots.Join;
 import com.github.rahulsom.grooves.queries.JoinSupport;
+import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
 import org.grails.datastore.gorm.GormEntity;
@@ -45,17 +46,20 @@ public interface GormJoinSupport<
         JoinEventT extends JoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
                 JoinedAggregateIdT, JoinedAggregateT>,
         DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
-                JoinedAggregateIdT, JoinedAggregateT>
+                JoinedAggregateIdT, JoinedAggregateT>,
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT, QueryT> & Join
         > extends
         JoinSupport<AggregateIdT, AggregateT, EventIdT, EventT, JoinedAggregateIdT,
-                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT>,
-        BlockingEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT, QueryT>,
+        BlockingEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+                QueryT>,
         BlockingSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT> {
+                SnapshotT, QueryT> {
 
     @Override
     default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-            SnapshotT> getExecutor() {
+            SnapshotT, QueryT> getExecutor() {
         //noinspection unchecked
         return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
     }

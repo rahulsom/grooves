@@ -138,11 +138,18 @@ class BootStrap implements InitializingBean {
      * @return
      */
     private PatientDeprecatedBy merge(Patient self, Patient into) {
-        def e1 = new PatientDeprecatedBy(aggregate: self, createdBy: 'anonymous', deprecator: into,
+        def e1 = new PatientDeprecatedBy(
+                aggregate: self,
+                createdBy: 'anonymous',
+                deprecator: into,
                 timestamp: currDate,
                 position: patientEventRepository.countByAggregateId(self.id) + 1,)
-        def e2 = new PatientDeprecates(aggregate: into, createdBy: 'anonymous', deprecated: self,
-                timestamp: currDate, converse: e1,
+        def e2 = new PatientDeprecates(
+                aggregate: into,
+                createdBy: 'anonymous',
+                deprecated: self,
+                timestamp: currDate,
+                converse: e1,
                 position: patientEventRepository.countByAggregateId(into.id) + 1,)
         e1.converse = e2
         patientEventRepository.save([e1, e2,])

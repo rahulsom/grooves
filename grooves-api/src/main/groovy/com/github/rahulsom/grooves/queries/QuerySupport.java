@@ -3,6 +3,7 @@ package com.github.rahulsom.grooves.queries;
 import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
+import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
 
@@ -23,14 +24,18 @@ public interface QuerySupport<
         EventIdT,
         EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
+        SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT, QueryT>
         >
         extends
-        TemporalQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        VersionedQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        TemporalQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT, QueryT>,
+        VersionedQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT, QueryT> {
 
     default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-            SnapshotT> getExecutor() {
+            SnapshotT, QueryT> getExecutor() {
         return new QueryExecutor<>();
     }
 

@@ -15,6 +15,7 @@ import rx.Observable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -41,9 +42,11 @@ public class QueryExecutor<
         EventIdT,
         EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
-        >
-        implements Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+                QueryT>
+        > implements Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+        QueryT> {
 
     final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -93,7 +96,7 @@ public class QueryExecutor<
      */
     @Override
     public Observable<SnapshotT> applyEvents(
-            BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> query,
+            QueryT query,
             SnapshotT initialSnapshot,
             Observable<EventT> events,
             List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
@@ -187,8 +190,7 @@ public class QueryExecutor<
      */
     Observable<SnapshotT> applyDeprecates(
             final Deprecates<AggregateIdT, AggregateT, EventIdT, EventT> event,
-            final BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                    SnapshotT> util,
+            final QueryT util,
             final List<AggregateT> allAggregates,
             final List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesEvents,
             AggregateT aggregate) {
@@ -204,8 +206,8 @@ public class QueryExecutor<
                     util.addToDeprecates(newSnapshot, deprecatedAggregate);
 
                     return util.findEventsForAggregates(plus(allAggregates, deprecatedAggregate))
-                            .filter(it -> !it.getId().equals(event.getId())
-                                    && !it.getId().equals(converse.getId()))
+                            .filter(it -> !Objects.equals(it.getId(), event.getId())
+                                    && !Objects.equals(it.getId(), converse.getId()))
                             .toSortedList((a, b) -> a.getTimestamp().compareTo(b.getTimestamp()))
                             .flatMap(sortedEvents -> {
                                 log.debug("Reassembled Events: {}", stringifyEvents(sortedEvents));
@@ -242,7 +244,7 @@ public class QueryExecutor<
      *         Util instance, or an Observable that asks to RETURN if that fails.
      */
     Observable<EventApplyOutcome> callMethod(
-            BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> util,
+            QueryT util,
             String methodName,
             final SnapshotT snapshot,
             final EventT event) {

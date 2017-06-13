@@ -242,8 +242,9 @@ public class BootStrap {
                     return currDate;
                 };
 
-        return new EventsDsl<Long, Patient, Long, PatientEvent>()
-                .on(patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure);
+        EventsDsl<Long, Patient, Long, PatientEvent> dsl = new EventsDsl<>();
+        return dsl.on(patient, eventSaver, positionSupplier, userSupplier, dateSupplier,
+                closure::accept);
     }
 
 }

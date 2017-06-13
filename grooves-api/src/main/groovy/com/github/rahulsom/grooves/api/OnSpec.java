@@ -55,18 +55,16 @@ public class OnSpec<
      * Computes and persists a snapshot based on a QueryUtil on the aggregate that this
      * OnSpec applies on
      *
-     * @param queryUtil     The Query Util to compute the snapshot
+     * @param query     The Query Util to compute the snapshot
      * @param beforePersist Code to execute before persisting the snapshot.
      *
      * @return The snapshot after persisting
      */
-    public SnapshotT snapshotWith(
-            QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                    SnapshotT> queryUtil,
-            Consumer<SnapshotT> beforePersist) {
+    public <QueryT extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            SnapshotT, QueryT>> SnapshotT snapshotWith(
+                    QueryT query, Consumer<SnapshotT> beforePersist) {
 
-
-        SnapshotT snapshotT = queryUtil
+        SnapshotT snapshotT = query
                 .computeSnapshot(aggregate, Long.MAX_VALUE)
                 .toBlocking()
                 .single();
@@ -83,14 +81,13 @@ public class OnSpec<
      * Computes and persists a snapshot based on a QueryUtil on the aggregate that this
      * OnSpec applies on.
      *
-     * @param queryUtil The Query Util to compute the snapshot
+     * @param query The Query Util to compute the snapshot
      *
      * @return The snapshot after persisting
      */
-    public SnapshotT snapshotWith(
-            QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                    SnapshotT> queryUtil) {
-        return snapshotWith(queryUtil, snapshotT -> {
+    public <QueryT extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            SnapshotT, QueryT>> SnapshotT snapshotWith(QueryT query) {
+        return snapshotWith(query, snapshotT -> {
         });
     }
 

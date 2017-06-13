@@ -1,11 +1,11 @@
-package grooves.example.springboot.kotlin
+package grooves.boot.kotlin
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
-class SpringbootKotlinApplication
+class KotlinApplication
 
 fun main(args: Array<String>) {
-    SpringApplication.run(SpringbootKotlinApplication::class.java, *args)
+    SpringApplication.run(KotlinApplication::class.java, *args)
 }

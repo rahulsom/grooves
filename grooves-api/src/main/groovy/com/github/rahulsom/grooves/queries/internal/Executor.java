@@ -25,7 +25,9 @@ public interface Executor<
         EventIdT,
         EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
+        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+                QueryT>
         > {
     /**
      * Applies reverts to a list of events and then returns forward events.
@@ -49,7 +51,7 @@ public interface Executor<
      * @return The Snapshot that has been mutated
      */
     Observable<SnapshotT> applyEvents(
-            BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> query,
+            QueryT query,
             SnapshotT initialSnapshot,
             Observable<EventT> events,
             List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,

@@ -34,10 +34,12 @@ public interface VersionedQuerySupport<
         EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         SnapshotIdT,
         SnapshotT extends VersionedSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
-                EventT>
+                EventT>,
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+                QueryT>
         >
         extends
-        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
 
     /**
      * Finds the last usable snapshot. For a given maxPosition, finds a snapshot that's older than
@@ -103,7 +105,8 @@ public interface VersionedQuerySupport<
                                                 Collectors.toList());
                                 getLog().info("     Uncomputed reverts exist: {}",
                                         stringifyEvents(reverts));
-                                return getSnapshotAndEventsSince(aggregate, version, false);
+                                return getSnapshotAndEventsSince(
+                                        aggregate, version, false);
                             } else {
                                 getLog().debug("     Events since last snapshot: {}",
                                         stringifyEvents(events));
@@ -129,7 +132,7 @@ public interface VersionedQuerySupport<
 
     }
 
-    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
+    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT
             > getExecutor() {
         return new QueryExecutor<>();
     }
@@ -212,7 +215,7 @@ public interface VersionedQuerySupport<
         );
 
         final Observable<SnapshotT> snapshotObservable =
-                getExecutor().applyEvents(this, lastUsableSnapshot, forwardOnlyEvents,
+                getExecutor().applyEvents((QueryT) this, lastUsableSnapshot, forwardOnlyEvents,
                         new ArrayList<>(), Collections.singletonList(aggregate), aggregate);
         return snapshotObservable
                 .doOnNext(snapshot -> {

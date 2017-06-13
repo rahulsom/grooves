@@ -5,6 +5,7 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.DisjoinEvent;
 import com.github.rahulsom.grooves.api.events.JoinEvent;
 import com.github.rahulsom.grooves.api.snapshots.VersionedJoin;
+import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
 
@@ -37,15 +38,18 @@ public interface VersionedJoinSupport<
         JoinEventT extends JoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
                 JoinedAggregateIdT, JoinedAggregateT>,
         DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
-                JoinedAggregateIdT, JoinedAggregateT>
+                JoinedAggregateIdT, JoinedAggregateT>,
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT, QueryT>
         > extends
-        VersionedQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        VersionedQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT, QueryT> {
     Class<JoinEventT> getJoinEventClass();
 
     Class<DisjoinEventT> getDisjoinEventClass();
 
     @Override
-    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
+    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT
             > getExecutor() {
         return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
     }
