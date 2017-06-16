@@ -50,6 +50,10 @@ link:examples/springboot/jpa[examples/springboot/jpa]::
    This uses Springboot and JPA repositories for everything.
    All the code is written in groovy.
 
+link:examples/springboot/kotlin[examples/springboot/kotlin]::
+   This uses Spring Reactive Web and RxMongo repositories for everything.
+   All the code is written in kotlin.
+
 link:examples/javaee[examples/javaee]::
    This uses Java and JavaEE for the APIs.
    The persistence here is completely made up using a few `List` objects.

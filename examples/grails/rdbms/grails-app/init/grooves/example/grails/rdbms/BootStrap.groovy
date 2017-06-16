@@ -1,6 +1,6 @@
 package grooves.example.grails.rdbms
 
-import com.github.rahulsom.grooves.api.EventsDsl
+import com.github.rahulsom.grooves.api.OnSpec
 import com.github.rahulsom.grooves.groovy.GroovyEventsDsl
 import grooves.grails.rdbms.*
 
@@ -128,10 +128,10 @@ class BootStrap {
     private PatientDeprecatedBy merge(Patient self, Patient into) {
         def e1 = new PatientDeprecatedBy(aggregate: self, createdBy: 'anonymous', deprecator: into,
                 timestamp: currDate,
-                position: PatientEvent.countByAggregate(self) + 1, )
+                position: PatientEvent.countByAggregate(self) + 1,)
         def e2 = new PatientDeprecates(aggregate: into, createdBy: 'anonymous', deprecated: self,
                 timestamp: currDate, converse: e1,
-                position: PatientEvent.countByAggregate(into) + 1, )
+                position: PatientEvent.countByAggregate(into) + 1,)
         e1.converse = e2
         e2.save(flush: true, failOnError: true)
         e2.converse
@@ -139,12 +139,12 @@ class BootStrap {
 
     Date currDate = Date.parse('yyyy-MM-dd', '2016-01-01')
 
-    Patient on(Patient patient, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
+    Patient on(Patient patient, @DelegatesTo(OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer<PatientEvent>
         def positionSupplier = { PatientEvent.countByAggregate(patient) + 1 }
         def userSupplier = { 'anonymous' }
         def dateSupplier = { currDate += 1; currDate }
-        new GroovyEventsDsl<Patient, Long, PatientEvent>().on(
+        new GroovyEventsDsl<Long, Patient, Long, PatientEvent>().on(
                 patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
     }
 

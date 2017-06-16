@@ -2,7 +2,7 @@ package grooves.boot.jpa.domain
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.github.rahulsom.grooves.api.snapshots.Snapshot
+import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
 import groovy.transform.ToString
 import rx.Observable
 
@@ -17,7 +17,7 @@ import static rx.Observable.*
  */
 @Entity
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
-class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
+class PatientHealth implements JavaSnapshot<Long, Patient, Long, Long, PatientEvent> {
 
     @GeneratedValue @Id Long id
 

@@ -1,7 +1,7 @@
 package grooves.example.grails.mongo
 
 import com.github.rahulsom.genealogy.NameDbUsa
-import com.github.rahulsom.grooves.api.EventsDsl
+import com.github.rahulsom.grooves.api.OnSpec
 import com.github.rahulsom.grooves.groovy.GroovyEventsDsl
 import grooves.grails.mongo.*
 
@@ -78,6 +78,7 @@ class BootStrap {
             }
         }
     }
+
     private void linkZipcodesAndPatients(Zipcode campbell, Zipcode santanaRow) {
         def names = NameDbUsa.instance
         for (int i = 0; i < 10; i++) {
@@ -123,7 +124,8 @@ class BootStrap {
             }
         }
     }
-    private void setupProcedures(int numberOfProcedures, EventsDsl.OnSpec sp, Random random) {
+
+    private void setupProcedures(int numberOfProcedures, OnSpec sp, Random random) {
         for (int p = 0; p < numberOfProcedures; p++) {
             currDate += random.nextInt(5)
             def key = procedures.keySet().toList()[p]
@@ -259,24 +261,24 @@ class BootStrap {
 
     Date currDate = Date.parse('yyyy-MM-dd', START_DATE)
 
-    Patient on(Patient patient, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
+    Patient on(Patient patient, @DelegatesTo(OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { PatientEvent.countByAggregate(patient) + 1 }
         def userSupplier = { 'anonymous' }
         def dateSupplier = { currDate += 1; currDate }
-        new GroovyEventsDsl<Patient, Long, PatientEvent>().on(
+        new GroovyEventsDsl<Long, Patient, Long, PatientEvent>().on(
                 patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
     }
 
-    Zipcode on(Zipcode zipcode, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
+    Zipcode on(Zipcode zipcode, @DelegatesTo(OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { ZipcodeEvent.countByAggregate(zipcode) + 1 }
         def userSupplier = { 'anonymous' }
-        new GroovyEventsDsl<Zipcode, Long, ZipcodeEvent>().on(
+        new GroovyEventsDsl<Long, Zipcode, Long, ZipcodeEvent>().on(
                 zipcode, eventSaver, positionSupplier, userSupplier, closure)
     }
 
-    Doctor on(Doctor doctor, @DelegatesTo(EventsDsl.OnSpec) Closure closure) {
+    Doctor on(Doctor doctor, @DelegatesTo(OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { DoctorEvent.countByAggregate(doctor) + 1 }
         def userSupplier = { 'anonymous' }

@@ -15,9 +15,9 @@ import static rx.Observable.just
  */
 @SuppressWarnings(['AbstractClassWithoutAbstractMethod', 'GrailsDomainReservedSqlKeywordName'])
 @EqualsAndHashCode
-abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> {
+abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEvent> {
 
-    RevertEvent<Patient, Long, PatientEvent> revertedBy
+    RevertEvent<Long, Patient, Long, PatientEvent> revertedBy
     String createdBy
     Date timestamp
     Long position
@@ -46,7 +46,7 @@ class PatientCreated extends PatientEvent {
 
 @EqualsAndHashCode
 class PatientAddedToZipcode extends PatientEvent implements
-        JoinEvent<Patient, Long, PatientEvent, Zipcode> {
+        JoinEvent<Long, Patient, Long, PatientEvent, Long, Zipcode> {
     Zipcode zipcode
     @Override Observable<Zipcode> getJoinAggregateObservable() { just zipcode }
 
@@ -59,7 +59,7 @@ class PatientAddedToZipcode extends PatientEvent implements
 
 @EqualsAndHashCode
 class PatientRemovedFromZipcode extends PatientEvent implements
-        DisjoinEvent<Patient, Long, PatientEvent, Zipcode> {
+        DisjoinEvent<Long, Patient, Long, PatientEvent, Long, Zipcode> {
     Zipcode zipcode
     @Override Observable<Zipcode> getJoinAggregateObservable() { just zipcode }
 
@@ -92,7 +92,7 @@ class PaymentMade extends PatientEvent {
 
 @EqualsAndHashCode
 class PatientEventReverted extends PatientEvent implements
-        RevertEvent<Patient, Long, PatientEvent> {
+        RevertEvent<Long, Patient, Long, PatientEvent> {
     Long revertedEventId
 
     @Override String getAudit() { new JsonBuilder([revertedEvent: revertedEventId]).toString() }
@@ -102,7 +102,7 @@ class PatientEventReverted extends PatientEvent implements
 
 @EqualsAndHashCode
 class PatientDeprecatedBy extends PatientEvent implements
-        DeprecatedBy<Patient, Long, PatientEvent> {
+        DeprecatedBy<Long, Patient, Long, PatientEvent> {
     static hasOne = [
             converse: PatientDeprecates,
     ]
@@ -118,7 +118,7 @@ class PatientDeprecatedBy extends PatientEvent implements
 
 @EqualsAndHashCode
 class PatientDeprecates extends PatientEvent implements
-        Deprecates<Patient, Long, PatientEvent> {
+        Deprecates<Long, Patient, Long, PatientEvent> {
     static belongsTo = [
             converse: PatientDeprecatedBy,
     ]

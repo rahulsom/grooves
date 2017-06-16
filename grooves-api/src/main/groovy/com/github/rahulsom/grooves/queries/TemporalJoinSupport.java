@@ -5,6 +5,7 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.DisjoinEvent;
 import com.github.rahulsom.grooves.api.events.JoinEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalJoin;
+import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
 
@@ -25,25 +26,31 @@ import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
  * @author Rahul Somasunderam
  */
 public interface TemporalJoinSupport<
-        AggregateT extends AggregateType,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         JoinedAggregateIdT,
-        JoinedAggregateT extends AggregateType,
+        JoinedAggregateT extends AggregateType<JoinedAggregateIdT>,
         SnapshotIdT,
-        SnapshotT extends TemporalJoin<AggregateT, SnapshotIdT, JoinedAggregateIdT,
+        SnapshotT extends TemporalJoin<AggregateIdT, AggregateT, SnapshotIdT, JoinedAggregateIdT,
                 EventIdT, EventT>,
-        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>
+        JoinEventT extends JoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
+                JoinedAggregateIdT, JoinedAggregateT>,
+        DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
+                JoinedAggregateIdT, JoinedAggregateT>,
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT, QueryT>
         > extends
-        TemporalQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        TemporalQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT, QueryT> {
 
     Class<JoinEventT> getJoinEventClass();
 
     Class<DisjoinEventT> getDisjoinEventClass();
 
     @Override
-    default Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
+    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT
             > getExecutor() {
         return new JoinExecutor(getJoinEventClass(), getDisjoinEventClass());
     }

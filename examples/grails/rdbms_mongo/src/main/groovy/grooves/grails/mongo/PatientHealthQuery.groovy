@@ -16,7 +16,8 @@ import static rx.Observable.just
 @GrailsCompileStatic
 @SuppressWarnings(['DuplicateStringLiteral'])
 class PatientHealthQuery implements
-        GormQuerySupport<Patient, Long, PatientEvent, String, PatientHealth> {
+        GormQuerySupport<Long, Patient, Long, PatientEvent, String, PatientHealth,
+                PatientHealthQuery> {
 
     final Class<PatientHealth> snapshotClass = PatientHealth
     final Class<PatientEvent> eventClass = PatientEvent

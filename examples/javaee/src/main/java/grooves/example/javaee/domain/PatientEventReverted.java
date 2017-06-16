@@ -3,7 +3,7 @@ package grooves.example.javaee.domain;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 
 public class PatientEventReverted extends PatientEvent implements
-        RevertEvent<Patient, Long, PatientEvent> {
+        RevertEvent<Long, Patient, Long, PatientEvent> {
     private Long revertedEventId;
 
     @Override

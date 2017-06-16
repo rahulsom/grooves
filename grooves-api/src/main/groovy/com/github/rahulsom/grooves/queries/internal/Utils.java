@@ -77,14 +77,18 @@ public class Utils {
      * @return an observable of forward only events
      */
     public static <
-            AggregateT extends AggregateType,
+            AggregateIdT,
+            AggregateT extends AggregateType<AggregateIdT>,
             EventIdT,
-            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+            EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
             SnapshotIdT,
-            SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
+            SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
+            QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                    SnapshotT, QueryT>
             > Observable<EventT> getForwardOnlyEvents(
             List<EventT> events,
-            Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> executor,
+            Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+                    QueryT> executor,
             Supplier<Observable<Pair<SnapshotT, List<EventT>>>> fallbackSnapshotAndEvents) {
         return executor.applyReverts(Observable.from(events))
                 .toList()

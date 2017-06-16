@@ -9,11 +9,11 @@ import java.util.Date;
 
 import static rx.Observable.just;
 
-public abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> {
+public abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEvent> {
     private Patient aggregate;
     private Long id;
     private String createdBy;
-    private RevertEvent<Patient, Long, PatientEvent> revertedBy;
+    private RevertEvent<Long, Patient, Long, PatientEvent> revertedBy;
     private Date timestamp;
     private Long position;
 
@@ -55,11 +55,11 @@ public abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEv
         this.createdBy = createdBy;
     }
 
-    public RevertEvent<Patient, Long, PatientEvent> getRevertedBy() {
+    public RevertEvent<Long, Patient, Long, PatientEvent> getRevertedBy() {
         return revertedBy;
     }
 
-    public void setRevertedBy(RevertEvent<Patient, Long, PatientEvent> revertedBy) {
+    public void setRevertedBy(RevertEvent<Long, Patient, Long, PatientEvent> revertedBy) {
         this.revertedBy = revertedBy;
     }
 

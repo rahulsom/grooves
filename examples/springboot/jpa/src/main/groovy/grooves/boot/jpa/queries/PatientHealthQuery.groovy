@@ -24,7 +24,8 @@ import static rx.Observable.just
 @Transactional
 @Component
 @Query(aggregate = Patient, snapshot = PatientHealth)
-class PatientHealthQuery implements QuerySupport<Patient, Long, PatientEvent, Long, PatientHealth> {
+class PatientHealthQuery implements
+        QuerySupport<Long, Patient, Long, PatientEvent, Long, PatientHealth, PatientHealthQuery> {
 
     @Autowired EntityManager entityManager
     @Autowired PatientHealthRepository patientHealthRepository

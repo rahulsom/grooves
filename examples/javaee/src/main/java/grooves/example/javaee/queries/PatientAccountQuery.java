@@ -11,7 +11,8 @@ import java.math.BigDecimal;
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
 import static rx.Observable.just;
 
-public class PatientAccountQuery implements CustomQuerySupport<PatientAccount> {
+public class PatientAccountQuery implements CustomQuerySupport<PatientAccount,
+        PatientAccountQuery> {
 
     @Inject
     private Database database;

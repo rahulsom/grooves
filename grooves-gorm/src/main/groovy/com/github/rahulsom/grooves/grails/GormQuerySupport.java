@@ -4,6 +4,7 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
+import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import org.grails.datastore.gorm.GormEntity;
 import rx.Observable;
 
@@ -26,15 +27,22 @@ import java.util.List;
  */
 @Deprecated
 public interface GormQuerySupport<
-        AggregateT extends AggregateType & GormEntity<AggregateT>,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT> & GormEntity<AggregateT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT> & GormEntity<EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT> &
+                GormEntity<EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> &
-                GormEntity<SnapshotT>
-        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        BlockingEventSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        BlockingSnapshotSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT> &
+                GormEntity<SnapshotT>,
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT, QueryT>
+        > extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+        SnapshotT, QueryT>,
+        BlockingEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+                QueryT>,
+        BlockingSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT, QueryT> {
 
     @Override
     default Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
@@ -55,7 +63,8 @@ public interface GormQuerySupport<
     @Override
     default Observable<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
-        return BlockingEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
+        return BlockingEventSource.super.getUncomputedEvents(aggregate, lastSnapshot,
+                snapshotTime);
     }
 
     @Override

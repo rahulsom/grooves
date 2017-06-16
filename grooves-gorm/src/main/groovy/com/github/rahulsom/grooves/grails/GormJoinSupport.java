@@ -6,6 +6,7 @@ import com.github.rahulsom.grooves.api.events.DisjoinEvent;
 import com.github.rahulsom.grooves.api.events.JoinEvent;
 import com.github.rahulsom.grooves.api.snapshots.Join;
 import com.github.rahulsom.grooves.queries.JoinSupport;
+import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
 import org.grails.datastore.gorm.GormEntity;
@@ -33,24 +34,32 @@ import java.util.List;
  */
 @Deprecated
 public interface GormJoinSupport<
-        AggregateT extends AggregateType & GormEntity<AggregateT>,
+        AggregateIdT,
+        AggregateT extends AggregateType<AggregateIdT> & GormEntity<AggregateT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT> & GormEntity<EventT>,
+        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT> & GormEntity<EventT>,
         JoinedAggregateIdT,
-        JoinedAggregateT extends AggregateType & GormEntity<JoinedAggregateT>,
+        JoinedAggregateT extends AggregateType<JoinedAggregateIdT> & GormEntity<JoinedAggregateT>,
         SnapshotIdT,
-        SnapshotT extends Join<AggregateT, SnapshotIdT, JoinedAggregateIdT,
+        SnapshotT extends Join<AggregateIdT, AggregateT, SnapshotIdT, JoinedAggregateIdT,
                 EventIdT, EventT> & GormEntity<SnapshotT>,
-        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>
+        JoinEventT extends JoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
+                JoinedAggregateIdT, JoinedAggregateT>,
+        DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
+                JoinedAggregateIdT, JoinedAggregateT>,
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT, QueryT> & Join
         > extends
-        JoinSupport<AggregateT, EventIdT, EventT, JoinedAggregateIdT, JoinedAggregateT,
-                SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT>,
-        BlockingEventSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        BlockingSnapshotSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        JoinSupport<AggregateIdT, AggregateT, EventIdT, EventT, JoinedAggregateIdT,
+                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT, QueryT>,
+        BlockingEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+                QueryT>,
+        BlockingSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT, QueryT> {
 
     @Override
-    default Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> getExecutor() {
+    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            SnapshotT, QueryT> getExecutor() {
         //noinspection unchecked
         return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
     }

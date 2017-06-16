@@ -1,6 +1,6 @@
 package grooves.grails.mongo
 
-import com.github.rahulsom.grooves.api.snapshots.Snapshot
+import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import rx.Observable
@@ -18,7 +18,7 @@ import static rx.Observable.just
 @SuppressWarnings(['DuplicateStringLiteral'])
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition',])
 @ToString(includes = ['id', 'aggregateId', 'lastEventPosition', 'name',])
-class ZipcodeSummary implements Snapshot<Zipcode, String, Long, ZipcodeEvent> {
+class ZipcodeSummary implements JavaSnapshot<Long, Zipcode, String, Long, ZipcodeEvent> {
 
     static mapWith = 'mongo'
 

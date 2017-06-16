@@ -16,7 +16,7 @@ apply from: '../gradle/jacoco.gradle'
 
 dependencies {
     compile project(':grooves-api')
-    compile 'org.codehaus.groovy:groovy:2.4.7'
+    compile 'org.codehaus.groovy:groovy:2.4.8'
 
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }

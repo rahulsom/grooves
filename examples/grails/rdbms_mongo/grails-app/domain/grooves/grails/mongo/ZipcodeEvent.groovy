@@ -19,9 +19,9 @@ import static rx.Observable.just
 @SuppressWarnings(['DuplicateStringLiteral', 'AbstractClassWithoutAbstractMethod',
         'GrailsDomainReservedSqlKeywordName', ])
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
-abstract class ZipcodeEvent implements BaseEvent<Zipcode, Long, ZipcodeEvent> {
+abstract class ZipcodeEvent implements BaseEvent<Long, Zipcode, Long, ZipcodeEvent> {
 
-    RevertEvent<Zipcode, Long, ZipcodeEvent> revertedBy
+    RevertEvent<Long, Zipcode, Long, ZipcodeEvent> revertedBy
     String createdBy
     Date timestamp
     Long position
@@ -48,7 +48,7 @@ class ZipcodeCreated extends ZipcodeEvent {
 @Event(Zipcode)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeGotPatient extends ZipcodeEvent implements
-        JoinEvent<Zipcode, Long, ZipcodeEvent, Patient> {
+        JoinEvent<Long, Zipcode, Long, ZipcodeEvent, Long, Patient> {
     Patient patient
 
     @Override String getAudit() { new JsonBuilder([patientId: patient?.id]).toString() }
@@ -62,7 +62,7 @@ class ZipcodeGotPatient extends ZipcodeEvent implements
 @Event(Zipcode)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeLostPatient extends ZipcodeEvent implements
-        DisjoinEvent<Zipcode, Long, ZipcodeEvent, Patient> {
+        DisjoinEvent<Long, Zipcode, Long, ZipcodeEvent, Long, Patient> {
     Patient patient
 
     @Override String getAudit() { new JsonBuilder([patientId: patient?.id]).toString() }
@@ -76,7 +76,7 @@ class ZipcodeLostPatient extends ZipcodeEvent implements
 @Event(Zipcode)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeGotDoctor extends ZipcodeEvent implements
-        JoinEvent<Zipcode, Long, ZipcodeEvent, Doctor> {
+        JoinEvent<Long, Zipcode, Long, ZipcodeEvent, Long, Doctor> {
     Doctor doctor
 
     @Override String getAudit() { new JsonBuilder([doctorId: doctor?.id]).toString() }
@@ -90,7 +90,7 @@ class ZipcodeGotDoctor extends ZipcodeEvent implements
 @Event(Zipcode)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeLostDoctor extends ZipcodeEvent implements
-        DisjoinEvent<Zipcode, Long, ZipcodeEvent, Doctor> {
+        DisjoinEvent<Long, Zipcode, Long, ZipcodeEvent, Long, Doctor> {
     Doctor doctor
 
     @Override String getAudit() { new JsonBuilder([doctorId: doctor?.id]).toString() }
