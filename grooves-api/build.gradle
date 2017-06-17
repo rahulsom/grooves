@@ -4,8 +4,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
-        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
-        classpath 'org.ajoberstar:gradle-git:1.6.0'
         classpath 'com.netflix.nebula:gradle-info-plugin:3.+'
     }
 }
@@ -13,8 +11,6 @@ buildscript {
 apply plugin: 'com.bmuschko.nexus'
 apply from: '../gradle/publishing.gradle'
 apply plugin: 'groovy'
-apply plugin: 'org.asciidoctor.convert'
-apply plugin: 'org.ajoberstar.github-pages'
 apply from: '../gradle/jacoco.gradle'
 
 dependencies {
@@ -26,31 +22,9 @@ dependencies {
     compile project(':grooves-types')
 
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+
 }
 
 groovydoc {
     exclude '**/*.java'
 }
-
-asciidoctor {
-    sources {
-        include 'index.adoc'
-    }
-}
-
-githubPages {
-    repoUri = 'https://github.com/rahulsom/grooves.git'
-    targetBranch = 'gh-pages'
-    pages {
-        from(file("$buildDir/asciidoc/html5")) {
-            into '.'
-        }
-    }
-    credentials {
-        username = System.getenv('GH_TOKEN')
-        password = '\n'
-    }
-}
-
-tasks.findByName('uploadArchives').dependsOn 'publishGhPages'
-tasks.findByName('publishGhPages').dependsOn 'asciidoctor'

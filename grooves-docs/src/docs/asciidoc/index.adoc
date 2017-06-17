@@ -1,0 +1,84 @@
+= Grooves
+:stem:
+:toc: left
+:sectnums:
+:nofooter:
+:source-highlighter: coderay
+:icons: font
+:sourcedir: ../../../../
+
+++++
+<style>
+.switch--item:not(:first-child) {
+    border-left: #7a2518 solid 0.1px;
+}
+
+.colist>table tr>td:first-of-type {
+    padding: .75em;
+    line-height: 1;
+    vertical-align: top;
+}
+</style>
+++++
+
+Formerly, _Groovy + Event Sourcing_.
+Now, _Grooves_ is just a name.
+It supports Event Sourcing on many JVM languages.
+Examples and tests are included in java, kotlin, and of course, groovy.
+
+include::intro.adoc[]
+
+include::hurdles.adoc[]
+
+== How Grooves solves it
+
+Grooves assumes nothing about your persistence framework or whether you're building a webapp or a batch application.
+Grooves only offers some tools to help you build your own event sourced system.
+
+* Interfaces for the Aggregate, Event (and its special subtypes) and Snapshot.
+* A set of interfaces with default methods that help you write queries.
+* _If you're using groovy_, annotations to mark these and AST Transformations to ensure all event types are covered in a Query implementation.
+
+This allows you to use Grooves with a lot of different frameworks.
+There are examples in the repository for some options you could use.
+
+== Event Sourcing with Grooves
+
+=== The Aggregate
+
+[source,java,indent=0,role="primary"]
+.Java
+----
+include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/domain/Patient.java[tags=documented]
+----
+<1> For grooves to use an aggregate, you must implement the `AggregateType` interface.
+  It accepts a type using generics that identifies the id of the aggregate.
+  That is typically used as the primary key in a database.
+<2> The id type in this case needs to be defined.
+  Some persistence mechanisms have default types.
+  If your `id` type matches that, you can skip the declaration.
+
+[source,groovy,indent=0,role="secondary"]
+.Groovy
+----
+include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/domain/Patient.groovy[tags=documented]
+----
+<1> For grooves to use an aggregate, you must implement the `AggregateType` interface.
+  It accepts a type using generics that identifies the `id` of the aggregate.
+  That is typically used as the primary key in a database.
+<2> The `id` type in this case needs to be defined.
+  Some persistence mechanisms have default types.
+  If your `id` type matches that, you can skip the declaration.
+
+[source,kotlin,indent=0,role="secondary"]
+.Kotlin
+----
+include::{sourcedir}/examples/springboot/kotlin/src/main/kotlin/grooves/boot/kotlin/domain/Patient.kt[tags=documented]
+----
+<1> For grooves to use an aggregate, you must implement the `AggregateType` interface.
+  It accepts a type using generics that identifies the id of the aggregate.
+  That is typically used as the primary key in a database.
+<2> The `id` type in this case needs to be defined.
+  Some persistence mechanisms have default types.
+  If your `id` type matches that, you can skip the declaration.
+  We are using mongo on spring boot here. So we are using `String`.
