@@ -66,3 +66,9 @@ tasks.findByName('test').finalizedBy 'stopMongoDb'
 mongo {
     port 27021
 }
+
+sonarqube {
+    properties {
+        property 'sonar.moduleKey', 'com.github.rahulsom:grooves:examples-springboot-kotlin'
+    }
+}

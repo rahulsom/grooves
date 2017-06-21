@@ -41,8 +41,8 @@ subprojects {
 
 tasks.release.dependsOn 'grooves-api:uploadArchives',
         'grooves-groovy:uploadArchives',
-        'grooves-gorm:uploadArchives'
-
+        'grooves-gorm:uploadArchives',
+        'grooves-types:uploadArchives'
 
 project.afterEvaluate {
     project.tasks.findByName('closeAndPromoteRepository').mustRunAfter 'grooves-api:uploadArchives',
