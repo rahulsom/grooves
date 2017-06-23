@@ -9,6 +9,7 @@ buildscript {
         classpath 'com.netflix.nebula:gradle-info-plugin:3.+'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:1.0.3"
+        classpath "gradle.plugin.com.srcclr:gradle:2.2.3"
     }
 }
 
@@ -18,6 +19,7 @@ apply plugin: 'groovy'
 apply plugin: 'kotlin'
 apply from: '../gradle/jacoco.gradle'
 apply plugin: "org.jlleitschuh.gradle.ktlint"
+apply plugin: "com.srcclr.gradle"
 
 dependencies {
     compileOnly 'org.codehaus.groovy:groovy:2.4.8'
@@ -27,4 +29,8 @@ dependencies {
     compile 'io.reactivex:rxjava:1.2.9'
 
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+}
+
+srcclr {
+  apiToken = System.getenv()['SRC_CLR_TOKEN']
 }

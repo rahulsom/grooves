@@ -1,10 +1,12 @@
 buildscript {
     repositories {
         jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
         classpath 'com.netflix.nebula:gradle-info-plugin:3.+'
+        classpath "gradle.plugin.com.srcclr:gradle:2.2.3"
     }
 }
 
@@ -13,6 +15,7 @@ apply from: '../gradle/publishing.gradle'
 apply plugin: 'nebula.info'
 apply plugin: 'groovy'
 apply from: '../gradle/jacoco.gradle'
+apply plugin: "com.srcclr.gradle"
 
 dependencies {
     compile project(':grooves-api')
@@ -23,4 +26,8 @@ dependencies {
 
 groovydoc {
     exclude '**/*.java'
+}
+
+srcclr {
+  apiToken = System.getenv()['SRC_CLR_TOKEN']
 }
