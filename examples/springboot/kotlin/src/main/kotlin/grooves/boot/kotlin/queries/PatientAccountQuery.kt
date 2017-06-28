@@ -17,60 +17,69 @@ import java.lang.Exception
 import java.util.*
 
 @Component
+//tag::documented[]
 class PatientAccountQuery :
         QuerySupport<String, Patient, String, PatientEvent, String, PatientAccount,
-                PatientAccountQuery>,
+                PatientAccountQuery>, // <1>
         SimpleQuery<String, Patient, String, PatientEvent, PatientEvent.Applicable, String,
-                PatientAccount, PatientAccountQuery> {
+                PatientAccount, PatientAccountQuery> { // <2>
 
     override fun getExecutor() = SimpleExecutor<String, Patient, String, PatientEvent,
-            PatientEvent.Applicable, String, PatientAccount, PatientAccountQuery>()
+            PatientEvent.Applicable, String, PatientAccount, PatientAccountQuery>() // <3>
 
     @Autowired lateinit var patientEventRepository: PatientEventRepository
     @Autowired lateinit var patientAccountRepository: PatientAccountRepository
 
-    override fun createEmptySnapshot() = PatientAccount()
+    override fun createEmptySnapshot() = PatientAccount() // <4>
 
-    override fun getSnapshot(maxPosition: Long, aggregate: Patient): Observable<PatientAccount> =
+    override fun getSnapshot( // <5>
+            maxPosition: Long, aggregate: Patient): Observable<PatientAccount> =
             patientAccountRepository.findByAggregateIdAndLastEventPositionLessThan(
                     aggregate.id!!, maxPosition)
 
-    override fun getSnapshot(maxTimestamp: Date, aggregate: Patient): Observable<PatientAccount> =
+    override fun getSnapshot( // <6>
+            maxTimestamp: Date, aggregate: Patient): Observable<PatientAccount> =
             patientAccountRepository.findByAggregateIdAndLastEventTimestampLessThan(
                     aggregate.id!!, maxTimestamp)
 
-    override fun shouldEventsBeApplied(snapshot: PatientAccount?) = true
+    override fun shouldEventsBeApplied(snapshot: PatientAccount?) = true // <7>
 
-    override fun findEventsForAggregates(
+    override fun findEventsForAggregates( // <8>
             aggregates: MutableList<Patient>): Observable<PatientEvent> =
             patientEventRepository.findAllByAggregateIdIn(aggregates.map { it.id!! })
 
-    override fun addToDeprecates(snapshot: PatientAccount, deprecatedAggregate: Patient) {
+    override fun addToDeprecates(
+            snapshot: PatientAccount, deprecatedAggregate: Patient) {
         snapshot.deprecatesIds.add(deprecatedAggregate.id!!)
     }
 
-    override fun onException(e: Exception, snapshot: PatientAccount, event: PatientEvent) =
+    override fun onException( // <9>
+            e: Exception, snapshot: PatientAccount, event: PatientEvent) =
             just(CONTINUE)
 
-    override fun getUncomputedEvents(
-            aggregate: Patient, lastSnapshot: PatientAccount, version: Long): Observable<PatientEvent> {
+    override fun getUncomputedEvents( // <10>
+            aggregate: Patient, lastSnapshot: PatientAccount,
+            version: Long): Observable<PatientEvent> {
         return patientEventRepository.
                 findAllByPositionRange(
                         aggregate.id!!, lastSnapshot.lastEventPosition ?: 0, version)
     }
 
-    override fun getUncomputedEvents(
-            aggregate: Patient, lastSnapshot: PatientAccount, snapshotTime: Date): Observable<PatientEvent> {
+    override fun getUncomputedEvents( // <11>
+            aggregate: Patient, lastSnapshot: PatientAccount,
+            snapshotTime: Date): Observable<PatientEvent> {
         return lastSnapshot.lastEventTimestamp?.
                 let {
-                    patientEventRepository.findAllByTimestampRange(aggregate.id!!, it, snapshotTime)
+                    patientEventRepository.findAllByTimestampRange(
+                            aggregate.id!!, it, snapshotTime)
                 } ?:
                 patientEventRepository.
-                        findAllByAggregateIdAndTimestampLessThan(aggregate.id!!, snapshotTime)
+                        findAllByAggregateIdAndTimestampLessThan(
+                                aggregate.id!!, snapshotTime)
     }
 
     override fun applyEvent(event: PatientEvent.Applicable, snapshot: PatientAccount) =
-            when (event) {
+            when (event) { // <12>
                 is PatientEvent.Applicable.Created -> {
                     snapshot.name = snapshot.name ?: event.name
                     just(CONTINUE)
@@ -86,3 +95,4 @@ class PatientAccountQuery :
                 }
             }
 }
+//end::documented[]

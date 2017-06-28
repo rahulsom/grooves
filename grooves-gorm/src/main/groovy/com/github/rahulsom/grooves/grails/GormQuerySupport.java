@@ -26,6 +26,7 @@ import java.util.List;
  * @deprecated Use {@link BlockingEventSource} and {@link BlockingSnapshotSource} instead
  */
 @Deprecated
+// tag::documented[]
 public interface GormQuerySupport<
         AggregateIdT,
         AggregateT extends AggregateType<AggregateIdT> & GormEntity<AggregateT>,
@@ -38,42 +39,47 @@ public interface GormQuerySupport<
         QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                 SnapshotT, QueryT>
         > extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-        SnapshotT, QueryT>,
+        SnapshotT, QueryT>, //<1>
         BlockingEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT>,
         BlockingSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                 SnapshotT, QueryT> {
 
+    Class<EventT> getEventClass(); // <2>
+
+    Class<SnapshotT> getSnapshotClass(); // <3>
+
     @Override
     default Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
-        return BlockingSnapshotSource.super.getSnapshot(maxPosition, aggregate);
+        return BlockingSnapshotSource.super
+                .getSnapshot(maxPosition, aggregate); // <4>
     }
 
     @Override
     default Observable<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
-        return BlockingSnapshotSource.super.getSnapshot(maxTimestamp, aggregate);
+        return BlockingSnapshotSource.super
+                .getSnapshot(maxTimestamp, aggregate);
     }
 
     @Override
     default Observable<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, long version) {
-        return BlockingEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, version);
+        return BlockingEventSource.super
+                .getUncomputedEvents(aggregate, lastSnapshot, version);
     }
 
     @Override
     default Observable<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
-        return BlockingEventSource.super.getUncomputedEvents(aggregate, lastSnapshot,
-                snapshotTime);
+        return BlockingEventSource.super
+                .getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
     }
 
     @Override
     default Observable<EventT> findEventsForAggregates(List<AggregateT> aggregates) {
-        return BlockingEventSource.super.findEventsForAggregates(aggregates);
+        return BlockingEventSource.super
+                .findEventsForAggregates(aggregates);
     }
 
-    Class<EventT> getEventClass();
-
-    Class<SnapshotT> getSnapshotClass();
-
 }
+// end::documented[]

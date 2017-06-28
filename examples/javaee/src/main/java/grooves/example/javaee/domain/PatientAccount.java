@@ -1,7 +1,7 @@
 package grooves.example.javaee.domain;
 
 import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot;
-import com.github.rahulsom.grooves.api.snapshots.Snapshot;
+import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 
 import javax.xml.bind.annotation.XmlTransient;
@@ -14,36 +14,48 @@ import java.util.List;
 import static rx.Observable.from;
 import static rx.Observable.just;
 
-public class PatientAccount implements
-        JavaSnapshot<Long, Patient, Long, Long, PatientEvent>, Serializable {
+// tag::documented[]
+public class PatientAccount
+        implements JavaSnapshot<Long, Patient, Long, Long, PatientEvent>, // <1>
+        Serializable {
     private Long id;
     private Patient aggregate;
     private Patient deprecatedBy;
     private List<Patient> deprecates = new ArrayList<>();
-    private Long lastEventPosition;
-    private Date lastEventTimestamp;
+    private Long lastEventPosition; // <2>
+    private Date lastEventTimestamp; // <3>
 
     private String name;
     private BigDecimal balance = new BigDecimal(0);
     private BigDecimal moneyMade = new BigDecimal(0);
 
+    // end::documented[]
+    @NotNull
     @Override
     @XmlTransient
-    public Observable<Patient> getAggregateObservable() {
+    // tag::documented[]
+    public Observable<Patient> getAggregateObservable() { // <4>
         return just(aggregate);
     }
 
+    // end::documented[]
+    @NotNull
     @Override
     @XmlTransient
-    public Observable<Patient> getDeprecatedByObservable() {
+    // tag::documented[]
+    public Observable<Patient> getDeprecatedByObservable() { // <5>
         return just(deprecatedBy);
     }
 
+    // end::documented[]
+    @NotNull
     @Override
     @XmlTransient
-    public Observable<Patient> getDeprecatesObservable() {
+    // tag::documented[]
+    public Observable<Patient> getDeprecatesObservable() { // <6>
         return from(deprecates);
     }
+    // end::documented[]
 
     @Override
     public String toString() {
@@ -67,7 +79,7 @@ public class PatientAccount implements
     }
 
     @Override
-    public void setAggregate(Patient aggregate) {
+    public void setAggregate(@NotNull Patient aggregate) {
         this.aggregate = aggregate;
     }
 
@@ -76,7 +88,7 @@ public class PatientAccount implements
     }
 
     @Override
-    public void setDeprecatedBy(Patient deprecatedBy) {
+    public void setDeprecatedBy(@NotNull Patient deprecatedBy) {
         this.deprecatedBy = deprecatedBy;
     }
 
@@ -131,4 +143,6 @@ public class PatientAccount implements
     public void setMoneyMade(BigDecimal moneyMade) {
         this.moneyMade = moneyMade;
     }
+    // tag::documented[]
 }
+// end::documented[]

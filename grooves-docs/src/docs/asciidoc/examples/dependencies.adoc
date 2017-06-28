@@ -1,0 +1,79 @@
+=== Dependencies
+
+The examples here use gradle to manage dependencies.
+You could very well be using Maven, or ant+ivy, or leiningen, or sbt.
+
+[source,groovy,indent=0,role="primary",subs="attributes+"]
+.Java
+----
+repositories {
+  // ... other repositories ...
+  jcenter() // <1>
+}
+dependencies {
+  // ... other dependencies ...
+  compile 'com.github.rahulsom:grooves-api:{version}' // <2>
+}
+----
+<1> In this example, we're using `jcenter`. You could also be using `mavenCentral`.
+  As long as your private artifact repository mirrors `mavenCentral`, you can use that as well.
+<2> `grooves-api` contains the interfaces for your queries.
+  It has a dependency on `grooves-types`.
+  That contains the interfaces for your aggregates, events, and snapshots.
+
+[source,groovy,indent=0,role="secondary",subs="attributes+"]
+.Groovy
+----
+repositories {
+  // ... other repositories ...
+  jcenter() // <1>
+}
+dependencies {
+  // ... other dependencies ...
+  compile 'com.github.rahulsom:grooves-groovy:{version}' // <2>
+}
+----
+<1> In this example, we're using `jcenter`. You could also be using `mavenCentral`.
+  As long as your private artifact repository mirrors `mavenCentral`, you can use that as well.
+<2> `grooves-groovy` contains support for writing idiomatic groovy code.
+  It has a dependency on `grooves-api` which contains interfaces for your queries.
+  It also has a transitive dependency on `grooves-types`.
+  That contains the interfaces for your aggregates, events, and snapshots.
+
+[source,groovy,indent=0,role="secondary",subs="attributes+"]
+.Gorm
+----
+repositories {
+  // ... other repositories ...
+  jcenter() // <1>
+}
+dependencies {
+  // ... other dependencies ...
+  compile 'com.github.rahulsom:grooves-gorm:{version}' // <2>
+}
+----
+<1> In this example, we're using `jcenter`. You could also be using `mavenCentral`.
+  As long as your private artifact repository mirrors `mavenCentral`, you can use that as well.
+<2> `grooves-gorm` contains support for simplifying access of data using gorm.
+  It depends on `grooves-groovy`, which contains support for writing idiomatic groovy code.
+  It has transitive dependencies on `grooves-api`, and `grooves-types`.
+  `grooves-api` contains interfaces for your queries.
+  `grooves-types` contains the interfaces for your aggregates, events, and snapshots.
+
+[source,groovy,indent=0,role="secondary",subs="attributes+"]
+.Kotlin
+----
+repositories {
+  // ... other repositories ...
+  jcenter() // <1>
+}
+dependencies {
+  // ... other dependencies ...
+  compile 'com.github.rahulsom:grooves-api:{version}' // <2>
+}
+----
+<1> In this example, we're using `jcenter`. You could also be using `mavenCentral`.
+  As long as your private artifact repository mirrors `mavenCentral`, you can use that as well.
+<2> `grooves-api` contains the interfaces for your queries.
+  It has a dependency on `grooves-types`.
+  That contains the interfaces for your aggregates, events, and snapshots.

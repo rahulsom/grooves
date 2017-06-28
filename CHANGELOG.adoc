@@ -4,6 +4,7 @@
 * Joins are now reactive too.
   This removes the need for reattach methods.
 * Examples now contains `rx-mongo`.
+* Documentation now points to examples.
 
 == 0.1.1
 * Improve RX support for `rx-gorm-rest`.

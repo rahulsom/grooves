@@ -1,12 +1,14 @@
 package grooves.example.javaee.domain;
 
-public class PatientCreated extends PatientEvent {
+//tag::documented[]
+public class PatientCreated extends PatientEvent { // <1>
     private String name;
 
     @Override
-    public String getAudit() {
+    public String getAudit() { // <2>
         return "name: " + name;
     }
+    //end::documented[]
 
     @Override
     public String toString() {
@@ -16,8 +18,10 @@ public class PatientCreated extends PatientEvent {
     public String getName() {
         return name;
     }
-
+    //tag::documented[]
+    
     public PatientCreated(String name) {
         this.name = name;
     }
 }
+//end::documented[]

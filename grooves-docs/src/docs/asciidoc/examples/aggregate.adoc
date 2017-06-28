@@ -1,0 +1,65 @@
+=== Aggregates
+
+In our examples, to begin with, we will use one aggregate - a patient.
+We'll model our system such that there are events that get applied on a Patient's timeline.
+
+To uniquely identify a patient, we're assuming, all we need is a `uniqueId`.
+No name, no address, no other information.
+
+The rest of the information will be brought in using events.
+
+[source,java,indent=0,role="primary"]
+.Java
+----
+include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/domain/Patient.java[tags=documented]
+----
+<1> For grooves to use an aggregate, you must implement the `AggregateType` interface.
+  It accepts a type using generics that identifies the id of the aggregate.
+  That is typically used as the primary key in a database.
+<2> The id type in this case needs to be defined.
+  Some persistence mechanisms have default types.
+  If your `id` type matches that, you can skip the declaration.
+
+[source,groovy,indent=0,role="secondary"]
+.Groovy
+----
+include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/domain/Patient.groovy[tags=documented]
+----
+<1> This annotation will assist in checking for completeness of queries.
+  There are two other annotations we'll see - `@Event` and `@Query`.
+  Together, the three will help us ensure that our queries cover all events.
+  This is optional, but highly recommended.
+<2> For grooves to use an aggregate, you must implement the `AggregateType` interface.
+  It accepts a type using generics that identifies the `id` of the aggregate.
+  That is typically used as the primary key in a database.
+<3> The `id` type in this case needs to be defined.
+  Some persistence mechanisms have default types.
+  If your `id` type matches that, you can skip the declaration.
+
+[source,groovy,indent=0,role="secondary"]
+.Gorm
+----
+include::{sourcedir}/examples/grails/rdbms_mongo/grails-app/domain/grooves/grails/mongo/Patient.groovy[tags=documented]
+----
+<1> This annotation will assist in checking for completeness of queries.
+  There are two other annotations we'll see - `@Event` and `@Query`.
+  Together, the three will help us ensure that our queries cover all events.
+  This is optional, but highly recommended.
+<2> For grooves to use an aggregate, you must implement the `AggregateType` interface.
+  It accepts a type using generics that identifies the `id` of the aggregate.
+  That is typically used as the primary key in a database.
+<3> This is commented out, because it is implicit in grails.
+  If it is implicit for your codebase, you do not have to declare it.
+
+[source,kotlin,indent=0,role="secondary"]
+.Kotlin
+----
+include::{sourcedir}/examples/springboot/kotlin/src/main/kotlin/grooves/boot/kotlin/domain/Patient.kt[tags=documented]
+----
+<1> For grooves to use an aggregate, you must implement the `AggregateType` interface.
+  It accepts a type using generics that identifies the id of the aggregate.
+  That is typically used as the primary key in a database.
+<2> The `id` type in this case needs to be defined.
+  Some persistence mechanisms have default types.
+  If your `id` type matches that, you can skip the declaration.
+  We are using mongo on spring boot here. So we are using `String`.

@@ -1,0 +1,44 @@
+We are going to walk through the `RevertEvent` over here.
+
+[source,java,indent=0,role="primary"]
+.Java
+----
+include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/domain/PatientEventReverted.java[tags=documented]
+----
+<1> Like your business events, you'll extend `PatientEvent`.
+<2> In addition, you'll implement the `RevertEvent` interface.
+<3> And you'll have to give it a property `revertedEventId`.
+
+[source,groovy,indent=0,role="secondary"]
+.Groovy
+----
+include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/domain/PatientEvent.groovy[tags=reverted]
+----
+<1> Like your business events, you'll extend `PatientEvent`.
+  You do not need to annotate it as an Event.
+  Even if you do, you cannot process this event.
+<2> In addition, you'll implement the `RevertEvent` interface.
+<3> And you'll have to give it a property `revertedEventId`.
+
+[source,groovy,indent=0,role="secondary"]
+.Gorm
+----
+include::{sourcedir}/examples/grails/rdbms_mongo/grails-app/domain/grooves/grails/mongo/PatientEvent.groovy[tags=created]
+----
+<1> Like your business events, you'll extend `PatientEvent`.
+  You do not need to annotate it as an Event.
+  Even if you do, you cannot process this event.
+<2> In addition, you'll implement the `RevertEvent` interface.
+<3> And you'll have to give it a property `revertedEventId`.
+
+[source,kotlin,indent=0,role="secondary"]
+.Kotlin
+----
+sealed class PatientEvent : BaseEvent<...> {
+    // ... skipping stuff already there ...
+include::{sourcedir}/examples/springboot/kotlin/src/main/kotlin/grooves/boot/kotlin/domain/PatientEvent.kt[tags=reverted]
+}
+----
+<1> You'll have to give it a property `revertedEventId`.
+<2> Like your `Applicable` in business events, you'll extend `PatientEvent`.
+<3> In addition, you'll implement the `RevertEvent` interface.

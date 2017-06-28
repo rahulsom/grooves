@@ -1,0 +1,15 @@
+=== Events
+
+In our example, we're going to have a bunch of events that will modify the computed state of the `Patient`.
+
+==== Your Base Event
+include::baseEvent.adoc[]
+
+==== Your business events
+include::creationEvent.adoc[]
+
+==== Standard Grooves Events
+There are some Standard Grooves Events - JoinEvent, DisjoinEvent, DeprecatedBy, Deprecates, RevertEvent.
+Their implementation is similar to one another, but slightly different from your business events.
+
+include::revertEvent.adoc[]

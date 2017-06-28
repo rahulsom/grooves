@@ -1,0 +1,50 @@
+Next up, let's look at our first event, `PatientCreated`.
+
+[source,java,indent=0,role="primary"]
+.Java
+----
+include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/domain/PatientCreated.java[tags=documented]
+----
+<1> For most events you're interested in as a user, you'll just have to extend `PatientEvent`.
+<2> The other thing is to implement an audit message.
+
+[source,groovy,indent=0,role="secondary"]
+.Groovy
+----
+include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/domain/PatientEvent.groovy[tags=created]
+----
+<1> The `@Event` annotation is the second step to achieving completeness of events.
+  It accepts as a param, the Aggregate over which it applies.
+<2> For most events you're interested in as a user, you'll just have to extend `PatientEvent`.
+<3> The other thing is to implement an audit message.
+
+[source,groovy,indent=0,role="secondary"]
+.Gorm
+----
+include::{sourcedir}/examples/grails/rdbms_mongo/grails-app/domain/grooves/grails/mongo/PatientEvent.groovy[tags=created]
+----
+<1> The `@Event` annotation is the second step to achieving completeness of events.
+  It accepts as a param, the Aggregate over which it applies.
+<2> For most events you're interested in as a user, you'll just have to extend `PatientEvent`.
+<3> The other thing is to implement an audit message.
+
+[source,kotlin,indent=0,role="secondary"]
+.Kotlin
+----
+sealed class PatientEvent : BaseEvent<...> {
+    // ... skipping stuff already there ...
+include::{sourcedir}/examples/springboot/kotlin/src/main/kotlin/grooves/boot/kotlin/domain/PatientEvent.kt[tags=created]
+}
+----
+<1> First we create a sealed class within the `PatientEvent` called `Applicable`.
+  What we call it doesn't matter.
+  All application events will go there.
+<2> For most events you're interested in as a user, you'll just have to extend `Applicable`.
+<3> The other thing is to implement an audit message.
+
+In our example, we'll have two more business events.
+
+* `ProcedurePerformed` that gives you a procedure code and the cost
+* `PaymentMade` which gives you the amount paid
+
+Please look at the source to see how they are implemented.

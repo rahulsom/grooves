@@ -2,26 +2,33 @@ package grooves.example.javaee.domain;
 
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
+import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
 
+// tag::documented[]
+import static rx.Observable.empty;
 import static rx.Observable.just;
 
-public abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEvent> {
+public abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEvent> { // <1>
     private Patient aggregate;
     private Long id;
     private String createdBy;
-    private RevertEvent<Long, Patient, Long, PatientEvent> revertedBy;
-    private Date timestamp;
-    private Long position;
+    private RevertEvent<Long, Patient, Long, PatientEvent> revertedBy;  // <2>
+    private Date timestamp; // <3>
+    private Long position; // <4>
 
-    @Override
+    // end::documented[]
     @XmlTransient
-    public Observable<Patient> getAggregateObservable() {
-        return just(aggregate);
+    // tag::documented[]
+    @Override
+    @NotNull
+    public Observable<Patient> getAggregateObservable() { // <5>
+        return aggregate != null ? just(aggregate) : empty();
     }
+    // end::documented[]
 
     public int getObjectId() {
         return System.identityHashCode(this);
@@ -78,4 +85,6 @@ public abstract class PatientEvent implements BaseEvent<Long, Patient, Long, Pat
     public void setPosition(Long position) {
         this.position = position;
     }
+    // tag::documented[]
 }
+// end::documented[]

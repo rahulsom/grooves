@@ -1,3 +1,7 @@
+https://semaphoreci.com/rahulsom/grooves[image:https://semaphoreci.com/api/v1/rahulsom/grooves/branches/0-1-x/shields_badge.svg[Build
+Status]]
+https://opensource.org/licenses/Apache-2.0[image:https://img.shields.io/badge/License-Apache%202.0-blue.svg[License]]
+
 = Grooves
 
 Event Sourcing Library for Java.
@@ -13,16 +17,27 @@ https://oss.sonatype.org/#nexus-search;quick~grooves-gorm[grooves-gorm]::
     This is for you if you're using GORM for persistence.
     It has interfaces that need to know the domain object used, and build flexible queries without forcing you to write the code to read domain objects from the database.
 
+image::https://api.bintray.com/packages/bintray/jcenter/com.github.rahulsom%3Agrooves-gorm/images/download.svg[link="https://bintray.com/bintray/jcenter/com.github.rahulsom%3Agrooves-gorm/_latestVersion"]
+
+
 https://oss.sonatype.org/#nexus-search;quick~grooves-groovy[grooves-groovy]::
     This is for you if you want to write your queries in groovy, but are not using GORM.
     You will have to implement your own data access, but will get support for checking completeness of queries based on groovy AST Transformations.
 
+image::https://api.bintray.com/packages/bintray/jcenter/com.github.rahulsom%3Agrooves-groovy/images/download.svg[link="https://bintray.com/bintray/jcenter/com.github.rahulsom%3Agrooves-groovy/_latestVersion"]
+
+
 https://oss.sonatype.org/#nexus-search;quick~grooves-api[grooves-api]::
     This is for you if you are not using groovy, or don't care about verifying completeness of queries.
+
+image::https://api.bintray.com/packages/bintray/jcenter/com.github.rahulsom%3Agrooves-api/images/download.svg[link="https://bintray.com/bintray/jcenter/com.github.rahulsom%3Agrooves-api/_latestVersion"]
+
 
 https://oss.sonatype.org/#nexus-search;quick~grooves-types[grooves-types]::
     This contains types that are used in `grooves-api`.
     It is very unlikely you'll be using this directly.
+
+image::https://api.bintray.com/packages/bintray/jcenter/com.github.rahulsom%3Agrooves-types/images/download.svg[link="https://bintray.com/bintray/jcenter/com.github.rahulsom%3Agrooves-types/_latestVersion"]
 
 == Examples
 
