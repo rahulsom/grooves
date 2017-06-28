@@ -11,6 +11,7 @@ import rx.Observable
 
 import javax.persistence.*
 
+import static rx.Observable.empty
 import static rx.Observable.just
 
 /**
@@ -18,36 +19,40 @@ import static rx.Observable.just
  *
  * @author Rahul Somasunderam
  */
+// tag::abstract[]
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = 'eventType')
 @SuppressWarnings(['AbstractClassWithoutAbstractMethod'])
-abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEvent> {
+abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEvent> { // <1>
 
     @GeneratedValue @Id Long id
-    @Transient RevertEvent<Long, Patient, Long, PatientEvent> revertedBy
+    @Transient RevertEvent<Long, Patient, Long, PatientEvent> revertedBy // <2>
     @Column(nullable = false) String createdBy
-    @Column(nullable = false) Date timestamp
-    @Column(nullable = false) Long position
+    @Column(nullable = false) Date timestamp // <3>
+    @Column(nullable = false) Long position //<4>
     @OneToOne Patient aggregate
 
-    Observable<Patient> getAggregateObservable() { just(aggregate) }
+    Observable<Patient> getAggregateObservable() { aggregate ? just(aggregate) : empty() } // <5>
 
 }
+// end::abstract[]
 
-@Entity
-@Event(Patient)
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
-class PatientCreated extends PatientEvent {
+//tag::created[]
+@Entity
+@Event(Patient) // <1>
+class PatientCreated extends PatientEvent { // <2>
     String name
 
     @Override
-    String getAudit() { new JsonBuilder([name: name]).toString() }
+    String getAudit() { new JsonBuilder([name: name]).toString() } // <3>
 }
+//end::created[]
 
+@ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
 @Entity
 @Event(Patient)
-@ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
 class ProcedurePerformed extends PatientEvent {
     String code
     BigDecimal cost
@@ -56,9 +61,9 @@ class ProcedurePerformed extends PatientEvent {
     String getAudit() { new JsonBuilder([code: code, cost: cost]).toString() }
 }
 
+@ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
 @Entity
 @Event(Patient)
-@ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
 class PaymentMade extends PatientEvent {
     BigDecimal amount
 
@@ -66,15 +71,18 @@ class PaymentMade extends PatientEvent {
     String getAudit() { new JsonBuilder([amount: amount]).toString() }
 }
 
-@Entity
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
-class PatientEventReverted extends PatientEvent implements
-        RevertEvent<Long, Patient, Long, PatientEvent> {
-    Long revertedEventId
+//tag::reverted[]
+@Entity
+class PatientEventReverted
+        extends PatientEvent // <1>
+        implements RevertEvent<Long, Patient, Long, PatientEvent> { // <2>
+    Long revertedEventId // <3>
 
     @Override
     String getAudit() { new JsonBuilder([revertedEvent: revertedEventId]).toString() }
 }
+//end::reverted[]
 
 @Entity
 class PatientDeprecatedBy extends PatientEvent implements

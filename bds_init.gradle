@@ -1,0 +1,14 @@
+initscript {
+    repositories { mavenCentral() }
+    dependencies {
+        classpath group:'com.blackducksoftware.integration', name: 'hub-gradle-plugin', version: System.properties['bdsPluginVersion']
+    }
+}
+
+allprojects {
+    apply plugin: com.blackducksoftware.integration.gradle.HubGradlePlugin
+
+    buildBom{
+        deployHubBdio false
+    }
+}

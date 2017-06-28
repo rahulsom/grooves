@@ -13,6 +13,8 @@ import rx.Observable
 import javax.persistence.EntityManager
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
+
+import static rx.Observable.from
 import static rx.Observable.just
 
 /**
@@ -22,10 +24,13 @@ import static rx.Observable.just
  */
 @Transactional
 @Component
-@Query(aggregate = Patient, snapshot = PatientAccount)
+//tag::documented[]
+@Query(aggregate = Patient, snapshot = PatientAccount) // <1>
 class PatientAccountQuery implements
-        QuerySupport<Long, Patient, Long, PatientEvent, Long, PatientAccount, PatientAccountQuery> {
+        QuerySupport<Long, Patient, Long, PatientEvent, Long, PatientAccount,
+                PatientAccountQuery> { // <2>
 
+    //end::documented[]
     public static final String AGGREGATE = 'aggregate'
     public static final String POSITION = 'position'
     public static final String TIMESTAMP = 'timestamp'
@@ -36,32 +41,56 @@ class PatientAccountQuery implements
     @Autowired
     PatientAccountRepository patientAccountRepository
 
+    //tag::documented[]
     @Override
-    PatientAccount createEmptySnapshot() {
-        new PatientAccount(deprecates: [])
-    }
-
-    @Override
-    Observable<PatientAccount> getSnapshot(long maxPosition, Patient aggregate) {
+    Observable<PatientAccount> getSnapshot(long maxPosition, Patient aggregate) { // <3>
+        //end::documented[]
         def snapshots = maxPosition == Long.MAX_VALUE ?
                 patientAccountRepository.findAllByAggregateId(aggregate.id) :
                 patientAccountRepository.findAllByAggregateIdAndLastEventPositionLessThan(
                         aggregate.id, maxPosition)
         snapshots ? just(detachSnapshot(snapshots[0])) : Observable.empty()
+        //tag::documented[]
     }
 
     @Override
-    Observable<PatientAccount> getSnapshot(Date maxTimestamp, Patient aggregate) {
+    Observable<PatientAccount> getSnapshot(Date maxTimestamp, Patient aggregate) { // <4>
+        //end::documented[]
         def snapshots = maxTimestamp == null ?
                 patientAccountRepository.findAllByAggregateId(aggregate.id) :
                 patientAccountRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
                         aggregate.id, maxTimestamp)
         snapshots ? just(detachSnapshot(snapshots[0])) : Observable.empty()
+        //tag::documented[]
+    }
+
+    @Override
+    boolean shouldEventsBeApplied(PatientAccount snapshot) { // <5>
+        true
+    }
+
+    @Override
+    Observable<PatientEvent> findEventsForAggregates(List<Patient> aggregates) { // <6>
+        //end::documented[]
+        def cb = entityManager.criteriaBuilder
+        def q = cb.createQuery(PatientEvent)
+        def root = q.from(PatientEvent)
+        def criteria = q.select(root).where(root.get(AGGREGATE).in(aggregates))
+        from entityManager.createQuery(criteria).resultList
+        //tag::documented[]
+    }
+
+    @Override
+    Observable<EventApplyOutcome> onException(
+            Exception e, PatientAccount snapshot, PatientEvent event) { // <7>
+        snapshot.processingErrors++
+        just CONTINUE
     }
 
     @Override
     Observable<PatientEvent> getUncomputedEvents(
-            Patient patient, PatientAccount lastSnapshot, long version) {
+            Patient patient, PatientAccount lastSnapshot, long version) { // <8>
+        //end::documented[]
         def cb = entityManager.criteriaBuilder
         def q = cb.createQuery(PatientEvent)
         def root = q.from(PatientEvent)
@@ -70,17 +99,17 @@ class PatientAccountQuery implements
                 cb.gt(root.get(POSITION), lastSnapshot?.lastEventPosition ?: 0L),
                 cb.le(root.get(POSITION), version),
         )
-        Observable.from(
-                entityManager
+        from(entityManager
                         .createQuery(criteria)
                         .setParameter(AGGREGATE, patient)
-                        .resultList
-        )
+                        .resultList)
+        //tag::documented[]
     }
 
     @Override
     Observable<PatientEvent> getUncomputedEvents(
-            Patient aggregate, PatientAccount lastSnapshot, Date snapshotTime) {
+            Patient aggregate, PatientAccount lastSnapshot, Date snapshotTime) { // <9>
+        //end::documented[]
         def cb = entityManager.criteriaBuilder
         def q = cb.createQuery(PatientEvent)
         def root = q.from(PatientEvent)
@@ -101,21 +130,13 @@ class PatientAccountQuery implements
             query.setParameter(FROM, lastSnapshot.lastEventTimestamp)
         }
 
-        Observable.from(query.resultList)
+        from query.resultList
+        //tag::documented[]
     }
 
     @Override
-    boolean shouldEventsBeApplied(PatientAccount snapshot) {
-        true
-    }
-
-    @Override
-    Observable<PatientEvent> findEventsForAggregates(List<Patient> aggregates) {
-        def cb = entityManager.criteriaBuilder
-        def q = cb.createQuery(PatientEvent)
-        def root = q.from(PatientEvent)
-        def criteria = q.select(root).where(root.get(AGGREGATE).in(aggregates))
-        Observable.from entityManager.createQuery(criteria).resultList
+    PatientAccount createEmptySnapshot() { // <10>
+        new PatientAccount(deprecates: [])
     }
 
     @Override
@@ -123,17 +144,10 @@ class PatientAccountQuery implements
         snapshot.deprecates << deprecatedAggregate
     }
 
-    @Override
-    Observable<EventApplyOutcome> onException(
-            Exception e, PatientAccount snapshot, PatientEvent event) {
-        snapshot.processingErrors++
-        just CONTINUE
-    }
-
     Observable<EventApplyOutcome> applyPatientCreated(
-            PatientCreated event, PatientAccount snapshot) {
+            PatientCreated event, PatientAccount snapshot) { // <11>
         snapshot.name = snapshot.name ?: event.name
-        just CONTINUE
+        just CONTINUE // <12>
     }
 
     Observable<EventApplyOutcome> applyProcedurePerformed(
@@ -149,6 +163,7 @@ class PatientAccountQuery implements
         just CONTINUE
     }
 
+    //end::documented[]
     PatientAccount detachSnapshot(PatientAccount snapshot) {
         def retval = new PatientAccount(
                 lastEventPosition: snapshot.lastEventPosition,
@@ -163,4 +178,6 @@ class PatientAccountQuery implements
         snapshot.deprecates.each { retval.deprecates.add it }
         retval
     }
+    //tag::documented[]
 }
+//end::documented[]

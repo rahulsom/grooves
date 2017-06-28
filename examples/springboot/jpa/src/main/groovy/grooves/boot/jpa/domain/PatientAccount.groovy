@@ -18,14 +18,15 @@ import static rx.Observable.*
 @Entity
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
 @SuppressWarnings(['DuplicateNumberLiteral'])
-class PatientAccount implements JavaSnapshot<Long, Patient, Long, Long, PatientEvent> {
+// tag::documented[]
+class PatientAccount implements JavaSnapshot<Long, Patient, Long, Long, PatientEvent> { // <1>
 
     @GeneratedValue @Id Long id
 
-    @Column(nullable = false) Long lastEventPosition
+    @Column(nullable = false) Long lastEventPosition // <2>
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    @Column(nullable = false) Date lastEventTimestamp
+    @Column(nullable = false) Date lastEventTimestamp // <3>
 
     @OneToOne Patient deprecatedBy
     @OneToMany @JoinTable(name = 'PatientAccountDeprecates') Set<Patient> deprecates
@@ -37,15 +38,16 @@ class PatientAccount implements JavaSnapshot<Long, Patient, Long, Long, PatientE
 
     int processingErrors = 0
 
-    @Override @JsonIgnore Observable<Patient> getAggregateObservable() {
+    @Override @JsonIgnore Observable<Patient> getAggregateObservable() { // <4>
         aggregate ? just(aggregate) : empty()
     }
 
-    @Override @JsonIgnore Observable<Patient> getDeprecatedByObservable() {
+    @Override @JsonIgnore Observable<Patient> getDeprecatedByObservable() { // <5>
         deprecatedBy ? just(deprecatedBy) : empty()
     }
 
-    @Override @JsonIgnore Observable<Patient> getDeprecatesObservable() {
+    @Override @JsonIgnore Observable<Patient> getDeprecatesObservable() { // <6>
         from(deprecates.toList())
     }
 }
+// end::documented[]

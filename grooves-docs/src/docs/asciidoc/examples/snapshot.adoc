@@ -1,0 +1,59 @@
+=== Snapshots
+
+Let's start with a snapshot that manages account balance for a patient.
+
+[source,java,indent=0,role="primary"]
+.Java
+----
+include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/domain/PatientAccount.java[tags=documented]
+----
+<1> For most snapshots, you may implement `JavaSnapshot`.
+<2> The `lastEventPosition` is useful when locating snapshots by version.
+<3> The `lastEventTimestamp` is useful when locating snapshots by timestamp.
+<4> The `aggregateObservable` getter points to the aggregate from the snapshot.
+<5> The `deprecatedByObservable` points to the deprecator of the snapshot's aggregate.
+  It is empty when the aggregate is not deprecated.
+<6> The `deprecatesObservable` points to the aggregates deprecated by snapshot's aggregate.
+
+[source,groovy,indent=0,role="secondary"]
+.Groovy
+----
+include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/domain/PatientAccount.groovy[tags=documented]
+----
+<1> For most snapshots, you may implement `JavaSnapshot`.
+<2> The `lastEventPosition` is useful when locating snapshots by version.
+<3> The `lastEventTimestamp` is useful when locating snapshots by timestamp.
+<4> The `aggregateObservable` getter points to the aggregate from the snapshot.
+<5> The `deprecatedByObservable` points to the deprecator of the snapshot's aggregate.
+  It is empty when the aggregate is not deprecated.
+<6> The `deprecatesObservable` points to the aggregates deprecated by snapshot's aggregate.
+
+[source,groovy,indent=0,role="secondary"]
+.Gorm
+----
+include::{sourcedir}/examples/grails/rdbms_mongo/grails-app/domain/grooves/grails/mongo/PatientAccount.groovy[tags=documented]
+----
+<1> For most snapshots, you may implement `JavaSnapshot`.
+<2> The `lastEventPosition` is useful when locating snapshots by version.
+<3> The `lastEventTimestamp` is useful when locating snapshots by timestamp.
+<4> The `aggregateObservable` getter points to the aggregate from the snapshot.
+<5> The `deprecatedByObservable` points to the deprecator of the snapshot's aggregate.
+  It is empty when the aggregate is not deprecated.
+<6> The `deprecatesObservable` points to the aggregates deprecated by snapshot's aggregate.
+
+[source,kotlin,indent=0,role="secondary"]
+.Kotlin
+----
+include::{sourcedir}/examples/springboot/kotlin/src/main/kotlin/grooves/boot/kotlin/domain/PatientAccount.kt[tags=documented]
+----
+<1> For most snapshots, you may implement `Snapshot`.
+<2> The `lastEventPosition` is useful when locating snapshots by version.
+<3> The `lastEventTimestamp` is useful when locating snapshots by timestamp.
+<4> The `aggregateObservable` getter points to the aggregate from the snapshot.
+<5> The `deprecatedByObservable` points to the deprecator of the snapshot's aggregate.
+  It is empty when the aggregate is not deprecated.
+<6> The `deprecatesObservable` points to the aggregates deprecated by snapshot's aggregate.
+
+The reason for `aggregateObservable`, `deprecatedByObservable` and `deprecatesObservable` being `rx.Observable` is to allow asynchronous data access layers to work well.
+
+In our examples, we have one more snapshot - `PatientHealth` which lists codes for procedures and the dates they were performed.

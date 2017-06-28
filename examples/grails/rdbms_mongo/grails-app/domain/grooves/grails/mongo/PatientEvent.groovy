@@ -15,34 +15,42 @@ import static rx.Observable.just
  */
 @SuppressWarnings(['AbstractClassWithoutAbstractMethod', 'GrailsDomainReservedSqlKeywordName'])
 @EqualsAndHashCode
-abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEvent> {
+// tag::abstract[]
+abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEvent> { // <1>
 
-    RevertEvent<Long, Patient, Long, PatientEvent> revertedBy
+    RevertEvent<Long, Patient, Long, PatientEvent> revertedBy  // <2>
     String createdBy
-    Date timestamp
-    Long position
+    Date timestamp  // <3>
+    Long position  // <4>
     Patient aggregate
-    Observable<Patient> getAggregateObservable() { just(aggregate) }
+    Observable<Patient> getAggregateObservable() { just(aggregate) }  // <5>
 
-    static transients = ['revertedBy']
+    static transients = ['revertedBy'] // <6>
 
     static constraints = {
     }
+    // end::abstract[]
 
     String getTs() { timestamp.format('yyyy-MM-dd') }
 
     @Override String toString() { "PatientEvent($id, $aggregateId, $ts)" }
+// tag::abstract[]
 }
+// end::abstract[]
 
-@Event(Patient)
 @EqualsAndHashCode
-class PatientCreated extends PatientEvent {
+//tag::created[]
+@Event(Patient) // <1>
+class PatientCreated extends PatientEvent { // <2>
     String name
 
-    @Override String getAudit() { new JsonBuilder([name: name]).toString() }
+    @Override String getAudit() { new JsonBuilder([name: name]).toString() } // <3>
+    //end::created[]
     @Override String toString() {
         "<${aggregateId}.$id> $ts created as ${name}" }
+//tag::created[]
 }
+//end::created[]
 
 @EqualsAndHashCode
 class PatientAddedToZipcode extends PatientEvent implements
@@ -90,15 +98,20 @@ class PaymentMade extends PatientEvent {
     @Override String toString() { "<${aggregateId}.$id> $ts paid \$ $amount" }
 }
 
+//tag::reverted[]
 @EqualsAndHashCode
-class PatientEventReverted extends PatientEvent implements
-        RevertEvent<Long, Patient, Long, PatientEvent> {
-    Long revertedEventId
+class PatientEventReverted
+        extends PatientEvent // <1>
+        implements RevertEvent<Long, Patient, Long, PatientEvent> { // <2>
+    Long revertedEventId // <3>
 
     @Override String getAudit() { new JsonBuilder([revertedEvent: revertedEventId]).toString() }
+    //end::reverted[]
     @Override String toString() {
         "<${aggregateId}.$id> $ts reverted #$revertedEventId" }
+    //tag::reverted[]
 }
+//end::reverted[]
 
 @EqualsAndHashCode
 class PatientDeprecatedBy extends PatientEvent implements

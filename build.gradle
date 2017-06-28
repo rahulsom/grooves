@@ -4,11 +4,11 @@ buildscript {
         maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
-        classpath 'com.gradle:build-scan-plugin:1.6'
+        classpath 'com.gradle:build-scan-plugin:1.7.4'
         classpath 'me.champeau.gradle:buildscan-recipes-plugin:0.2.0'
         classpath 'fr.jcgay:gradle-notifier:1.1.0'
         classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
-        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.3'
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:+'
         classpath 'com.netflix.nebula:nebula-release-plugin:4.2.0'
     }
 }

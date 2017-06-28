@@ -12,20 +12,21 @@ import static rx.Observable.just
 /**
  * Queries for the PatientAccount
  */
-@Query(aggregate = Patient, snapshot = PatientAccount)
 @GrailsCompileStatic
-class PatientAccountQuery implements
-        GormQuerySupport<Long, Patient, Long, PatientEvent, String, PatientAccount,
-                PatientAccountQuery> {
+//tag::documented[]
+@Query(aggregate = Patient, snapshot = PatientAccount) // <5>
+class PatientAccountQuery
+        implements GormQuerySupport<Long, Patient, Long, PatientEvent,
+                String, PatientAccount, PatientAccountQuery> { // <6>
 
-    final Class<PatientAccount> snapshotClass = PatientAccount
-    final Class<PatientEvent> eventClass = PatientEvent
+    final Class<PatientEvent> eventClass = PatientEvent // <7>
+    final Class<PatientAccount> snapshotClass = PatientAccount // <8>
 
     @Override
-    PatientAccount createEmptySnapshot() { new PatientAccount(deprecates: []) }
+    PatientAccount createEmptySnapshot() { new PatientAccount(deprecates: []) } // <9>
 
     @Override
-    boolean shouldEventsBeApplied(PatientAccount snapshot) {
+    boolean shouldEventsBeApplied(PatientAccount snapshot) { // <10>
         true
     }
 
@@ -35,18 +36,19 @@ class PatientAccountQuery implements
     }
 
     @Override
-    Observable<EventApplyOutcome> onException(
+    Observable<EventApplyOutcome> onException( // <11>
             Exception e, PatientAccount snapshot, PatientEvent event) {
         snapshot.processingErrors << e.message
         just CONTINUE
     }
 
-    Observable<EventApplyOutcome> applyPatientCreated(
+    Observable<EventApplyOutcome> applyPatientCreated( // <12>
             PatientCreated event, PatientAccount snapshot) {
         snapshot.name = snapshot.name ?: event.name
-        just CONTINUE
+        just CONTINUE // <13>
     }
 
+    //end::documented[]
     Observable<EventApplyOutcome> applyProcedurePerformed(
             ProcedurePerformed event, PatientAccount snapshot) {
         snapshot.balance += event.cost
@@ -60,12 +62,6 @@ class PatientAccountQuery implements
         just CONTINUE
     }
 
-    @SuppressWarnings(['DuplicateStringLiteral', 'UnusedMethodParameter',])
-    Observable<EventApplyOutcome> applyPatientAddedToZipcode(
-            PatientAddedToZipcode event, PatientAccount snapshot) {
-        just CONTINUE // Ignore zip change
-    }
-
     @Override
     PatientAccount detachSnapshot(PatientAccount snapshot) {
         if (snapshot.isAttached()) {
@@ -74,5 +70,6 @@ class PatientAccountQuery implements
         }
         snapshot
     }
-
+    //tag::documented[]
 }
+//end::documented[]

@@ -13,13 +13,14 @@ import static rx.Observable.*
  */
 @SuppressWarnings(['DuplicateNumberLiteral', 'DuplicateStringLiteral',])
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition'])
-class PatientAccount implements JavaSnapshot<Long, Patient, String, Long, PatientEvent> {
+// tag::documented[]
+class PatientAccount implements JavaSnapshot<Long, Patient, String, Long, PatientEvent> { // <1>
 
     static mapWith = 'mongo'
 
     String id
-    Long lastEventPosition
-    Date lastEventTimestamp
+    Long lastEventPosition // <2>
+    Date lastEventTimestamp // <3>
     Set<String> processingErrors = []
 
     Long aggregateId
@@ -27,14 +28,14 @@ class PatientAccount implements JavaSnapshot<Long, Patient, String, Long, Patien
     Patient getAggregate() { Patient.get(aggregateId) }
 
     @Override
-    Observable<Patient> getAggregateObservable() {
+    Observable<Patient> getAggregateObservable() { // <4>
         aggregateId ? defer { just aggregate } : empty()
     }
 
     void setAggregate(Patient aggregate) { this.aggregateId = aggregate.id }
 
     @Override
-    Observable<Patient> getDeprecatedByObservable() {
+    Observable<Patient> getDeprecatedByObservable() { // <5>
         deprecatedBy ? just(deprecatedBy) : empty()
     }
     Long deprecatedById
@@ -44,7 +45,7 @@ class PatientAccount implements JavaSnapshot<Long, Patient, String, Long, Patien
     void setDeprecatedBy(Patient aggregate) { deprecatedById = aggregate.id }
 
     @Override
-    Observable<Patient> getDeprecatesObservable() {
+    Observable<Patient> getDeprecatesObservable() { // <6>
         deprecatesIds ? from(deprecatesIds).flatMap { Patient.get it } : empty()
     }
     Set<Long> deprecatesIds
@@ -74,3 +75,4 @@ class PatientAccount implements JavaSnapshot<Long, Patient, String, Long, Patien
                 "B: $balance, M: $moneyMade)"
     }
 }
+// end::documented[]

@@ -1,0 +1,76 @@
+= Grooves
+:stem:
+:toc: left
+:sectnums:
+:nofooter:
+:source-highlighter: coderay
+:icons: font
+:linkcss:
+
+++++
+<style>
+.switch--item:not(:first-child) {
+    border-left: #7a2518 solid 0.1px;
+}
+
+.colist>table tr>td:first-of-type {
+    padding: .75em;
+    line-height: 1;
+    vertical-align: top;
+}
+
+pre, pre>code {
+    font-family: "Fira Code", "Droid Sans Mono","DejaVu Sans Mono",monospace;
+}
+</style>
+++++
+
+Formerly, _Groovy + Event Sourcing_.
+Now, _Grooves_ is just a name.
+It supports Event Sourcing on many JVM languages.
+Examples and tests are included in java, kotlin, and of course, groovy.
+
+include::intro.adoc[]
+
+include::hurdles.adoc[]
+
+== How Grooves solves it
+
+Grooves assumes nothing about your persistence framework or whether you're building a webapp or a batch application.
+Grooves only offers some tools to help you build your own event sourced system.
+
+* Interfaces for the Aggregate, Event (and its special subtypes) and Snapshot.
+* A set of interfaces with default methods that help you write queries.
+* _If you're using groovy_, annotations to mark these and AST Transformations to ensure all event types are covered in a Query implementation.
+
+This allows you to use Grooves with a lot of different frameworks.
+There are examples in the repository for some options you could use.
+
+== Event Sourcing with Grooves
+
+This section contains example code with annotations that indicate what is being done, and why.
+We will be using 4 different kinds of projects.
+
+* Java - A java project that uses a few in memory collections as it's storage mechanism.
+  It is written in Java 8, and uses JavaEE.
+  In the case of Java code, we'll be skipping getters and setters to keep examples concise.
+  For the code to actually work, those would be required.
+* Groovy - A project that uses SpringBoot and JPA for persistence.
+  It's written using Groovy.
+* Gorm - It's a grails project that uses Hibernate for persisting events and aggregates.
+  It uses Mongo for persisting snapshots.
+  This is the most thorough example in our codebase.
+  It is the only one that demonstrates joins.
+* Kotlin - This is a SpringBoot Reactive Web project that uses RxMongo for persistence.
+
+include::examples/dependencies.adoc[]
+
+include::examples/aggregate.adoc[]
+
+include::examples/events.adoc[]
+
+include::examples/snapshot.adoc[]
+
+include::examples/queries.adoc[]
+
+include::support.adoc[]

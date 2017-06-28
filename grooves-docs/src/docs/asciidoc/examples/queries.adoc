@@ -1,0 +1,112 @@
+=== Queries
+
+[source,java,indent=0,role="primary"]
+.Java
+----
+// You don't need to have an intermediate type to manage your queries, but it does make code reuse better.
+include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/queries/CustomQuerySupport.java[tags=documented]
+// This is the implementation we need
+include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/queries/PatientAccountQuery.java[tags=documented]
+----
+<1> This is a placeholder for the snapshot we'll compute.
+<2> This is a self reference.
+<3> `QuerySupport` allows computing both temporal and versioned snapshots.
+<4> The implementation of this method will return a snapshot that's older than the `maxPosition`.
+<5> The implementation of this method will return a snapshot that's older than the `maxTimestamp`.
+<6> This allows the query to have some control over when to stop applying events on a snapshot.
+<7> This gets called on a merge.
+  The implementation must return all events for given aggregates.
+<8> This is an exception handler.
+  You can decide to `CONTINUE` or `RETURN`.
+<9> The implementation of this method must return all events for an aggregate that are more recent than the last event of `lastSnapshot`, but lead up to `version`.
+  Think of the range as exclusive of `lastSnapshot`, but inclusive of `version`.
+<10> The implementation of this method must return all events for an aggregate that are more recent than the last event of `lastSnapshot`, but lead up to `snapshotTime`.
+  Think of the range as exclusive of `lastSnapshot`, but inclusive of `snapshotTime`.
+<11> Here we implement our default interface
+<12> This method gets called if no prior snapshot that is usable is found.
+<13> We name our methods `apply<EventType>`.
+  This is required.
+  It is not enforced though.
+<14> Each of these methods takes the event and the snapshot as inputs and returns an `Observable<EventApplyOutcome>` as output.
+  It can `CONTINUE` or `RETURN`.
+
+[source,groovy,indent=0,role="secondary"]
+.Groovy
+----
+include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/queries/PatientAccountQuery.groovy[tags=documented]
+----
+<1> This annotation is the final step in verification of completeness.
+  The AST Transformation checks that all `@Event`s associated with the `@Aggregate` are accounted for in the `@Query`.
+<2> `QuerySupport` allows computing both temporal and versioned snapshots.
+<3> The implementation of this method will return a snapshot that's older than the `maxPosition`.
+<4> The implementation of this method will return a snapshot that's older than the `maxTimestamp`.
+<5> This allows the query to have some control over when to stop applying events on a snapshot.
+<6> This gets called on a merge.
+  The implementation must return all events for given aggregates.
+<7> This is an exception handler.
+  You can decide to `CONTINUE` or `RETURN`.
+<8> The implementation of this method must return all events for an aggregate that are more recent than the last event of `lastSnapshot`, but lead up to `version`.
+  Think of the range as exclusive of `lastSnapshot`, but inclusive of `version`.
+<9> The implementation of this method must return all events for an aggregate that are more recent than the last event of `lastSnapshot`, but lead up to `snapshotTime`.
+  Think of the range as exclusive of `lastSnapshot`, but inclusive of `snapshotTime`.
+<10> This method gets called if no prior snapshot that is usable is found.
+<11> We name our methods `apply<EventType>`.
+  This is required.
+  Your IDE might not point out if you don't do it right, but the compiler will.
+<12> Each of these methods takes the event and the snapshot as inputs and returns an `Observable<EventApplyOutcome>` as output.
+  It can `CONTINUE` or `RETURN`.
+
+[source,groovy,indent=0,role="secondary"]
+.Gorm
+----
+// You don't need to have an intermediate type to manage your queries, but it does make code reuse better.
+// Also this is written in java.
+include::{sourcedir}/grooves-gorm/src/main/groovy/com/github/rahulsom/grooves/grails/GormQuerySupport.java[tags=documented]
+// This is the implementation we need here
+include::{sourcedir}/examples/grails/rdbms_mongo/src/main/groovy/grooves/grails/mongo/PatientAccountQuery.groovy[tags=documented]
+----
+<1> `QuerySupport` allows computing both temporal and versioned snapshots.
+<2> `BlockingEventSource` needs an `eventClass`.
+  `BlockingEventSource` and `RxEventSource` greatly simplify working with events from a gorm source.
+<3> `BlockingSnapshotSource` needs a `snapshotClass`.
+  `BlockingSnapshotSource` and `RxSnapshotSource` do the same for snapshots.
+<4> This is an example of using the `BlockingEventSource`.
+<5> This annotation is the final step in verification of completeness.
+  The AST Transformation checks that all `@Event`s associated with the `@Aggregate` are accounted for in the `@Query`.
+<6> Here we'll implement the interface we just wrote.
+<7> This configures the event class.
+<8> This configures the snapshot class.
+<9> This method gets called if no prior snapshot that is usable is found.
+<10> This allows the query to have some control over when to stop applying events on a snapshot.
+<11> This is an exception handler.
+  You can decide to `CONTINUE` or `RETURN`.
+<12> We name our methods `apply<EventType>`.
+  This is required.
+  Your IDE might not point out if you don't do it right, but the compiler will.
+<13> Each of these methods takes the event and the snapshot as inputs and returns an `Observable<EventApplyOutcome>` as output.
+  It can `CONTINUE` or `RETURN`.
+
+[source,kotlin,indent=0,role="secondary"]
+.Kotlin
+----
+include::{sourcedir}/examples/springboot/kotlin/src/main/kotlin/grooves/boot/kotlin/queries/PatientAccountQuery.kt[tags=documented]
+----
+<1> `QuerySupport` allows computing both temporal and versioned snapshots.
+<2> `SimpleQuery` makes working with Kotlin better.
+  It calls the `applyEvent` method instead of calling `apply<EventType>`.
+  With Kotlin `applyEvent` is sufficient, because you can use sealed classes to achieve completeness.
+<3> `SimpleExecutor` is what wires up `SimpleQuery` correctly.
+<4> This method gets called if no prior snapshot that is usable is found.
+<5> The implementation of this method will return a snapshot that's older than the `maxPosition`.
+<6> The implementation of this method will return a snapshot that's older than the `maxTimestamp`.
+<7> This allows the query to have some control over when to stop applying events on a snapshot.
+<8> This gets called on a merge.
+  The implementation must return all events for given aggregates.
+<9> This is an exception handler.
+  You can decide to `CONTINUE` or `RETURN`.
+<10> The implementation of this method must return all events for an aggregate that are more recent than the last event of `lastSnapshot`, but lead up to `version`.
+  Think of the range as exclusive of `lastSnapshot`, but inclusive of `version`.
+<11> The implementation of this method must return all events for an aggregate that are more recent than the last event of `lastSnapshot`, but lead up to `snapshotTime`.
+  Think of the range as exclusive of `lastSnapshot`, but inclusive of `snapshotTime`.
+<12> `applyEvent` handles all events under `Applicable`.
+  Kotlin will check for completeness when you use the `when` keyword as part of an `expression`.

@@ -11,9 +11,11 @@ import java.math.BigDecimal;
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
 import static rx.Observable.just;
 
-public class PatientAccountQuery implements CustomQuerySupport<PatientAccount,
-        PatientAccountQuery> {
+// tag::documented[]
+public class PatientAccountQuery
+        implements CustomQuerySupport<PatientAccount, PatientAccountQuery> { // <11>
 
+    // end::documented[]
     @Inject
     private Database database;
 
@@ -27,10 +29,12 @@ public class PatientAccountQuery implements CustomQuerySupport<PatientAccount,
         return PatientAccount.class;
     }
 
+    // tag::documented[]
     @Override
-    public PatientAccount createEmptySnapshot() {
+    public PatientAccount createEmptySnapshot() { // <12>
         return new PatientAccount();
     }
+    // end::documented[]
 
     @Override
     public void addToDeprecates(PatientAccount snapshot, Patient deprecatedAggregate) {
@@ -43,20 +47,23 @@ public class PatientAccountQuery implements CustomQuerySupport<PatientAccount,
      * @param snapshot The snapshot.
      * @return the result of apply
      */
+    // tag::documented[]
     public Observable<EventApplyOutcome> applyPatientCreated(
-            PatientCreated event, PatientAccount snapshot) {
+            PatientCreated event, PatientAccount snapshot) { // <13>
         if (snapshot.getName() == null) {
             snapshot.setName(event.getName());
         }
-        return just(CONTINUE);
+        return just(CONTINUE); // <14>
     }
 
+    // end::documented[]
     /**
      * Applies procedure performed.
      * @param event the event.
      * @param snapshot The snapshot.
      * @return the result of apply
      */
+    // tag::documented[]
     public Observable<EventApplyOutcome> applyProcedurePerformed(
             ProcedurePerformed event, PatientAccount snapshot) {
         final double cost = event.getCost().doubleValue();
@@ -67,12 +74,14 @@ public class PatientAccountQuery implements CustomQuerySupport<PatientAccount,
         return just(CONTINUE);
     }
 
+    // end::documented[]
     /**
      * Applies Payment made.
      * @param event the event.
      * @param snapshot The snapshot.
      * @return the result of apply
      */
+    // tag::documented[]
     public Observable<EventApplyOutcome> applyPaymentMade(
             PaymentMade event, PatientAccount snapshot) {
 
@@ -87,3 +96,4 @@ public class PatientAccountQuery implements CustomQuerySupport<PatientAccount,
     }
 
 }
+// end::documented[]

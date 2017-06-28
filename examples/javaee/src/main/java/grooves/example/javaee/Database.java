@@ -6,6 +6,7 @@ import grooves.example.javaee.domain.PatientEvent;
 
 import javax.ejb.Singleton;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -49,4 +50,12 @@ public class Database {
     public void addSnapshot(Object snapshot) {
         snapshotList.add(snapshot);
     }
+
+    public static boolean isTimestampInRange(
+            Date lowerBoundExclusive, Date timestamp, Date upperBoundInclusive) {
+        return (lowerBoundExclusive == null || timestamp.compareTo(lowerBoundExclusive) > 0)
+                && timestamp.compareTo(upperBoundInclusive) <= 0;
+    }
+
+
 }

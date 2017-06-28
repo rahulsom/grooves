@@ -1,0 +1,58 @@
+Let's start with the PatientEvent first.
+`PatientEvent` is the base event for all events related to `Patient`.
+
+[source,java,indent=0,role="primary"]
+.Java
+----
+// Some imports omitted
+include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/domain/PatientEvent.java[tags=documented]
+----
+<1> You'll have to extend `BaseEvent`.
+<2> This is typically transient from a persistence perspective.
+  Since we're using collections for persistence, it doesn't make much difference.
+<3> Timestamp is used for time based filtering and ordering
+<4> Position is used for version based filtering and ordering.
+<5> The aggregate observable allows for lazy fetching of the aggregate.
+  Again, since we're using collections, it doesn't matter.
+
+[source,groovy,indent=0,role="secondary"]
+.Groovy
+----
+// All imports omitted
+include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/domain/PatientEvent.groovy[tags=abstract]
+----
+<1> You'll have to extend `BaseEvent`.
+<2> This is transient from a persistence perspective.
+<3> Timestamp is used for time based filtering and ordering
+<4> Position is used for version based filtering and ordering.
+<5> The aggregate observable allows for lazy fetching of the aggregate.
+  In our case, it doesn't matter much since we're using JPA, which is blocking in nature.
+
+[source,groovy,indent=0,role="secondary"]
+.Gorm
+----
+// All imports omitted
+include::{sourcedir}/examples/grails/rdbms_mongo/grails-app/domain/grooves/grails/mongo/PatientEvent.groovy[tags=abstract]
+----
+<1> You'll have to extend `BaseEvent`.
+<2> This is transient from a persistence perspective. Look at <6>
+<3> Timestamp is used for time based filtering and ordering
+<4> Position is used for version based filtering and ordering.
+<5> The aggregate observable allows for lazy fetching of the aggregate.
+  In our case, it doesn't matter much since we're using Hibernate, which is blocking in nature.
+
+[source,kotlin,indent=0,role="secondary"]
+.Kotlin
+----
+// All imports omitted
+include::{sourcedir}/examples/springboot/kotlin/src/main/kotlin/grooves/boot/kotlin/domain/PatientEvent.kt[tags=patientEvent]
+----
+<1> We're using sealed classes in Kotlin.
+  We'll add more classes inside of it as we progress.
+  This helps us achieve completeness without the need to customize the compilation.
+<2> You'll have to extend `BaseEvent`.
+<3> This is transient from a persistence perspective.
+<4> Timestamp is used for time based filtering and ordering
+<5> Position is used for version based filtering and ordering.
+<6> The aggregate observable allows for lazy fetching of the aggregate.
+  In our case, it doesn't matter much since we're using Hibernate, which is blocking in nature.

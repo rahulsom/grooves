@@ -9,6 +9,7 @@ import com.github.rahulsom.grooves.api.events.RevertEvent
 import grooves.boot.kotlin.BeansHolder
 import grooves.boot.kotlin.repositories.PatientEventRepository
 import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.Transient
 import rx.Observable
 import rx.Observable.empty
 import rx.Observable.just
@@ -16,23 +17,25 @@ import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.*
 
-sealed class PatientEvent : BaseEvent<String, Patient, String, PatientEvent> {
+// tag::patientEvent[]
+sealed class PatientEvent : BaseEvent<String, Patient, String, PatientEvent> { // <1><2>
 
     @Id override val id: String? = null
 
     var aggregateId: String? = null
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    override var timestamp: Date? = null
-    override var createdBy: String? = null
-    override var position: Long? = null
+    @Transient
+    override var revertedBy: RevertEvent<String, Patient, String, PatientEvent>? = null // <3>
 
-    override var revertedBy: RevertEvent<String, Patient, String, PatientEvent>? = null
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    override var timestamp: Date? = null // <4>
+    override var createdBy: String? = null
+    override var position: Long? = null // <5>
 
     fun getType() = this.javaClass.simpleName
 
     @JsonIgnore
-    override fun getAggregateObservable(): Observable<Patient> =
+    override fun getAggregateObservable(): Observable<Patient> = // <6>
             aggregate?.let { just(it) } ?: empty()
 
     override var aggregate: Patient?
@@ -41,14 +44,20 @@ sealed class PatientEvent : BaseEvent<String, Patient, String, PatientEvent> {
         set(value) {
             aggregateId = value!!.id
         }
+    // end::patientEvent[]
 
     fun getTs() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(timestamp)
 
-    data class Reverted(override val revertedEventId: String) :
-            PatientEvent(), RevertEvent<String, Patient, String, PatientEvent> {
+    // tag::reverted[]
+    data class Reverted(override val revertedEventId: String) : // <1>
+            PatientEvent(), // <2>
+            RevertEvent<String, Patient, String, PatientEvent> { // <3>
         override fun getAudit(): String = "$id - Revert $revertedEventId"
+        // end::reverted[]
         override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
+        // tag::reverted[]
     }
+    // end::reverted[]
 
     data class PatientDeprecates(val deprecated: Patient) :
             PatientEvent(), Deprecates<String, Patient, String, PatientEvent> {
@@ -91,11 +100,15 @@ sealed class PatientEvent : BaseEvent<String, Patient, String, PatientEvent> {
         override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
     }
 
-    sealed class Applicable : PatientEvent() {
-        data class Created(val name: String) : Applicable() {
-            override fun getAudit(): String = "$id - Created '$name'"
+    // tag::created[]
+    sealed class Applicable : PatientEvent() { // <1>
+        data class Created(val name: String) : Applicable() { // <2>
+            override fun getAudit(): String = "$id - Created '$name'" // <3>
+            // end::created[]
             override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
+            // tag::created[]
         }
+        // end::created[]
 
         data class ProcedurePerformed(val code: String, val cost: BigDecimal) : Applicable() {
             override fun getAudit(): String = "$id - Performed '$code' for $cost"
@@ -106,6 +119,9 @@ sealed class PatientEvent : BaseEvent<String, Patient, String, PatientEvent> {
             override fun getAudit(): String = "$id - Paid $amount"
             override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
         }
+        // tag::created[]
     }
-
+    // end::created[]
+    // tag::patientEvent[]
 }
+// end::patientEvent[]

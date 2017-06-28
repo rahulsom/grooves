@@ -1,0 +1,45 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+        classpath 'org.ajoberstar:gradle-git:1.6.0'
+    }
+}
+
+apply plugin: 'org.asciidoctor.convert'
+apply plugin: 'org.ajoberstar.github-pages'
+
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    asciidoctor 'com.github.spring-io:spring-asciidoctor-extensions:v0.1.0.RELEASE'
+}
+
+asciidoctor {
+    sources {
+        include 'index.adoc'
+    }
+    attributes 'sourcedir': rootDir.absolutePath,
+            'version': project.version.toString()
+}
+
+githubPages {
+    repoUri = 'https://github.com/rahulsom/grooves.git'
+    targetBranch = 'gh-pages'
+    pages {
+        from(file("$buildDir/asciidoc/html5")) {
+            into "manual/${version}"
+        }
+    }
+    credentials {
+        username = System.getenv('GH_TOKEN')
+        password = '\n'
+    }
+}
+
+tasks.findByName('uploadArchives').dependsOn 'publishGhPages'
+tasks.findByName('publishGhPages').dependsOn 'asciidoctor'
