@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    asciidoctor 'com.github.spring-io:spring-asciidoctor-extensions:v0.1.0.RELEASE'
+    asciidoctor 'com.github.spring-io:spring-asciidoctor-extensions:05bca0c665'
 }
 
 asciidoctor {
