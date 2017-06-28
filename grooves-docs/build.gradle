@@ -27,12 +27,20 @@ asciidoctor {
             'version': project.version.toString()
 }
 
+def env = System.getenv()
+
 githubPages {
     repoUri = 'https://github.com/rahulsom/grooves.git'
     targetBranch = 'gh-pages'
+    deleteExistingFiles = false
     pages {
         from(file("$buildDir/asciidoc/html5")) {
             into "manual/${version}"
+        }
+        if (env['BRANCH_NAME'] == 'master') {
+            from(file("$buildDir/asciidoc/html5")) {
+                into "manual/current"
+            }
         }
     }
     credentials {
