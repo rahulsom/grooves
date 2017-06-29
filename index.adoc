@@ -1,0 +1,15 @@
+= Grooves
+
+Formerly, _Groovy + Event Sourcing_.
+Now, _Grooves_ is just a name.
+It supports Event Sourcing on many JVM languages.
+Examples and tests are included in java, kotlin, and of course, groovy.
+
+== Versions
+
+|===
+|Current | http://rahulsom.github.io/grooves/manual/current[Documentation]
+|0.2.0   | http://rahulsom.github.io/grooves/manual/0.2.0[Documentation]
+|0.1.1   | http://rahulsom.github.io/grooves/manual/0.1.1[Documentation]
+|0.1.0   | http://rahulsom.github.io/grooves/manual/0.1.0[Documentation]
+|===
