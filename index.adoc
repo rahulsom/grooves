@@ -9,7 +9,8 @@ Examples and tests are included in java, kotlin, and of course, groovy.
 
 |===
 |Current | http://rahulsom.github.io/grooves/manual/current[Documentation]
-|0.2.0   | http://rahulsom.github.io/grooves/manual/0.2.0[Documentation]
 |0.1.1   | http://rahulsom.github.io/grooves/manual/0.1.1[Documentation]
 |0.1.0   | http://rahulsom.github.io/grooves/manual/0.1.0[Documentation]
+|0.0.2   | http://rahulsom.github.io/grooves/manual/0.0.2[Documentation]
+|0.0.1   | http://rahulsom.github.io/grooves/manual/0.0.1[Documentation]
 |===
