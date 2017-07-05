@@ -97,7 +97,7 @@ class BootStrap {
         def patient2 = new Patient(uniqueId: '46').save(flush: true, failOnError: true)
 
         on(patient) {
-            apply new PatientCreated(name: 'George Harrison')
+            apply new PatientCreated(name: 'Farrokh Bulsara')
             apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
             apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
 
@@ -106,8 +106,7 @@ class BootStrap {
         }
 
         on(patient2) {
-            apply new PatientCreated(name:
-                    'George Harrison, Member of the Most Excellent Order of the British Empire')
+            apply new PatientCreated(name: 'Freddie Mercury')
             apply new PaymentMade(amount: 100.25)
 
             snapshotWith patientAccountQuery

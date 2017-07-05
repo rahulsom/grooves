@@ -195,7 +195,7 @@ abstract class AbstractPatientSpec extends Specification {
     }
 
     @Unroll
-    void "George Harrison's balance is correct at version #version"() {
+    void "Farrokh Bulsara's balance is correct at version #version"() {
         getRest()
         def theId4 = ids[4 - 1]
         def theAggregateId = ids[aggregateId - 1]
@@ -225,7 +225,7 @@ abstract class AbstractPatientSpec extends Specification {
     }
 
     @Unroll
-    void "George Harrison MBE's balance is correct at version #version"() {
+    void "Freddie Mercury's balance is correct at version #version"() {
         getRest()
         def theId5 = ids[5 - 1]
         def theId4 = ids[4 - 1]
@@ -252,7 +252,7 @@ abstract class AbstractPatientSpec extends Specification {
         3       || 148.68  | 100.25    | 5           | [4,]
     }
 
-    void "George Harrison and George Harrison MBE are merged"() {
+    void "Farrokh Bulsara and Freddie Mercury are merged"() {
         getRest()
         HttpResponseDecorator resp
         def theId5 = ids[5 - 1]
