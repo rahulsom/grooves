@@ -144,7 +144,7 @@ public class BootStrap {
         Patient patient2 = save(new Patient("46"));
 
         on(patient, it -> {
-            it.apply(new PatientCreated("George Harrison"));
+            it.apply(new PatientCreated("Farrokh Bulsara"));
             it.apply(new ProcedurePerformed(ANNUALPHYSICAL_NAME,
                     new BigDecimal(ANNUALPHYSICAL_COST)));
             it.apply(new ProcedurePerformed(GLUCOSETEST_NAME, new BigDecimal(GLUCOSETEST_COST)));
@@ -154,8 +154,7 @@ public class BootStrap {
         });
 
         on(patient2, it -> {
-            final String name =
-                    "George Harrison, Member of the Most Excellent Order of the British Empire";
+            final String name = "Freddie Mercury";
             it.apply(new PatientCreated(name));
             it.apply(new PaymentMade(new BigDecimal("100.25")));
 

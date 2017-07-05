@@ -106,13 +106,12 @@ class BootStrap {
         }
     }
 
-    private val GEORGE_HARRISON_MBE =
-            "George Harrison, Member of the Most Excellent Order of the British Empire"
+    private val GEORGE_HARRISON_MBE = "Freddie Mercury"
 
     fun setupGeorgeHarrison() {
         val patient = patientRepository.save(Patient("45"))
         on(patient) {
-            it.apply(Created("George Harrison"))
+            it.apply(Created("Farrokh Bulsara"))
             it.apply(ProcedurePerformed("ANNUALPHYSICAL", BigDecimal("170.00")))
             it.apply(ProcedurePerformed("GLUCOSE", BigDecimal("78.93")))
 
