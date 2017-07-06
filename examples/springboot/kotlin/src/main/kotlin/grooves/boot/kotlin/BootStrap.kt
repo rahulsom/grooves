@@ -36,7 +36,7 @@ class BootStrap {
         setupJohnLennon()
         setupRingoStarr()
         setupPaulMcCartney()
-        setupGeorgeHarrison()
+        setupFreddieMercury()
     }
 
     fun setupJohnLennon() {
@@ -106,9 +106,7 @@ class BootStrap {
         }
     }
 
-    private val GEORGE_HARRISON_MBE = "Freddie Mercury"
-
-    fun setupGeorgeHarrison() {
+    fun setupFreddieMercury() {
         val patient = patientRepository.save(Patient("45"))
         on(patient) {
             it.apply(Created("Farrokh Bulsara"))
@@ -121,7 +119,7 @@ class BootStrap {
 
         val patient2 = patientRepository.save(Patient("46"))
         on(patient2) {
-            it.apply(Created(GEORGE_HARRISON_MBE))
+            it.apply(Created("Freddie Mercury"))
             it.apply(PaymentMade(BigDecimal("100.25")))
 
             snapshotWith(it, patientAccountQuery, patientAccountRepository)

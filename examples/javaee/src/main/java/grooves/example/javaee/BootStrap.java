@@ -56,7 +56,7 @@ public class BootStrap {
         setupJohnLennon();
         setupRingoStarr();
         setupPaulMcCartney();
-        setupGeorgeHarrison();
+        setupFreddieMercury();
     }
 
     private Patient save(Patient patient) {
@@ -139,7 +139,7 @@ public class BootStrap {
 
     }
 
-    private Patient setupGeorgeHarrison() {
+    private Patient setupFreddieMercury() {
         Patient patient = save(new Patient("45"));
         Patient patient2 = save(new Patient("46"));
 
