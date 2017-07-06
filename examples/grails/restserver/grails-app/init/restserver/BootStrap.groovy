@@ -35,7 +35,7 @@ class BootStrap {
         setupJohnLennon()
         setupRingoStarr()
         setupPaulMcCartney()
-        setupGeorgeHarrison()
+        setupFreddieMercury()
     }
 
     private Patient setupJohnLennon() {
@@ -88,7 +88,7 @@ class BootStrap {
 
     }
 
-    private Patient setupGeorgeHarrison() {
+    private Patient setupFreddieMercury() {
         def patient = new Patient(uniqueId: '45').save(flush: true, failOnError: true)
         def patient2 = new Patient(uniqueId: '46').save(flush: true, failOnError: true)
 

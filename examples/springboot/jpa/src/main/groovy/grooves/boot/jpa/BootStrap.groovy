@@ -33,7 +33,7 @@ class BootStrap implements InitializingBean {
         setupJohnLennon()
         setupRingoStarr()
         setupPaulMcCartney()
-        setupGeorgeHarrison()
+        setupFreddieMercury()
     }
 
     private Patient setupJohnLennon() {
@@ -104,7 +104,7 @@ class BootStrap implements InitializingBean {
 
     }
 
-    private Patient setupGeorgeHarrison() {
+    private Patient setupFreddieMercury() {
         def patient = patientRepository.save(new Patient(uniqueId: '45'))
         def patient2 = patientRepository.save(new Patient(uniqueId: '46'))
 
