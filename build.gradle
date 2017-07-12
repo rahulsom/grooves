@@ -46,8 +46,9 @@ tasks.release.dependsOn 'grooves-api:uploadArchives',
         'grooves-docs:publishGhPages'
 
 project.afterEvaluate {
-    project.tasks.findByName('closeAndPromoteRepository').mustRunAfter 'grooves-api:uploadArchives',
+    project.tasks.findByName('closeRepository').mustRunAfter 'grooves-api:uploadArchives',
             'grooves-groovy:uploadArchives',
+            'grooves-types:uploadArchives',
             'grooves-gorm:uploadArchives'
 
     if (!version.toString().endsWith('-SNAPSHOT')) {
