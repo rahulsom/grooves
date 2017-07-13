@@ -1,8 +1,10 @@
 rootProject.name = 'grooves'
 
-def projects = ['api', 'groovy', 'gorm', 'types', 'docs']
-projects.each { include "grooves-${it}" }
+def releasable = ['api', 'groovy', 'gorm', 'types']
+gradle.ext.releasable = releasable
+releasable.each { include "grooves-${it}" }
 
+include "grooves-docs"
 include 'grooves-example-test'
 def examples = [
         'springboot/jpa',

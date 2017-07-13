@@ -39,17 +39,15 @@ subprojects {
     }
 }
 
-tasks.release.dependsOn 'grooves-api:uploadArchives',
-        'grooves-groovy:uploadArchives',
-        'grooves-gorm:uploadArchives',
-        'grooves-types:uploadArchives',
-        'grooves-docs:publishGhPages'
+gradle.releasable.each {
+    tasks.release.dependsOn "grooves-${it}:uploadArchives"
+}
+tasks.release.dependsOn 'grooves-docs:publishGhPages'
 
 project.afterEvaluate {
-    project.tasks.findByName('closeRepository').mustRunAfter 'grooves-api:uploadArchives',
-            'grooves-groovy:uploadArchives',
-            'grooves-types:uploadArchives',
-            'grooves-gorm:uploadArchives'
+    gradle.releasable.each {
+        project.tasks.findByName('closeRepository').mustRunAfter "grooves-${it}:uploadArchives"
+    }
 
     if (!version.toString().endsWith('-SNAPSHOT')) {
         tasks.release.dependsOn 'closeAndPromoteRepository'
