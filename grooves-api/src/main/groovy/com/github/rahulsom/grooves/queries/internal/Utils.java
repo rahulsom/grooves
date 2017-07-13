@@ -68,11 +68,13 @@ public class Utils {
      * @param events                    The sequence of events
      * @param executor                  The executor to use for processing events
      * @param fallbackSnapshotAndEvents The fallback supplier
+     * @param <AggregateIdT>            The type of {@link AggregateT}'s id
      * @param <AggregateT>              The type of Aggregate
-     * @param <EventIdT>                The type of Event Id
+     * @param <EventIdT>                The type of {@link EventT}'s id
      * @param <EventT>                  The type of Event
-     * @param <SnapshotIdT>             The type of Snapshot Id
+     * @param <SnapshotIdT>             The type of {@link SnapshotT}'s id
      * @param <SnapshotT>               The type of Snapshot
+     * @param <QueryT>                  The type of Query
      *
      * @return an observable of forward only events
      */

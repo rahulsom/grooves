@@ -41,6 +41,8 @@ public class PatientResource {
     /**
      * Lists all patients.
      *
+     * @param id The patient's id
+     *
      * @return List of patients
      */
     @GET

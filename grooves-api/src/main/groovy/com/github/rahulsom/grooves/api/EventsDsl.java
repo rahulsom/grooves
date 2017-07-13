@@ -13,9 +13,10 @@ import java.util.function.Supplier;
 /**
  * DSL to simplify writing code with Events.
  *
- * @param <AggregateT> The Aggregate on which this operates
- * @param <EventIdT>   The Type of Event's id field
- * @param <EventT>     The type of event on which this operates
+ * @param <AggregateIdT> The type of {@link AggregateT}'s id
+ * @param <AggregateT>   The Aggregate on which this operates
+ * @param <EventIdT>     The type of {@link EventT}'s id
+ * @param <EventT>       The type of event on which this operates
  *
  * @author Rahul Somasunderam
  */
@@ -34,6 +35,8 @@ public class EventsDsl<
     /**
      * Allows executing a consumer with some context to setup events.
      *
+     * @param <SnapshotIdT>     The type of {@link SnapshotT}'s id
+     * @param <SnapshotT>       The type of Snapshot Generated
      * @param aggregate         The aggregate on which the consumer must operate
      * @param entityConsumer    A Consumer that decides what happens when apply is called on an
      *                          entity
