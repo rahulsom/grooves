@@ -1,6 +1,6 @@
 rootProject.name = 'grooves'
 
-def releasable = ['api', 'groovy', 'gorm', 'types']
+def releasable = ['api', 'groovy', 'gorm', 'types', 'diagrams']
 gradle.ext.releasable = releasable
 releasable.each { include "grooves-${it}" }
 

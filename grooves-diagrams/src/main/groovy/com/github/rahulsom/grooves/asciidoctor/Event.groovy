@@ -3,7 +3,6 @@ package com.github.rahulsom.grooves.asciidoctor
 import groovy.transform.TupleConstructor
 
 import static java.lang.System.identityHashCode
-import static Constants.*
 
 /**
  * Represents an event while rendering in asciidoctor.
@@ -33,8 +32,8 @@ class Event {
         builder.mkp.comment(toString())
         def revertedClass = this.reverted ? 'reverted' : ''
         builder.g(id: "event${identityHashCode(this)}", class: "event ${this.type.name()} ${revertedClass}") {
-            def x = 10 + aggregateWidth * 2 + xOffset * eventSpace as int
-            def y = index * eventLineHeight + offset + aggregateHeight / 2 as int
+            def x = 10 + Constants.aggregateWidth * 2 + xOffset * Constants.eventSpace as int
+            def y = index * Constants.eventLineHeight + Constants.offset + Constants.aggregateHeight / 2 as int
 
             while (svgBuilder.allEvents.find { it.x == x && it.y == y }) {
                 y -= 20 * Math.sqrt(3) / 2
@@ -58,7 +57,7 @@ class Event {
 
                 if (other.x && other.y) {
 
-                    def x1 = (type == EventType.Disjoin ? -30 : 30) * Math.abs(other.y - y) / eventLineHeight
+                    def x1 = (type == EventType.Disjoin ? -30 : 30) * Math.abs(other.y - y) / Constants.eventLineHeight
                     def xContactOffset = type == EventType.Disjoin ? -10 : 10
                     def y1 = (y + other.y) / 2
 
