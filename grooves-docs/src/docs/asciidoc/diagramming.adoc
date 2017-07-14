@@ -2,7 +2,7 @@
 
 In a gradle project, if you're using asciidoctor for documentation, you can generate diagrams using `grooves-diagrams`.
 
-[source,groovy]
+[source,groovy,subs="attributes+"]
 ----
 buildscript {
     repositories {
