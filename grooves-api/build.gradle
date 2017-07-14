@@ -35,3 +35,8 @@ srcclr {
 groovydoc {
     exclude '**/*.java'
 }
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.outputDirectory
+}
