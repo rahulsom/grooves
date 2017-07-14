@@ -2,15 +2,18 @@ package com.github.rahulsom.grooves.api.snapshots
 
 import com.github.rahulsom.grooves.api.AggregateType
 import com.github.rahulsom.grooves.api.events.BaseEvent
+import com.github.rahulsom.grooves.api.snapshots.internal.BaseJoin
 
 /**
  * A special kind of [Snapshot] that stores information about joined entities.
+ * This is temporal as well as versioned.
  *
- * @param [AggregateT] The Aggregate this join represents
- * @param [JoinIdT] The type for the join's [.getId] field
- * @param [JoinedAggregateIdT] The type for the other aggregate that [AggregateT] joins to
- * @param [EventIdT] The type for the [EventT]'s id field
- * @param [EventT] The base type for events that apply to [AggregateT]
+ * @param [AggregateIdT]       The type of [AggregateT.id]
+ * @param [AggregateT]         The Aggregate this snapshot works over
+ * @param [JoinIdT]            The type for [BaseJoin.id]
+ * @param [JoinedAggregateIdT] The type for the id of the aggregate that [AggregateT] to
+ * @param [EventIdT]           The type for [EventT.id]
+ * @param [EventT]             The base type for events that apply to [AggregateT]
  *
  * @author Rahul Somasunderam
  */

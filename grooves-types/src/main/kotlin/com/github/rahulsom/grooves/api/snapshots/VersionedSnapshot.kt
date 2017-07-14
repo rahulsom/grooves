@@ -7,10 +7,11 @@ import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot
 /**
  * Marks a class as a versioned snapshot.
  *
- * @param [AggregateT] The Aggregate this snapshot works over
- * @param [SnapshotIdT] The type for the snapshot's [.getId] field
- * @param [EventIdT] The type for the [EventT]'s id field
- * @param [EventT] The base type for events that apply to [AggregateT]
+ * @param [AggregateIdT] The type of [AggregateT.id]
+ * @param [AggregateT]   The Aggregate this snapshot works over
+ * @param [SnapshotIdT]  The type for [BaseSnapshot.id]
+ * @param [EventIdT]     The type for [EventT.id]
+ * @param [EventT]       The base type for events that apply to [AggregateT]
  *
  * @author Rahul Somasunderam
  */
@@ -22,6 +23,11 @@ interface VersionedSnapshot<
         in EventT : BaseEvent<AggregateIdT, AggregateT, EventIdT, in EventT>> :
         BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT> {
 
+    /**
+     * The position of the last event that this snapshot represents.
+     *
+     * This is useful in finding a matching or suitable snapshot based on the version of a snapshot.
+     */
     var lastEventPosition: Long?
 
     override fun setLastEvent(event: EventT) {
