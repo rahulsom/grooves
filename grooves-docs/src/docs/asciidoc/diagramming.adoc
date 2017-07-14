@@ -1,0 +1,53 @@
+== Creating your own diagrams
+
+In a gradle project, if you're using asciidoctor for documentation, you can generate diagrams using `grooves-diagrams`.
+
+[source,groovy]
+----
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3' // <1>
+    }
+}
+
+apply plugin: 'org.asciidoctor.convert' // <2>
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    asciidoctor 'com.github.rahulsom:grooves-diagrams:{version}' // <3>
+}
+----
+<1> This adds the asciidoctor gradle plugin to your build
+<2> This applies the plugin
+<3> This includes the dependency on grooves-diagrams
+
+Now in your asciidoctor files, you can do this
+
+[source,asciidoctor]
+----
+[esdiag,SimpleEvents]
+....
+|Type,ID,Description
+  + 1 2016-01-02 created as John Lennon
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-05 paid $ 100.25
+....
+----
+
+The result is this
+
+[esdiag,SimpleEvents]
+....
+|Type,ID,Description
+  + 1 2016-01-02 created as John Lennon
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-05 paid $ 100.25
+....

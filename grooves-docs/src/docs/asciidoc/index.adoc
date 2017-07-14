@@ -73,4 +73,6 @@ include::examples/snapshot.adoc[]
 
 include::examples/queries.adoc[]
 
+include::diagramming.adoc[]
+
 include::support.adoc[]

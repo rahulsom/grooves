@@ -2,8 +2,6 @@ package com.github.rahulsom.grooves.asciidoctor
 
 import groovy.xml.StreamingMarkupBuilder
 import groovy.xml.XmlUtil
-import static Constants.*
-
 import com.github.sommeri.less4j.core.ThreadUnsafeLessCompiler
 
 /**
@@ -74,15 +72,15 @@ class SvgBuilder {
     void write(File file) {
         def m = new StreamingMarkupBuilder().bind { builder ->
             builder.svg(xmlns: "http://www.w3.org/2000/svg",
-                    height: aggregates.size() * eventLineHeight,
-                    width: dates.values().max() * eventSpace + 4 * aggregateWidth) {
+                    height: aggregates.size() * Constants.eventLineHeight,
+                    width: dates.values().max() * Constants.eventSpace + 4 * Constants.aggregateWidth) {
                 mkp.comment "Generated on ${new Date()} from\n${aggregates.join('\n')}\n"
 
-                buildStyle(builder, new ThreadUnsafeLessCompiler().compile(LESS).css)
+                buildStyle(builder, new ThreadUnsafeLessCompiler().compile(Constants.LESS).css)
 
                 builder.rect x: 0, y: 0,
-                        width: dates.values().max() * eventSpace + 4 * aggregateWidth ,
-                        height: aggregates.size() * eventLineHeight ,
+                        width: dates.values().max() * Constants.eventSpace + 4 * Constants.aggregateWidth ,
+                        height: aggregates.size() * Constants.eventLineHeight ,
                         class: 'background'
                 defs {
                     marker(id: 'triangle', viewBox: '0 0 10 10', refX: 0, refY: 5,
