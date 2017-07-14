@@ -12,6 +12,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:1.0.3"
         classpath "gradle.plugin.com.srcclr:gradle:2.2.3"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:+"
     }
 }
 
@@ -22,6 +23,7 @@ apply plugin: 'kotlin'
 apply from: '../gradle/jacoco.gradle'
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply plugin: "com.srcclr.gradle"
+apply plugin: "org.jetbrains.dokka"
 
 dependencies {
     compileOnly 'org.codehaus.groovy:groovy:2.4.8'
@@ -35,4 +37,14 @@ dependencies {
 
 srcclr {
   apiToken = System.getenv()['SRC_CLR_TOKEN']
+}
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/dokka"
+}
+
+task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
+    outputFormat = 'javadoc'
+    outputDirectory = "$buildDir/javadoc"
 }
