@@ -16,6 +16,8 @@ apply plugin: 'groovy'
 apply from: '../gradle/jacoco.gradle'
 apply plugin: "com.srcclr.gradle"
 
+description = "APIs that help in computation of Grooves based Snapshots"
+
 dependencies {
     compileOnly 'org.codehaus.groovy:groovy:2.4.8'
     compile 'org.slf4j:slf4j-api:1.7.22'

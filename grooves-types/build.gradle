@@ -25,6 +25,8 @@ apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply plugin: "com.srcclr.gradle"
 apply plugin: "org.jetbrains.dokka"
 
+description = "Types that are used by Grooves to build an Event Sourcing system"
+
 dependencies {
     compileOnly 'org.codehaus.groovy:groovy:2.4.8'
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"

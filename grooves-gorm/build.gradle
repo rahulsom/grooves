@@ -19,6 +19,8 @@ apply plugin: 'groovy'
 apply from: '../gradle/jacoco.gradle'
 apply plugin: "com.srcclr.gradle"
 
+description = "Integration with Grails' GORM API"
+
 dependencies {
     compile project(':grooves-groovy')
     compileOnly 'org.grails:grails-datastore-gorm:6.0.7.RELEASE'

@@ -11,8 +11,8 @@ buildscript {
 
 modifyPom {
     project {
-        name 'Grooves'
-        description "Groovy Event Sourcing"
+        name project.name.split('-').collect {it.capitalize()}.join(' ')
+        description project.description
         url 'https://github.com/rahulsom/grooves'
         inceptionYear '2017'
 

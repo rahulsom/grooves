@@ -17,6 +17,8 @@ apply plugin: 'groovy'
 apply from: '../gradle/jacoco.gradle'
 apply plugin: "com.srcclr.gradle"
 
+description = "Support for completeness of queries in Groovy code"
+
 dependencies {
     compile project(':grooves-api')
     compile 'org.codehaus.groovy:groovy:2.4.8'
