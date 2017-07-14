@@ -118,7 +118,8 @@ $(addBlockSwitches);
 <li><a href="#_queries">4.5. Queries</a></li>
 </ul>
 </li>
-<li><a href="#_support">5. Support</a></li>
+<li><a href="#_creating_your_own_diagrams">5. Creating your own diagrams</a></li>
+<li><a href="#_support">6. Support</a></li>
 </ul>
 </div>
 </div>
@@ -2177,7 +2178,76 @@ Kotlin will check for completeness when you use the <code>when</code> keyword as
 </div>
 </div>
 <div class="sect1">
-<h2 id="_support">5. Support</h2>
+<h2 id="_creating_your_own_diagrams">5. Creating your own diagrams</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In a gradle project, if you&#8217;re using asciidoctor for documentation, you can generate diagrams using <code>grooves-diagrams</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath <span class="string"><span class="delimiter">'</span><span class="content">org.asciidoctor:asciidoctor-gradle-plugin:1.5.3</span><span class="delimiter">'</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+}
+
+apply <span class="key">plugin</span>: <span class="string"><span class="delimiter">'</span><span class="content">org.asciidoctor.convert</span><span class="delimiter">'</span></span> <i class="conum" data-value="2"></i><b>(2)</b>
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    asciidoctor <span class="string"><span class="delimiter">'</span><span class="content">com.github.rahulsom:grooves-diagrams:{version}</span><span class="delimiter">'</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This adds the asciidoctor gradle plugin to your build</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This applies the plugin</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This includes the dependency on grooves-diagrams</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now in your asciidoctor files, you can do this</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="asciidoctor">[esdiag,SimpleEvents]
+....
+|Type,ID,Description
+  + 1 2016-01-02 created as John Lennon
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-05 paid $ 100.25
+....</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The result is this</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="SimpleEvents.svg" alt="SimpleEvents">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_support">6. Support</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>If you&#8217;re having trouble using this, head over to <a href="https://github.com/rahulsom/grooves/issues">Github Issues</a> and raise a question.
