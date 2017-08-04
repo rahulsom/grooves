@@ -947,11 +947,13 @@ sealed class PatientEvent : BaseEvent&lt;String, Patient, String, PatientEvent&g
 
     @JsonIgnore
     override fun getAggregateObservable(): Observable&lt;Patient&gt; = <i class="conum" data-value="6"></i><b>(6)</b>
-            aggregate?.let { just(it) } ?: empty()
+            aggregateId?.let {
+                BeansHolder.context?.getBean(PatientRepository::class.java)?.findById(it)
+            } ?: empty()
 
     override var aggregate: Patient?
         @JsonIgnore
-        get() = null
+        get() = getAggregateObservable().toBlocking().first()
         set(value) {
             aggregateId = value!!.id
         }
@@ -1032,8 +1034,8 @@ In our case, it doesn&#8217;t matter much since we&#8217;re using Hibernate, whi
 <span class="type">class</span> <span class="class">PatientCreated</span> <span class="directive">extends</span> PatientEvent { <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="predefined-type">String</span> name
 
-    <span class="annotation">@Override</span>
-    <span class="predefined-type">String</span> getAudit() { <span class="keyword">new</span> JsonBuilder([<span class="key">name</span>: name]).toString() } <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="annotation">@Override</span> <span class="predefined-type">String</span> getAudit() { <span class="keyword">new</span> JsonBuilder([<span class="key">name</span>: name]).toString() } <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="annotation">@Override</span> <span class="predefined-type">String</span> toString() { <span class="string"><span class="delimiter">&quot;</span><span class="content">PatientCreated(name=</span><span class="inline"><span class="inline-delimiter">$</span>name</span><span class="content">)</span><span class="delimiter">&quot;</span></span> }
 }</code></pre>
 </div>
 </div>
@@ -1186,8 +1188,8 @@ Their implementation is similar to one another, but slightly different from your
         <span class="directive">implements</span> RevertEvent&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, PatientEvent&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="predefined-type">Long</span> revertedEventId <i class="conum" data-value="3"></i><b>(3)</b>
 
-    <span class="annotation">@Override</span>
-    <span class="predefined-type">String</span> getAudit() { <span class="keyword">new</span> JsonBuilder([<span class="key">revertedEvent</span>: revertedEventId]).toString() }
+    <span class="annotation">@Override</span> <span class="predefined-type">String</span> getAudit() { <span class="keyword">new</span> JsonBuilder([<span class="key">revertedEvent</span>: revertedEventId]).toString() }
+    <span class="annotation">@Override</span> <span class="predefined-type">String</span> toString() { <span class="string"><span class="delimiter">&quot;</span><span class="content">PatientEventReverted(revertedEventId=</span><span class="inline"><span class="inline-delimiter">$</span>revertedEventId</span><span class="content">)</span><span class="delimiter">&quot;</span></span> }
 }</code></pre>
 </div>
 </div>
@@ -1459,8 +1461,8 @@ It is empty when the aggregate is not deprecated.</td>
     }
 
     <span class="annotation">@Override</span> <span class="predefined-type">String</span> toString() {
-        <span class="string"><span class="delimiter">&quot;</span><span class="content">PatientAccount(</span><span class="inline"><span class="inline-delimiter">$</span>id</span><span class="content">, </span><span class="inline"><span class="inline-delimiter">$</span>aggregateId</span><span class="content">, </span><span class="inline"><span class="inline-delimiter">$</span>lastEventPosition</span><span class="content">, </span><span class="delimiter">&quot;</span></span> +
-                <span class="string"><span class="delimiter">&quot;</span><span class="content">B: </span><span class="inline"><span class="inline-delimiter">$</span>balance</span><span class="content">, M: </span><span class="inline"><span class="inline-delimiter">$</span>moneyMade</span><span class="content">)</span><span class="delimiter">&quot;</span></span>
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">PatientAccount(id=</span><span class="inline"><span class="inline-delimiter">$</span>id</span><span class="content">, aggregateId=</span><span class="inline"><span class="inline-delimiter">$</span>aggregateId</span><span class="content">, lastEventPosition=</span><span class="inline"><span class="inline-delimiter">$</span>lastEventPosition</span><span class="content">, </span><span class="delimiter">&quot;</span></span> +
+                <span class="string"><span class="delimiter">&quot;</span><span class="content">balance=</span><span class="inline"><span class="inline-delimiter">$</span>balance</span><span class="content">, moneyMade=</span><span class="inline"><span class="inline-delimiter">$</span>moneyMade</span><span class="content">)</span><span class="delimiter">&quot;</span></span>
     }
 }</code></pre>
 </div>
@@ -1605,13 +1607,8 @@ It is empty when the aggregate is not deprecated.</td>
     }
 
     <span class="annotation">@Override</span>
-    <span class="keyword">default</span> <span class="predefined-type">Observable</span>&lt;PatientEvent&gt; findEventsForAggregates(<span class="predefined-type">List</span>&lt;Patient&gt; aggregates) {
-        <i class="conum" data-value="7"></i><b>(7)</b>
-    }
-
-    <span class="annotation">@Override</span>
     <span class="keyword">default</span> <span class="predefined-type">Observable</span>&lt;EventApplyOutcome&gt; onException(
-            <span class="exception">Exception</span> e, SnapshotT snapshot, PatientEvent event) { <i class="conum" data-value="8"></i><b>(8)</b>
+            <span class="exception">Exception</span> e, SnapshotT snapshot, PatientEvent event) { <i class="conum" data-value="7"></i><b>(7)</b>
         getLog().error(<span class="string"><span class="delimiter">&quot;</span><span class="content">Error computing snapshot</span><span class="delimiter">&quot;</span></span>, e);
         <span class="keyword">return</span> just(CONTINUE);
     }
@@ -1619,30 +1616,30 @@ It is empty when the aggregate is not deprecated.</td>
     <span class="annotation">@Override</span>
     <span class="keyword">default</span> <span class="predefined-type">Observable</span>&lt;PatientEvent&gt; getUncomputedEvents(
             Patient aggregate, SnapshotT lastSnapshot, <span class="type">long</span> version) {
-        <i class="conum" data-value="9"></i><b>(9)</b>
+        <i class="conum" data-value="8"></i><b>(8)</b>
     }
 
     <span class="annotation">@Override</span>
     <span class="keyword">default</span> <span class="predefined-type">Observable</span>&lt;PatientEvent&gt; getUncomputedEvents(
             Patient aggregate, SnapshotT lastSnapshot, <span class="predefined-type">Date</span> snapshotTime) {
-        <i class="conum" data-value="10"></i><b>(10)</b>
+        <i class="conum" data-value="9"></i><b>(9)</b>
     }
 
 }
 <span class="comment">// This is the implementation we need</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PatientAccountQuery</span>
-        <span class="directive">implements</span> CustomQuerySupport&lt;PatientAccount, PatientAccountQuery&gt; { <i class="conum" data-value="11"></i><b>(11)</b>
+        <span class="directive">implements</span> CustomQuerySupport&lt;PatientAccount, PatientAccountQuery&gt; { <i class="conum" data-value="10"></i><b>(10)</b>
 
     <span class="annotation">@Override</span>
-    <span class="directive">public</span> PatientAccount createEmptySnapshot() { <i class="conum" data-value="12"></i><b>(12)</b>
+    <span class="directive">public</span> PatientAccount createEmptySnapshot() { <i class="conum" data-value="11"></i><b>(11)</b>
         <span class="keyword">return</span> <span class="keyword">new</span> PatientAccount();
     }
     <span class="directive">public</span> <span class="predefined-type">Observable</span>&lt;EventApplyOutcome&gt; applyPatientCreated(
-            PatientCreated event, PatientAccount snapshot) { <i class="conum" data-value="13"></i><b>(13)</b>
-        <span class="keyword">if</span> (snapshot.getName() == <span class="predefined-constant">null</span>) {
+            PatientCreated event, PatientAccount snapshot) { <i class="conum" data-value="12"></i><b>(12)</b>
+        <span class="keyword">if</span> (snapshot.getAggregate() == event.getAggregate()) {
             snapshot.setName(event.getName());
         }
-        <span class="keyword">return</span> just(CONTINUE); <i class="conum" data-value="14"></i><b>(14)</b>
+        <span class="keyword">return</span> just(CONTINUE); <i class="conum" data-value="13"></i><b>(13)</b>
     }
 
     <span class="directive">public</span> <span class="predefined-type">Observable</span>&lt;EventApplyOutcome&gt; applyProcedurePerformed(
@@ -1699,40 +1696,35 @@ It is empty when the aggregate is not deprecated.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>This gets called on a merge.
-The implementation must return all events for given aggregates.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="8"></i><b>8</b></td>
 <td>This is an exception handler.
 You can decide to <code>CONTINUE</code> or <code>RETURN</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
 <td>The implementation of this method must return all events for an aggregate that are more recent than the last event of <code>lastSnapshot</code>, but lead up to <code>version</code>.
 Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <code>version</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
 <td>The implementation of this method must return all events for an aggregate that are more recent than the last event of <code>lastSnapshot</code>, but lead up to <code>snapshotTime</code>.
 Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <code>snapshotTime</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
 <td>Here we implement our default interface</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
 <td>This method gets called if no prior snapshot that is usable is found.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
 <td>We name our methods <code>apply&lt;EventType&gt;</code>.
 This is required.
 It is not enforced though.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="14"></i><b>14</b></td>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
 <td>Each of these methods takes the event and the snapshot as inputs and returns an <code>Observable&lt;EventApplyOutcome&gt;</code> as output.
 It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
 </tr>
@@ -1760,28 +1752,24 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
     }
 
     <span class="annotation">@Override</span>
-    <span class="predefined-type">Observable</span>&lt;PatientEvent&gt; findEventsForAggregates(<span class="predefined-type">List</span>&lt;Patient&gt; aggregates) { <i class="conum" data-value="6"></i><b>(6)</b>
-    }
-
-    <span class="annotation">@Override</span>
     <span class="predefined-type">Observable</span>&lt;EventApplyOutcome&gt; onException(
-            <span class="exception">Exception</span> e, PatientAccount snapshot, PatientEvent event) { <i class="conum" data-value="7"></i><b>(7)</b>
+            <span class="exception">Exception</span> e, PatientAccount snapshot, PatientEvent event) { <i class="conum" data-value="6"></i><b>(6)</b>
         snapshot.processingErrors++
         just CONTINUE
     }
 
     <span class="annotation">@Override</span>
     <span class="predefined-type">Observable</span>&lt;PatientEvent&gt; getUncomputedEvents(
-            Patient patient, PatientAccount lastSnapshot, <span class="type">long</span> version) { <i class="conum" data-value="8"></i><b>(8)</b>
+            Patient patient, PatientAccount lastSnapshot, <span class="type">long</span> version) { <i class="conum" data-value="7"></i><b>(7)</b>
     }
 
     <span class="annotation">@Override</span>
     <span class="predefined-type">Observable</span>&lt;PatientEvent&gt; getUncomputedEvents(
-            Patient aggregate, PatientAccount lastSnapshot, <span class="predefined-type">Date</span> snapshotTime) { <i class="conum" data-value="9"></i><b>(9)</b>
+            Patient aggregate, PatientAccount lastSnapshot, <span class="predefined-type">Date</span> snapshotTime) { <i class="conum" data-value="8"></i><b>(8)</b>
     }
 
     <span class="annotation">@Override</span>
-    PatientAccount createEmptySnapshot() { <i class="conum" data-value="10"></i><b>(10)</b>
+    PatientAccount createEmptySnapshot() { <i class="conum" data-value="9"></i><b>(9)</b>
         <span class="keyword">new</span> PatientAccount(<span class="key">deprecates</span>: <span class="type">[]</span>)
     }
 
@@ -1791,9 +1779,11 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
     }
 
     <span class="predefined-type">Observable</span>&lt;EventApplyOutcome&gt; applyPatientCreated(
-            PatientCreated event, PatientAccount snapshot) { <i class="conum" data-value="11"></i><b>(11)</b>
-        snapshot.name = snapshot.name ?: event.name
-        just CONTINUE <i class="conum" data-value="12"></i><b>(12)</b>
+            PatientCreated event, PatientAccount snapshot) { <i class="conum" data-value="10"></i><b>(10)</b>
+        <span class="keyword">if</span> (snapshot.aggregate == event.aggregate) {
+            snapshot.name = event.name
+        }
+        just CONTINUE <i class="conum" data-value="11"></i><b>(11)</b>
     }
 
     <span class="predefined-type">Observable</span>&lt;EventApplyOutcome&gt; applyProcedurePerformed(
@@ -1837,36 +1827,31 @@ The AST Transformation checks that all <code>@Event`s associated with the `@Aggr
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>This gets called on a merge.
-The implementation must return all events for given aggregates.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="7"></i><b>7</b></td>
 <td>This is an exception handler.
 You can decide to <code>CONTINUE</code> or <code>RETURN</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
 <td>The implementation of this method must return all events for an aggregate that are more recent than the last event of <code>lastSnapshot</code>, but lead up to <code>version</code>.
 Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <code>version</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
 <td>The implementation of this method must return all events for an aggregate that are more recent than the last event of <code>lastSnapshot</code>, but lead up to <code>snapshotTime</code>.
 Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <code>snapshotTime</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
 <td>This method gets called if no prior snapshot that is usable is found.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
 <td>We name our methods <code>apply&lt;EventType&gt;</code>.
 This is required.
 Your IDE might not point out if you don&#8217;t do it right, but the compiler will.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
 <td>Each of these methods takes the event and the snapshot as inputs and returns an <code>Observable&lt;EventApplyOutcome&gt;</code> as output.
 It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
 </tr>
@@ -1925,12 +1910,6 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
                 .getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
     }
 
-    <span class="annotation">@Override</span>
-    <span class="keyword">default</span> <span class="predefined-type">Observable</span>&lt;EventT&gt; findEventsForAggregates(<span class="predefined-type">List</span>&lt;AggregateT&gt; aggregates) {
-        <span class="keyword">return</span> BlockingEventSource.super
-                .findEventsForAggregates(aggregates);
-    }
-
 }
 <span class="comment">// This is the implementation we need here</span>
 <span class="annotation">@Query</span>(aggregate = Patient, snapshot = PatientAccount) <i class="conum" data-value="5"></i><b>(5)</b>
@@ -1963,7 +1942,9 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
 
     <span class="predefined-type">Observable</span>&lt;EventApplyOutcome&gt; applyPatientCreated( <i class="conum" data-value="12"></i><b>(12)</b>
             PatientCreated event, PatientAccount snapshot) {
-        snapshot.name = snapshot.name ?: event.name
+        <span class="keyword">if</span> (snapshot.aggregateId == event.aggregateId) {
+            snapshot.name = event.name
+        }
         just CONTINUE <i class="conum" data-value="13"></i><b>(13)</b>
     }
 
@@ -2050,43 +2031,38 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
 
     override fun createEmptySnapshot() = PatientAccount() <i class="conum" data-value="4"></i><b>(4)</b>
 
-    override fun getSnapshot( <i class="conum" data-value="5"></i><b>(5)</b>
+    override fun getSnapshot(<i class="conum" data-value="5"></i><b>(5)</b>
             maxPosition: Long, aggregate: Patient): Observable&lt;PatientAccount&gt; =
             patientAccountRepository.findByAggregateIdAndLastEventPositionLessThan(
                     aggregate.id!!, maxPosition)
 
-    override fun getSnapshot( <i class="conum" data-value="6"></i><b>(6)</b>
+    override fun getSnapshot(<i class="conum" data-value="6"></i><b>(6)</b>
             maxTimestamp: Date, aggregate: Patient): Observable&lt;PatientAccount&gt; =
             patientAccountRepository.findByAggregateIdAndLastEventTimestampLessThan(
                     aggregate.id!!, maxTimestamp)
 
     override fun shouldEventsBeApplied(snapshot: PatientAccount?) = true <i class="conum" data-value="7"></i><b>(7)</b>
 
-    override fun findEventsForAggregates( <i class="conum" data-value="8"></i><b>(8)</b>
-            aggregates: MutableList&lt;Patient&gt;): Observable&lt;PatientEvent&gt; =
-            patientEventRepository.findAllByAggregateIdIn(aggregates.map { it.id!! })
-
     override fun addToDeprecates(
             snapshot: PatientAccount, deprecatedAggregate: Patient) {
         snapshot.deprecatesIds.add(deprecatedAggregate.id!!)
     }
 
-    override fun onException( <i class="conum" data-value="9"></i><b>(9)</b>
+    override fun onException(<i class="conum" data-value="8"></i><b>(8)</b>
             e: Exception, snapshot: PatientAccount, event: PatientEvent) =
             just(CONTINUE)
 
-    override fun getUncomputedEvents( <i class="conum" data-value="10"></i><b>(10)</b>
-            aggregate: Patient, lastSnapshot: PatientAccount,
-            version: Long): Observable&lt;PatientEvent&gt; {
-        return patientEventRepository.
-                findAllByPositionRange(
-                        aggregate.id!!, lastSnapshot.lastEventPosition ?: 0, version)
-    }
+    override fun getUncomputedEvents(<i class="conum" data-value="9"></i><b>(9)</b>
+            aggregate: Patient, lastSnapshot: PatientAccount?,
+            version: Long): Observable&lt;PatientEvent&gt; =
+            patientEventRepository.
+                    findAllByPositionRange(aggregate.id!!,
+                            lastSnapshot?.lastEventPosition ?: 0, version)
 
-    override fun getUncomputedEvents( <i class="conum" data-value="11"></i><b>(11)</b>
-            aggregate: Patient, lastSnapshot: PatientAccount,
-            snapshotTime: Date): Observable&lt;PatientEvent&gt; {
-        return lastSnapshot.lastEventTimestamp?.
+    override fun getUncomputedEvents(<i class="conum" data-value="10"></i><b>(10)</b>
+            aggregate: Patient, lastSnapshot: PatientAccount?,
+            snapshotTime: Date): Observable&lt;PatientEvent&gt; =
+            lastSnapshot?.lastEventTimestamp?.
                 let {
                     patientEventRepository.findAllByTimestampRange(
                             aggregate.id!!, it, snapshotTime)
@@ -2094,12 +2070,13 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
                 patientEventRepository.
                         findAllByAggregateIdAndTimestampLessThan(
                                 aggregate.id!!, snapshotTime)
-    }
 
     override fun applyEvent(event: PatientEvent.Applicable, snapshot: PatientAccount) =
-            when (event) { <i class="conum" data-value="12"></i><b>(12)</b>
+            when (event) { <i class="conum" data-value="11"></i><b>(11)</b>
                 is PatientEvent.Applicable.Created -&gt; {
-                    snapshot.name = snapshot.name ?: event.name
+                    if (event.aggregateId == snapshot.aggregateId) {
+                        snapshot.name = event.name
+                    }
                     just(CONTINUE)
                 }
                 is PatientEvent.Applicable.ProcedurePerformed -&gt; {
@@ -2149,26 +2126,21 @@ With Kotlin <code>applyEvent</code> is sufficient, because you can use sealed cl
 </tr>
 <tr>
 <td><i class="conum" data-value="8"></i><b>8</b></td>
-<td>This gets called on a merge.
-The implementation must return all events for given aggregates.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="9"></i><b>9</b></td>
 <td>This is an exception handler.
 You can decide to <code>CONTINUE</code> or <code>RETURN</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
 <td>The implementation of this method must return all events for an aggregate that are more recent than the last event of <code>lastSnapshot</code>, but lead up to <code>version</code>.
 Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <code>version</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
 <td>The implementation of this method must return all events for an aggregate that are more recent than the last event of <code>lastSnapshot</code>, but lead up to <code>snapshotTime</code>.
 Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <code>snapshotTime</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
 <td><code>applyEvent</code> handles all events under <code>Applicable</code>.
 Kotlin will check for completeness when you use the <code>when</code> keyword as part of an <code>expression</code>.</td>
 </tr>
