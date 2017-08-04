@@ -2,8 +2,6 @@ package com.github.rahulsom.grooves.api;
 
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
@@ -57,7 +55,8 @@ public class EventsDsl<
             Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                     SnapshotT>> closure) {
 
-        OnSpec spec = new OnSpec();
+        OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> spec =
+                new OnSpec<>();
         spec.setAggregate(aggregate);
         spec.setEntityConsumer(entityConsumer);
         spec.setUserSupplier(userSupplier);

@@ -22,7 +22,7 @@ public class SimpleExecutor<
         QueryExecutor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
 
     @Override
-    Observable<EventApplyOutcome> callMethod(
+    protected Observable<EventApplyOutcome> callMethod(
             QueryT query, String methodName, SnapshotT snapshot, EventT event) {
         return query.applyEvent((ApplicableEventT) event, snapshot);
     }

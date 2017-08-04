@@ -87,7 +87,8 @@ public interface RxGormJoinSupport<
     }
 
     @Override
-    default Observable<EventT> findEventsForAggregates(List<AggregateT> aggregates) {
-        return RxEventSource.super.findEventsForAggregates(aggregates);
+    default Observable<EventT> findEventsBefore(EventT event) {
+        return JoinSupport.super.findEventsBefore(event);
     }
+
 }

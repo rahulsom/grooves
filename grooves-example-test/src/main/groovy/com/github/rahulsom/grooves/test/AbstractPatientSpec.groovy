@@ -296,6 +296,68 @@ abstract class AbstractPatientSpec extends Specification {
         }
     }
 
+    @Unroll
+    void "Reverting a merge works - version #version of #id is #name"() {
+        getRest()
+
+        given:
+        def resp = rest.get(path: "patient/account/${ids[id - 1]}",
+                query: [version: version,]) as HttpResponseDecorator
+
+        expect:
+        with(resp) {
+            status == 200
+            contentType == 'application/json'
+        }
+        with(resp.data) {
+            it.name == name
+            it.balance == balance
+        }
+
+        where:
+        id | version || name          | balance
+        6  | 1       || 'Tina Fey'    | 0.0
+        6  | 2       || 'Tina Fey'    | 170.00
+        6  | 3       || 'Tina Fey'    | 248.93
+//        6  | 4       || 'Sarah Palin' | 148.68 // Redirect to correct version to pass
+        6  | 5       || 'Tina Fey'    | 248.93
+        7  | 1       || 'Sarah Palin' | 0.0
+        7  | 2       || 'Sarah Palin' | -100.25
+        7  | 3       || 'Sarah Palin' | 148.68
+        7  | 4       || 'Sarah Palin' | -100.25
+    }
+
+    @Unroll
+    void "Reverting a merge works - on date #date of #id is #name"() {
+        getRest()
+
+        given:
+        def resp = rest.get(path: "patient/account/${ids[id - 1]}",
+                query: [date: "${date}T00:00:00.000Z",]) as HttpResponseDecorator
+
+        expect:
+        with(resp) {
+            status == 200
+            contentType == 'application/json'
+        }
+        with(resp.data) {
+            it.name == name
+            it.balance == balance
+        }
+
+        where:
+        id | date         || name          | balance
+        6  | '2016-01-29' || 'Tina Fey'    | 0.0
+        6  | '2016-01-30' || 'Tina Fey'    | 170.00
+        6  | '2016-01-31' || 'Tina Fey'    | 248.93
+        6  | '2016-02-03' || 'Sarah Palin' | 148.68
+        6  | '2016-02-05' || 'Tina Fey'    | 248.93
+        7  | '2016-02-01' || 'Sarah Palin' | 0.0
+        7  | '2016-02-02' || 'Sarah Palin' | -100.25
+        7  | '2016-02-03' || 'Sarah Palin' | 148.68
+        7  | '2016-02-05' || 'Sarah Palin' | -100.25
+    }
+
     @SuppressWarnings(['Instanceof',])
     static Date getDate(def ts) {
         if (ts instanceof String) {

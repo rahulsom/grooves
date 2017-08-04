@@ -7,6 +7,7 @@ import grooves.boot.kotlin.repositories.PatientRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Configurable
 import rx.Observable
+import rx.Observable.*
 import java.util.*
 
 @Configurable
@@ -27,8 +28,7 @@ class PatientHealth : Snapshot<String, Patient, String, String, PatientEvent> {
 
     @JsonIgnore
     override fun getAggregateObservable() =
-            aggregateId?.let { patientRepository.findAllById(Observable.just(it)) } ?:
-                    Observable.empty()
+            aggregateId?.let { patientRepository.findAllById(just(it)) } ?: empty()
 
     override fun setAggregate(aggregate: Patient) {
         this.aggregateId = aggregate.id
@@ -40,7 +40,7 @@ class PatientHealth : Snapshot<String, Patient, String, String, PatientEvent> {
 
     @JsonIgnore
     override fun getDeprecatedByObservable() =
-            deprecator?.let { Observable.just(it) } ?: Observable.empty()
+            deprecator?.let { just(it) } ?: empty()
 
     override fun setDeprecatedBy(deprecatingAggregate: Patient) {
         deprecator = deprecatingAggregate
@@ -48,10 +48,10 @@ class PatientHealth : Snapshot<String, Patient, String, String, PatientEvent> {
 
     @JsonIgnore
     override fun getDeprecatesObservable() =
-            if (deprecatesIds.size > 0)
+            if (deprecatesIds != null)
                 patientRepository.findAllById(deprecatesIds)
             else
-                Observable.empty()
+                empty()
 
     override fun toString() = "PatientAccount(id=$id, aggregate=$aggregateId, " +
             "lastEventPosition=$lastEventPosition, lastEventTimestamp=$lastEventTimestamp)"

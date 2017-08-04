@@ -32,43 +32,38 @@ class PatientAccountQuery :
 
     override fun createEmptySnapshot() = PatientAccount() // <4>
 
-    override fun getSnapshot( // <5>
+    override fun getSnapshot(// <5>
             maxPosition: Long, aggregate: Patient): Observable<PatientAccount> =
             patientAccountRepository.findByAggregateIdAndLastEventPositionLessThan(
                     aggregate.id!!, maxPosition)
 
-    override fun getSnapshot( // <6>
+    override fun getSnapshot(// <6>
             maxTimestamp: Date, aggregate: Patient): Observable<PatientAccount> =
             patientAccountRepository.findByAggregateIdAndLastEventTimestampLessThan(
                     aggregate.id!!, maxTimestamp)
 
     override fun shouldEventsBeApplied(snapshot: PatientAccount?) = true // <7>
 
-    override fun findEventsForAggregates( // <8>
-            aggregates: MutableList<Patient>): Observable<PatientEvent> =
-            patientEventRepository.findAllByAggregateIdIn(aggregates.map { it.id!! })
-
     override fun addToDeprecates(
             snapshot: PatientAccount, deprecatedAggregate: Patient) {
         snapshot.deprecatesIds.add(deprecatedAggregate.id!!)
     }
 
-    override fun onException( // <9>
+    override fun onException(// <8>
             e: Exception, snapshot: PatientAccount, event: PatientEvent) =
             just(CONTINUE)
 
-    override fun getUncomputedEvents( // <10>
-            aggregate: Patient, lastSnapshot: PatientAccount,
-            version: Long): Observable<PatientEvent> {
-        return patientEventRepository.
-                findAllByPositionRange(
-                        aggregate.id!!, lastSnapshot.lastEventPosition ?: 0, version)
-    }
+    override fun getUncomputedEvents(// <9>
+            aggregate: Patient, lastSnapshot: PatientAccount?,
+            version: Long): Observable<PatientEvent> =
+            patientEventRepository.
+                    findAllByPositionRange(aggregate.id!!,
+                            lastSnapshot?.lastEventPosition ?: 0, version)
 
-    override fun getUncomputedEvents( // <11>
-            aggregate: Patient, lastSnapshot: PatientAccount,
-            snapshotTime: Date): Observable<PatientEvent> {
-        return lastSnapshot.lastEventTimestamp?.
+    override fun getUncomputedEvents(// <10>
+            aggregate: Patient, lastSnapshot: PatientAccount?,
+            snapshotTime: Date): Observable<PatientEvent> =
+            lastSnapshot?.lastEventTimestamp?.
                 let {
                     patientEventRepository.findAllByTimestampRange(
                             aggregate.id!!, it, snapshotTime)
@@ -76,12 +71,13 @@ class PatientAccountQuery :
                 patientEventRepository.
                         findAllByAggregateIdAndTimestampLessThan(
                                 aggregate.id!!, snapshotTime)
-    }
 
     override fun applyEvent(event: PatientEvent.Applicable, snapshot: PatientAccount) =
-            when (event) { // <12>
+            when (event) { // <11>
                 is PatientEvent.Applicable.Created -> {
-                    snapshot.name = snapshot.name ?: event.name
+                    if (event.aggregateId == snapshot.aggregateId) {
+                        snapshot.name = event.name
+                    }
                     just(CONTINUE)
                 }
                 is PatientEvent.Applicable.ProcedurePerformed -> {

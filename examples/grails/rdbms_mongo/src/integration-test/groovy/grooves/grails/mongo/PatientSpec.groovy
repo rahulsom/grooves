@@ -2,10 +2,11 @@ package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.test.AbstractPatientSpec
 import grails.test.mixin.integration.Integration
-import groovyx.net.http.ContentType
 import groovyx.net.http.RESTClient
 import org.springframework.beans.factory.annotation.Value
 import spock.lang.Unroll
+
+import static groovyx.net.http.ContentType.JSON
 
 /**
  * Acceptance test that tests against Grails with Hibernate and Mongo
@@ -20,7 +21,7 @@ class PatientSpec extends AbstractPatientSpec {
 
     @Override
     RESTClient getRest() {
-        new RESTClient("http://localhost:${serverPort ?: 8080}/", ContentType.JSON)
+        new RESTClient("http://localhost:${serverPort ?: 8080}/", JSON)
     }
 
     @Unroll
@@ -35,7 +36,7 @@ class PatientSpec extends AbstractPatientSpec {
         }
         with(resp.data) {
             it.aggregateId == id
-            it.joinedIds.toSet() == patients.collect { it + 5 }.toSet()
+            it.joinedIds.toSet() == patients.collect { it + 7 }.toSet()
         }
 
         where:
@@ -57,7 +58,7 @@ class PatientSpec extends AbstractPatientSpec {
         }
         with(resp.data) {
             it.aggregateId == id
-            it.joinedIds == patients.collect { it + 5 }
+            it.joinedIds == patients.collect { it + 7 }
             it.lastEventPosition == version
         }
 

@@ -43,7 +43,7 @@ public class PatientHealthQuery implements CustomQuerySupport<PatientHealth, Pat
      */
     public Observable<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientHealth snapshot) {
-        if (snapshot.getName() == null) {
+        if (snapshot.getAggregate() == event.getAggregate()) {
             snapshot.setName(event.getName());
         }
         return just(CONTINUE);

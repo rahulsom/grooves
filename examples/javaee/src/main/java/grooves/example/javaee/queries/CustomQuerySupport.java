@@ -8,12 +8,14 @@ import grooves.example.javaee.Database;
 import grooves.example.javaee.domain.Patient;
 import grooves.example.javaee.domain.PatientEvent;
 import org.apache.commons.lang3.SerializationUtils;
+import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
@@ -39,8 +41,8 @@ public interface CustomQuerySupport<
         // <4>
         // end::documented[]
         final Stream<SnapshotT> stream = getDatabase().snapshots(getSnapshotClass());
-        return Observable.from(stream::iterator)
-                .flatMap(it -> Observable.just(it).zipWith(it.getAggregateObservable(), Pair::new))
+        return from(stream::iterator)
+                .flatMap(it -> just(it).zipWith(it.getAggregateObservable(), Pair::new))
                 .filter(it -> it.getSecond().equals(aggregate)
                         && it.getFirst().getLastEventPosition() < maxPosition)
                 .map(Pair::getFirst)
@@ -56,8 +58,8 @@ public interface CustomQuerySupport<
         // <5>
         // end::documented[]
         final Stream<SnapshotT> stream = getDatabase().snapshots(getSnapshotClass());
-        return Observable.from(stream::iterator)
-                .flatMap(it -> Observable.just(it).zipWith(it.getAggregateObservable(), Pair::new))
+        return from(stream::iterator)
+                .flatMap(it -> just(it).zipWith(it.getAggregateObservable(), Pair::new))
                 .filter(it -> it.getSecond().equals(aggregate)
                         && it.getFirst().getLastEventTimestamp().compareTo(maxTimestamp) < 1)
                 .map(Pair::getFirst)
@@ -80,19 +82,8 @@ public interface CustomQuerySupport<
     }
 
     @Override
-    default Observable<PatientEvent> findEventsForAggregates(List<Patient> aggregates) {
-        // <7>
-        // end::documented[]
-        final List<PatientEvent> patientEvents = getDatabase().events()
-                .filter(x -> aggregates.contains(x.getAggregate()))
-                .collect(toList());
-        return from(patientEvents);
-        // tag::documented[]
-    }
-
-    @Override
     default Observable<EventApplyOutcome> onException(
-            Exception e, SnapshotT snapshot, PatientEvent event) { // <8>
+            Exception e, SnapshotT snapshot, PatientEvent event) { // <7>
         getLog().error("Error computing snapshot", e);
         return just(CONTINUE);
         // tag::documented[]
@@ -101,13 +92,20 @@ public interface CustomQuerySupport<
     @Override
     default Observable<PatientEvent> getUncomputedEvents(
             Patient aggregate, SnapshotT lastSnapshot, long version) {
-        // <9>
+        // <8>
         // end::documented[]
+        Predicate<PatientEvent> patientEventPredicate = x -> {
+            Long eventPosition = x.getPosition();
+            Long snapshotPosition = 0L;
+            if (lastSnapshot != null) {
+                snapshotPosition = lastSnapshot.getLastEventPosition();
+            }
+            return Objects.equals(x.getAggregate(), aggregate)
+                    && (snapshotPosition == null || eventPosition > snapshotPosition)
+                    && eventPosition <= version;
+        };
         final List<PatientEvent> patientEvents = getDatabase().events()
-                .filter(x -> x.getAggregate().equals(aggregate)
-                        && (lastSnapshot.getLastEventPosition() == null
-                        || x.getPosition() > lastSnapshot.getLastEventPosition())
-                        && x.getPosition() <= version)
+                .filter(patientEventPredicate)
                 .collect(toList());
         return from(patientEvents);
         // tag::documented[]
@@ -116,12 +114,13 @@ public interface CustomQuerySupport<
     @Override
     default Observable<PatientEvent> getUncomputedEvents(
             Patient aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
-        // <10>
+        // <9>
         // end::documented[]
+        Predicate<PatientEvent> patientEventPredicate = it -> aggregate.equals(it.getAggregate())
+                && isTimestampInRange(
+                lastSnapshot.getLastEventTimestamp(), it.getTimestamp(), snapshotTime);
         final List<PatientEvent> patientEvents = getDatabase().events()
-                .filter(it -> aggregate.equals(it.getAggregate())
-                        && isTimestampInRange(
-                        lastSnapshot.getLastEventTimestamp(), it.getTimestamp(), snapshotTime))
+                .filter(patientEventPredicate)
                 .collect(toList());
         return from(patientEvents);
         // tag::documented[]

@@ -8,6 +8,7 @@ import groovy.transform.CompileStatic
 import rx.Observable
 
 import static rx.Observable.empty
+import static rx.Observable.from
 import static rx.Observable.just
 
 @CompileStatic @Aggregate class Account implements AggregateType<Long> {
@@ -46,6 +47,6 @@ import static rx.Observable.just
 
     @Override
     Observable<Account> getDeprecatesObservable() {
-        Observable.from(deprecates.toList())
+        from(deprecates.toList())
     }
 }

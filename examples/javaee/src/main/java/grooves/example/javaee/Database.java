@@ -3,6 +3,7 @@ package grooves.example.javaee;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import grooves.example.javaee.domain.Patient;
 import grooves.example.javaee.domain.PatientEvent;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ejb.Singleton;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class Database {
      *
      * @return A Stream of type
      */
+    @NotNull
     public <T extends Snapshot> Stream<T> snapshots(Class<T> clazz) {
         return (Stream<T>) snapshotList
                 .stream()

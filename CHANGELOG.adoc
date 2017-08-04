@@ -5,6 +5,9 @@
   This removes the need for reattach methods.
 * Examples now contains `rx-mongo`.
 * Documentation now points to examples.
+* Improve Kotlin support.
+  Examples and tests for Kotlin have also been added.
+* Revert on Merge is now tested and supported.
 
 == 0.1.1
 * Improve RX support for `rx-gorm-rest`.

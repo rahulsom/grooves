@@ -4,6 +4,11 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Interface for snapshots in Java.
+ *
+ * @author rahul somasunderam
+ */
 public interface JavaSnapshot<
         AggregateIdT,
         AggregateT extends AggregateType<AggregateIdT>,

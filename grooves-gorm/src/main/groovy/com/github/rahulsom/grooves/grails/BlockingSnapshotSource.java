@@ -16,6 +16,9 @@ import static com.github.rahulsom.grooves.grails.QueryUtil.LATEST_BY_POSITION;
 import static com.github.rahulsom.grooves.grails.QueryUtil.LATEST_BY_TIMESTAMP;
 import static com.github.rahulsom.grooves.grails.QueryUtil.SNAPSHOTS_BY_AGGREGATE;
 import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
+import static rx.Observable.defer;
+import static rx.Observable.empty;
+import static rx.Observable.just;
 
 /**
  * Supplies Snapshots from a Blocking Gorm Source.
@@ -45,7 +48,7 @@ public interface BlockingSnapshotSource<
 
     @Override
     default Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
-        return Observable.defer(() -> {
+        return defer(() -> {
             //noinspection unchecked
             List<SnapshotT> snapshots = (List<SnapshotT>) (maxPosition == Long.MAX_VALUE ?
                     invokeStaticMethod(
@@ -58,14 +61,14 @@ public interface BlockingSnapshotSource<
                             new Object[]{aggregate.getId(), maxPosition, LATEST_BY_POSITION}));
 
             return DefaultGroovyMethods.asBoolean(snapshots) ?
-                    Observable.just(detachSnapshot(snapshots.get(0))) :
-                    Observable.empty();
+                    just(detachSnapshot(snapshots.get(0))) :
+                    empty();
         });
     }
 
     @Override
     default Observable<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
-        return Observable.defer(() -> {
+        return defer(() -> {
             //noinspection unchecked
             List<SnapshotT> snapshots = (List<SnapshotT>) (maxTimestamp == null ?
                     invokeStaticMethod(
@@ -77,8 +80,8 @@ public interface BlockingSnapshotSource<
                             QueryUtil.SNAPSHOTS_BY_TIMETTAMP,
                             new Object[]{aggregate.getId(), maxTimestamp, LATEST_BY_TIMESTAMP}));
             return DefaultGroovyMethods.asBoolean(snapshots) ?
-                    Observable.just(detachSnapshot(snapshots.get(0))) :
-                    Observable.empty();
+                    just(detachSnapshot(snapshots.get(0))) :
+                    empty();
         });
     }
 

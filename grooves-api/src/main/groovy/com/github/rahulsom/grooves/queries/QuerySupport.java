@@ -6,6 +6,7 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
+import rx.Observable;
 
 /**
  * Aggregate trait that simplifies computing temporal snapshots from events.
@@ -39,4 +40,8 @@ public interface QuerySupport<
         return new QueryExecutor<>();
     }
 
+    @Override
+    default Observable<EventT> findEventsBefore(EventT event) {
+        return VersionedQuerySupport.super.findEventsBefore(event);
+    }
 }

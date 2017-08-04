@@ -45,8 +45,8 @@ abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEve
 class PatientCreated extends PatientEvent { // <2>
     String name
 
-    @Override
-    String getAudit() { new JsonBuilder([name: name]).toString() } // <3>
+    @Override String getAudit() { new JsonBuilder([name: name]).toString() } // <3>
+    @Override String toString() { "PatientCreated(name=$name)" }
 }
 //end::created[]
 
@@ -57,8 +57,8 @@ class ProcedurePerformed extends PatientEvent {
     String code
     BigDecimal cost
 
-    @Override
-    String getAudit() { new JsonBuilder([code: code, cost: cost]).toString() }
+    @Override String getAudit() { new JsonBuilder([code: code, cost: cost]).toString() }
+    @Override String toString() { "ProcedurePerformed(code=$code, cost=$cost)" }
 }
 
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
@@ -67,8 +67,8 @@ class ProcedurePerformed extends PatientEvent {
 class PaymentMade extends PatientEvent {
     BigDecimal amount
 
-    @Override
-    String getAudit() { new JsonBuilder([amount: amount]).toString() }
+    @Override String getAudit() { new JsonBuilder([amount: amount]).toString() }
+    @Override String toString() { "PaymentMade(amount=$amount)" }
 }
 
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
@@ -79,8 +79,8 @@ class PatientEventReverted
         implements RevertEvent<Long, Patient, Long, PatientEvent> { // <2>
     Long revertedEventId // <3>
 
-    @Override
-    String getAudit() { new JsonBuilder([revertedEvent: revertedEventId]).toString() }
+    @Override String getAudit() { new JsonBuilder([revertedEvent: revertedEventId]).toString() }
+    @Override String toString() { "PatientEventReverted(revertedEventId=$revertedEventId)" }
 }
 //end::reverted[]
 
@@ -94,6 +94,7 @@ class PatientDeprecatedBy extends PatientEvent implements
     Observable<Patient> getDeprecatorObservable() { just(deprecator) }
 
     @Override String getAudit() { new JsonBuilder([deprecatedBy: deprecator.id]).toString() }
+    @Override String toString() { "PatientDeprecatedBy(deprecator=$deprecator)" }
 }
 
 @Entity
@@ -106,4 +107,5 @@ class PatientDeprecates extends PatientEvent
     Observable<Patient> getDeprecatedObservable() { just(deprecated) }
 
     @Override String getAudit() { new JsonBuilder([deprecates: deprecated.id]).toString() }
+    @Override String toString() { "PatientDeprecates(deprecated=$deprecated)" }
 }

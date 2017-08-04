@@ -5,7 +5,9 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created by rxs6995 on 5/24/17.
+ * Interface for joins in Java.
+ *
+ * @author rahul somasunderam
  */
 public interface JavaJoin<
         AggregateIdT,

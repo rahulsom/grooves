@@ -25,9 +25,6 @@ class ValidESQuery implements QuerySupport<Long, Account, Long, Transaction, Str
         empty()
     }
     @Override boolean shouldEventsBeApplied(Balance snapshot) { true }
-    @Override Observable<Transaction> findEventsForAggregates(List<Account> aggregates) {
-        empty()
-    }
     @Override void addToDeprecates(Balance snapshot, Account deprecatedAggregate) {}
 
     @Override Observable<EventApplyOutcome> onException(Exception e, Balance snapshot, Transaction event) {

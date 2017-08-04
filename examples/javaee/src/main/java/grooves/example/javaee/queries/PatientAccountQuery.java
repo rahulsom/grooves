@@ -13,7 +13,7 @@ import static rx.Observable.just;
 
 // tag::documented[]
 public class PatientAccountQuery
-        implements CustomQuerySupport<PatientAccount, PatientAccountQuery> { // <11>
+        implements CustomQuerySupport<PatientAccount, PatientAccountQuery> { // <10>
 
     // end::documented[]
     @Inject
@@ -31,7 +31,7 @@ public class PatientAccountQuery
 
     // tag::documented[]
     @Override
-    public PatientAccount createEmptySnapshot() { // <12>
+    public PatientAccount createEmptySnapshot() { // <11>
         return new PatientAccount();
     }
     // end::documented[]
@@ -49,11 +49,11 @@ public class PatientAccountQuery
      */
     // tag::documented[]
     public Observable<EventApplyOutcome> applyPatientCreated(
-            PatientCreated event, PatientAccount snapshot) { // <13>
-        if (snapshot.getName() == null) {
+            PatientCreated event, PatientAccount snapshot) { // <12>
+        if (snapshot.getAggregate() == event.getAggregate()) {
             snapshot.setName(event.getName());
         }
-        return just(CONTINUE); // <14>
+        return just(CONTINUE); // <13>
     }
 
     // end::documented[]

@@ -30,7 +30,9 @@ public class BootStrap {
     private static final String GLUCOSETEST_NAME = "GLUCOSETEST";
     private static final String GLUCOSETEST_COST = "78.93";
     private static final String ANONYMOUS = "anonymous";
-    static long idGenerator = 1;
+
+    private static long idGenerator = 1;
+
     private Date currDate = date("2016-01-01");
     private PatientAccountQuery patientAccountQuery;
     private PatientHealthQuery patientHealthQuery;
@@ -57,6 +59,7 @@ public class BootStrap {
         setupRingoStarr();
         setupPaulMcCartney();
         setupFreddieMercury();
+        setupTinaFeyAndSarahPalin();
     }
 
     private Patient save(Patient patient) {
@@ -167,6 +170,41 @@ public class BootStrap {
         calendar.add(Calendar.DAY_OF_MONTH, 1);
         currDate = calendar.getTime();
         merge(patient, patient2);
+        return patient;
+    }
+
+    private Patient setupTinaFeyAndSarahPalin() {
+        Patient patient = save(new Patient("47"));
+        Patient patient2 = save(new Patient("48"));
+
+        on(patient, it -> {
+            it.apply(new PatientCreated("Tina Fey"));
+            it.apply(new ProcedurePerformed(ANNUALPHYSICAL_NAME,
+                    new BigDecimal(ANNUALPHYSICAL_COST)));
+            it.apply(new ProcedurePerformed(GLUCOSETEST_NAME, new BigDecimal(GLUCOSETEST_COST)));
+
+            it.snapshotWith(patientAccountQuery);
+            it.snapshotWith(patientHealthQuery);
+        });
+
+        on(patient2, it -> {
+            final String name = "Sarah Palin";
+            it.apply(new PatientCreated(name));
+            it.apply(new PaymentMade(new BigDecimal("100.25")));
+
+            it.snapshotWith(patientAccountQuery);
+            it.snapshotWith(patientHealthQuery);
+        });
+
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currDate);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        currDate = calendar.getTime();
+        final PatientDeprecatedBy mergeEvent = merge(patient, patient2);
+
+        on(patient, it -> it.apply(new PatientEventReverted(mergeEvent.getId())));
+        on(patient2, it -> it.apply(new PatientEventReverted(mergeEvent.getConverse().getId())));
+
         return patient;
     }
 

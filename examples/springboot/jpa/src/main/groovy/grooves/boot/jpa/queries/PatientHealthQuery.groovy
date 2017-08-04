@@ -14,7 +14,7 @@ import rx.Observable
 import javax.persistence.EntityManager
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
-import static rx.Observable.just
+import static rx.Observable.*
 
 /**
  * Query for Patient Health
@@ -42,7 +42,7 @@ class PatientHealthQuery implements
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
                 patientHealthRepository.findAllByAggregateIdAndLastEventPositionLessThan(
                         aggregate.id, maxPosition)
-        snapshots ? just(detachSnapshot(snapshots[0])) : Observable.empty()
+        snapshots ? just(detachSnapshot(snapshots[0])) : empty()
     }
 
     @Override
@@ -51,35 +51,29 @@ class PatientHealthQuery implements
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
                 patientHealthRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
                         aggregate.id, maxTimestamp)
-        snapshots ? just(detachSnapshot(snapshots[0])) : Observable.empty()
+        snapshots ? just(detachSnapshot(snapshots[0])) : empty()
     }
 
     @Override
     Observable<PatientEvent> getUncomputedEvents(
             Patient patient, PatientHealth lastSnapshot, long version) {
-        Observable.from(patientEventRepository.getUncomputedEventsByVersion(
+        from(patientEventRepository.getUncomputedEventsByVersion(
                 patient, lastSnapshot?.lastEventPosition ?: 0L, version))
     }
 
     @Override
     Observable<PatientEvent> getUncomputedEvents(
             Patient patient, PatientHealth lastSnapshot, Date snapshotTime) {
-        Observable.from(
-                lastSnapshot?.lastEventTimestamp ?
-                        patientEventRepository.getUncomputedEventsByDateRange(
-                                patient, lastSnapshot.lastEventTimestamp, snapshotTime) :
-                        patientEventRepository.getUncomputedEventsUntilDate(
-                                patient, snapshotTime))
+        from(lastSnapshot?.lastEventTimestamp ?
+                patientEventRepository.getUncomputedEventsByDateRange(
+                        patient, lastSnapshot.lastEventTimestamp, snapshotTime) :
+                patientEventRepository.getUncomputedEventsUntilDate(
+                        patient, snapshotTime))
     }
 
     @Override
     boolean shouldEventsBeApplied(PatientHealth snapshot) {
         true
-    }
-
-    @Override
-    Observable<PatientEvent> findEventsForAggregates(List<Patient> aggregates) {
-        Observable.from patientEventRepository.findAllByAggregateIn(aggregates)
     }
 
     @Override
@@ -96,7 +90,9 @@ class PatientHealthQuery implements
 
     Observable<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientHealth snapshot) {
-        snapshot.name = snapshot.name ?: event.name
+        if (snapshot.aggregate == event.aggregate) {
+            snapshot.name = event.name
+        }
         just CONTINUE
     }
 

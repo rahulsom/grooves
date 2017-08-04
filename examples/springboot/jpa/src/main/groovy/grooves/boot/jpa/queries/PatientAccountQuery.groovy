@@ -13,7 +13,7 @@ import rx.Observable
 import javax.persistence.EntityManager
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
-
+import static rx.Observable.empty
 import static rx.Observable.from
 import static rx.Observable.just
 
@@ -36,10 +36,9 @@ class PatientAccountQuery implements
     public static final String TIMESTAMP = 'timestamp'
     public static final String FROM = 'from'
     public static final String UNTIL = 'until'
-    @Autowired
-    EntityManager entityManager
-    @Autowired
-    PatientAccountRepository patientAccountRepository
+
+    @Autowired EntityManager entityManager
+    @Autowired PatientAccountRepository patientAccountRepository
 
     //tag::documented[]
     @Override
@@ -49,7 +48,7 @@ class PatientAccountQuery implements
                 patientAccountRepository.findAllByAggregateId(aggregate.id) :
                 patientAccountRepository.findAllByAggregateIdAndLastEventPositionLessThan(
                         aggregate.id, maxPosition)
-        snapshots ? just(detachSnapshot(snapshots[0])) : Observable.empty()
+        snapshots ? just(detachSnapshot(snapshots[0])) : empty()
         //tag::documented[]
     }
 
@@ -60,7 +59,7 @@ class PatientAccountQuery implements
                 patientAccountRepository.findAllByAggregateId(aggregate.id) :
                 patientAccountRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
                         aggregate.id, maxTimestamp)
-        snapshots ? just(detachSnapshot(snapshots[0])) : Observable.empty()
+        snapshots ? just(detachSnapshot(snapshots[0])) : empty()
         //tag::documented[]
     }
 
@@ -70,26 +69,15 @@ class PatientAccountQuery implements
     }
 
     @Override
-    Observable<PatientEvent> findEventsForAggregates(List<Patient> aggregates) { // <6>
-        //end::documented[]
-        def cb = entityManager.criteriaBuilder
-        def q = cb.createQuery(PatientEvent)
-        def root = q.from(PatientEvent)
-        def criteria = q.select(root).where(root.get(AGGREGATE).in(aggregates))
-        from entityManager.createQuery(criteria).resultList
-        //tag::documented[]
-    }
-
-    @Override
     Observable<EventApplyOutcome> onException(
-            Exception e, PatientAccount snapshot, PatientEvent event) { // <7>
+            Exception e, PatientAccount snapshot, PatientEvent event) { // <6>
         snapshot.processingErrors++
         just CONTINUE
     }
 
     @Override
     Observable<PatientEvent> getUncomputedEvents(
-            Patient patient, PatientAccount lastSnapshot, long version) { // <8>
+            Patient patient, PatientAccount lastSnapshot, long version) { // <7>
         //end::documented[]
         def cb = entityManager.criteriaBuilder
         def q = cb.createQuery(PatientEvent)
@@ -108,7 +96,7 @@ class PatientAccountQuery implements
 
     @Override
     Observable<PatientEvent> getUncomputedEvents(
-            Patient aggregate, PatientAccount lastSnapshot, Date snapshotTime) { // <9>
+            Patient aggregate, PatientAccount lastSnapshot, Date snapshotTime) { // <8>
         //end::documented[]
         def cb = entityManager.criteriaBuilder
         def q = cb.createQuery(PatientEvent)
@@ -135,7 +123,7 @@ class PatientAccountQuery implements
     }
 
     @Override
-    PatientAccount createEmptySnapshot() { // <10>
+    PatientAccount createEmptySnapshot() { // <9>
         new PatientAccount(deprecates: [])
     }
 
@@ -145,9 +133,11 @@ class PatientAccountQuery implements
     }
 
     Observable<EventApplyOutcome> applyPatientCreated(
-            PatientCreated event, PatientAccount snapshot) { // <11>
-        snapshot.name = snapshot.name ?: event.name
-        just CONTINUE // <12>
+            PatientCreated event, PatientAccount snapshot) { // <10>
+        if (snapshot.aggregate == event.aggregate) {
+            snapshot.name = event.name
+        }
+        just CONTINUE // <11>
     }
 
     Observable<EventApplyOutcome> applyProcedurePerformed(

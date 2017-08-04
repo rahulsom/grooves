@@ -42,10 +42,6 @@ class PatientHealthQuery :
 
     override fun shouldEventsBeApplied(snapshot: PatientHealth?) = true
 
-    override fun findEventsForAggregates(
-            aggregates: MutableList<Patient>): Observable<PatientEvent> =
-            patientEventRepository.findAllByAggregateIdIn(aggregates.map { it.id!! })
-
     override fun addToDeprecates(snapshot: PatientHealth, deprecatedAggregate: Patient) {
         snapshot.deprecatesIds.add(deprecatedAggregate.id!!)
     }
@@ -54,14 +50,14 @@ class PatientHealthQuery :
             just(CONTINUE)
 
     override fun getUncomputedEvents(
-            aggregate: Patient, lastSnapshot: PatientHealth, version: Long) =
+            aggregate: Patient, lastSnapshot: PatientHealth?, version: Long) =
             patientEventRepository.
                     findAllByPositionRange(
-                            aggregate.id!!, lastSnapshot.lastEventPosition ?: 0, version)
+                            aggregate.id!!, lastSnapshot?.lastEventPosition ?: 0, version)
 
     override fun getUncomputedEvents(
-            aggregate: Patient, lastSnapshot: PatientHealth, snapshotTime: Date) =
-            lastSnapshot.lastEventTimestamp?.
+            aggregate: Patient, lastSnapshot: PatientHealth?, snapshotTime: Date) =
+            lastSnapshot?.lastEventTimestamp?.
                     let {
                         patientEventRepository.
                                 findAllByTimestampRange(
@@ -73,11 +69,13 @@ class PatientHealthQuery :
     override fun applyEvent(event: PatientEvent.Applicable, snapshot: PatientHealth) =
             when (event) {
                 is PatientEvent.Applicable.Created -> {
-                    snapshot.name = snapshot.name ?: event.name
+                    if (event.aggregateId == snapshot.aggregateId) {
+                        snapshot.name = event.name
+                    }
                     just(CONTINUE)
                 }
                 is PatientEvent.Applicable.ProcedurePerformed -> {
-                    snapshot.procedures.add(Procedure(code = event.code, date = event.timestamp!!))
+                    snapshot.procedures.add(Procedure(event.code, event.timestamp!!))
                     just(CONTINUE)
                 }
                 is PatientEvent.Applicable.PaymentMade -> {

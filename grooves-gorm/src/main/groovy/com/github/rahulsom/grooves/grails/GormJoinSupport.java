@@ -65,6 +65,11 @@ public interface GormJoinSupport<
     }
 
     @Override
+    default Observable<EventT> findEventsBefore(EventT event) {
+        return JoinSupport.super.findEventsBefore(event);
+    }
+
+    @Override
     default Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
         return BlockingSnapshotSource.super.getSnapshot(maxPosition, aggregate);
     }
@@ -86,8 +91,4 @@ public interface GormJoinSupport<
         return BlockingEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
     }
 
-    @Override
-    default Observable<EventT> findEventsForAggregates(List<AggregateT> aggregates) {
-        return BlockingEventSource.super.findEventsForAggregates(aggregates);
-    }
 }

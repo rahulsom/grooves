@@ -37,6 +37,7 @@ class BootStrap {
         setupRingoStarr()
         setupPaulMcCartney()
         setupFreddieMercury()
+        setupTinaFeyAndSarahPalin()
     }
 
     fun setupJohnLennon() {
@@ -128,6 +129,37 @@ class BootStrap {
 
         currDate.add(Calendar.DATE, 1)
         merge(patient, patient2)
+    }
+
+    fun setupTinaFeyAndSarahPalin() {
+        val patient = patientRepository.save(Patient("47"))
+        on(patient) {
+            it.apply(Created("Tina Fey"))
+            it.apply(ProcedurePerformed("ANNUALPHYSICAL", BigDecimal("170.00")))
+            it.apply(ProcedurePerformed("GLUCOSE", BigDecimal("78.93")))
+
+            snapshotWith(it, patientAccountQuery, patientAccountRepository)
+            snapshotWith(it, patientHealthQuery, patientHealthRepository)
+        }
+
+        val patient2 = patientRepository.save(Patient("48"))
+        on(patient2) {
+            it.apply(Created("Sarah Palin"))
+            it.apply(PaymentMade(BigDecimal("100.25")))
+
+            snapshotWith(it, patientAccountQuery, patientAccountRepository)
+            snapshotWith(it, patientHealthQuery, patientHealthRepository)
+        }
+
+        currDate.add(Calendar.DATE, 1)
+        val mergeEvent = merge(patient, patient2)
+
+        on(patient) {
+            it.apply (PatientEvent.Reverted(mergeEvent.id!!))
+        }
+        on(patient2) {
+            it.apply (PatientEvent.Reverted(mergeEvent.converseId))
+        }
     }
 
     private fun <SnapshotT : Snapshot<String, Patient, String, String, PatientEvent>,

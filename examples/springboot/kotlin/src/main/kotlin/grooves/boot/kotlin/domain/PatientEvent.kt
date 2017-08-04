@@ -8,6 +8,7 @@ import com.github.rahulsom.grooves.api.events.Deprecates
 import com.github.rahulsom.grooves.api.events.RevertEvent
 import grooves.boot.kotlin.BeansHolder
 import grooves.boot.kotlin.repositories.PatientEventRepository
+import grooves.boot.kotlin.repositories.PatientRepository
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Transient
 import rx.Observable
@@ -36,17 +37,19 @@ sealed class PatientEvent : BaseEvent<String, Patient, String, PatientEvent> { /
 
     @JsonIgnore
     override fun getAggregateObservable(): Observable<Patient> = // <6>
-            aggregate?.let { just(it) } ?: empty()
+            aggregateId?.let {
+                BeansHolder.context?.getBean(PatientRepository::class.java)?.findById(it)
+            } ?: empty()
 
     override var aggregate: Patient?
         @JsonIgnore
-        get() = null
+        get() = getAggregateObservable().toBlocking().first()
         set(value) {
             aggregateId = value!!.id
         }
     // end::patientEvent[]
 
-    fun getTs() = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(timestamp)
+    fun getTs() = SimpleDateFormat("yyyy-MM-dd").format(timestamp)
 
     // tag::reverted[]
     data class Reverted(override val revertedEventId: String) : // <1>

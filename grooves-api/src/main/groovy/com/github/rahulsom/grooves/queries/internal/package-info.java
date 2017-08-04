@@ -1,4 +1,4 @@
 /**
- * Created by rahul on 4/21/17.
+ * Internal types for queries.
  */
 package com.github.rahulsom.grooves.queries.internal;

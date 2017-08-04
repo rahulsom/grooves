@@ -3,6 +3,8 @@ package grooves.grails.mongo
 import grails.compiler.GrailsCompileStatic
 import rx.Observable
 
+import static rx.Observable.from
+
 /**
  * Summarizes the patients' health within a zipcode
  *
@@ -14,7 +16,7 @@ class ZipcodeSummaryQuery {
     Observable<ZipcodeSummary> computeSnapshot(Zipcode aggregate, Date moment) {
         new ZipcodePatientsQuery().computeSnapshot(aggregate, moment).
                 flatMap {
-                    Observable.from(it.joinedIds).
+                    from(it.joinedIds).
                             flatMap {
                                 def healthQuery = new PatientHealthQuery()
                                 healthQuery.computeSnapshot(Patient.get(it), moment)

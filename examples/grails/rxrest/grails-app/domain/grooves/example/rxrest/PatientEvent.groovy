@@ -26,7 +26,14 @@ class PatientEvent implements
     String createdBy
     Date timestamp
     Long position
-    Patient aggregate
+    Long aggregateId
+
+    @Override
+    void setAggregate(Patient patient) { aggregateId = patient.id }
+
+    @Override
+    Patient getAggregate() { aggregateObservable.toBlocking().first() }
+
     Observable<Patient> getAggregateObservable() {
         log.error "getAggregateObservable $aggregateId"
         Patient.get(aggregateId)
@@ -36,7 +43,7 @@ class PatientEvent implements
 
     static constraints = {
     }
-    @Override String toString() { "PatientEvent $id" }
+    @Override String toString() { "<$id, ${aggregateId}, ${position}>" }
     @Override String getAudit() { "${id} Unknown Event" }
 }
 
@@ -47,7 +54,7 @@ class PatientCreated extends PatientEvent {
 
     @Override
     String getAudit() { new JsonBuilder([name: name]).toString() }
-    @Override String toString() { "<$id> created as $name" }
+    @Override String toString() { "${super.toString()} created as $name" }
 }
 
 @Event(Patient)
@@ -58,7 +65,7 @@ class ProcedurePerformed extends PatientEvent {
 
     @Override
     String getAudit() { new JsonBuilder([code: code, cost: cost]).toString() }
-    @Override String toString() { "<$id> performed $code for $cost" }
+    @Override String toString() { "${super.toString()} performed $code for $cost" }
 }
 
 @Event(Patient)
@@ -68,7 +75,7 @@ class PaymentMade extends PatientEvent {
 
     @Override
     String getAudit() { new JsonBuilder([amount: amount]).toString() }
-    @Override String toString() { "<$id> paid $amount" }
+    @Override String toString() { "${super.toString()} paid $amount" }
 }
 
 @EqualsAndHashCode
@@ -78,7 +85,7 @@ class PatientEventReverted extends PatientEvent
 
     @Override
     String getAudit() { new JsonBuilder([revertedEvent: revertedEventId]).toString() }
-    @Override String toString() { "<$id> reverted $revertedEventId" }
+    @Override String toString() { "${super.toString()} reverted $revertedEventId" }
 }
 
 @EqualsAndHashCode
@@ -88,7 +95,7 @@ class PatientDeprecatedBy extends PatientEvent
     Patient deprecator
 
     @Override String getAudit() { new JsonBuilder([deprecatedBy: deprecator?.id]).toString() }
-    @Override String toString() { "<$id> deprecated by #${deprecator?.id}" }
+    @Override String toString() { "${super.toString()} deprecated by #${deprecator?.id}" }
 
     @Override
     Observable<Deprecates<Long, Patient, Long, PatientEvent>> getConverseObservable() {
@@ -108,7 +115,7 @@ class PatientDeprecates extends PatientEvent
     Patient deprecated
 
     @Override String getAudit() { new JsonBuilder([deprecates: deprecated?.id]).toString() }
-    @Override String toString() { "<$id> deprecates #${deprecated?.id}" }
+    @Override String toString() { "${super.toString()} deprecates #${deprecated?.id}" }
 
     @Override
     Observable<DeprecatedBy<Long, Patient, Long, PatientEvent>> getConverseObservable() {
