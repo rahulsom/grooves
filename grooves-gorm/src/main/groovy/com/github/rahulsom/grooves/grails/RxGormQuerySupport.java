@@ -66,9 +66,4 @@ public interface RxGormQuerySupport<
         return RxEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
     }
 
-    @Override
-    default Observable<EventT> findEventsForAggregates(List<AggregateT> aggregates) {
-        return RxEventSource.super.findEventsForAggregates(aggregates);
-    }
-
 }

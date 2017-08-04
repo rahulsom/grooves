@@ -45,7 +45,10 @@ class PatientHealthQuery implements
 
     Observable<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientHealth snapshot) {
-        snapshot.name = snapshot.name ?: event.name
+
+        if (snapshot.aggregateId == event.aggregateId) {
+            snapshot.name = event.name
+        }
         just CONTINUE
     }
 

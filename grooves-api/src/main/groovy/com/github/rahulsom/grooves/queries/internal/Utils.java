@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import static rx.Observable.from;
 import static rx.Observable.just;
 
 /**
@@ -92,13 +93,13 @@ public class Utils {
             Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                     QueryT> executor,
             Supplier<Observable<Pair<SnapshotT, List<EventT>>>> fallbackSnapshotAndEvents) {
-        return executor.applyReverts(Observable.from(events))
+        return executor.applyReverts(from(events))
                 .toList()
                 .map(Observable::just)
                 .onErrorReturn(throwable -> executor
                         .applyReverts(
                                 fallbackSnapshotAndEvents.get()
-                                        .flatMap(it -> Observable.from(it.getSecond()))
+                                        .flatMap(it -> from(it.getSecond()))
                         )
                         .toList()
                 )
@@ -114,10 +115,10 @@ public class Utils {
      *
      * @return A String representation of events
      */
-    public static <EventT extends BaseEvent> String stringifyEvents(List<EventT> events) {
+    public static <EventT extends BaseEvent> String stringify(List<EventT> events) {
         return events.stream()
                 .map(EventT::toString)
-                .collect(Utils.JOIN_EVENTS);
+                .collect(JOIN_EVENTS);
     }
 
     /**
@@ -128,10 +129,10 @@ public class Utils {
      *
      * @return A String representation of events
      */
-    static <EventT extends BaseEvent> String stringifyEventIds(List<EventT> events) {
+    static <EventT extends BaseEvent> String ids(List<EventT> events) {
         return events.stream()
-                .map(i -> i.getId().toString())
-                .collect(Utils.JOIN_EVENT_IDS);
+                .map(i -> String.valueOf(i.getId()))
+                .collect(JOIN_EVENT_IDS);
     }
 
 }

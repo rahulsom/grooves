@@ -8,6 +8,7 @@ import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Shared
 
+import static groovyx.net.http.ContentType.JSON
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 
 /**
@@ -24,6 +25,6 @@ class PatientSpec extends AbstractPatientSpec {
 
     @Override
     RESTClient getRest() {
-        new RESTClient("http://localhost:${serverPort ?: 8080}/", ContentType.JSON)
+        new RESTClient("http://localhost:${serverPort ?: 8080}/", JSON)
     }
 }

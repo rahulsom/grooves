@@ -31,6 +31,7 @@ class BootStrap {
         setupRingoStarr()
         setupPaulMcCartney()
         setupFreddieMercury()
+        setupTinaFeyAndSarahPalin()
 
         linkZipcodesAndPatients(campbell, santanaRow)
         linkZipcodesAndDoctors(campbell, santanaRow)
@@ -237,6 +238,38 @@ class BootStrap {
 
         currDate += 1
         merge(patient, patient2)
+        patient
+    }
+
+    private Patient setupTinaFeyAndSarahPalin() {
+        def patient = new Patient(uniqueId: '47').save(flush: true, failOnError: true)
+        def patient2 = new Patient(uniqueId: '48').save(flush: true, failOnError: true)
+
+        on(patient) {
+            apply new PatientCreated(name: 'Tina Fey')
+            apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
+            apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
+
+            snapshotWith patientAccountQuery
+            snapshotWith patientHealthQuery
+        }
+
+        on(patient2) {
+            apply new PatientCreated(name: 'Sarah Palin')
+            apply new PaymentMade(amount: 100.25)
+
+            snapshotWith patientAccountQuery
+            snapshotWith patientHealthQuery
+        }
+
+        currDate += 1
+        def mergeEvent = merge(patient, patient2)
+        on(mergeEvent.aggregate) {
+            apply new PatientEventReverted(revertedEventId: mergeEvent.id)
+        }
+        on(patient2) {
+            apply new PatientEventReverted(revertedEventId: mergeEvent.converse.id)
+        }
         patient
     }
 

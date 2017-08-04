@@ -71,8 +71,8 @@ class PatientAccount implements JavaSnapshot<Long, Patient, String, Long, Patien
     }
 
     @Override String toString() {
-        "PatientAccount($id, $aggregateId, $lastEventPosition, " +
-                "B: $balance, M: $moneyMade)"
+        "PatientAccount(id=$id, aggregateId=$aggregateId, lastEventPosition=$lastEventPosition, " +
+                "balance=$balance, moneyMade=$moneyMade)"
     }
 }
 // end::documented[]

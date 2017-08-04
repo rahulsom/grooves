@@ -7,6 +7,8 @@ import rx.Observable;
 
 import java.util.List;
 
+import static rx.Observable.just;
+
 /**
  * Executes a query as a Join.
  *
@@ -57,24 +59,25 @@ public class JoinExecutor<
             SnapshotT initialSnapshot,
             Observable<EventT> events,
             List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
-            List<AggregateT> aggregates, AggregateT aggregate) {
+            AggregateT aggregate) {
 
 
         // s -> snapshotObservable
-        return events.reduce(Observable.just(initialSnapshot), (s, event) -> s.flatMap(snapshot -> {
+        return events.reduce(just(initialSnapshot), (s, event) -> s.flatMap(snapshot -> {
             if (!query.shouldEventsBeApplied(snapshot)) {
-                return Observable.just(snapshot);
+                return just(snapshot);
             } else {
                 log.debug("     -> Applying Event: {}", event);
 
                 if (event instanceof Deprecates) {
-                    return applyDeprecates((Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>)
-                                    event,
-                            query, aggregates, deprecatesList, aggregate);
+                    Deprecates<AggregateIdT, AggregateT, EventIdT, EventT> deprecatesEvent =
+                            (Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>) event;
+                    return applyDeprecates(
+                            deprecatesEvent, query, events, deprecatesList, aggregate);
                 } else if (event instanceof DeprecatedBy) {
-                    return applyDeprecatedBy(
-                            (DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT>) event,
-                            initialSnapshot);
+                    DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT> deprecatedByEvent =
+                            (DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT>) event;
+                    return applyDeprecatedBy(deprecatedByEvent, initialSnapshot);
                 } else if (classJoinE.isAssignableFrom(event.getClass())) {
                     JoinEventT joinEvent = (JoinEventT) event;
                     return joinEvent
@@ -92,7 +95,7 @@ public class JoinExecutor<
                                 return initialSnapshot;
                             });
                 } else {
-                    return Observable.just(initialSnapshot);
+                    return just(initialSnapshot);
                 }
             }
         })).flatMap(it -> it);

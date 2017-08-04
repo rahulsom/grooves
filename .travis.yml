@@ -2,7 +2,7 @@ sudo: false
 language: java
 jdk:
 - oraclejdk8
-install: "./gradlew assemble --scan --build-cache --configure-on-demand"
+install: "./gradlew assemble --scan --build-cache --configure-on-demand --stacktrace"
 script: ""
 after_success:
   - bash <(curl -s https://codecov.io/bash)

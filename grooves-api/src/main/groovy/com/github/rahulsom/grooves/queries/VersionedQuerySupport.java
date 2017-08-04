@@ -1,29 +1,34 @@
 package com.github.rahulsom.grooves.queries;
 
 import com.github.rahulsom.grooves.api.AggregateType;
+import com.github.rahulsom.grooves.api.GroovesException;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
+import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
 import com.github.rahulsom.grooves.queries.internal.*;
 import rx.Observable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.github.rahulsom.grooves.queries.internal.Utils.returnOrRedirect;
-import static com.github.rahulsom.grooves.queries.internal.Utils.stringifyEvents;
+import static com.github.rahulsom.grooves.queries.internal.Utils.stringify;
+import static java.util.stream.Collectors.toList;
 import static rx.Observable.empty;
+import static rx.Observable.error;
+import static rx.Observable.just;
 
 /**
  * Default interface to help in building versioned snapshots.
  *
- * @param <AggregateT>  The aggregate over which the query executes
- * @param <EventIdT>    The type of the Event's id field
- * @param <EventT>      The type of the Event
- * @param <SnapshotIdT> The type of the Snapshot's id field
- * @param <SnapshotT>   The type of the Snapshot
+ * @param <AggregateIdT> The type of {@link AggregateT}'s id
+ * @param <AggregateT>   The aggregate over which the query executes
+ * @param <EventIdT>     The type of the {@link EventT}'s id field
+ * @param <EventT>       The type of the Event
+ * @param <SnapshotIdT>  The type of the {@link SnapshotT}'s id field
+ * @param <SnapshotT>    The type of the Snapshot
+ * @param <QueryT>       A reference to the query type. Typically a self reference.
  *
  * @author Rahul Somasunderam
  */
@@ -93,29 +98,24 @@ public interface VersionedQuerySupport<
     default Observable<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
             AggregateT aggregate, long version, boolean reuseEarlierSnapshot) {
         if (reuseEarlierSnapshot) {
-            return getLastUsableSnapshot(aggregate, version).flatMap(lastSnapshot -> {
-                final Observable<EventT> uncomputedEvents =
-                        getUncomputedEvents(aggregate, lastSnapshot, version);
+            return getLastUsableSnapshot(aggregate, version).flatMap(lastSnapshot ->
+                    getUncomputedEvents(aggregate, lastSnapshot, version).toList()
+                            .flatMap(events -> {
+                                if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
+                                    List<EventT> reverts = events.stream()
+                                            .filter(it -> it instanceof RevertEvent)
+                                            .collect(toList());
+                                    getLog().info("     Uncomputed reverts exist: {}",
+                                            stringify(reverts));
+                                    return getSnapshotAndEventsSince(
+                                            aggregate, version, false);
+                                } else {
+                                    getLog().debug("     Events since last snapshot: {}",
+                                            stringify(events));
+                                    return just(new Pair<>(lastSnapshot, events));
 
-                return uncomputedEvents.toList()
-                        .flatMap(events -> {
-                            if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
-                                List<EventT> reverts = events.stream()
-                                        .filter(it -> it instanceof RevertEvent).collect(
-                                                Collectors.toList());
-                                getLog().info("     Uncomputed reverts exist: {}",
-                                        stringifyEvents(reverts));
-                                return getSnapshotAndEventsSince(
-                                        aggregate, version, false);
-                            } else {
-                                getLog().debug("     Events since last snapshot: {}",
-                                        stringifyEvents(events));
-                                return Observable.just(new Pair<>(lastSnapshot, events));
-
-                            }
-                        });
-
-            });
+                                }
+                            }));
 
         } else {
             SnapshotT lastSnapshot = createEmptySnapshot();
@@ -126,7 +126,7 @@ public interface VersionedQuerySupport<
 
             return uncomputedEvents
                     .doOnNext(ue -> getLog().debug("     Events since origin: {}",
-                            stringifyEvents(ue)))
+                            stringify(ue)))
                     .map(ue -> new Pair<>(lastSnapshot, ue));
         }
 
@@ -214,9 +214,26 @@ public interface VersionedQuerySupport<
                 events, getExecutor(), () -> getSnapshotAndEventsSince(aggregate, version, false)
         );
 
+        Observable<EventT> applicableEvents = forwardOnlyEvents
+                .filter(e -> e instanceof Deprecates)
+                .toList()
+                .flatMap(list -> {
+                    if (list.isEmpty()) {
+                        return forwardOnlyEvents;
+                    } else {
+                        Observable<Pair<SnapshotT, List<EventT>>> snapshotAndEventsSince =
+                                getSnapshotAndEventsSince(aggregate, version, false);
+                        return snapshotAndEventsSince.flatMap(p -> Utils.getForwardOnlyEvents(
+                                p.getSecond(), getExecutor(), () -> error(
+                                        new GroovesException("Couldn't apply deprecates events"))));
+                    }
+                });
+
+
         final Observable<SnapshotT> snapshotObservable =
-                getExecutor().applyEvents((QueryT) this, lastUsableSnapshot, forwardOnlyEvents,
-                        new ArrayList<>(), Collections.singletonList(aggregate), aggregate);
+                getExecutor().applyEvents((QueryT) this, lastUsableSnapshot, applicableEvents,
+                        new ArrayList<>(), aggregate);
+
         return snapshotObservable
                 .doOnNext(snapshot -> {
                     if (!events.isEmpty()) {
@@ -229,6 +246,13 @@ public interface VersionedQuerySupport<
                         () -> it.getDeprecatedByObservable()
                                 .flatMap(x -> computeSnapshot(x, version))
                 ));
+    }
+
+    @Override
+    default Observable<EventT> findEventsBefore(EventT event) {
+        return event
+                .getAggregateObservable()
+                .flatMap(aggregate -> getUncomputedEvents(aggregate, null, event.getPosition()));
     }
 
 }

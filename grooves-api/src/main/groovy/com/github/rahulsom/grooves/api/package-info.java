@@ -1,4 +1,4 @@
 /**
- * Created by rahul on 4/21/17.
+ * Types that make up the API of Grooves.
  */
 package com.github.rahulsom.grooves.api;

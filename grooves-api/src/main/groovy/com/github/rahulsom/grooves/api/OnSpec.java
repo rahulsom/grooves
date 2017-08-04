@@ -33,7 +33,7 @@ public class OnSpec<
      *
      * @return The event after persisting
      */
-    public EventT apply(EventT event) {
+    public <T extends EventT> T apply(T event) {
         event.setAggregate(aggregate);
 
         if (event.getCreatedBy() == null) {

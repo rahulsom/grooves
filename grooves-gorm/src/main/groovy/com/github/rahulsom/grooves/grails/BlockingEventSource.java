@@ -68,18 +68,6 @@ public interface BlockingEventSource<
                 from((List<EventT>) invokeStaticMethod(getEventClass(), method, params)));
     }
 
-    @Override
-    default Observable<EventT> findEventsForAggregates(List<AggregateT> aggregates) {
-        //noinspection unchecked
-        return defer(() -> from(
-                (List<EventT>) invokeStaticMethod(
-                        getEventClass(),
-                        EVENTS_BY_AGGREGATES,
-                        new Object[]{aggregates, INCREMENTAL_BY_TIMESTAMP}
-                )
-        ));
-    }
-
     /**
      * The class of events that this returns.
      *

@@ -9,6 +9,7 @@ import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
 import com.github.rahulsom.grooves.queries.internal.SimpleQuery;
+import rx.Observable;
 
 /**
  * Default interface that makes joins easier to write.
@@ -53,5 +54,10 @@ public interface JoinSupport<
     default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT
             > getExecutor() {
         return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
+    }
+
+    @Override
+    default Observable<EventT> findEventsBefore(EventT event) {
+        return VersionedJoinSupport.super.findEventsBefore(event);
     }
 }

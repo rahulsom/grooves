@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
@@ -50,7 +51,7 @@ public class PatientResource {
     @Produces("application/json")
     public Patient show(@PathParam("id") Long id) {
         final Optional<Patient> patientOptional =
-                database.patients().filter(x -> x.getId().equals(id)).findFirst();
+                database.patients().filter(x -> Objects.equals(x.getId(), id)).findFirst();
         return patientOptional.orElse(null);
     }
 
@@ -72,7 +73,7 @@ public class PatientResource {
             @QueryParam("date") Date date) {
 
         final Patient patient = database.patients()
-                .filter(it -> it.getId().equals(id))
+                .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
                 .get();
 
@@ -110,7 +111,7 @@ public class PatientResource {
             @QueryParam("date") Date date) {
 
         final Patient patient = database.patients()
-                .filter(it -> it.getId().equals(id))
+                .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
                 .get();
 

@@ -75,11 +75,5 @@ public interface GormQuerySupport<
                 .getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
     }
 
-    @Override
-    default Observable<EventT> findEventsForAggregates(List<AggregateT> aggregates) {
-        return BlockingEventSource.super
-                .findEventsForAggregates(aggregates);
-    }
-
 }
 // end::documented[]

@@ -78,18 +78,4 @@ public interface RxEventSource<
      */
     Observable<AggregateT> reattachAggregate(AggregateT aggregate);
 
-    @Override
-    default Observable<EventT> findEventsForAggregates(List<AggregateT> aggregates) {
-        return from(aggregates)
-                .flatMap(this::reattachAggregate)
-                .toList()
-                .flatMap(reattachedAggregates -> {
-                    //noinspection unchecked
-                    return (Observable<EventT>) invokeStaticMethod(
-                            getEventClass(),
-                            EVENTS_BY_AGGREGATES,
-                            new Object[]{reattachedAggregates, INCREMENTAL_BY_POSITION});
-                });
-    }
-
 }

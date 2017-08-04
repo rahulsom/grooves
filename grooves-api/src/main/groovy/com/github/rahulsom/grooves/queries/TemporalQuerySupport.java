@@ -1,7 +1,9 @@
 package com.github.rahulsom.grooves.queries;
 
 import com.github.rahulsom.grooves.api.AggregateType;
+import com.github.rahulsom.grooves.api.GroovesException;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
+import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.queries.internal.*;
@@ -12,20 +14,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
 
 import static com.github.rahulsom.grooves.queries.internal.Utils.returnOrRedirect;
-import static com.github.rahulsom.grooves.queries.internal.Utils.stringifyEvents;
+import static com.github.rahulsom.grooves.queries.internal.Utils.stringify;
+import static java.util.stream.Collectors.toList;
 import static rx.Observable.empty;
+import static rx.Observable.error;
+import static rx.Observable.just;
 
 /**
  * Default interface to help in building temporal snapshots.
  *
- * @param <AggregateT>  The aggregate over which the query executes
- * @param <EventIdT>    The type of the Event's id field
- * @param <EventT>      The type of the Event
- * @param <SnapshotIdT> The type of the Snapshot's id field
- * @param <SnapshotT>   The type of the Snapshot
+ * @param <AggregateIdT> The type of {@link AggregateT}'s id
+ * @param <AggregateT>   The aggregate over which the query executes
+ * @param <EventIdT>     The type of the {@link EventT}'s id field
+ * @param <EventT>       The type of the Event
+ * @param <SnapshotIdT>  The type of the {@link SnapshotT}'s id field
+ * @param <SnapshotT>    The type of the Snapshot
+ * @param <QueryT>       A reference to the query type. Typically a self reference.
  *
  * @author Rahul Somasunderam
  */
@@ -56,10 +63,8 @@ public interface TemporalQuerySupport<
         return getSnapshot(maxTimestamp, aggregate)
                 .defaultIfEmpty(createEmptySnapshot())
                 .doOnNext(it -> {
-                    final String snapshotAsString =
-                            it.getLastEventTimestamp() == null ? "<none>" :
-                                    it.toString();
-                    getLog().debug("  -> Last Usable Snapshot: {}", snapshotAsString);
+                    getLog().debug("  -> Last Usable Snapshot: {}",
+                            it.getLastEventTimestamp() == null ? "<none>" : it.toString());
                     it.setAggregate(aggregate);
                 });
     }
@@ -93,29 +98,24 @@ public interface TemporalQuerySupport<
     default Observable<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
             AggregateT aggregate, Date moment, boolean reuseEarlierSnapshot) {
         if (reuseEarlierSnapshot) {
-            return getLastUsableSnapshot(aggregate, moment).flatMap(lastSnapshot -> {
-                final Observable<EventT> uncomputedEvents =
-                        getUncomputedEvents(aggregate, lastSnapshot, moment);
+            return getLastUsableSnapshot(aggregate, moment).flatMap(lastSnapshot ->
+                    getUncomputedEvents(aggregate, lastSnapshot, moment).toList()
+                            .flatMap(events -> {
+                                if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
+                                    List<EventT> reverts = events.stream()
+                                            .filter(it -> it instanceof RevertEvent)
+                                            .collect(toList());
+                                    getLog().info("     Uncomputed reverts exist: {}",
+                                            stringify(reverts));
+                                    return getSnapshotAndEventsSince(
+                                            aggregate, moment, false);
+                                } else {
+                                    getLog().debug("     Events since last snapshot: {}",
+                                            stringify(events));
+                                    return just(new Pair<>(lastSnapshot, events));
 
-                return uncomputedEvents.toList()
-                        .flatMap(events -> {
-                            if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
-                                List<EventT> reverts = events.stream()
-                                        .filter(it -> it instanceof RevertEvent).collect(
-                                                Collectors.toList());
-                                getLog().info("     Uncomputed reverts exist: {}",
-                                        stringifyEvents(reverts));
-                                return getSnapshotAndEventsSince(
-                                        aggregate, moment, false);
-                            } else {
-                                getLog().debug("     Events since last snapshot: {}",
-                                        stringifyEvents(events));
-                                return Observable.just(new Pair<>(lastSnapshot, events));
-
-                            }
-                        });
-
-            });
+                                }
+                            }));
 
 
         } else {
@@ -127,7 +127,7 @@ public interface TemporalQuerySupport<
 
             return uncomputedEvents
                     .doOnNext(ue ->
-                            getLog().debug("     Events since origin: {}", stringifyEvents(ue)))
+                            getLog().debug("     Events since origin: {}", stringify(ue)))
                     .map(ue -> new Pair<>(lastSnapshot, ue));
         }
 
@@ -158,8 +158,10 @@ public interface TemporalQuerySupport<
      */
     default Observable<SnapshotT> computeSnapshot(
             AggregateT aggregate, Date moment, boolean redirect) {
-        getLog().info("Computing snapshot for {} at {}", aggregate,
-                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(moment));
+        if (getLog().isInfoEnabled()) {
+            getLog().info("Computing snapshot for {} at {}", aggregate,
+                    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(moment));
+        }
 
         return getSnapshotAndEventsSince(aggregate, moment).flatMap(seTuple2 -> {
             List<EventT> events = seTuple2.getSecond();
@@ -208,9 +210,24 @@ public interface TemporalQuerySupport<
         Observable<EventT> forwardOnlyEvents = Utils.getForwardOnlyEvents(events, getExecutor(),
                 () -> getSnapshotAndEventsSince(aggregate, moment, false));
 
+        Observable<EventT> applicableEvents = forwardOnlyEvents
+                .filter(e -> e instanceof Deprecates)
+                .toList()
+                .flatMap(list -> {
+                    if (list.isEmpty()) {
+                        return forwardOnlyEvents;
+                    } else {
+                        Observable<Pair<SnapshotT, List<EventT>>> snapshotAndEventsSince =
+                                getSnapshotAndEventsSince(aggregate, moment, false);
+                        return snapshotAndEventsSince.flatMap(p -> Utils.getForwardOnlyEvents(
+                                p.getSecond(), getExecutor(), () -> error(
+                                        new GroovesException("Couldn't apply deprecates events"))));
+                    }
+                });
+
         final Observable<SnapshotT> snapshotTypeObservable =
-                getExecutor().applyEvents((QueryT) this, lastUsableSnapshot, forwardOnlyEvents,
-                        new ArrayList<>(), Collections.singletonList(aggregate), aggregate);
+                getExecutor().applyEvents((QueryT) this, lastUsableSnapshot, applicableEvents,
+                        new ArrayList<>(), aggregate);
         return snapshotTypeObservable
                 .doOnNext(snapshot -> {
                     if (!events.isEmpty()) {
@@ -227,6 +244,13 @@ public interface TemporalQuerySupport<
     default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT
             > getExecutor() {
         return new QueryExecutor<>();
+    }
+
+    @Override
+    default Observable<EventT> findEventsBefore(EventT event) {
+        return event.getAggregateObservable().flatMap(aggregate ->
+                getUncomputedEvents(aggregate, null, event.getTimestamp())
+        );
     }
 
     Observable<EventT> getUncomputedEvents(

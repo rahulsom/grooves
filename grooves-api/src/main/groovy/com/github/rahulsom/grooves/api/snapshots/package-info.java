@@ -1,4 +1,4 @@
 /**
- * Created by rahul on 4/21/17.
+ * Interfaces for snapshots.
  */
 package com.github.rahulsom.grooves.api.snapshots;

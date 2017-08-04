@@ -11,11 +11,13 @@ import java.util.List;
 /**
  * Executes a query by controlling how events are applied.
  *
- * @param <AggregateT>  The type of Aggregate
- * @param <EventIdT>    The type of Event Id
- * @param <EventT>      The type of Event
- * @param <SnapshotIdT> The type of Snapshot Id
- * @param <SnapshotT>   The type of Snapshot
+ * @param <AggregateIdT> The type of {@link AggregateT}'s id
+ * @param <AggregateT>   The type of Aggregate
+ * @param <EventIdT>     The type of {@link EventT}'s id
+ * @param <EventT>       The type of Event
+ * @param <SnapshotIdT>  The type of {@link SnapshotT}'s id
+ * @param <SnapshotT>    The type of Snapshot
+ * @param <QueryT>       The type of the query using the executor
  *
  * @author Rahul Somasunderam
  */
@@ -45,7 +47,6 @@ public interface Executor<
      * @param initialSnapshot The snapshot to be mutated
      * @param events          The list of forward events
      * @param deprecatesList  The list of Deprecate events
-     * @param aggregates      The list of deprecated aggregates
      * @param aggregate       The aggregate on which we are currently working
      *
      * @return The Snapshot that has been mutated
@@ -55,6 +56,5 @@ public interface Executor<
             SnapshotT initialSnapshot,
             Observable<EventT> events,
             List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
-            List<AggregateT> aggregates,
             AggregateT aggregate);
 }

@@ -4,7 +4,6 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
@@ -15,11 +14,13 @@ import java.util.List;
 /**
  * Aggregate trait that simplifies computing snapshots from events.
  *
- * @param <AggregateT>  The Aggregate type
- * @param <EventIdT>    The Event's id's type
- * @param <EventT>      The Event type
- * @param <SnapshotIdT> The snapshot's id's type
- * @param <SnapshotT>   The snapshot type
+ * @param <AggregateIdT> The type of {@link AggregateT}'s id
+ * @param <AggregateT>   The aggregate over which the query executes
+ * @param <EventIdT>     The type of the {@link EventT}'s id field
+ * @param <EventT>       The type of the Event
+ * @param <SnapshotIdT>  The type of the {@link SnapshotT}'s id field
+ * @param <SnapshotT>    The type of the Snapshot
+ * @param <QueryT>       A reference to the query type. Typically a self reference.
  *
  * @author Rahul Somasunderam
  */
@@ -76,13 +77,13 @@ public interface BaseQuery<
     boolean shouldEventsBeApplied(SnapshotT snapshot);
 
     /**
-     * Finds all events for a given list of aggregates.
+     * Finds all events older than a given event.
      *
-     * @param aggregates The list of aggregates
+     * @param event The event before which events are eligible
      *
      * @return The list of events
      */
-    Observable<EventT> findEventsForAggregates(List<AggregateT> aggregates);
+    Observable<EventT> findEventsBefore(EventT event);
 
     /**
      * Adds an aggregate to the list of aggregates that are deprecated by the aggregate of a
