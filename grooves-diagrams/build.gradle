@@ -34,3 +34,8 @@ dependencies {
 srcclr {
     apiToken = System.getenv()['SRC_CLR_TOKEN']
 }
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.outputDirectory
+}
