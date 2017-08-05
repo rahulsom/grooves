@@ -10,10 +10,10 @@ function build() {
 
     ./gradlew build snapshot --scan --build-cache --configure-on-demand
 
-    ./gradlew sonarqube srcclr \
-            -Dsonar.login=$SONAR_TOKEN \
-            -Dsonar.host.url=https://sonarqube.com \
-            -Dsonar.organization=rahulsom-github
+#    ./gradlew sonarqube srcclr \
+#            -Dsonar.login=$SONAR_TOKEN \
+#            -Dsonar.host.url=https://sonarqube.com \
+#            -Dsonar.organization=rahulsom-github
 }
 
 if [ "$PULL_REQUEST_NUMBER" != "" ]; then
