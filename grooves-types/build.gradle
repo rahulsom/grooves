@@ -10,16 +10,18 @@ buildscript {
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
         classpath 'com.netflix.nebula:gradle-info-plugin:3.+'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:1.0.3"
+        classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:2.1.0"
         classpath "gradle.plugin.com.srcclr:gradle:2.2.3"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:+"
     }
 }
 
 apply plugin: 'com.bmuschko.nexus'
-apply from: '../gradle/publishing.gradle'
 apply plugin: 'groovy'
 apply plugin: 'kotlin'
+apply plugin: 'org.jlleitschuh.gradle.ktlint'
+apply plugin: 'com.srcclr.gradle'
+apply from: '../gradle/publishing.gradle'
 apply from: '../gradle/jacoco.gradle'
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply plugin: "com.srcclr.gradle"

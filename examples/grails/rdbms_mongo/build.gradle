@@ -55,7 +55,7 @@ dependencies {
 
     runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.11.6"
     runtime "com.h2database:h2"
-    testCompile "org.grails:grails-plugin-testing"
+    testCompile "org.grails:grails-test-mixins:3.3.0.RC1"
     testCompile "org.grails.plugins:geb"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
