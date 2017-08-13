@@ -29,6 +29,7 @@ public class OnSpec<
      * Applies an event to an aggregate. This involves checking if any important fields are
      * missing and populating them based on the suppliers.
      *
+     * @param <T> type of event
      * @param event The event to be applied
      *
      * @return The event after persisting
