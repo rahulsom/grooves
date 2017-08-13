@@ -42,7 +42,7 @@ image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/groo
 https://oss.sonatype.org/#nexus-search;quick~grooves-diagrams[grooves-diagrams]::
     This is an asciidoctor extension that allows you to generate diagrams like those in grooves' documentation.
 
-image::https://api.bintray.com/packages/bintray/jcenter/com.github.rahulsom%3Agrooves-diagrams/images/download.svg[link="https://bintray.com/bintray/jcenter/com.github.rahulsom%3Agrooves-diagrams/_latestVersion"]
+image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-diagrams/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-diagrams"]
 
 == Examples
 
