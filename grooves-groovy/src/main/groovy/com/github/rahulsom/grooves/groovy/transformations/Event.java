@@ -23,5 +23,5 @@ public @interface Event {
      *
      * @return The type of the Aggregate
      */
-    Class<AggregateType> value();
+    Class<? extends AggregateType> value();
 }
