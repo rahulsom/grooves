@@ -26,12 +26,12 @@ public @interface Query {
      *
      * @return The aggregate for which this query needs to be performed
      */
-    Class<AggregateType> aggregate();
+    Class<? extends AggregateType> aggregate();
 
     /**
      * The snapshot that the query will return
      *
      * @return The snapshot that the query will return
      */
-    Class<Snapshot> snapshot();
+    Class<? extends Snapshot> snapshot();
 }
