@@ -1,5 +1,8 @@
 = Changelog
 
+== 0.2.1
+* Allow subclasses in annotations
+
 == 0.2.0
 * Joins are now reactive too.
   This removes the need for reattach methods.
