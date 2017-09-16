@@ -20,12 +20,14 @@ include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/querie
   Think of the range as exclusive of `lastSnapshot`, but inclusive of `version`.
 <9> The implementation of this method must return all events for an aggregate that are more recent than the last event of `lastSnapshot`, but lead up to `snapshotTime`.
   Think of the range as exclusive of `lastSnapshot`, but inclusive of `snapshotTime`.
-<10> Here we implement our default interface
-<11> This method gets called if no prior snapshot that is usable is found.
-<12> We name our methods `apply<EventType>`.
+<10> This annotation is the final step in verification of completeness.
+  The AST Transformation checks that all `@Event`s associated with the `@Aggregate` are accounted for in the `@Query`.
+<11> Here we implement our default interface
+<12> This method gets called if no prior snapshot that is usable is found.
+<13> We name our methods `apply<EventType>`.
   This is required.
   It is not enforced though.
-<13> Each of these methods takes the event and the snapshot as inputs and returns an `Observable<EventApplyOutcome>` as output.
+<14> Each of these methods takes the event and the snapshot as inputs and returns an `Observable<EventApplyOutcome>` as output.
   It can `CONTINUE` or `RETURN`.
 
 [source,groovy,indent=0,role="secondary"]

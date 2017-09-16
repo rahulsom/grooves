@@ -5,8 +5,10 @@ Next up, let's look at our first event, `PatientCreated`.
 ----
 include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/domain/PatientCreated.java[tags=documented]
 ----
-<1> For most events you're interested in as a user, you'll just have to extend `PatientEvent`.
-<2> The other thing is to implement an audit message.
+<1> The `@Event` annotation is the second step to achieving completeness of events.
+  It accepts as a param, the Aggregate over which it applies.
+<2> For most events you're interested in as a user, you'll just have to extend `PatientEvent`.
+<3> The other thing is to implement an audit message.
 
 [source,groovy,indent=0,role="secondary"]
 .Groovy

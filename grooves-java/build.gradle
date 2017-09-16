@@ -1,0 +1,35 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+        classpath 'com.netflix.nebula:gradle-info-plugin:3.+'
+        classpath "gradle.plugin.com.srcclr:gradle:2.2.3"
+    }
+}
+
+apply plugin: 'com.bmuschko.nexus'
+apply plugin: 'java'
+apply plugin: "com.srcclr.gradle"
+apply from: '../gradle/publishing.gradle'
+apply from: '../gradle/jacoco.gradle'
+
+description = "AspectJ Support for Java implementations of Grooves"
+
+dependencies {
+    compile project(':grooves-api')
+    compile 'com.google.auto.service:auto-service:1.0-rc3'
+
+    testCompile 'com.google.testing.compile:compile-testing:0.11'
+}
+
+srcclr {
+    apiToken = System.getenv()['SRC_CLR_TOKEN']
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.outputDirectory
+}

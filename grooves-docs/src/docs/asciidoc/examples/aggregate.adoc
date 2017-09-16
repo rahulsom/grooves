@@ -13,10 +13,14 @@ The rest of the information will be brought in using events.
 ----
 include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/domain/Patient.java[tags=documented]
 ----
-<1> For grooves to use an aggregate, you must implement the `AggregateType` interface.
+<1> This annotation will assist in checking for completeness of queries.
+  There are two other annotations we'll see - `@Event` and `@Query`.
+  Together, the three will help us ensure that our queries cover all events.
+  This is optional, but highly recommended.
+<2> For grooves to use an aggregate, you must implement the `AggregateType` interface.
   It accepts a type using generics that identifies the id of the aggregate.
   That is typically used as the primary key in a database.
-<2> The id type in this case needs to be defined.
+<3> The id type in this case needs to be defined.
   Some persistence mechanisms have default types.
   If your `id` type matches that, you can skip the declaration.
 

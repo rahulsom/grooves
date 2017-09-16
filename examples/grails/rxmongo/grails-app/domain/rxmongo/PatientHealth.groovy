@@ -50,7 +50,7 @@ class PatientHealth implements RxMongoEntity<PatientHealth>,
 
     static hasMany = [
             procedures   : Procedure,
-            deprecatesIds: Long,
+            deprecatesIds: String,
     ]
 
     static constraints = {

@@ -59,3 +59,4 @@ crashlytics-build.properties
 
 ### Other stuff
 .pid.lock
+out/

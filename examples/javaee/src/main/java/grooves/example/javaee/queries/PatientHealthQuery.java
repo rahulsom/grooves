@@ -1,6 +1,7 @@
 package grooves.example.javaee.queries;
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
+import com.github.rahulsom.grooves.java.Query;
 import grooves.example.javaee.Database;
 import grooves.example.javaee.domain.*;
 import rx.Observable;
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
 import static rx.Observable.just;
 
+@Query(aggregate = Patient.class, snapshot = PatientHealth.class)
 public class PatientHealthQuery implements CustomQuerySupport<PatientHealth, PatientHealthQuery> {
 
     @Inject

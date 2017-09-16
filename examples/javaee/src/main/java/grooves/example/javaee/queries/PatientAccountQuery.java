@@ -1,6 +1,7 @@
 package grooves.example.javaee.queries;
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
+import com.github.rahulsom.grooves.java.Query;
 import grooves.example.javaee.Database;
 import grooves.example.javaee.domain.*;
 import rx.Observable;
@@ -12,8 +13,9 @@ import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
 import static rx.Observable.just;
 
 // tag::documented[]
+@Query(aggregate = Patient.class, snapshot = PatientAccount.class) // <10>
 public class PatientAccountQuery
-        implements CustomQuerySupport<PatientAccount, PatientAccountQuery> { // <10>
+        implements CustomQuerySupport<PatientAccount, PatientAccountQuery> { // <11>
 
     // end::documented[]
     @Inject
@@ -31,7 +33,7 @@ public class PatientAccountQuery
 
     // tag::documented[]
     @Override
-    public PatientAccount createEmptySnapshot() { // <11>
+    public PatientAccount createEmptySnapshot() { // <12>
         return new PatientAccount();
     }
     // end::documented[]
@@ -49,11 +51,11 @@ public class PatientAccountQuery
      */
     // tag::documented[]
     public Observable<EventApplyOutcome> applyPatientCreated(
-            PatientCreated event, PatientAccount snapshot) { // <12>
+            PatientCreated event, PatientAccount snapshot) { // <13>
         if (snapshot.getAggregate() == event.getAggregate()) {
             snapshot.setName(event.getName());
         }
-        return just(CONTINUE); // <13>
+        return just(CONTINUE); // <14>
     }
 
     // end::documented[]
