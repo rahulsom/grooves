@@ -628,12 +628,14 @@ No name, no address, no other information.</p>
 <div class="title">Java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">com.github.rahulsom.grooves.api.AggregateType</span>;
+<span class="keyword">import</span> <span class="include">com.github.rahulsom.grooves.java.Aggregate</span>;
 
 <span class="keyword">import</span> <span class="include">java.io.Serializable</span>;
 
-<span class="directive">public</span> <span class="type">class</span> <span class="class">Patient</span> <span class="directive">implements</span> AggregateType&lt;<span class="predefined-type">Long</span>&gt;, <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="annotation">@Aggregate</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Patient</span> <span class="directive">implements</span> AggregateType&lt;<span class="predefined-type">Long</span>&gt;, <i class="conum" data-value="2"></i><b>(2)</b>
         <span class="predefined-type">Serializable</span> {
-    <span class="directive">private</span> <span class="predefined-type">Long</span> id; <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="directive">private</span> <span class="predefined-type">Long</span> id; <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="directive">private</span> <span class="predefined-type">String</span> uniqueId;
 }</code></pre>
 </div>
@@ -642,12 +644,19 @@ No name, no address, no other information.</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This annotation will assist in checking for completeness of queries.
+There are two other annotations we&#8217;ll see - <code>@Event</code> and <code>@Query</code>.
+Together, the three will help us ensure that our queries cover all events.
+This is optional, but highly recommended.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>For grooves to use an aggregate, you must implement the <code>AggregateType</code> interface.
 It accepts a type using generics that identifies the id of the aggregate.
 That is typically used as the primary key in a database.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>The id type in this case needs to be defined.
 Some persistence mechanisms have default types.
 If your <code>id</code> type matches that, you can skip the declaration.</td>
@@ -1000,11 +1009,12 @@ In our case, it doesn&#8217;t matter much since we&#8217;re using Hibernate, whi
 <div class="listingblock primary">
 <div class="title">Java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">PatientCreated</span> <span class="directive">extends</span> PatientEvent { <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Event</span>(Patient.class) <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">PatientCreated</span> <span class="directive">extends</span> PatientEvent { <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="directive">private</span> <span class="predefined-type">String</span> name;
 
     <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="predefined-type">String</span> getAudit() { <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="directive">public</span> <span class="predefined-type">String</span> getAudit() { <i class="conum" data-value="3"></i><b>(3)</b>
         <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">name: </span><span class="delimiter">&quot;</span></span> + name;
     }
 
@@ -1018,10 +1028,15 @@ In our case, it doesn&#8217;t matter much since we&#8217;re using Hibernate, whi
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>For most events you&#8217;re interested in as a user, you&#8217;ll just have to extend <code>PatientEvent</code>.</td>
+<td>The <code>@Event</code> annotation is the second step to achieving completeness of events.
+It accepts as a param, the Aggregate over which it applies.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>For most events you&#8217;re interested in as a user, you&#8217;ll just have to extend <code>PatientEvent</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>The other thing is to implement an audit message.</td>
 </tr>
 </table>
@@ -1627,19 +1642,20 @@ It is empty when the aggregate is not deprecated.</td>
 
 }
 <span class="comment">// This is the implementation we need</span>
+<span class="annotation">@Query</span>(aggregate = Patient.class, snapshot = PatientAccount.class) <i class="conum" data-value="10"></i><b>(10)</b>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PatientAccountQuery</span>
-        <span class="directive">implements</span> CustomQuerySupport&lt;PatientAccount, PatientAccountQuery&gt; { <i class="conum" data-value="10"></i><b>(10)</b>
+        <span class="directive">implements</span> CustomQuerySupport&lt;PatientAccount, PatientAccountQuery&gt; { <i class="conum" data-value="11"></i><b>(11)</b>
 
     <span class="annotation">@Override</span>
-    <span class="directive">public</span> PatientAccount createEmptySnapshot() { <i class="conum" data-value="11"></i><b>(11)</b>
+    <span class="directive">public</span> PatientAccount createEmptySnapshot() { <i class="conum" data-value="12"></i><b>(12)</b>
         <span class="keyword">return</span> <span class="keyword">new</span> PatientAccount();
     }
     <span class="directive">public</span> <span class="predefined-type">Observable</span>&lt;EventApplyOutcome&gt; applyPatientCreated(
-            PatientCreated event, PatientAccount snapshot) { <i class="conum" data-value="12"></i><b>(12)</b>
+            PatientCreated event, PatientAccount snapshot) { <i class="conum" data-value="13"></i><b>(13)</b>
         <span class="keyword">if</span> (snapshot.getAggregate() == event.getAggregate()) {
             snapshot.setName(event.getName());
         }
-        <span class="keyword">return</span> just(CONTINUE); <i class="conum" data-value="13"></i><b>(13)</b>
+        <span class="keyword">return</span> just(CONTINUE); <i class="conum" data-value="14"></i><b>(14)</b>
     }
 
     <span class="directive">public</span> <span class="predefined-type">Observable</span>&lt;EventApplyOutcome&gt; applyProcedurePerformed(
@@ -1711,20 +1727,25 @@ Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <
 </tr>
 <tr>
 <td><i class="conum" data-value="10"></i><b>10</b></td>
-<td>Here we implement our default interface</td>
+<td>This annotation is the final step in verification of completeness.
+The AST Transformation checks that all <code>@Event`s associated with the `@Aggregate</code> are accounted for in the <code>@Query</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="11"></i><b>11</b></td>
-<td>This method gets called if no prior snapshot that is usable is found.</td>
+<td>Here we implement our default interface</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="12"></i><b>12</b></td>
+<td>This method gets called if no prior snapshot that is usable is found.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
 <td>We name our methods <code>apply&lt;EventType&gt;</code>.
 This is required.
 It is not enforced though.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td><i class="conum" data-value="14"></i><b>14</b></td>
 <td>Each of these methods takes the event and the snapshot as inputs and returns an <code>Observable&lt;EventApplyOutcome&gt;</code> as output.
 It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
 </tr>
@@ -2215,6 +2236,9 @@ dependencies {
 <div class="content">
 <img src="SimpleEvents.svg" alt="SimpleEvents">
 </div>
+</div>
+<div class="paragraph">
+<p>Take a look at <a href="https://github.com/rahulsom/grooves/tree/master/grooves-docs/src/docs/asciidoc">the source</a> for more examples of creating diagrams.</p>
 </div>
 </div>
 </div>
