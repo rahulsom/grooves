@@ -2,12 +2,14 @@ package grooves.example.javaee.domain;
 
 // tag::documented[]
 import com.github.rahulsom.grooves.api.AggregateType;
+import com.github.rahulsom.grooves.java.Aggregate;
 
 import java.io.Serializable;
 
-public class Patient implements AggregateType<Long>, // <1>
+@Aggregate // <1>
+public class Patient implements AggregateType<Long>, // <2>
         Serializable {
-    private Long id; // <2>
+    private Long id; // <3>
     private String uniqueId;
     // end::documented[]
 

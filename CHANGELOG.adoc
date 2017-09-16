@@ -1,7 +1,10 @@
 = Changelog
 
+== 0.3.0
+* Support completeness verification in java using annotations.
+
 == 0.2.1
-* Allow subclasses in annotations
+* Allow subclasses in annotations.
 
 == 0.2.0
 * Joins are now reactive too.

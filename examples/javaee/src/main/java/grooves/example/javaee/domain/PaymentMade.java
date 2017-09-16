@@ -1,7 +1,10 @@
 package grooves.example.javaee.domain;
 
+import com.github.rahulsom.grooves.java.Event;
+
 import java.math.BigDecimal;
 
+@Event(Patient.class)
 public class PaymentMade extends PatientEvent {
     private BigDecimal amount;
 

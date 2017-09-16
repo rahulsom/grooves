@@ -1,11 +1,14 @@
 package grooves.example.javaee.domain;
 
+import com.github.rahulsom.grooves.java.Event;
+
 //tag::documented[]
-public class PatientCreated extends PatientEvent { // <1>
+@Event(Patient.class) // <1>
+public class PatientCreated extends PatientEvent { // <2>
     private String name;
 
     @Override
-    public String getAudit() { // <2>
+    public String getAudit() { // <3>
         return "name: " + name;
     }
     //end::documented[]

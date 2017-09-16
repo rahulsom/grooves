@@ -51,3 +51,5 @@ The result is this
   + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
   + 4 2016-01-05 paid $ 100.25
 ....
+
+Take a look at https://github.com/rahulsom/grooves/tree/master/grooves-docs/src/docs/asciidoc[the source] for more examples of creating diagrams.
