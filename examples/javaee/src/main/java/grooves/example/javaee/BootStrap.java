@@ -220,7 +220,6 @@ public class BootStrap {
         PatientDeprecatedBy e1 = new PatientDeprecatedBy(into);
 
         e1.setAggregate(self);
-        e1.setCreatedBy(ANONYMOUS);
         e1.setTimestamp(currDate);
         e1.setPosition(database.events().filter(x -> x.getAggregate().equals(self)).count() + 1);
         e1.setId(database.events().count() + 1);
@@ -228,7 +227,6 @@ public class BootStrap {
         PatientDeprecates e2 = new PatientDeprecates(self, e1);
 
         e2.setAggregate(into);
-        e2.setCreatedBy(ANONYMOUS);
         e2.setTimestamp(currDate);
         e2.setPosition(database.events().filter(x -> x.getAggregate().equals(into)).count() + 1);
         e2.setId(database.events().count() + 2);
@@ -267,9 +265,6 @@ public class BootStrap {
                                 .equals(patient))
                         .count() + 1;
 
-        Supplier<String> userSupplier =
-                () -> ANONYMOUS;
-
         Supplier<Date> dateSupplier =
                 () -> {
                     final Calendar calendar = Calendar.getInstance();
@@ -280,7 +275,7 @@ public class BootStrap {
                 };
 
         EventsDsl<Long, Patient, Long, PatientEvent> dsl = new EventsDsl<>();
-        return dsl.on(patient, eventSaver, positionSupplier, userSupplier, dateSupplier,
+        return dsl.on(patient, eventSaver, positionSupplier, dateSupplier,
                 closure::accept);
     }
 

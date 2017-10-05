@@ -15,7 +15,6 @@ import static rx.Observable.just;
 public abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEvent> { // <1>
     private Patient aggregate;
     private Long id;
-    private String createdBy;
     private RevertEvent<Long, Patient, Long, PatientEvent> revertedBy;  // <2>
     private Date timestamp; // <3>
     private Long position; // <4>
@@ -52,14 +51,6 @@ public abstract class PatientEvent implements BaseEvent<Long, Patient, Long, Pat
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
     }
 
     public RevertEvent<Long, Patient, Long, PatientEvent> getRevertedBy() {

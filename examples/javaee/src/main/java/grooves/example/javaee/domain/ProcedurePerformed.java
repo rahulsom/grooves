@@ -11,11 +11,6 @@ public class ProcedurePerformed extends PatientEvent {
     private BigDecimal cost;
 
     @Override
-    public String getAudit() {
-        return "code: " + code + "; cost: " + cost;
-    }
-
-    @Override
     public String toString() {
         return String.format("ProcedurePerformed{code='%s', cost=%s}", code, cost);
     }

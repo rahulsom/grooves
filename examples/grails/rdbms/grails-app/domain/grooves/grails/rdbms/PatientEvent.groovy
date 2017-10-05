@@ -5,7 +5,6 @@ import com.github.rahulsom.grooves.api.events.DeprecatedBy
 import com.github.rahulsom.grooves.api.events.Deprecates
 import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.groovy.transformations.Event
-import groovy.json.JsonBuilder
 import groovy.transform.EqualsAndHashCode
 import rx.Observable
 
@@ -21,7 +20,6 @@ import static rx.Observable.just
 abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEvent> {
 
     RevertEvent<Long, Patient, Long, PatientEvent> revertedBy
-    String createdBy
     Date timestamp
     Long position
     Patient aggregate
@@ -41,7 +39,6 @@ abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEve
 class PatientCreated extends PatientEvent {
     String name
 
-    @Override String getAudit() { new JsonBuilder([name: name]).toString() }
     @Override String toString() { "${super.toString()} created as $name" }
 }
 
@@ -51,7 +48,6 @@ class ProcedurePerformed extends PatientEvent {
     String code
     BigDecimal cost
 
-    @Override String getAudit() { new JsonBuilder([code: code, cost: cost]).toString() }
     @Override String toString() { "${super.toString()} performed $code for $cost" }
 }
 
@@ -60,7 +56,6 @@ class ProcedurePerformed extends PatientEvent {
 class PaymentMade extends PatientEvent {
     BigDecimal amount
 
-    @Override String getAudit() { new JsonBuilder([amount: amount]).toString() }
     @Override String toString() { "${super.toString()} paid $amount" }
 }
 
@@ -69,7 +64,6 @@ class PatientEventReverted extends PatientEvent
         implements RevertEvent<Long, Patient, Long, PatientEvent> {
     Long revertedEventId
 
-    @Override String getAudit() { new JsonBuilder([revertedEvent: revertedEventId]).toString() }
     @Override String toString() { "${super.toString()} reverted $revertedEventId" }
 }
 
@@ -82,7 +76,6 @@ class PatientDeprecatedBy extends PatientEvent
     Observable<PatientDeprecates> getConverseObservable() { just(converse) }
     Observable<Patient> getDeprecatorObservable() { just(deprecator) }
 
-    @Override String getAudit() { new JsonBuilder([deprecatedBy: deprecator.id]).toString() }
     @Override String toString() { "${super.toString()} deprecated by #${deprecator.id}" }
 }
 
@@ -95,6 +88,5 @@ class PatientDeprecates extends PatientEvent
     Observable<PatientDeprecatedBy> getConverseObservable() { just(converse) }
     Observable<Patient> getDeprecatedObservable() { just(deprecated) }
 
-    @Override String getAudit() { new JsonBuilder([deprecates: deprecated.id]).toString() }
     @Override String toString() { "${super.toString()} deprecates #${deprecated.id}" }
 }
