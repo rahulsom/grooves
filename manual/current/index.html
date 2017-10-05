@@ -803,7 +803,6 @@ We are using mongo on spring boot here. So we are using <code>String</code>.</td
 <span class="directive">public</span> <span class="directive">abstract</span> <span class="type">class</span> <span class="class">PatientEvent</span> <span class="directive">implements</span> BaseEvent&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="directive">private</span> Patient aggregate;
     <span class="directive">private</span> <span class="predefined-type">Long</span> id;
-    <span class="directive">private</span> <span class="predefined-type">String</span> createdBy;
     <span class="directive">private</span> RevertEvent&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, PatientEvent&gt; revertedBy;  <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="directive">private</span> <span class="predefined-type">Date</span> timestamp; <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="directive">private</span> <span class="predefined-type">Long</span> position; <i class="conum" data-value="4"></i><b>(4)</b>
@@ -854,7 +853,6 @@ Again, since we&#8217;re using collections, it doesn&#8217;t matter.</td>
 
     <span class="annotation">@GeneratedValue</span> <span class="annotation">@Id</span> <span class="predefined-type">Long</span> id
     <span class="annotation">@Transient</span> RevertEvent&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, PatientEvent&gt; revertedBy <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="annotation">@Column</span>(nullable = <span class="predefined-constant">false</span>) <span class="predefined-type">String</span> createdBy
     <span class="annotation">@Column</span>(nullable = <span class="predefined-constant">false</span>) <span class="predefined-type">Date</span> timestamp <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="annotation">@Column</span>(nullable = <span class="predefined-constant">false</span>) <span class="predefined-type">Long</span> position <i class="conum" data-value="4"></i><b>(4)</b>
     <span class="annotation">@OneToOne</span> Patient aggregate
@@ -896,7 +894,6 @@ In our case, it doesn&#8217;t matter much since we&#8217;re using JPA, which is 
 <span class="directive">abstract</span> <span class="type">class</span> <span class="class">PatientEvent</span> <span class="directive">implements</span> BaseEvent&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
 
     RevertEvent&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, PatientEvent&gt; revertedBy  <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="predefined-type">String</span> createdBy
     <span class="predefined-type">Date</span> timestamp  <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="predefined-type">Long</span> position  <i class="conum" data-value="4"></i><b>(4)</b>
     Patient aggregate
@@ -949,7 +946,6 @@ sealed class PatientEvent : BaseEvent&lt;String, Patient, String, PatientEvent&g
 
     @JsonFormat(pattern = &quot;yyyy-MM-dd'T'HH:mm:ss.SSSZ&quot;)
     override var timestamp: Date? = null <i class="conum" data-value="4"></i><b>(4)</b>
-    override var createdBy: String? = null
     override var position: Long? = null <i class="conum" data-value="5"></i><b>(5)</b>
 
     fun getType() = this.javaClass.simpleName
@@ -1013,11 +1009,6 @@ In our case, it doesn&#8217;t matter much since we&#8217;re using Hibernate, whi
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PatientCreated</span> <span class="directive">extends</span> PatientEvent { <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="directive">private</span> <span class="predefined-type">String</span> name;
 
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="predefined-type">String</span> getAudit() { <i class="conum" data-value="3"></i><b>(3)</b>
-        <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">name: </span><span class="delimiter">&quot;</span></span> + name;
-    }
-
     <span class="directive">public</span> PatientCreated(<span class="predefined-type">String</span> name) {
         <span class="local-variable">this</span>.name = name;
     }
@@ -1049,7 +1040,6 @@ It accepts as a param, the Aggregate over which it applies.</td>
 <span class="type">class</span> <span class="class">PatientCreated</span> <span class="directive">extends</span> PatientEvent { <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="predefined-type">String</span> name
 
-    <span class="annotation">@Override</span> <span class="predefined-type">String</span> getAudit() { <span class="keyword">new</span> JsonBuilder([<span class="key">name</span>: name]).toString() } <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="annotation">@Override</span> <span class="predefined-type">String</span> toString() { <span class="string"><span class="delimiter">&quot;</span><span class="content">PatientCreated(name=</span><span class="inline"><span class="inline-delimiter">$</span>name</span><span class="content">)</span><span class="delimiter">&quot;</span></span> }
 }</code></pre>
 </div>
@@ -1078,7 +1068,6 @@ It accepts as a param, the Aggregate over which it applies.</td>
 <span class="type">class</span> <span class="class">PatientCreated</span> <span class="directive">extends</span> PatientEvent { <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="predefined-type">String</span> name
 
-    <span class="annotation">@Override</span> <span class="predefined-type">String</span> getAudit() { <span class="keyword">new</span> JsonBuilder([<span class="key">name</span>: name]).toString() } <i class="conum" data-value="3"></i><b>(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -1106,7 +1095,7 @@ It accepts as a param, the Aggregate over which it applies.</td>
     // ... skipping stuff already there ...
     sealed class Applicable : PatientEvent() { <i class="conum" data-value="1"></i><b>(1)</b>
         data class Created(val name: String) : Applicable() { <i class="conum" data-value="2"></i><b>(2)</b>
-            override fun getAudit(): String = &quot;$id - Created '$name'&quot; <i class="conum" data-value="3"></i><b>(3)</b>
+            fun getAudit(): String = &quot;$id - Created '$name'&quot; <i class="conum" data-value="3"></i><b>(3)</b>
         }
     }
 }</code></pre>
@@ -1170,11 +1159,6 @@ Their implementation is similar to one another, but slightly different from your
     <span class="directive">public</span> <span class="predefined-type">Long</span> getRevertedEventId() { <i class="conum" data-value="3"></i><b>(3)</b>
         <span class="keyword">return</span> revertedEventId;
     }
-
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="predefined-type">String</span> getAudit() {
-        <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">revertedEvent:</span><span class="delimiter">&quot;</span></span> + revertedEventId;
-    }
 }</code></pre>
 </div>
 </div>
@@ -1203,7 +1187,6 @@ Their implementation is similar to one another, but slightly different from your
         <span class="directive">implements</span> RevertEvent&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, PatientEvent&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="predefined-type">Long</span> revertedEventId <i class="conum" data-value="3"></i><b>(3)</b>
 
-    <span class="annotation">@Override</span> <span class="predefined-type">String</span> getAudit() { <span class="keyword">new</span> JsonBuilder([<span class="key">revertedEvent</span>: revertedEventId]).toString() }
     <span class="annotation">@Override</span> <span class="predefined-type">String</span> toString() { <span class="string"><span class="delimiter">&quot;</span><span class="content">PatientEventReverted(revertedEventId=</span><span class="inline"><span class="inline-delimiter">$</span>revertedEventId</span><span class="content">)</span><span class="delimiter">&quot;</span></span> }
 }</code></pre>
 </div>
@@ -1233,7 +1216,6 @@ Even if you do, you cannot process this event.</td>
 <span class="type">class</span> <span class="class">PatientCreated</span> <span class="directive">extends</span> PatientEvent { <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="predefined-type">String</span> name
 
-    <span class="annotation">@Override</span> <span class="predefined-type">String</span> getAudit() { <span class="keyword">new</span> JsonBuilder([<span class="key">name</span>: name]).toString() } <i class="conum" data-value="3"></i><b>(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -1263,7 +1245,7 @@ Even if you do, you cannot process this event.</td>
     data class Reverted(override val revertedEventId: String) : <i class="conum" data-value="1"></i><b>(1)</b>
             PatientEvent(), <i class="conum" data-value="2"></i><b>(2)</b>
             RevertEvent&lt;String, Patient, String, PatientEvent&gt; { <i class="conum" data-value="3"></i><b>(3)</b>
-        override fun getAudit(): String = &quot;$id - Revert $revertedEventId&quot;
+        fun getAudit(): String = &quot;$id - Revert $revertedEventId&quot;
     }
 }</code></pre>
 </div>
