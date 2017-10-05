@@ -20,7 +20,6 @@ import static rx.Observable.just
     RevertEvent<Long, Account, Long, Transaction> revertedBy
     Long id, position
     Date timestamp
-    String createdBy, audit
 
     Observable<Account> getAggregateObservable() { just(aggregate) }
 }

@@ -40,8 +40,6 @@ public class EventsDsl<
      *                          entity
      * @param positionSupplier  A supplier which offers the default position number for an event
      *                          when it is not provided
-     * @param userSupplier      A supplier that provides the User who created the event if it isn't
-     *                          set
      * @param timestampSupplier A supplier that provides the date for an event if it isn't set
      * @param closure           The block of code to execute with the aggregate
      *
@@ -51,7 +49,7 @@ public class EventsDsl<
             SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
             > AggregateT on(
             AggregateT aggregate, Consumer entityConsumer, Supplier<Long> positionSupplier,
-            Supplier<String> userSupplier, Supplier<Date> timestampSupplier,
+            Supplier<Date> timestampSupplier,
             Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                     SnapshotT>> closure) {
 
@@ -59,7 +57,6 @@ public class EventsDsl<
                 new OnSpec<>();
         spec.setAggregate(aggregate);
         spec.setEntityConsumer(entityConsumer);
-        spec.setUserSupplier(userSupplier);
         spec.setTimestampSupplier(timestampSupplier);
         spec.setPositionSupplier(positionSupplier);
         closure.accept(spec);
@@ -70,19 +67,9 @@ public class EventsDsl<
             SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
                     EventT>> AggregateT on(
             AggregateT aggregate, Consumer entityConsumer, Supplier<Long> positionSupplier,
-            Supplier<String> userSupplier,
             Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                     SnapshotT>> closure) {
-        return on(aggregate, entityConsumer, positionSupplier, userSupplier, Date::new, closure);
-    }
-
-    public <SnapshotIdT,
-            SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
-                    EventT>> AggregateT on(
-            AggregateT aggregate, Consumer entityConsumer, Supplier<Long> positionSupplier,
-            Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                    SnapshotT>> closure) {
-        return on(aggregate, entityConsumer, positionSupplier, () -> "anonymous", Date::new,
+        return on(aggregate, entityConsumer, positionSupplier, Date::new,
                 closure);
     }
 
@@ -94,7 +81,7 @@ public class EventsDsl<
             Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                     SnapshotT>> closure) {
         return on(aggregate, entityConsumer, () -> defaultPositionSupplier.incrementAndGet(),
-                () -> "anonymous", Date::new, closure);
+                Date::new, closure);
     }
 
 }

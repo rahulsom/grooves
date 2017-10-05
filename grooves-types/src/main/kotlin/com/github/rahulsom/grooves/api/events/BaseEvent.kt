@@ -37,12 +37,6 @@ interface BaseEvent<AggregateIdT, AggregateT : AggregateType<AggregateIdT>, Even
     var timestamp: Date?
 
     /**
-     * The user or system that was responsible for the creation of this event.
-     */
-    @Deprecated("This imposed a very strong opinion on the users. This is not used in Grooves internals, and will be removed in a future version. Users should create their own auditing fields in their events.")
-    var createdBy: String?
-
-    /**
      * The event that reverted this event.
      * This should be implemented as a transient in any persistence mechanism.
      * When a [RevertEvent] occurs such that it reverts this event, it will set itself to this field.
@@ -62,9 +56,4 @@ interface BaseEvent<AggregateIdT, AggregateT : AggregateType<AggregateIdT>, Even
      */
     var position: Long?
 
-    /**
-     * The Audit message for the event.
-     */
-    @Deprecated("This imposed a very strong opinion on the users. This is not used in Grooves internals, and will be removed in a future version. Users should create their own auditing fields in their events.")
-    fun getAudit(): String
 }

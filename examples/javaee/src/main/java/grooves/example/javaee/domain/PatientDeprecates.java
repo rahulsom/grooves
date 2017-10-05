@@ -25,11 +25,6 @@ public class PatientDeprecates extends PatientEvent
     }
 
     @Override
-    public String getAudit() {
-        return "deprecates:" + deprecated.getId();
-    }
-
-    @Override
     public String toString() {
         return String.format("PatientDeprecates{converse=%d, deprecated=%d}",
                 converse.getId(), deprecated.getId());

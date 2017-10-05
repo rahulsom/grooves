@@ -9,11 +9,6 @@ public class PaymentMade extends PatientEvent {
     private BigDecimal amount;
 
     @Override
-    public String getAudit() {
-        return "amount:" + amount;
-    }
-
-    @Override
     public String toString() {
         return String.format("PaymentMade{amount=%s}", amount);
     }

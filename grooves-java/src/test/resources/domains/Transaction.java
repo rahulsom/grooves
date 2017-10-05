@@ -15,13 +15,6 @@ public abstract class Transaction implements BaseEvent<Long, Account, Long, Tran
     RevertEvent<Long, Account, Long, Transaction> revertedBy;
     Long id, position;
     Date timestamp;
-    String createdBy, audit;
-
-    @NotNull
-    @Override
-    public String getAudit() {
-        return audit;
-    }
 
     @Override
     public void setPosition(Long position) {
@@ -49,17 +42,6 @@ public abstract class Transaction implements BaseEvent<Long, Account, Long, Tran
     @Override
     public RevertEvent<Long, Account, Long, Transaction> getRevertedBy() {
         return revertedBy;
-    }
-
-    @Override
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    @Nullable
-    @Override
-    public String getCreatedBy() {
-        return createdBy;
     }
 
     @Override

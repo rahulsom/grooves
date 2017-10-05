@@ -12,11 +12,6 @@ public class PatientEventReverted
     public Long getRevertedEventId() { // <3>
         return revertedEventId;
     }
-
-    @Override
-    public String getAudit() {
-        return "revertedEvent:" + revertedEventId;
-    }
     //end::documented[]
 
     @Override

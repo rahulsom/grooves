@@ -5,7 +5,6 @@ import com.github.rahulsom.grooves.api.events.DisjoinEvent
 import com.github.rahulsom.grooves.api.events.JoinEvent
 import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.groovy.transformations.Event
-import groovy.json.JsonBuilder
 import groovy.transform.EqualsAndHashCode
 import rx.Observable
 
@@ -22,7 +21,6 @@ import static rx.Observable.just
 abstract class ZipcodeEvent implements BaseEvent<Long, Zipcode, Long, ZipcodeEvent> {
 
     RevertEvent<Long, Zipcode, Long, ZipcodeEvent> revertedBy
-    String createdBy
     Date timestamp
     Long position
     Zipcode aggregate
@@ -41,7 +39,6 @@ abstract class ZipcodeEvent implements BaseEvent<Long, Zipcode, Long, ZipcodeEve
 class ZipcodeCreated extends ZipcodeEvent {
     String name
 
-    @Override String getAudit() { new JsonBuilder([name: name]).toString() }
     @Override String toString() { "${aggregate} was created" }
 }
 
@@ -51,7 +48,6 @@ class ZipcodeGotPatient extends ZipcodeEvent implements
         JoinEvent<Long, Zipcode, Long, ZipcodeEvent, Long, Patient> {
     Patient patient
 
-    @Override String getAudit() { new JsonBuilder([patientId: patient?.id]).toString() }
     @Override Observable<Patient> getJoinAggregateObservable() { just patient }
 
     @Override String toString() { "${aggregate} got ${patient}" }
@@ -65,7 +61,6 @@ class ZipcodeLostPatient extends ZipcodeEvent implements
         DisjoinEvent<Long, Zipcode, Long, ZipcodeEvent, Long, Patient> {
     Patient patient
 
-    @Override String getAudit() { new JsonBuilder([patientId: patient?.id]).toString() }
     @Override Observable<Patient> getJoinAggregateObservable() { just patient }
 
     @Override String toString() { "${aggregate} lost ${patient}" }
@@ -79,7 +74,6 @@ class ZipcodeGotDoctor extends ZipcodeEvent implements
         JoinEvent<Long, Zipcode, Long, ZipcodeEvent, Long, Doctor> {
     Doctor doctor
 
-    @Override String getAudit() { new JsonBuilder([doctorId: doctor?.id]).toString() }
     @Override Observable<Doctor> getJoinAggregateObservable() { just doctor }
 
     @Override String toString() { "${aggregate} got ${doctor}" }
@@ -93,7 +87,6 @@ class ZipcodeLostDoctor extends ZipcodeEvent implements
         DisjoinEvent<Long, Zipcode, Long, ZipcodeEvent, Long, Doctor> {
     Doctor doctor
 
-    @Override String getAudit() { new JsonBuilder([doctorId: doctor?.id]).toString() }
     @Override Observable<Doctor> getJoinAggregateObservable() { just doctor }
 
     @Override String toString() { "${aggregate} lost ${doctor}" }

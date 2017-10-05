@@ -144,12 +144,10 @@ class BootStrap {
      * @return
      */
     private PatientDeprecatedBy merge(Patient self, Patient into) {
-        def e1 = new PatientDeprecatedBy(aggregate: self, createdBy: 'anonymous', deprecator: into,
-                timestamp: currDate,
+        def e1 = new PatientDeprecatedBy(aggregate: self, deprecator: into, timestamp: currDate,
                 position: PatientEvent.countByAggregate(self) + 1,)
-        def e2 = new PatientDeprecates(aggregate: into, createdBy: 'anonymous', deprecated: self,
-                timestamp: currDate, converse: e1,
-                position: PatientEvent.countByAggregate(into) + 1,)
+        def e2 = new PatientDeprecates(aggregate: into, deprecated: self, timestamp: currDate,
+                converse: e1, position: PatientEvent.countByAggregate(into) + 1,)
         e1.converse = e2
         e2.save(flush: true, failOnError: true)
         e2.converse

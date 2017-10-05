@@ -20,7 +20,6 @@ public class OnSpec<
     private AggregateT aggregate;
     private Consumer entityConsumer;
     private Supplier<Date> timestampSupplier;
-    private Supplier<String> userSupplier;
     private Supplier<Long> positionSupplier;
 
     private static final Logger log = LoggerFactory.getLogger(OnSpec.class);
@@ -37,9 +36,6 @@ public class OnSpec<
     public <T extends EventT> T apply(T event) {
         event.setAggregate(aggregate);
 
-        if (event.getCreatedBy() == null) {
-            event.setCreatedBy(userSupplier.get());
-        }
         if (event.getPosition() == null) {
             event.setPosition(positionSupplier.get());
         }
@@ -108,10 +104,6 @@ public class OnSpec<
 
     public void setTimestampSupplier(Supplier<Date> timestampSupplier) {
         this.timestampSupplier = timestampSupplier;
-    }
-
-    public void setUserSupplier(Supplier<String> userSupplier) {
-        this.userSupplier = userSupplier;
     }
 
     public void setPositionSupplier(Supplier<Long> positionSupplier) {

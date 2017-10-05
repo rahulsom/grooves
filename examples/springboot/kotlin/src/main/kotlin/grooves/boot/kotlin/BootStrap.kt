@@ -184,14 +184,12 @@ class BootStrap {
     private fun merge(self: Patient, into: Patient): PatientEvent.PatientDeprecatedBy {
         val e2 = patientEventRepository.save(PatientEvent.PatientDeprecates(self).also {
             it.aggregate = into
-            it.createdBy = "anonymous"
             it.timestamp = currDate.time
             it.position = countEvents(into)
         })
 
         val e1 = patientEventRepository.save(PatientEvent.PatientDeprecatedBy(into, e2.id!!).also {
             it.aggregate = self
-            it.createdBy = "anonymous"
             it.timestamp = currDate.time
             it.position = countEvents(self)
         })
@@ -224,7 +222,7 @@ class BootStrap {
         }
         return EventsDsl<String, Patient, String, PatientEvent>()
                 .on<String, Snapshot<String, Patient, String, String, PatientEvent>>(
-                        patient, eventSaver, positionSupplier, usernameSupplier, timestampSupplier,
+                        patient, eventSaver, positionSupplier, timestampSupplier,
                         closure)
     }
 

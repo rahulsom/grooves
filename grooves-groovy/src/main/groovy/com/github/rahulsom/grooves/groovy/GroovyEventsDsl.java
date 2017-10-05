@@ -35,8 +35,6 @@ public class GroovyEventsDsl<
      *                          entity
      * @param positionSupplier  A supplier which offers the default position number for an event
      *                          when it is not provided
-     * @param userSupplier      A supplier that provides the User who created the event if it isn't
-     *                          set
      * @param timestampSupplier A supplier that provides the date for an event if it isn't set
      * @param closure           The block of code to execute with the aggregate
      *
@@ -44,39 +42,16 @@ public class GroovyEventsDsl<
      */
     public AggregateT on(
             AggregateT aggregate, Consumer entityConsumer, Supplier<Long> positionSupplier,
-            Supplier<String> userSupplier, Supplier<Date> timestampSupplier,
-            @DelegatesTo(OnSpec.class) Closure closure) {
+            Supplier<Date> timestampSupplier, @DelegatesTo(OnSpec.class) Closure closure) {
 
         OnSpec spec = new OnSpec();
         spec.setAggregate(aggregate);
         spec.setEntityConsumer(entityConsumer);
-        spec.setUserSupplier(userSupplier);
         spec.setTimestampSupplier(timestampSupplier);
         spec.setPositionSupplier(positionSupplier);
         closure.setDelegate(spec);
         closure.call(spec);
         return aggregate;
-    }
-
-    /**
-     * Allows executing a consumer with some context to setup events.
-     * Defaults the timestamp to current time.
-     *
-     * @param aggregate        The aggregate on which the consumer must operate
-     * @param entityConsumer   A Consumer that decides what happens when apply is called on an
-     *                         entity
-     * @param positionSupplier A supplier which offers the default position number for an event
-     *                         when it is not provided
-     * @param userSupplier     A supplier that provides the User who created the event if it isn't
-     *                         set
-     * @param closure          The block of code to execute with the aggregate
-     *
-     * @return The aggregate after all the code has been executed
-     */
-    public AggregateT on(
-            AggregateT aggregate, Consumer entityConsumer, Supplier<Long> positionSupplier,
-            Supplier<String> userSupplier, @DelegatesTo(OnSpec.class) Closure closure) {
-        return on(aggregate, entityConsumer, positionSupplier, userSupplier, Date::new, closure);
     }
 
     /**
@@ -96,7 +71,7 @@ public class GroovyEventsDsl<
     public AggregateT on(
             AggregateT aggregate, Consumer entityConsumer, Supplier<Long> positionSupplier,
             @DelegatesTo(OnSpec.class) Closure closure) {
-        return on(aggregate, entityConsumer, positionSupplier, () -> "anonymous", Date::new,
+        return on(aggregate, entityConsumer, positionSupplier, Date::new,
                 closure);
     }
 
@@ -116,7 +91,7 @@ public class GroovyEventsDsl<
     public AggregateT on(AggregateT aggregate, Consumer entityConsumer,
                          @DelegatesTo(OnSpec.class) Closure closure) {
         return on(aggregate, entityConsumer, () -> getDefaultPositionSupplier().incrementAndGet(),
-                () -> "anonymous", Date::new, closure);
+                Date::new, closure);
     }
 
 

@@ -280,10 +280,10 @@ class BootStrap {
      * @return
      */
     private PatientDeprecatedBy merge(Patient self, Patient into) {
-        def e1 = new PatientDeprecatedBy(aggregate: self, createdBy: 'anonymous', deprecator: into,
+        def e1 = new PatientDeprecatedBy(aggregate: self, deprecator: into,
                 timestamp: currDate,
                 position: PatientEvent.countByAggregate(self) + 1,)
-        def e2 = new PatientDeprecates(aggregate: into, createdBy: 'anonymous', deprecated: self,
+        def e2 = new PatientDeprecates(aggregate: into, deprecated: self,
                 timestamp: currDate, converse: e1,
                 position: PatientEvent.countByAggregate(into) + 1,)
         e1.converse = e2
@@ -296,26 +296,23 @@ class BootStrap {
     Patient on(Patient patient, @DelegatesTo(OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { PatientEvent.countByAggregate(patient) + 1 }
-        def userSupplier = { 'anonymous' }
         def dateSupplier = { currDate += 1; currDate }
         new GroovyEventsDsl<Long, Patient, Long, PatientEvent>().on(
-                patient, eventSaver, positionSupplier, userSupplier, dateSupplier, closure)
+                patient, eventSaver, positionSupplier, dateSupplier, closure)
     }
 
     Zipcode on(Zipcode zipcode, @DelegatesTo(OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { ZipcodeEvent.countByAggregate(zipcode) + 1 }
-        def userSupplier = { 'anonymous' }
         new GroovyEventsDsl<Long, Zipcode, Long, ZipcodeEvent>().on(
-                zipcode, eventSaver, positionSupplier, userSupplier, closure)
+                zipcode, eventSaver, positionSupplier, closure)
     }
 
     Doctor on(Doctor doctor, @DelegatesTo(OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { DoctorEvent.countByAggregate(doctor) + 1 }
-        def userSupplier = { 'anonymous' }
         new GroovyEventsDsl<Doctor, Long, DoctorEvent>().on(
-                doctor, eventSaver, positionSupplier, userSupplier, closure)
+                doctor, eventSaver, positionSupplier, closure)
     }
 
     def destroy = {

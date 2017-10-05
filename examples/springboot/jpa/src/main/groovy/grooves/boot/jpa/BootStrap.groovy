@@ -172,13 +172,11 @@ class BootStrap implements InitializingBean {
     private PatientDeprecatedBy merge(Patient self, Patient into) {
         def e1 = new PatientDeprecatedBy(
                 aggregate: self,
-                createdBy: 'anonymous',
                 deprecator: into,
                 timestamp: currDate,
                 position: patientEventRepository.countByAggregateId(self.id) + 1,)
         def e2 = new PatientDeprecates(
                 aggregate: into,
-                createdBy: 'anonymous',
                 deprecated: self,
                 timestamp: currDate,
                 converse: e1,
@@ -195,10 +193,9 @@ class BootStrap implements InitializingBean {
         def positionSupplier = {
             patientEventRepository.countByAggregateId(patient.id) + 1
         } as Supplier<Long>
-        def userSupplier = { 'anonymous' }
         def dateSupplier = { currDate += 1; currDate }
         new GroovyEventsDsl<Long, Patient, Long, PatientEvent>().on(
-                patient, eventSaver, positionSupplier, userSupplier, dateSupplier,
+                patient, eventSaver, positionSupplier, dateSupplier,
                 closure)
     }
 
