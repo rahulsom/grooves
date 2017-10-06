@@ -4,6 +4,7 @@ import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.java.Query;
 import grooves.example.javaee.Database;
 import grooves.example.javaee.domain.*;
+import lombok.Getter;
 import rx.Observable;
 
 import javax.inject.Inject;
@@ -14,13 +15,8 @@ import static rx.Observable.just;
 @Query(aggregate = Patient.class, snapshot = PatientHealth.class)
 public class PatientHealthQuery implements CustomQuerySupport<PatientHealth, PatientHealthQuery> {
 
-    @Inject
+    @Inject @Getter
     private Database database;
-
-    @Override
-    public Database getDatabase() {
-        return database;
-    }
 
     @Override
     public Class<PatientHealth> getSnapshotClass() {

@@ -25,6 +25,7 @@ dependencies {
     providedCompile 'javax:javaee-api:7.0'
     compile project(':grooves-java')
     compile 'org.apache.commons:commons-lang3:3.5'
+    compile 'org.projectlombok:lombok:1.16.18'
 
     def cargoVersion = '1.6.3'
     cargo "org.codehaus.cargo:cargo-core-uberjar:$cargoVersion",
@@ -41,7 +42,7 @@ cargo {
     local {
         installer {
             installUrl = 'http://download.jboss.org/wildfly/10.1.0.Final/wildfly-10.1.0.Final.zip'
-            downloadDir = file("$buildDir/download")
+            downloadDir = file("${gradle.gradleUserHomeDir}/cargo")
             extractDir = file("$buildDir/extract")
             outputFile = file('build/output.log')
         }

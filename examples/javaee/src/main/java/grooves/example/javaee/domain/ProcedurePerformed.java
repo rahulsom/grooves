@@ -1,14 +1,15 @@
 package grooves.example.javaee.domain;
 
 import com.github.rahulsom.grooves.java.Event;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 
 @Event(Patient.class)
 public class ProcedurePerformed extends PatientEvent {
 
-    private String code;
-    private BigDecimal cost;
+    @Getter private String code;
+    @Getter private BigDecimal cost;
 
     @Override
     public String toString() {
@@ -18,13 +19,5 @@ public class ProcedurePerformed extends PatientEvent {
     public ProcedurePerformed(String code, BigDecimal cost) {
         this.code = code;
         this.cost = cost;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public BigDecimal getCost() {
-        return cost;
     }
 }

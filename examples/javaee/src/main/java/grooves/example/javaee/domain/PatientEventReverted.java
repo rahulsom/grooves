@@ -2,16 +2,12 @@ package grooves.example.javaee.domain;
 //tag::documented[]
 
 import com.github.rahulsom.grooves.api.events.RevertEvent;
+import lombok.Getter;
 
 public class PatientEventReverted
         extends PatientEvent // <1>
         implements RevertEvent<Long, Patient, Long, PatientEvent> { // <2>
-    private Long revertedEventId;
-
-    @Override
-    public Long getRevertedEventId() { // <3>
-        return revertedEventId;
-    }
+    @Getter private Long revertedEventId;
     //end::documented[]
 
     @Override
