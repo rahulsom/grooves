@@ -629,14 +629,16 @@ No name, no address, no other information.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">com.github.rahulsom.grooves.api.AggregateType</span>;
 <span class="keyword">import</span> <span class="include">com.github.rahulsom.grooves.java.Aggregate</span>;
+<span class="keyword">import</span> <span class="include">lombok.Getter</span>;
+<span class="keyword">import</span> <span class="include">lombok.Setter</span>;
 
 <span class="keyword">import</span> <span class="include">java.io.Serializable</span>;
 
 <span class="annotation">@Aggregate</span> <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">Patient</span> <span class="directive">implements</span> AggregateType&lt;<span class="predefined-type">Long</span>&gt;, <i class="conum" data-value="2"></i><b>(2)</b>
         <span class="predefined-type">Serializable</span> {
-    <span class="directive">private</span> <span class="predefined-type">Long</span> id; <i class="conum" data-value="3"></i><b>(3)</b>
-    <span class="directive">private</span> <span class="predefined-type">String</span> uniqueId;
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">Long</span> id; <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">String</span> uniqueId;
 }</code></pre>
 </div>
 </div>
@@ -801,11 +803,12 @@ We are using mongo on spring boot here. So we are using <code>String</code>.</td
 <span class="keyword">import</span> <span class="include">static</span> <span class="include">rx.Observable.just</span>;
 
 <span class="directive">public</span> <span class="directive">abstract</span> <span class="type">class</span> <span class="class">PatientEvent</span> <span class="directive">implements</span> BaseEvent&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="directive">private</span> Patient aggregate;
-    <span class="directive">private</span> <span class="predefined-type">Long</span> id;
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> Patient aggregate;
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">Long</span> id;
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span>
     <span class="directive">private</span> RevertEvent&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, PatientEvent&gt; revertedBy;  <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="directive">private</span> <span class="predefined-type">Date</span> timestamp; <i class="conum" data-value="3"></i><b>(3)</b>
-    <span class="directive">private</span> <span class="predefined-type">Long</span> position; <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">Date</span> timestamp; <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">Long</span> position; <i class="conum" data-value="4"></i><b>(4)</b>
 
     <span class="annotation">@Override</span>
     <span class="annotation">@NotNull</span>
@@ -1007,7 +1010,7 @@ In our case, it doesn&#8217;t matter much since we&#8217;re using Hibernate, whi
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Event</span>(Patient.class) <i class="conum" data-value="1"></i><b>(1)</b>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PatientCreated</span> <span class="directive">extends</span> PatientEvent { <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+    <span class="annotation">@Getter</span> <span class="directive">private</span> <span class="predefined-type">String</span> name;
 
     <span class="directive">public</span> PatientCreated(<span class="predefined-type">String</span> name) {
         <span class="local-variable">this</span>.name = name;
@@ -1149,16 +1152,12 @@ Their implementation is similar to one another, but slightly different from your
 <div class="title">Java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">com.github.rahulsom.grooves.api.events.RevertEvent</span>;
+<span class="keyword">import</span> <span class="include">lombok.Getter</span>;
 
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PatientEventReverted</span>
         <span class="directive">extends</span> PatientEvent <i class="conum" data-value="1"></i><b>(1)</b>
         <span class="directive">implements</span> RevertEvent&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, PatientEvent&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="directive">private</span> <span class="predefined-type">Long</span> revertedEventId;
-
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="predefined-type">Long</span> getRevertedEventId() { <i class="conum" data-value="3"></i><b>(3)</b>
-        <span class="keyword">return</span> revertedEventId;
-    }
+    <span class="annotation">@Getter</span> <span class="directive">private</span> <span class="predefined-type">Long</span> revertedEventId;
 }</code></pre>
 </div>
 </div>
@@ -1279,16 +1278,16 @@ Even if you do, you cannot process this event.</td>
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">PatientAccount</span>
         <span class="directive">implements</span> JavaSnapshot&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, <span class="predefined-type">Long</span>, PatientEvent&gt;, <i class="conum" data-value="1"></i><b>(1)</b>
         <span class="predefined-type">Serializable</span> {
-    <span class="directive">private</span> <span class="predefined-type">Long</span> id;
-    <span class="directive">private</span> Patient aggregate;
-    <span class="directive">private</span> Patient deprecatedBy;
-    <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Patient&gt; deprecates = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;&gt;();
-    <span class="directive">private</span> <span class="predefined-type">Long</span> lastEventPosition; <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="directive">private</span> <span class="predefined-type">Date</span> lastEventTimestamp; <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">Long</span> id;
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> Patient aggregate;
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> Patient deprecatedBy;
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Patient&gt; deprecates = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;&gt;();
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">Long</span> lastEventPosition; <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">Date</span> lastEventTimestamp; <i class="conum" data-value="3"></i><b>(3)</b>
 
-    <span class="directive">private</span> <span class="predefined-type">String</span> name;
-    <span class="directive">private</span> <span class="predefined-type">BigDecimal</span> balance = <span class="keyword">new</span> <span class="predefined-type">BigDecimal</span>(<span class="integer">0</span>);
-    <span class="directive">private</span> <span class="predefined-type">BigDecimal</span> moneyMade = <span class="keyword">new</span> <span class="predefined-type">BigDecimal</span>(<span class="integer">0</span>);
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">String</span> name;
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">BigDecimal</span> balance = <span class="keyword">new</span> <span class="predefined-type">BigDecimal</span>(<span class="integer">0</span>);
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">BigDecimal</span> moneyMade = <span class="keyword">new</span> <span class="predefined-type">BigDecimal</span>(<span class="integer">0</span>);
 
     <span class="directive">public</span> <span class="predefined-type">Observable</span>&lt;Patient&gt; getAggregateObservable() { <i class="conum" data-value="4"></i><b>(4)</b>
         <span class="keyword">return</span> just(aggregate);
