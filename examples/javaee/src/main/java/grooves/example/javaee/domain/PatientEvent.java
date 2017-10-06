@@ -2,6 +2,8 @@ package grooves.example.javaee.domain;
 
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 
@@ -13,11 +15,12 @@ import static rx.Observable.empty;
 import static rx.Observable.just;
 
 public abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEvent> { // <1>
-    private Patient aggregate;
-    private Long id;
+    @Getter @Setter private Patient aggregate;
+    @Getter @Setter private Long id;
+    @Getter @Setter
     private RevertEvent<Long, Patient, Long, PatientEvent> revertedBy;  // <2>
-    private Date timestamp; // <3>
-    private Long position; // <4>
+    @Getter @Setter private Date timestamp; // <3>
+    @Getter @Setter private Long position; // <4>
 
     // end::documented[]
     @XmlTransient
@@ -27,55 +30,5 @@ public abstract class PatientEvent implements BaseEvent<Long, Patient, Long, Pat
     public Observable<Patient> getAggregateObservable() { // <5>
         return aggregate != null ? just(aggregate) : empty();
     }
-    // end::documented[]
-
-    public int getObjectId() {
-        return System.identityHashCode(this);
-    }
-
-    public String getType() {
-        return this.getClass().getSimpleName();
-    }
-
-    public Patient getAggregate() {
-        return aggregate;
-    }
-
-    public void setAggregate(Patient aggregate) {
-        this.aggregate = aggregate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public RevertEvent<Long, Patient, Long, PatientEvent> getRevertedBy() {
-        return revertedBy;
-    }
-
-    public void setRevertedBy(RevertEvent<Long, Patient, Long, PatientEvent> revertedBy) {
-        this.revertedBy = revertedBy;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Long getPosition() {
-        return position;
-    }
-
-    public void setPosition(Long position) {
-        this.position = position;
-    }
-    // tag::documented[]
 }
 // end::documented[]
