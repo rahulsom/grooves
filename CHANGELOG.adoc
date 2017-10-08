@@ -2,6 +2,9 @@
 
 == 0.3.0
 * Support completeness verification in java using annotations.
+* Remove `createdBy` and `getAudit`.
+  They are too opinionated.
+* Use Lombok for Java Examples.
 
 == 0.2.1
 * Allow subclasses in annotations.
