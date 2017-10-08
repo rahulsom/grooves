@@ -1029,10 +1029,6 @@ It accepts as a param, the Aggregate over which it applies.</td>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>For most events you&#8217;re interested in as a user, you&#8217;ll just have to extend <code>PatientEvent</code>.</td>
 </tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The other thing is to implement an audit message.</td>
-</tr>
 </table>
 </div>
 <div class="listingblock secondary">
@@ -1058,10 +1054,6 @@ It accepts as a param, the Aggregate over which it applies.</td>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>For most events you&#8217;re interested in as a user, you&#8217;ll just have to extend <code>PatientEvent</code>.</td>
 </tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The other thing is to implement an audit message.</td>
-</tr>
 </table>
 </div>
 <div class="listingblock secondary">
@@ -1085,10 +1077,6 @@ It accepts as a param, the Aggregate over which it applies.</td>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>For most events you&#8217;re interested in as a user, you&#8217;ll just have to extend <code>PatientEvent</code>.</td>
 </tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The other thing is to implement an audit message.</td>
-</tr>
 </table>
 </div>
 <div class="listingblock secondary">
@@ -1098,7 +1086,7 @@ It accepts as a param, the Aggregate over which it applies.</td>
     // ... skipping stuff already there ...
     sealed class Applicable : PatientEvent() { <i class="conum" data-value="1"></i><b>(1)</b>
         data class Created(val name: String) : Applicable() { <i class="conum" data-value="2"></i><b>(2)</b>
-            fun getAudit(): String = &quot;$id - Created '$name'&quot; <i class="conum" data-value="3"></i><b>(3)</b>
+            fun getAudit(): String = &quot;$id - Created '$name'&quot;
         }
     }
 }</code></pre>
@@ -1115,10 +1103,6 @@ All application events will go there.</td>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>For most events you&#8217;re interested in as a user, you&#8217;ll just have to extend <code>Applicable</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The other thing is to implement an audit message.</td>
 </tr>
 </table>
 </div>
@@ -1157,7 +1141,7 @@ Their implementation is similar to one another, but slightly different from your
 <span class="directive">public</span> <span class="type">class</span> <span class="class">PatientEventReverted</span>
         <span class="directive">extends</span> PatientEvent <i class="conum" data-value="1"></i><b>(1)</b>
         <span class="directive">implements</span> RevertEvent&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, PatientEvent&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="annotation">@Getter</span> <span class="directive">private</span> <span class="predefined-type">Long</span> revertedEventId;
+    <span class="annotation">@Getter</span> <span class="directive">private</span> <span class="predefined-type">Long</span> revertedEventId; <i class="conum" data-value="3"></i><b>(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -1211,9 +1195,11 @@ Even if you do, you cannot process this event.</td>
 <div class="listingblock secondary">
 <div class="title">Gorm</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@Event</span>(Patient) <i class="conum" data-value="1"></i><b>(1)</b>
-<span class="type">class</span> <span class="class">PatientCreated</span> <span class="directive">extends</span> PatientEvent { <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="predefined-type">String</span> name
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@EqualsAndHashCode</span>
+<span class="type">class</span> <span class="class">PatientEventReverted</span>
+        <span class="directive">extends</span> PatientEvent <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="directive">implements</span> RevertEvent&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, PatientEvent&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="predefined-type">Long</span> revertedEventId <i class="conum" data-value="3"></i><b>(3)</b>
 
 }</code></pre>
 </div>
