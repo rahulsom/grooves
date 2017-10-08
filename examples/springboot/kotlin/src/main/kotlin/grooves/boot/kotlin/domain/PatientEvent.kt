@@ -105,7 +105,7 @@ sealed class PatientEvent : BaseEvent<String, Patient, String, PatientEvent> { /
     // tag::created[]
     sealed class Applicable : PatientEvent() { // <1>
         data class Created(val name: String) : Applicable() { // <2>
-            fun getAudit(): String = "$id - Created '$name'" // <3>
+            fun getAudit(): String = "$id - Created '$name'"
             // end::created[]
             override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
             // tag::created[]
