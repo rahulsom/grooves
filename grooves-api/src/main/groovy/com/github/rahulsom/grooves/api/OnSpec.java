@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.github.rahulsom.grooves.queries.internal.Utils.flowable;
+
 public class OnSpec<
         AggregateIdT,
         AggregateT extends AggregateType<AggregateIdT>,
@@ -28,7 +30,7 @@ public class OnSpec<
      * Applies an event to an aggregate. This involves checking if any important fields are
      * missing and populating them based on the suppliers.
      *
-     * @param <T> type of event
+     * @param <T>   type of event
      * @param event The event to be applied
      *
      * @return The event after persisting
@@ -60,12 +62,11 @@ public class OnSpec<
      */
     public <QueryT extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
             SnapshotT, QueryT>> SnapshotT snapshotWith(
-                    QueryT query, Consumer<SnapshotT> beforePersist) {
+            QueryT query, Consumer<SnapshotT> beforePersist) {
 
-        SnapshotT snapshotT = query
-                .computeSnapshot(aggregate, Long.MAX_VALUE)
-                .toBlocking()
-                .single();
+        SnapshotT snapshotT =
+                flowable(query.computeSnapshot(aggregate, Long.MAX_VALUE))
+                        .blockingFirst();
 
         beforePersist.accept(snapshotT);
         entityConsumer.accept(snapshotT);

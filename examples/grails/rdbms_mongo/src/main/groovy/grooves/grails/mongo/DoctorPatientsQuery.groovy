@@ -2,10 +2,9 @@ package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.grails.GormJoinSupport
-import rx.Observable
+import org.reactivestreams.Publisher
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
-import static rx.Observable.just
 
 /**
  * Queries for Doctor Patient relationships
@@ -41,9 +40,9 @@ class DoctorPatientsQuery implements GormJoinSupport<
     }
 
     @Override
-    Observable<EventApplyOutcome> onException(
+    Publisher<EventApplyOutcome> onException(
             Exception e, DoctorPatients snapshot, DoctorEvent event) {
-        just CONTINUE
+        just CONTINUE toPublisher()
     }
 
     @Override

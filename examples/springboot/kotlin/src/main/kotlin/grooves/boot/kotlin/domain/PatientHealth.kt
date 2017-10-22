@@ -6,8 +6,7 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import grooves.boot.kotlin.repositories.PatientRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Configurable
-import rx.Observable
-import rx.Observable.*
+import reactor.core.publisher.Flux.*
 import java.util.*
 
 @Configurable
@@ -48,10 +47,7 @@ class PatientHealth : Snapshot<String, Patient, String, String, PatientEvent> {
 
     @JsonIgnore
     override fun getDeprecatesObservable() =
-            if (deprecatesIds != null)
-                patientRepository.findAllById(deprecatesIds)
-            else
-                empty()
+        patientRepository.findAllById(deprecatesIds)
 
     override fun toString() = "PatientAccount(id=$id, aggregate=$aggregateId, " +
             "lastEventPosition=$lastEventPosition, lastEventTimestamp=$lastEventTimestamp)"

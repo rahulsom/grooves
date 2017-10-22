@@ -1,0 +1,3 @@
+moduleName = rxjava-module
+moduleVersion = 1.0
+extensionClasses = com.github.rahulsom.grooves.grails.RxJavaPublisherExtension

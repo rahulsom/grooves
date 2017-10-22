@@ -5,12 +5,12 @@ import com.github.rahulsom.grooves.java.Query;
 import grooves.example.javaee.Database;
 import grooves.example.javaee.domain.*;
 import lombok.Getter;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 import javax.inject.Inject;
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
-import static rx.Observable.just;
+import static io.reactivex.Flowable.just;
 
 @Query(aggregate = Patient.class, snapshot = PatientHealth.class)
 public class PatientHealthQuery implements CustomQuerySupport<PatientHealth, PatientHealthQuery> {
@@ -39,7 +39,7 @@ public class PatientHealthQuery implements CustomQuerySupport<PatientHealth, Pat
      * @param snapshot The snapshot.
      * @return the result of apply
      */
-    public Observable<EventApplyOutcome> applyPatientCreated(
+    public Publisher<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientHealth snapshot) {
         if (snapshot.getAggregate() == event.getAggregate()) {
             snapshot.setName(event.getName());
@@ -53,7 +53,7 @@ public class PatientHealthQuery implements CustomQuerySupport<PatientHealth, Pat
      * @param snapshot The snapshot.
      * @return the result of apply
      */
-    public Observable<EventApplyOutcome> applyProcedurePerformed(
+    public Publisher<EventApplyOutcome> applyProcedurePerformed(
             ProcedurePerformed event, PatientHealth snapshot) {
         snapshot.getProcedures().add(
                 new PatientHealth.Procedure(event.getCode(), event.getTimestamp()));
@@ -66,7 +66,7 @@ public class PatientHealthQuery implements CustomQuerySupport<PatientHealth, Pat
      * @param snapshot The snapshot.
      * @return the result of apply
      */
-    public Observable<EventApplyOutcome> applyPaymentMade(
+    public Publisher<EventApplyOutcome> applyPaymentMade(
             PaymentMade event, PatientHealth snapshot) {
         // Ignore payments
         return just(CONTINUE);

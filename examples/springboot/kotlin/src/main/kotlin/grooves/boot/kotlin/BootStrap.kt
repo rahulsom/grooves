@@ -14,7 +14,7 @@ import grooves.boot.kotlin.repositories.PatientBlockingRepository
 import grooves.boot.kotlin.repositories.PatientEventBlockingRepository
 import grooves.boot.kotlin.repositories.PatientHealthRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.repository.reactive.RxJava1CrudRepository
+import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
@@ -167,7 +167,7 @@ class BootStrap {
                     QueryT>> snapshotWith(
             it: OnSpec<String, Patient, String, PatientEvent, String,
                     out Snapshot<String, Patient, String, String, PatientEvent>>,
-            query: QueryT, repository: RxJava1CrudRepository<SnapshotT, String>
+            query: QueryT, repository: ReactiveCrudRepository<SnapshotT, String>
     ) =
             null
 //            query.computeSnapshot(it.aggregate, Long.MAX_VALUE)
@@ -215,7 +215,6 @@ class BootStrap {
             }
         }
         val positionSupplier = { countEvents(patient) }
-        val usernameSupplier = { "anonymous" }
         val timestampSupplier = {
             currDate.add(Calendar.DATE, 1)
             currDate.time

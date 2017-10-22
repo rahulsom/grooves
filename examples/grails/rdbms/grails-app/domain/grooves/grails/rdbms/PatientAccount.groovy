@@ -2,9 +2,10 @@ package grooves.grails.rdbms
 
 import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
 import groovy.transform.EqualsAndHashCode
-import rx.Observable
+import org.reactivestreams.Publisher
 
 import static rx.Observable.*
+import static rx.RxReactiveStreams.toPublisher
 
 /**
  * Represents the accounts of a Patient
@@ -23,8 +24,8 @@ class PatientAccount implements JavaSnapshot<Long, Patient, Long, Long, PatientE
     Long aggregateId
 
     @Override
-    Observable<Patient> getAggregateObservable() {
-        aggregateId ? defer { just(Patient.get(aggregateId)) } : empty()
+    Publisher<Patient> getAggregateObservable() {
+        toPublisher aggregateId ? defer { just(Patient.get(aggregateId)) } : empty()
     }
 
     void setAggregate(Patient aggregate) { aggregateId = aggregate.id }
@@ -46,11 +47,11 @@ class PatientAccount implements JavaSnapshot<Long, Patient, Long, Long, PatientE
 
     @Override String toString() { "PatientAccount($id, $aggregateId, $lastEventPosition)" }
 
-    @Override Observable<Patient> getDeprecatedByObservable() {
-        deprecatedBy ? just(deprecatedBy) : empty()
+    @Override Publisher<Patient> getDeprecatedByObservable() {
+        toPublisher deprecatedBy ? just(deprecatedBy) : empty()
     }
 
-    @Override Observable<Patient> getDeprecatesObservable() {
-        deprecates ? from(deprecates) : empty()
+    @Override Publisher<Patient> getDeprecatesObservable() {
+        toPublisher deprecates ? from(deprecates) : empty()
     }
 }

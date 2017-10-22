@@ -2,15 +2,15 @@ package domains;
 
 import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot;
 import org.jetbrains.annotations.Nullable;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static rx.Observable.empty;
-import static rx.Observable.from;
-import static rx.Observable.just;
+import static io.reactivex.Flowable.empty;
+import static io.reactivex.Flowable.fromIterable;
+import static io.reactivex.Single.just;
 
 public class Balance implements JavaSnapshot<Long, Account, String, Long, Transaction> {
     String id;
@@ -63,17 +63,17 @@ public class Balance implements JavaSnapshot<Long, Account, String, Long, Transa
     }
 
     @Override
-    public Observable<Account> getAggregateObservable() {
-        return (aggregate != null ? just(aggregate) : empty());
+    public Publisher<Account> getAggregateObservable() {
+        return aggregate != null ? just(aggregate).toFlowable() : empty();
     }
 
     @Override
-    public Observable<Account> getDeprecatedByObservable() {
-        return (deprecatedBy != null ? just(deprecatedBy) : empty());
+    public Publisher<Account> getDeprecatedByObservable() {
+        return deprecatedBy != null ? just(deprecatedBy).toFlowable() : empty();
     }
 
     @Override
-    public Observable<Account> getDeprecatesObservable() {
-        return from(new ArrayList(deprecates));
+    public Publisher<Account> getDeprecatesObservable() {
+        return fromIterable(new ArrayList(deprecates));
     }
 }

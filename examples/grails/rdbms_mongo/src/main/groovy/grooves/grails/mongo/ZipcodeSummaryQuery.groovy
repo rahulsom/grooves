@@ -15,11 +15,13 @@ class ZipcodeSummaryQuery {
 
     Observable<ZipcodeSummary> computeSnapshot(Zipcode aggregate, Date moment) {
         new ZipcodePatientsQuery().computeSnapshot(aggregate, moment).
+                toObservable().
                 flatMap {
                     from(it.joinedIds).
                             flatMap {
                                 def healthQuery = new PatientHealthQuery()
-                                healthQuery.computeSnapshot(Patient.get(it), moment)
+                                healthQuery.computeSnapshot(Patient.get(it), moment).
+                                        toObservable()
                             }.
                             reduce(createEmptySnapshot()) {
                                 ZipcodeSummary snapshot, PatientHealth health ->

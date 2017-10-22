@@ -5,14 +5,15 @@ import com.github.rahulsom.grooves.api.events.RevertEvent;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
 
+import static io.reactivex.Flowable.empty;
+import static io.reactivex.Flowable.just;
+
 // tag::documented[]
-import static rx.Observable.empty;
-import static rx.Observable.just;
 
 public abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEvent> { // <1>
     @Getter @Setter private Patient aggregate;
@@ -27,7 +28,7 @@ public abstract class PatientEvent implements BaseEvent<Long, Patient, Long, Pat
     // tag::documented[]
     @Override
     @NotNull
-    public Observable<Patient> getAggregateObservable() { // <5>
+    public Publisher<Patient> getAggregateObservable() { // <5>
         return aggregate != null ? just(aggregate) : empty();
     }
 }

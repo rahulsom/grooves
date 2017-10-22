@@ -2,8 +2,10 @@ package com.github.rahulsom.grooves.api.snapshots.internal
 
 import com.github.rahulsom.grooves.api.AggregateType
 import com.github.rahulsom.grooves.api.events.BaseEvent
-import com.github.rahulsom.grooves.api.snapshots.*
-import rx.Observable
+import com.github.rahulsom.grooves.api.snapshots.Snapshot
+import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot
+import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot
+import org.reactivestreams.Publisher
 
 /**
  * Marks a class as a snapshot. This makes no assumption about the type of snapshot.
@@ -30,11 +32,11 @@ interface BaseSnapshot<
     var id: SnapshotIdT?
 
     /**
-     * Returns the aggregate as an Observable.
+     * Returns the aggregate as a Publisher.
      * This can be used in a reactive way to obtain the aggregate.
      * Grooves will use this method when it needs the aggregate.
      */
-    fun getAggregateObservable(): Observable<AggregateT>
+    fun getAggregateObservable(): Publisher<AggregateT>
 
     /**
      * Accepts an aggregate and sets that as the aggregate that this snapshot represents the state of.
@@ -44,10 +46,10 @@ interface BaseSnapshot<
     fun setAggregate(aggregate: AggregateT): Unit
 
     /**
-     * An Observable of the aggregate that deprecated this snapshot's aggregate.
+     * A Publisher of the aggregate that deprecated this snapshot's aggregate.
      * Grooves will use this to perform a redirect if asked to.
      */
-    fun getDeprecatedByObservable(): Observable<AggregateT>
+    fun getDeprecatedByObservable(): Publisher<AggregateT>
 
     /**
      * Accepts an aggregate and sets that as the aggregate that this snapshot's aggregate has been deprecated by.
@@ -55,10 +57,10 @@ interface BaseSnapshot<
     fun setDeprecatedBy(deprecatingAggregate: AggregateT): Unit
 
     /**
-     * An Observable of aggregates that were deprecated by the aggregate of this snapshot.
+     * A Publisher of aggregates that were deprecated by the aggregate of this snapshot.
      * Grooves will use this to find events that are on the other aggregate and make them available for computation of this aggregate's snapshot.
      */
-    fun getDeprecatesObservable(): Observable<AggregateT>
+    fun getDeprecatesObservable(): Publisher<AggregateT>
 
     /**
      * Accepts an event and uses the information in it to set properties of the snapshot.

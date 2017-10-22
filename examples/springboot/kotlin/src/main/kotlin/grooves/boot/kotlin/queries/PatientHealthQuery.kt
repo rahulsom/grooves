@@ -12,8 +12,8 @@ import grooves.boot.kotlin.repositories.PatientHealthRepository
 import grooves.boot.kotlin.repositories.PatientEventRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import rx.Observable
-import rx.Observable.just
+import org.reactivestreams.Publisher
+import reactor.core.publisher.Flux.*
 import java.lang.Exception
 import java.util.*
 
@@ -32,11 +32,11 @@ class PatientHealthQuery :
 
     override fun createEmptySnapshot() = PatientHealth()
 
-    override fun getSnapshot(maxPosition: Long, aggregate: Patient): Observable<PatientHealth> =
+    override fun getSnapshot(maxPosition: Long, aggregate: Patient): Publisher<PatientHealth> =
             PatientHealthRepository.findByAggregateIdAndLastEventPositionLessThan(
                     aggregate.id!!, maxPosition)
 
-    override fun getSnapshot(maxTimestamp: Date, aggregate: Patient): Observable<PatientHealth> =
+    override fun getSnapshot(maxTimestamp: Date, aggregate: Patient): Publisher<PatientHealth> =
             PatientHealthRepository.findByAggregateIdAndLastEventTimestampLessThan(
                     aggregate.id!!, maxTimestamp)
 

@@ -4,13 +4,14 @@ import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.java.Query;
 import com.github.rahulsom.grooves.queries.QuerySupport;
 import domains.*;
-import rx.Observable;
+import org.reactivestreams.Publisher;
+import io.reactivex.Flowable;
 
 import java.util.Date;
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
-import static rx.Observable.empty;
-import static rx.Observable.just;
+import static io.reactivex.Flowable.empty;
+import static io.reactivex.Flowable.just;
 
 @Query(aggregate = Account.class, snapshot = Balance.class)
 class MethodMissing implements QuerySupport<Long, Account, Long, Transaction, String, Balance,
@@ -21,22 +22,22 @@ class MethodMissing implements QuerySupport<Long, Account, Long, Transaction, St
     }
 
     @Override
-    public Observable<Balance> getSnapshot(long maxPosition, Account aggregate) {
+    public Publisher<Balance> getSnapshot(long maxPosition, Account aggregate) {
         return empty();
     }
 
     @Override
-    public Observable<Balance> getSnapshot(Date maxTimestamp, Account aggregate) {
+    public Publisher<Balance> getSnapshot(Date maxTimestamp, Account aggregate) {
         return empty();
     }
 
     @Override
-    public Observable<Transaction> getUncomputedEvents(Account aggregate, Balance lastSnapshot, long version) {
+    public Publisher<Transaction> getUncomputedEvents(Account aggregate, Balance lastSnapshot, long version) {
         return empty();
     }
 
     @Override
-    public Observable<Transaction> getUncomputedEvents(Account aggregate, Balance lastSnapshot, Date snapshotTime) {
+    public Publisher<Transaction> getUncomputedEvents(Account aggregate, Balance lastSnapshot, Date snapshotTime) {
         return empty();
     }
 
@@ -50,11 +51,11 @@ class MethodMissing implements QuerySupport<Long, Account, Long, Transaction, St
     }
 
     @Override
-    public Observable<EventApplyOutcome> onException(Exception e, Balance snapshot, Transaction event) {
+    public Publisher<EventApplyOutcome> onException(Exception e, Balance snapshot, Transaction event) {
         return just(CONTINUE);
     }
 
-    public Observable<EventApplyOutcome> applyCashWithdrawal(CashWithdrawal event, Balance snapshot) {
+    public Publisher<EventApplyOutcome> applyCashWithdrawal(CashWithdrawal event, Balance snapshot) {
         return just(CONTINUE);
     }
 }

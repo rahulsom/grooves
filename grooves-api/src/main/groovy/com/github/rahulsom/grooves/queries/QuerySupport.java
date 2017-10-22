@@ -6,7 +6,7 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 /**
  * Aggregate trait that simplifies computing temporal snapshots from events.
@@ -41,7 +41,7 @@ public interface QuerySupport<
     }
 
     @Override
-    default Observable<EventT> findEventsBefore(EventT event) {
+    default Publisher<EventT> findEventsBefore(EventT event) {
         return VersionedQuerySupport.super.findEventsBefore(event);
     }
 }

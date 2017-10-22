@@ -5,13 +5,13 @@ import com.github.rahulsom.grooves.java.Query;
 import grooves.example.javaee.Database;
 import grooves.example.javaee.domain.*;
 import lombok.Getter;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
-import static rx.Observable.just;
+import static io.reactivex.Flowable.just;
 
 // tag::documented[]
 @Query(aggregate = Patient.class, snapshot = PatientAccount.class) // <10>
@@ -46,7 +46,7 @@ public class PatientAccountQuery
      * @return the result of apply
      */
     // tag::documented[]
-    public Observable<EventApplyOutcome> applyPatientCreated(
+    public Publisher<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientAccount snapshot) { // <13>
         if (snapshot.getAggregate() == event.getAggregate()) {
             snapshot.setName(event.getName());
@@ -62,7 +62,7 @@ public class PatientAccountQuery
      * @return the result of apply
      */
     // tag::documented[]
-    public Observable<EventApplyOutcome> applyProcedurePerformed(
+    public Publisher<EventApplyOutcome> applyProcedurePerformed(
             ProcedurePerformed event, PatientAccount snapshot) {
         final double cost = event.getCost().doubleValue();
         final double originalBalance = snapshot.getBalance().doubleValue();
@@ -80,7 +80,7 @@ public class PatientAccountQuery
      * @return the result of apply
      */
     // tag::documented[]
-    public Observable<EventApplyOutcome> applyPaymentMade(
+    public Publisher<EventApplyOutcome> applyPaymentMade(
             PaymentMade event, PatientAccount snapshot) {
 
         final double amount = event.getAmount().doubleValue();

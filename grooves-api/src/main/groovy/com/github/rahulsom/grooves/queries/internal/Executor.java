@@ -4,7 +4,7 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public interface Executor<
      *
      * @return a list of events after the reverts have been applied
      */
-    Observable<EventT> applyReverts(Observable<EventT> events);
+    Publisher<EventT> applyReverts(Publisher<EventT> events);
 
     /**
      * Applies forward events on a snapshot
@@ -51,10 +51,10 @@ public interface Executor<
      *
      * @return The Snapshot that has been mutated
      */
-    Observable<SnapshotT> applyEvents(
+    Publisher<SnapshotT> applyEvents(
             QueryT query,
             SnapshotT initialSnapshot,
-            Observable<EventT> events,
+            Publisher<EventT> events,
             List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
             AggregateT aggregate);
 }

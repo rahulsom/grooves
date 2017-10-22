@@ -41,10 +41,10 @@ public class QueryProcessorTest {
                                 balanceQuery);
         assertThat(compilation).failed();
         assertThat(compilation)
-                .hadErrorContaining("Method not implemented\n    rx.Observable<" + EAC_CLASS
-                        + "> applyCashDeposit(domains.CashDeposit,domains.Balance)")
+                .hadErrorContaining("Method not implemented\n    org.reactivestreams.Publisher<"
+                        + EAC_CLASS + "> applyCashDeposit(domains.CashDeposit,domains.Balance)")
                 .inFile(balanceQuery)
-                .onLine(15)
+                .onLine(16)
                 .atColumn(1);
     }
 

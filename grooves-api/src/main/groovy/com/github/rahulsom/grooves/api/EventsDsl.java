@@ -80,7 +80,7 @@ public class EventsDsl<
             Consumer entityConsumer,
             Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                     SnapshotT>> closure) {
-        return on(aggregate, entityConsumer, () -> defaultPositionSupplier.incrementAndGet(),
+        return on(aggregate, entityConsumer, defaultPositionSupplier::incrementAndGet,
                 Date::new, closure);
     }
 

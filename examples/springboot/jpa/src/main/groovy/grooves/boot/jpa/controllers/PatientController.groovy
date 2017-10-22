@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Mono
 
 import javax.persistence.EntityManager
 
@@ -50,7 +51,7 @@ class PatientController {
                         patientAccountQuery.computeSnapshot(patient, date) :
                         patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE)
 
-        def resp = computation.toBlocking().first()
+        def resp = Mono.from(computation).block()
         if (!resp) {
             throw new RuntimeException('Could not compute account snapshot')
         }
@@ -70,7 +71,7 @@ class PatientController {
                         patientHealthQuery.computeSnapshot(patient, date) :
                         patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE)
 
-        def resp = computation.toBlocking().first()
+        def resp = Mono.from(computation).block()
         if (!resp) {
             throw new RuntimeException('Could not compute health snapshot')
         }

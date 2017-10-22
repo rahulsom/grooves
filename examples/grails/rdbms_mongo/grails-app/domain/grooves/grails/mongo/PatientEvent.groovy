@@ -3,7 +3,7 @@ package grooves.grails.mongo
 import com.github.rahulsom.grooves.api.events.*
 import com.github.rahulsom.grooves.groovy.transformations.Event
 import groovy.transform.EqualsAndHashCode
-import rx.Observable
+import org.reactivestreams.Publisher
 
 import static rx.Observable.just
 
@@ -21,7 +21,7 @@ abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEve
     Date timestamp  // <3>
     Long position  // <4>
     Patient aggregate
-    Observable<Patient> getAggregateObservable() { just(aggregate) }  // <5>
+    Publisher<Patient> getAggregateObservable() { just(aggregate) toPublisher() }  // <5>
 
     static transients = ['revertedBy'] // <6>
 
@@ -53,7 +53,7 @@ class PatientCreated extends PatientEvent { // <2>
 class PatientAddedToZipcode extends PatientEvent implements
         JoinEvent<Long, Patient, Long, PatientEvent, Long, Zipcode> {
     Zipcode zipcode
-    @Override Observable<Zipcode> getJoinAggregateObservable() { just zipcode }
+    @Override Publisher<Zipcode> getJoinAggregateObservable() { just zipcode toPublisher() }
 
     @Override String toString() {
         "<${aggregateId}.$id> $ts sent to zipcode ${zipcode.uniqueId}" }
@@ -65,7 +65,7 @@ class PatientAddedToZipcode extends PatientEvent implements
 class PatientRemovedFromZipcode extends PatientEvent implements
         DisjoinEvent<Long, Patient, Long, PatientEvent, Long, Zipcode> {
     Zipcode zipcode
-    @Override Observable<Zipcode> getJoinAggregateObservable() { just zipcode }
+    @Override Publisher<Zipcode> getJoinAggregateObservable() { just zipcode toPublisher() }
 
     @Override String toString() {
         "<${aggregateId}.$id> $ts removed from zipcode ${zipcode.uniqueId}" }
@@ -113,8 +113,8 @@ class PatientDeprecatedBy extends PatientEvent implements
     ]
     Patient deprecator
 
-    Observable<PatientDeprecates> getConverseObservable() { just(converse) }
-    Observable<Patient> getDeprecatorObservable() { just(deprecator) }
+    Publisher<PatientDeprecates> getConverseObservable() { just(converse) toPublisher() }
+    Publisher<Patient> getDeprecatorObservable() { just(deprecator) toPublisher() }
 
     @Override String toString() {
         "<${aggregateId}.$id> $ts deprecated by #${deprecator.id}" }
@@ -128,8 +128,8 @@ class PatientDeprecates extends PatientEvent implements
     ]
     Patient deprecated
 
-    Observable<PatientDeprecatedBy> getConverseObservable() { just(converse) }
-    Observable<Patient> getDeprecatedObservable() { just(deprecated) }
+    Publisher<PatientDeprecatedBy> getConverseObservable() { just(converse) toPublisher() }
+    Publisher<Patient> getDeprecatedObservable() { just(deprecated) toPublisher() }
 
     @Override String toString() {
         "<${aggregateId}.$id> $ts deprecates #${deprecated.id}" }

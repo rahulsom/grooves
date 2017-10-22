@@ -1,7 +1,7 @@
 package com.github.rahulsom.grooves.api.events
 
 import com.github.rahulsom.grooves.api.AggregateType
-import rx.Observable
+import org.reactivestreams.Publisher
 import java.util.Date
 
 /**
@@ -18,11 +18,11 @@ import java.util.Date
 interface BaseEvent<AggregateIdT, AggregateT : AggregateType<AggregateIdT>, EventIdT, EventT> {
 
     /**
-     * Returns the aggregate as an Observable.
+     * Returns the aggregate as a Publisher.
      * This can be used in a reactive way to obtain the aggregate.
      * Grooves will use this method when it needs the aggregate.
      */
-    fun getAggregateObservable(): Observable<AggregateT>
+    fun getAggregateObservable(): Publisher<AggregateT>
 
     /**
      * A reference to the aggregate that this event applies to.

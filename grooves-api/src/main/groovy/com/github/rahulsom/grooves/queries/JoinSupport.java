@@ -8,8 +8,7 @@ import com.github.rahulsom.grooves.api.snapshots.Join;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
-import com.github.rahulsom.grooves.queries.internal.SimpleQuery;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 /**
  * Default interface that makes joins easier to write.
@@ -57,7 +56,7 @@ public interface JoinSupport<
     }
 
     @Override
-    default Observable<EventT> findEventsBefore(EventT event) {
+    default Publisher<EventT> findEventsBefore(EventT event) {
         return VersionedJoinSupport.super.findEventsBefore(event);
     }
 }
