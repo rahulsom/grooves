@@ -8,22 +8,20 @@ import com.github.rahulsom.grooves.api.events.DeprecatedBy;
 import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rx.Observable;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.RETURN;
-import static com.github.rahulsom.grooves.queries.internal.Utils.ids;
-import static com.github.rahulsom.grooves.queries.internal.Utils.stringify;
-import static rx.Observable.from;
-import static rx.Observable.just;
+import static com.github.rahulsom.grooves.queries.internal.Utils.*;
+import static io.reactivex.Flowable.fromIterable;
+import static io.reactivex.Flowable.just;
 
 /**
  * Executes a query. This makes a query more flexible by allowing the use of different query
@@ -65,12 +63,12 @@ public class QueryExecutor<
      *
      * @param events The list of events
      *
-     * @return An Observable of forward only events
+     * @return A Publisher of forward only events
      */
     @Override
-    public Observable<EventT> applyReverts(Observable<EventT> events) {
+    public Publisher<EventT> applyReverts(Publisher<EventT> events) {
 
-        return events.toList().flatMap(eventList -> {
+        return flowable(events).toList().toFlowable().flatMap(eventList -> {
             log.debug("     Event Ids (includes reverts that won't be applied): {}",
                     ids(eventList));
             List<EventT> forwardEvents = new ArrayList<>();
@@ -80,7 +78,7 @@ public class QueryExecutor<
                     final EventIdT revertedEventId =
                             (EventIdT) ((RevertEvent) head).getRevertedEventId();
                     final Optional<EventT> revertedEvent = eventList.stream()
-                            .filter(it -> it.getId().equals(revertedEventId))
+                            .filter(it -> Objects.equals(it.getId(), revertedEventId))
                             .findFirst();
 
                     if (revertedEvent.isPresent()) {
@@ -99,7 +97,7 @@ public class QueryExecutor<
 
             assert forwardEvents.stream().noneMatch(it -> it instanceof RevertEvent);
 
-            return from(forwardEvents);
+            return fromIterable(forwardEvents);
         });
     }
 
@@ -107,17 +105,17 @@ public class QueryExecutor<
      * {@inheritDoc}
      */
     @Override
-    public Observable<SnapshotT> applyEvents(
+    public Publisher<SnapshotT> applyEvents(
             QueryT query,
             SnapshotT initialSnapshot,
-            Observable<EventT> events,
+            Publisher<EventT> events,
             List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
             AggregateT aggregate) {
 
         final AtomicBoolean stopApplyingEvents = new AtomicBoolean(false);
 
         // s -> snapshotObservable
-        return events.reduce(just(initialSnapshot), (s, event) -> s.flatMap(snapshot -> {
+        return flowable(events).reduce(just(initialSnapshot), (s, event) -> s.flatMap(snapshot -> {
             if (!query.shouldEventsBeApplied(snapshot) || stopApplyingEvents.get()) {
                 return just(snapshot);
             } else {
@@ -126,20 +124,20 @@ public class QueryExecutor<
                 if (event instanceof Deprecates) {
                     Deprecates<AggregateIdT, AggregateT, EventIdT, EventT> deprecatesEvent =
                             (Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>) event;
-                    return applyDeprecates(
-                            deprecatesEvent, query, events, deprecatesList, aggregate);
+                    return flowable(applyDeprecates(
+                            deprecatesEvent, query, events, deprecatesList, aggregate));
                 } else if (event instanceof DeprecatedBy) {
                     DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT> deprecatedByEvent =
                             (DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT>) event;
-                    return applyDeprecatedBy(deprecatedByEvent, snapshot);
+                    return applyDeprecatedBy(deprecatedByEvent, snapshot).toFlowable();
                 } else {
                     String methodName = "apply" + event.getClass().getSimpleName();
-                    return callMethod(query, methodName, snapshot, event)
+                    return flowable(callMethod(query, methodName, snapshot, event))
                             .flatMap(retval -> handleMethodResponse(
                                     stopApplyingEvents, snapshot, methodName, retval));
                 }
             }
-        })).flatMap(it -> it);
+        })).toFlowable().flatMap(it -> it);
 
     }
 
@@ -155,7 +153,7 @@ public class QueryExecutor<
      *
      * @return The snapshot after deciding what to do with the {@link EventApplyOutcome}
      */
-    private Observable<? extends SnapshotT> handleMethodResponse(
+    private Flowable<SnapshotT> handleMethodResponse(
             AtomicBoolean stopApplyingEvents, SnapshotT snapshot, String methodName,
             EventApplyOutcome retval) {
         switch (retval) {
@@ -179,14 +177,15 @@ public class QueryExecutor<
      * @return The snapshot after applying the {@link DeprecatedBy} event
      */
     @SuppressWarnings("GrMethodMayBeStatic")
-    Observable<SnapshotT> applyDeprecatedBy(
+    Single<SnapshotT> applyDeprecatedBy(
             final DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT> event,
             SnapshotT snapshot) {
-        return event.getDeprecatorObservable().reduce(snapshot, (snapshotT, aggregate) -> {
-            log.info("        -> {} will cause redirect to {}", event, aggregate);
-            snapshotT.setDeprecatedBy(aggregate);
-            return snapshotT;
-        });
+        return flowable(event.getDeprecatorObservable())
+                .reduce(snapshot, (snapshotT, aggregate) -> {
+                    log.info("        -> {} will cause redirect to {}", event, aggregate);
+                    snapshotT.setDeprecatedBy(aggregate);
+                    return snapshotT;
+                });
     }
 
     /**
@@ -201,10 +200,10 @@ public class QueryExecutor<
      *
      * @return The snapshot after applying the {@link Deprecates} event
      */
-    Observable<SnapshotT> applyDeprecates(
+    Publisher<SnapshotT> applyDeprecates(
             final Deprecates<AggregateIdT, AggregateT, EventIdT, EventT> event,
             final QueryT util,
-            final Observable<EventT> events,
+            final Publisher<EventT> events,
             final List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesEvents,
             AggregateT aggregate) {
 
@@ -212,23 +211,30 @@ public class QueryExecutor<
         final SnapshotT newSnapshot = util.createEmptySnapshot();
         newSnapshot.setAggregate(aggregate);
 
-        return event.getConverseObservable().flatMap(converse -> event.getDeprecatedObservable()
-                .flatMap(deprecatedAggregate -> {
-                    log.debug("        -> Deprecated Aggregate is: {}. Converse is: {}",
-                            deprecatedAggregate, converse);
-                    util.addToDeprecates(newSnapshot, deprecatedAggregate);
+        return flowable(event.getConverseObservable()).flatMap(converse ->
+                flowable(event.getDeprecatedObservable())
+                        .flatMap(deprecatedAggregate -> {
+                            log.debug("        -> Deprecated Aggregate is: {}. Converse is: {}",
+                                    deprecatedAggregate, converse);
+                            util.addToDeprecates(newSnapshot, deprecatedAggregate);
 
-                    Observable<EventT> concatenatedEvents =
-                            events.concatWith(util.findEventsBefore((EventT) converse))
-                                    .cache();
-                    return concatenatedEvents
-                            .filter(it -> !isDeprecatesOrConverse(event, converse, it))
-                            .toSortedList((a, b) -> a.getTimestamp().compareTo(b.getTimestamp()))
-                            .doOnNext(it -> log.debug("Reassembled Events: {}", stringify(it)))
-                            .flatMap(sortedEvents -> applyEvents(
-                                    util, newSnapshot, applyReverts(from(sortedEvents)),
-                                    plus(deprecatesEvents, event), aggregate));
-                }));
+                            Flowable<EventT> concatenatedEvents =
+                                    flowable(events)
+                                            .concatWith(
+                                                    flowable(util.findEventsBefore(
+                                                            (EventT) converse)))
+                                            .cache();
+                            return concatenatedEvents
+                                    .filter(it -> !isDeprecatesOrConverse(event, converse, it))
+                                    .toSortedList(Comparator.comparing(EventT::getTimestamp))
+                                    .doOnSuccess(it -> log.debug("Reassembled Events: {}",
+                                            stringify(it)))
+                                    .flatMap(sortedEvents -> single(applyEvents(
+                                            util, newSnapshot,
+                                            applyReverts(fromIterable(sortedEvents)),
+                                            plus(deprecatesEvents, event), aggregate)))
+                                    .toFlowable();
+                        }));
 
     }
 
@@ -248,21 +254,21 @@ public class QueryExecutor<
      * @param snapshot   The snapshot to be passed to the method
      * @param event      The event to be passed to the method
      *
-     * @return An observable returned by the method, or the result of calling onException on the
+     * @return A Publisher returned by the method, or the result of calling onException on the
      *         Util instance, or an Observable that asks to RETURN if that fails.
      */
-    protected Observable<EventApplyOutcome> callMethod(
+    protected Publisher<EventApplyOutcome> callMethod(
             QueryT util, String methodName, final SnapshotT snapshot, final EventT event) {
         try {
             final Method method =
                     util.getClass().getMethod(methodName, event.getClass(), snapshot.getClass());
-            return (Observable<EventApplyOutcome>) method.invoke(util, event, snapshot);
+            return (Publisher<EventApplyOutcome>) method.invoke(util, event, snapshot);
         } catch (Exception e1) {
             return handleException(util, methodName, snapshot, event, e1);
         }
     }
 
-    private Observable<EventApplyOutcome> handleException(
+    private Publisher<EventApplyOutcome> handleException(
             QueryT util, String methodName, SnapshotT snapshot, EventT event, Exception e1) {
         try {
             return util.onException(e1, snapshot, event);

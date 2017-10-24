@@ -4,7 +4,7 @@ import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static rx.Observable.from;
-import static rx.Observable.just;
+import static io.reactivex.Flowable.fromIterable;
+import static io.reactivex.Flowable.just;
 
 // tag::documented[]
 public class PatientAccount
@@ -36,7 +36,7 @@ public class PatientAccount
     @Override
     @XmlTransient
     // tag::documented[]
-    public Observable<Patient> getAggregateObservable() { // <4>
+    public Publisher<Patient> getAggregateObservable() { // <4>
         return just(aggregate);
     }
 
@@ -45,7 +45,7 @@ public class PatientAccount
     @Override
     @XmlTransient
     // tag::documented[]
-    public Observable<Patient> getDeprecatedByObservable() { // <5>
+    public Publisher<Patient> getDeprecatedByObservable() { // <5>
         return just(deprecatedBy);
     }
 
@@ -54,8 +54,8 @@ public class PatientAccount
     @Override
     @XmlTransient
     // tag::documented[]
-    public Observable<Patient> getDeprecatesObservable() { // <6>
-        return from(deprecates);
+    public Publisher<Patient> getDeprecatesObservable() { // <6>
+        return fromIterable(deprecates);
     }
     // end::documented[]
 

@@ -9,6 +9,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 import java.util.*;
 
+import static javax.lang.model.SourceVersion.RELEASE_8;
 import static javax.tools.Diagnostic.Kind.ERROR;
 
 @SuppressWarnings("unused")
@@ -17,7 +18,7 @@ import static javax.tools.Diagnostic.Kind.ERROR;
         QueryProcessor.EVENT_ANNOTATION,
         QueryProcessor.QUERY_ANNOTATION,
 })
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(RELEASE_8)
 @AutoService(Processor.class)
 public class QueryProcessor extends AbstractProcessor {
 
@@ -26,7 +27,7 @@ public class QueryProcessor extends AbstractProcessor {
     static final String AGGREGATE_ANNOTATION = "com.github.rahulsom.grooves.java.Aggregate";
 
     private static final String ERROR_MESSAGE = "Method not implemented";
-    private static final String OBSERVABLE_TYPE = "rx.Observable";
+    private static final String PUBLISHER_TYPE = "org.reactivestreams.Publisher";
     private static final String EVENT_APPLY_OUTCOME_TYPE =
             "com.github.rahulsom.grooves.api.EventApplyOutcome";
 
@@ -86,7 +87,7 @@ public class QueryProcessor extends AbstractProcessor {
                 .anyMatch(it -> it.toString().equals(expectedMethod));
         if (!found) {
             String msg = String.format("%s\n  %s<%s> %s",
-                    ERROR_MESSAGE, OBSERVABLE_TYPE, EVENT_APPLY_OUTCOME_TYPE,
+                    ERROR_MESSAGE, PUBLISHER_TYPE, EVENT_APPLY_OUTCOME_TYPE,
                     expectedMethod);
             Messager messager = processingEnv.getMessager();
             messager.printMessage(ERROR, msg, queryType, annotationMirror);

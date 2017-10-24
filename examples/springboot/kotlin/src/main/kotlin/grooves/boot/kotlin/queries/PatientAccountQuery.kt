@@ -11,8 +11,8 @@ import grooves.boot.kotlin.repositories.PatientAccountRepository
 import grooves.boot.kotlin.repositories.PatientEventRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import rx.Observable
-import rx.Observable.just
+import org.reactivestreams.Publisher
+import reactor.core.publisher.Flux.*
 import java.lang.Exception
 import java.util.*
 
@@ -33,12 +33,12 @@ class PatientAccountQuery :
     override fun createEmptySnapshot() = PatientAccount() // <4>
 
     override fun getSnapshot(// <5>
-            maxPosition: Long, aggregate: Patient): Observable<PatientAccount> =
+            maxPosition: Long, aggregate: Patient): Publisher<PatientAccount> =
             patientAccountRepository.findByAggregateIdAndLastEventPositionLessThan(
                     aggregate.id!!, maxPosition)
 
     override fun getSnapshot(// <6>
-            maxTimestamp: Date, aggregate: Patient): Observable<PatientAccount> =
+            maxTimestamp: Date, aggregate: Patient): Publisher<PatientAccount> =
             patientAccountRepository.findByAggregateIdAndLastEventTimestampLessThan(
                     aggregate.id!!, maxTimestamp)
 
@@ -55,14 +55,14 @@ class PatientAccountQuery :
 
     override fun getUncomputedEvents(// <9>
             aggregate: Patient, lastSnapshot: PatientAccount?,
-            version: Long): Observable<PatientEvent> =
+            version: Long): Publisher<PatientEvent> =
             patientEventRepository.
                     findAllByPositionRange(aggregate.id!!,
                             lastSnapshot?.lastEventPosition ?: 0, version)
 
     override fun getUncomputedEvents(// <10>
             aggregate: Patient, lastSnapshot: PatientAccount?,
-            snapshotTime: Date): Observable<PatientEvent> =
+            snapshotTime: Date): Publisher<PatientEvent> =
             lastSnapshot?.lastEventTimestamp?.
                 let {
                     patientEventRepository.findAllByTimestampRange(

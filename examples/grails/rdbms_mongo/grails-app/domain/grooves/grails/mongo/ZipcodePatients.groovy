@@ -2,9 +2,10 @@ package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.snapshots.JavaJoin
 import groovy.transform.EqualsAndHashCode
-import rx.Observable
+import org.reactivestreams.Publisher
 
 import static rx.Observable.*
+import static rx.RxReactiveStreams.toPublisher
 
 /**
  * Represents a join between Zipcode and Patient
@@ -26,15 +27,15 @@ class ZipcodePatients implements JavaJoin<Long, Zipcode, String, Long, Long, Zip
     Zipcode getAggregate() { Zipcode.get(aggregateId) }
 
     @Override
-    Observable<Zipcode> getAggregateObservable() {
-        aggregateId ? defer { just aggregate } : empty()
+    Publisher<Zipcode> getAggregateObservable() {
+        toPublisher aggregateId ? defer { just aggregate } : empty()
     }
 
     void setAggregate(Zipcode aggregate) { this.aggregateId = aggregate.id }
 
     @Override
-    Observable<Zipcode> getDeprecatedByObservable() {
-        deprecatedBy ? just(deprecatedBy) : empty()
+    Publisher<Zipcode> getDeprecatedByObservable() {
+        toPublisher deprecatedBy ? just(deprecatedBy) : empty()
     }
     Long deprecatedById
 
@@ -43,8 +44,8 @@ class ZipcodePatients implements JavaJoin<Long, Zipcode, String, Long, Long, Zip
     void setDeprecatedBy(Zipcode aggregate) { deprecatedById = aggregate.id }
 
     @Override
-    Observable<Zipcode> getDeprecatesObservable() {
-        deprecatesIds ? from(deprecatesIds).flatMap { Zipcode.get it } : empty()
+    Publisher<Zipcode> getDeprecatesObservable() {
+        toPublisher deprecatesIds ? from(deprecatesIds).flatMap { Zipcode.get it } : empty()
     }
     Set<Long> deprecatesIds
 

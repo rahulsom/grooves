@@ -12,7 +12,7 @@ public class Pair<FirstT, SecondT> {
     private final FirstT first;
     private final SecondT second;
 
-    public Pair(FirstT first, SecondT second) {
+    public <F extends FirstT, S extends SecondT> Pair(F first, S second) {
         this.first = first;
         this.second = second;
     }

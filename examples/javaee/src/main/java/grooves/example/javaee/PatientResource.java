@@ -5,7 +5,7 @@ import grooves.example.javaee.domain.PatientAccount;
 import grooves.example.javaee.domain.PatientHealth;
 import grooves.example.javaee.queries.PatientAccountQuery;
 import grooves.example.javaee.queries.PatientHealthQuery;
-import rx.Observable;
+import io.reactivex.Observable;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -78,13 +78,14 @@ public class PatientResource {
                 .get();
 
         Observable<PatientHealth> computation =
+                Observable.fromPublisher(
                 version != null ?
                         patientHealthQuery.computeSnapshot(patient, version) :
                         date != null ?
                                 patientHealthQuery.computeSnapshot(patient, date) :
-                                patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE);
+                                patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE));
 
-        final PatientHealth patientHealth = computation.toBlocking().first();
+        final PatientHealth patientHealth = computation.blockingFirst();
 
         if (patientHealth == null) {
             throw new RuntimeException("Could not compute account snapshot");
@@ -116,13 +117,14 @@ public class PatientResource {
                 .get();
 
         Observable<PatientAccount> computation =
+                Observable.fromPublisher(
                 version != null ?
                         patientAccountQuery.computeSnapshot(patient, version) :
                         date != null ?
                                 patientAccountQuery.computeSnapshot(patient, date) :
-                                patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE);
+                                patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE));
 
-        final PatientAccount patientAccount = computation.toBlocking().first();
+        final PatientAccount patientAccount = computation.blockingFirst();
 
         if (patientAccount == null) {
             throw new RuntimeException("Could not compute account snapshot");

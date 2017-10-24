@@ -7,7 +7,7 @@ import org.codehaus.groovy.ast.expr.Expression;
 import org.codehaus.groovy.control.SourceUnit;
 import org.codehaus.groovy.transform.AbstractASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformation;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +52,7 @@ public class QueryASTTransformation extends AbstractASTTransformation {
                                 .collect(Collectors.toList());
 
                 final String methodSignature = String.format("%s %s(%s event, %s snapshot)",
-                        getObservableEventApplyOutcome(), methodName,
+                        getPublisherOfEventApplyOutcome(), methodName,
                         eventClass.getName(), theSnapshot.getType().getName());
 
                 final String methodSignatureString = String.valueOf(methodSignature);
@@ -67,7 +67,7 @@ public class QueryASTTransformation extends AbstractASTTransformation {
                                 final ClassNode returnType = implMethod.getReturnType();
                                 return parameters != null && parameters.length == 2
                                         && returnType.getName()
-                                                .equals(Observable.class.getName())
+                                                .equals(Publisher.class.getName())
                                         && returnType.getGenericsTypes()[0].getType().getName()
                                                 .equals(EventApplyOutcome.class.getName())
                                         && parameters[0].getType().getName()
@@ -89,8 +89,8 @@ public class QueryASTTransformation extends AbstractASTTransformation {
 
     }
 
-    private String getObservableEventApplyOutcome() {
-        return ClassHelper.make(Observable.class).getName() + "<"
+    private String getPublisherOfEventApplyOutcome() {
+        return ClassHelper.make(Publisher.class).getName() + "<"
                 + ClassHelper.make(EventApplyOutcome.class).getName() + ">";
     }
 }

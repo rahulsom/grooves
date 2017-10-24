@@ -6,7 +6,7 @@ import com.github.rahulsom.grooves.api.events.Deprecates
 import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.groovy.transformations.Event
 import groovy.transform.EqualsAndHashCode
-import rx.Observable
+import org.reactivestreams.Publisher
 
 import static rx.Observable.just
 
@@ -23,7 +23,7 @@ abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEve
     Date timestamp
     Long position
     Patient aggregate
-    Observable<Patient> getAggregateObservable() { just(aggregate) }
+    Publisher<Patient> getAggregateObservable() { just(aggregate) toPublisher() }
 
     static transients = ['revertedBy']
 
@@ -73,8 +73,8 @@ class PatientDeprecatedBy extends PatientEvent
     PatientDeprecates converse
     Patient deprecator
 
-    Observable<PatientDeprecates> getConverseObservable() { just(converse) }
-    Observable<Patient> getDeprecatorObservable() { just(deprecator) }
+    Publisher<PatientDeprecates> getConverseObservable() { just(converse) toPublisher() }
+    Publisher<Patient> getDeprecatorObservable() { just(deprecator) toPublisher() }
 
     @Override String toString() { "${super.toString()} deprecated by #${deprecator.id}" }
 }
@@ -85,8 +85,8 @@ class PatientDeprecates extends PatientEvent
     PatientDeprecatedBy converse
     Patient deprecated
 
-    Observable<PatientDeprecatedBy> getConverseObservable() { just(converse) }
-    Observable<Patient> getDeprecatedObservable() { just(deprecated) }
+    Publisher<PatientDeprecatedBy> getConverseObservable() { just(converse) toPublisher() }
+    Publisher<Patient> getDeprecatedObservable() { just(deprecated) toPublisher() }
 
     @Override String toString() { "${super.toString()} deprecates #${deprecated.id}" }
 }

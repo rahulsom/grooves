@@ -6,15 +6,17 @@ import com.github.rahulsom.grooves.queries.QuerySupport
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientEventRepository
 import grooves.boot.jpa.repositories.PatientHealthRepository
+import org.reactivestreams.Publisher
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import rx.Observable
 
 import javax.persistence.EntityManager
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
-import static rx.Observable.*
+import static reactor.core.publisher.Flux.defer
+import static reactor.core.publisher.Flux.fromIterable
+import static reactor.core.publisher.Mono.just
 
 /**
  * Query for Patient Health
@@ -37,38 +39,46 @@ class PatientHealthQuery implements
     }
 
     @Override
-    Observable<PatientHealth> getSnapshot(long maxPosition, Patient aggregate) {
-        def snapshots = maxPosition == Long.MAX_VALUE ?
-                patientHealthRepository.findAllByAggregateId(aggregate.id) :
-                patientHealthRepository.findAllByAggregateIdAndLastEventPositionLessThan(
-                        aggregate.id, maxPosition)
-        snapshots ? just(detachSnapshot(snapshots[0])) : empty()
+    Publisher<PatientHealth> getSnapshot(long maxPosition, Patient aggregate) {
+        defer {
+            def snapshots = maxPosition == Long.MAX_VALUE ?
+                    patientHealthRepository.findAllByAggregateId(aggregate.id) :
+                    patientHealthRepository.findAllByAggregateIdAndLastEventPositionLessThan(
+                            aggregate.id, maxPosition)
+            fromIterable(snapshots).take(1)
+        }
     }
 
     @Override
-    Observable<PatientHealth> getSnapshot(Date maxTimestamp, Patient aggregate) {
-        def snapshots = maxTimestamp == null ?
-                patientHealthRepository.findAllByAggregateId(aggregate.id) :
-                patientHealthRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
-                        aggregate.id, maxTimestamp)
-        snapshots ? just(detachSnapshot(snapshots[0])) : empty()
+    Publisher<PatientHealth> getSnapshot(Date maxTimestamp, Patient aggregate) {
+        defer {
+            def snapshots = maxTimestamp == null ?
+                    patientHealthRepository.findAllByAggregateId(aggregate.id) :
+                    patientHealthRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
+                            aggregate.id, maxTimestamp)
+            fromIterable(snapshots).take(1)
+        }
     }
 
     @Override
-    Observable<PatientEvent> getUncomputedEvents(
+    Publisher<PatientEvent> getUncomputedEvents(
             Patient patient, PatientHealth lastSnapshot, long version) {
-        from(patientEventRepository.getUncomputedEventsByVersion(
-                patient, lastSnapshot?.lastEventPosition ?: 0L, version))
+        defer {
+            fromIterable(patientEventRepository.getUncomputedEventsByVersion(
+                    patient, lastSnapshot?.lastEventPosition ?: 0L, version))
+        }
     }
 
     @Override
-    Observable<PatientEvent> getUncomputedEvents(
+    Publisher<PatientEvent> getUncomputedEvents(
             Patient patient, PatientHealth lastSnapshot, Date snapshotTime) {
-        from(lastSnapshot?.lastEventTimestamp ?
-                patientEventRepository.getUncomputedEventsByDateRange(
-                        patient, lastSnapshot.lastEventTimestamp, snapshotTime) :
-                patientEventRepository.getUncomputedEventsUntilDate(
-                        patient, snapshotTime))
+        defer {
+            fromIterable(lastSnapshot?.lastEventTimestamp ?
+                    patientEventRepository.getUncomputedEventsByDateRange(
+                            patient, lastSnapshot.lastEventTimestamp, snapshotTime) :
+                    patientEventRepository.getUncomputedEventsUntilDate(
+                            patient, snapshotTime))
+        }
     }
 
     @Override
@@ -82,13 +92,13 @@ class PatientHealthQuery implements
     }
 
     @Override
-    Observable<EventApplyOutcome> onException(
+    Publisher<EventApplyOutcome> onException(
             Exception e, PatientHealth snapshot, PatientEvent event) {
         snapshot.processingErrors++
         just CONTINUE
     }
 
-    Observable<EventApplyOutcome> applyPatientCreated(
+    Publisher<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientHealth snapshot) {
         if (snapshot.aggregate == event.aggregate) {
             snapshot.name = event.name
@@ -96,17 +106,17 @@ class PatientHealthQuery implements
         just CONTINUE
     }
 
-    Observable<EventApplyOutcome> applyProcedurePerformed(
+    Publisher<EventApplyOutcome> applyProcedurePerformed(
             ProcedurePerformed event, PatientHealth snapshot) {
         snapshot.procedures << new Procedure(code: event.code, date: event.timestamp)
         just CONTINUE
     }
 
     @SuppressWarnings('UnusedMethodParameter')
-    Observable<EventApplyOutcome> applyPaymentMade(
+    Publisher<EventApplyOutcome> applyPaymentMade(
             PaymentMade event, PatientHealth snapshot) {
         // Ignore payments
-        just CONTINUE
+        just CONTINUE toPublisher()
     }
 
     PatientHealth detachSnapshot(PatientHealth snapshot) {

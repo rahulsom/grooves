@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
 import groovy.transform.ToString
-import rx.Observable
+import org.reactivestreams.Publisher
 
 import javax.persistence.*
 
-import static rx.Observable.*
+import static reactor.core.publisher.Flux.fromIterable
+import static reactor.core.publisher.Mono.empty
+import static reactor.core.publisher.Mono.just
 
 /**
  * Domain Model for Account information of a Patient
@@ -38,16 +40,16 @@ class PatientAccount implements JavaSnapshot<Long, Patient, Long, Long, PatientE
 
     int processingErrors = 0
 
-    @Override @JsonIgnore Observable<Patient> getAggregateObservable() { // <4>
+    @Override @JsonIgnore Publisher<Patient> getAggregateObservable() { // <4>
         aggregate ? just(aggregate) : empty()
     }
 
-    @Override @JsonIgnore Observable<Patient> getDeprecatedByObservable() { // <5>
+    @Override @JsonIgnore Publisher<Patient> getDeprecatedByObservable() { // <5>
         deprecatedBy ? just(deprecatedBy) : empty()
     }
 
-    @Override @JsonIgnore Observable<Patient> getDeprecatesObservable() { // <6>
-        from(deprecates.toList())
+    @Override @JsonIgnore Publisher<Patient> getDeprecatesObservable() { // <6>
+        fromIterable(deprecates.toList())
     }
 }
 // end::documented[]

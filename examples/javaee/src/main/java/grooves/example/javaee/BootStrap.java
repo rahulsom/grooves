@@ -6,6 +6,8 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import grooves.example.javaee.domain.*;
 import grooves.example.javaee.queries.PatientAccountQuery;
 import grooves.example.javaee.queries.PatientHealthQuery;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
@@ -235,7 +237,7 @@ public class BootStrap {
 
         database.addEvent(e1);
         database.addEvent(e2);
-        return e2.getConverseObservable().toBlocking().single();
+        return Single.fromPublisher(e2.getConverseObservable()).blockingGet();
     }
 
     private Date date(String yyyyMMdd) {
@@ -259,9 +261,8 @@ public class BootStrap {
 
         Supplier<Long> positionSupplier =
                 () -> database.events()
-                        .filter(x -> x.getAggregateObservable()
-                                .toBlocking()
-                                .single()
+                        .filter(x -> Single.fromPublisher(x.getAggregateObservable())
+                                .blockingGet()
                                 .equals(patient))
                         .count() + 1;
 

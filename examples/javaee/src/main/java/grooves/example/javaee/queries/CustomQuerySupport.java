@@ -8,10 +8,10 @@ import grooves.example.javaee.Database;
 import grooves.example.javaee.domain.Patient;
 import grooves.example.javaee.domain.PatientEvent;
 import org.apache.commons.lang3.SerializationUtils;
-import org.jetbrains.annotations.NotNull;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -20,9 +20,9 @@ import java.util.stream.Stream;
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
 import static grooves.example.javaee.Database.isTimestampInRange;
+import static io.reactivex.Flowable.fromIterable;
+import static io.reactivex.Flowable.just;
 import static java.util.stream.Collectors.toList;
-import static rx.Observable.from;
-import static rx.Observable.just;
 
 // tag::documented[]
 public interface CustomQuerySupport<
@@ -37,34 +37,34 @@ public interface CustomQuerySupport<
 
     // tag::documented[]
     @Override
-    default Observable<SnapshotT> getSnapshot(long maxPosition, Patient aggregate) {
+    default Publisher<SnapshotT> getSnapshot(long maxPosition, Patient aggregate) {
         // <4>
         // end::documented[]
         final Stream<SnapshotT> stream = getDatabase().snapshots(getSnapshotClass());
-        return from(stream::iterator)
+        return fromIterable(stream::iterator)
                 .flatMap(it -> just(it).zipWith(it.getAggregateObservable(), Pair::new))
                 .filter(it -> it.getSecond().equals(aggregate)
                         && it.getFirst().getLastEventPosition() < maxPosition)
                 .map(Pair::getFirst)
-                .sorted((x, y) -> x.getLastEventPosition().compareTo(y.getLastEventPosition()))
-                .takeFirst(it -> true)
+                .sorted(Comparator.comparing(SnapshotT::getLastEventPosition))
+                .take(1)
                 .filter(Objects::nonNull)
                 .map(this::copy);
         // tag::documented[]
     }
 
     @Override
-    default Observable<SnapshotT> getSnapshot(Date maxTimestamp, Patient aggregate) {
+    default Publisher<SnapshotT> getSnapshot(Date maxTimestamp, Patient aggregate) {
         // <5>
         // end::documented[]
         final Stream<SnapshotT> stream = getDatabase().snapshots(getSnapshotClass());
-        return from(stream::iterator)
+        return fromIterable(stream::iterator)
                 .flatMap(it -> just(it).zipWith(it.getAggregateObservable(), Pair::new))
                 .filter(it -> it.getSecond().equals(aggregate)
                         && it.getFirst().getLastEventTimestamp().compareTo(maxTimestamp) < 1)
                 .map(Pair::getFirst)
                 .sorted((x, y) -> x.getLastEventPosition().compareTo(y.getLastEventPosition()))
-                .takeFirst(it -> true)
+                .take(1)
                 .filter(Objects::nonNull)
                 .map(this::copy);
         // tag::documented[]
@@ -82,7 +82,7 @@ public interface CustomQuerySupport<
     }
 
     @Override
-    default Observable<EventApplyOutcome> onException(
+    default Publisher<EventApplyOutcome> onException(
             Exception e, SnapshotT snapshot, PatientEvent event) { // <7>
         getLog().error("Error computing snapshot", e);
         return just(CONTINUE);
@@ -90,7 +90,7 @@ public interface CustomQuerySupport<
     }
 
     @Override
-    default Observable<PatientEvent> getUncomputedEvents(
+    default Publisher<PatientEvent> getUncomputedEvents(
             Patient aggregate, SnapshotT lastSnapshot, long version) {
         // <8>
         // end::documented[]
@@ -107,12 +107,12 @@ public interface CustomQuerySupport<
         final List<PatientEvent> patientEvents = getDatabase().events()
                 .filter(patientEventPredicate)
                 .collect(toList());
-        return from(patientEvents);
+        return fromIterable(patientEvents);
         // tag::documented[]
     }
 
     @Override
-    default Observable<PatientEvent> getUncomputedEvents(
+    default Publisher<PatientEvent> getUncomputedEvents(
             Patient aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
         // <9>
         // end::documented[]
@@ -122,7 +122,7 @@ public interface CustomQuerySupport<
         final List<PatientEvent> patientEvents = getDatabase().events()
                 .filter(patientEventPredicate)
                 .collect(toList());
-        return from(patientEvents);
+        return fromIterable(patientEvents);
         // tag::documented[]
     }
 

@@ -6,14 +6,14 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import grails.gorm.rx.RxEntity;
+import org.reactivestreams.Publisher;
 import rx.Observable;
 
 import java.util.Date;
-import java.util.List;
 
 import static com.github.rahulsom.grooves.grails.QueryUtil.*;
 import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
-import static rx.Observable.from;
+import static rx.RxReactiveStreams.toPublisher;
 
 /**
  * Supplies Events from an Rx Gorm Source.
@@ -42,20 +42,20 @@ public interface RxEventSource<
     Class<EventT> getEventClass();
 
     @Override
-    default Observable<EventT> getUncomputedEvents(
+    default Publisher<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, long version) {
         final long position = lastSnapshot == null || lastSnapshot.getLastEventPosition() == null ?
                 0 : lastSnapshot.getLastEventPosition();
 
         //noinspection unchecked
-        return (Observable<EventT>) invokeStaticMethod(
+        return toPublisher((Observable<EventT>) invokeStaticMethod(
                 getEventClass(),
                 UNCOMPUTED_EVENTS_BY_VERSION,
-                new Object[]{aggregate, position, version, INCREMENTAL_BY_POSITION});
+                new Object[]{aggregate, position, version, INCREMENTAL_BY_POSITION}));
     }
 
     @Override
-    default Observable<EventT> getUncomputedEvents(
+    default Publisher<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
         final Date lastEventTimestamp = lastSnapshot.getLastEventTimestamp();
         final String method = lastEventTimestamp == null ?
@@ -66,7 +66,8 @@ public interface RxEventSource<
                 new Object[]{aggregate, lastEventTimestamp, snapshotTime, INCREMENTAL_BY_TIMESTAMP};
 
         //noinspection unchecked
-        return (Observable<EventT>) invokeStaticMethod(getEventClass(), method, params);
+        return toPublisher((Observable<EventT>)
+                invokeStaticMethod(getEventClass(), method, params));
     }
 
     /**

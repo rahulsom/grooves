@@ -1,7 +1,7 @@
 package com.github.rahulsom.grooves.api.events
 
 import com.github.rahulsom.grooves.api.AggregateType
-import rx.Observable
+import org.reactivestreams.Publisher
 
 /**
  * Aggregate deprecation event.
@@ -21,16 +21,16 @@ interface Deprecates<AggregateIdT, AggregateT : AggregateType<AggregateIdT>, Eve
         BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT> {
 
     /**
-     * An Observable of the converse of this event.
+     * A Publisher of the converse of this event.
      * The converse of a [Deprecates] is a [DeprecatedBy] event that does the exact opposite of this event.
      * It tells you that the aggregate on which you apply the [DeprecatedBy] has been deprecated by this event's aggregate.
      * That gives Grooves an opportunity to redirect if asked to this event's aggregate.
      */
-    fun getConverseObservable(): Observable<out DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT>>
+    fun getConverseObservable(): Publisher<out DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT>>
 
     /**
-     * An Observable of the aggregate that was deprecated by this event's aggregate.
+     * A Publisher of the aggregate that was deprecated by this event's aggregate.
      * Grooves will use this to find events that are on the other aggregate and make them available for computation of this aggregate's snapshot.
      */
-    fun getDeprecatedObservable(): Observable<AggregateT>
+    fun getDeprecatedObservable(): Publisher<AggregateT>
 }

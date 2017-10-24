@@ -5,17 +5,17 @@ import com.github.rahulsom.grooves.groovy.transformations.Query
 import com.github.rahulsom.grooves.queries.QuerySupport
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientAccountRepository
+import org.reactivestreams.Publisher
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import rx.Observable
 
 import javax.persistence.EntityManager
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
-import static rx.Observable.empty
-import static rx.Observable.from
-import static rx.Observable.just
+import static reactor.core.publisher.Flux.defer
+import static reactor.core.publisher.Flux.fromIterable
+import static reactor.core.publisher.Mono.just
 
 /**
  * Query for Patient Account
@@ -25,7 +25,8 @@ import static rx.Observable.just
 @Transactional
 @Component
 //tag::documented[]
-@Query(aggregate = Patient, snapshot = PatientAccount) // <1>
+@Query(aggregate = Patient, snapshot = PatientAccount)
+// <1>
 class PatientAccountQuery implements
         QuerySupport<Long, Patient, Long, PatientEvent, Long, PatientAccount,
                 PatientAccountQuery> { // <2>
@@ -42,24 +43,29 @@ class PatientAccountQuery implements
 
     //tag::documented[]
     @Override
-    Observable<PatientAccount> getSnapshot(long maxPosition, Patient aggregate) { // <3>
+    Publisher<PatientAccount> getSnapshot(long maxPosition, Patient aggregate) { // <3>
         //end::documented[]
-        def snapshots = maxPosition == Long.MAX_VALUE ?
-                patientAccountRepository.findAllByAggregateId(aggregate.id) :
-                patientAccountRepository.findAllByAggregateIdAndLastEventPositionLessThan(
-                        aggregate.id, maxPosition)
-        snapshots ? just(detachSnapshot(snapshots[0])) : empty()
+        defer {
+            def snapshots = maxPosition == Long.MAX_VALUE ?
+                    patientAccountRepository.findAllByAggregateId(aggregate.id) :
+                    patientAccountRepository.findAllByAggregateIdAndLastEventPositionLessThan(
+                            aggregate.id, maxPosition)
+
+            fromIterable(snapshots).take(1)
+        }
         //tag::documented[]
     }
 
     @Override
-    Observable<PatientAccount> getSnapshot(Date maxTimestamp, Patient aggregate) { // <4>
+    Publisher<PatientAccount> getSnapshot(Date maxTimestamp, Patient aggregate) { // <4>
         //end::documented[]
-        def snapshots = maxTimestamp == null ?
-                patientAccountRepository.findAllByAggregateId(aggregate.id) :
-                patientAccountRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
-                        aggregate.id, maxTimestamp)
-        snapshots ? just(detachSnapshot(snapshots[0])) : empty()
+        defer {
+            def snapshots = maxTimestamp == null ?
+                    patientAccountRepository.findAllByAggregateId(aggregate.id) :
+                    patientAccountRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
+                            aggregate.id, maxTimestamp)
+            fromIterable(snapshots).take(1)
+        }
         //tag::documented[]
     }
 
@@ -69,56 +75,60 @@ class PatientAccountQuery implements
     }
 
     @Override
-    Observable<EventApplyOutcome> onException(
+    Publisher<EventApplyOutcome> onException(
             Exception e, PatientAccount snapshot, PatientEvent event) { // <6>
         snapshot.processingErrors++
         just CONTINUE
     }
 
     @Override
-    Observable<PatientEvent> getUncomputedEvents(
+    Publisher<PatientEvent> getUncomputedEvents(
             Patient patient, PatientAccount lastSnapshot, long version) { // <7>
         //end::documented[]
-        def cb = entityManager.criteriaBuilder
-        def q = cb.createQuery(PatientEvent)
-        def root = q.from(PatientEvent)
-        def criteria = q.select(root).where(
-                cb.equal(root.get(AGGREGATE), cb.parameter(Patient, AGGREGATE)),
-                cb.gt(root.get(POSITION), lastSnapshot?.lastEventPosition ?: 0L),
-                cb.le(root.get(POSITION), version),
-        )
-        from(entityManager
-                        .createQuery(criteria)
-                        .setParameter(AGGREGATE, patient)
-                        .resultList)
+        defer {
+            def cb = entityManager.criteriaBuilder
+            def q = cb.createQuery(PatientEvent)
+            def root = q.from(PatientEvent)
+            def criteria = q.select(root).where(
+                    cb.equal(root.get(AGGREGATE), cb.parameter(Patient, AGGREGATE)),
+                    cb.gt(root.get(POSITION), lastSnapshot?.lastEventPosition ?: 0L),
+                    cb.le(root.get(POSITION), version),
+            )
+            fromIterable(entityManager
+                    .createQuery(criteria)
+                    .setParameter(AGGREGATE, patient)
+                    .resultList)
+        }
         //tag::documented[]
     }
 
     @Override
-    Observable<PatientEvent> getUncomputedEvents(
+    Publisher<PatientEvent> getUncomputedEvents(
             Patient aggregate, PatientAccount lastSnapshot, Date snapshotTime) { // <8>
         //end::documented[]
-        def cb = entityManager.criteriaBuilder
-        def q = cb.createQuery(PatientEvent)
-        def root = q.from(PatientEvent)
-        def criteria = lastSnapshot?.lastEventTimestamp ?
-                q.select(root).where(
-                        cb.equal(root.get(AGGREGATE), cb.parameter(Patient, AGGREGATE)),
-                        cb.gt(root.get(TIMESTAMP), cb.parameter(Date, FROM)),
-                        cb.le(root.get(TIMESTAMP), cb.parameter(Date, UNTIL)),
-                ) :
-                q.select(root).where(
-                        cb.equal(root.get(AGGREGATE), cb.parameter(Patient, AGGREGATE)),
-                        cb.le(root.get(TIMESTAMP), cb.parameter(Date, UNTIL)),
-                )
+        defer {
+            def cb = entityManager.criteriaBuilder
+            def q = cb.createQuery(PatientEvent)
+            def root = q.from(PatientEvent)
+            def criteria = lastSnapshot?.lastEventTimestamp ?
+                    q.select(root).where(
+                            cb.equal(root.get(AGGREGATE), cb.parameter(Patient, AGGREGATE)),
+                            cb.greaterThan(root.get(TIMESTAMP), cb.parameter(Date, FROM)),
+                            cb.lessThanOrEqualTo(root.get(TIMESTAMP), cb.parameter(Date, UNTIL)),
+                    ) :
+                    q.select(root).where(
+                            cb.equal(root.get(AGGREGATE), cb.parameter(Patient, AGGREGATE)),
+                            cb.lessThanOrEqualTo(root.get(TIMESTAMP), cb.parameter(Date, UNTIL)),
+                    )
 
-        def query = entityManager.createQuery(criteria)
-        query.setParameter(AGGREGATE, aggregate).setParameter(UNTIL, snapshotTime)
-        if (lastSnapshot?.lastEventTimestamp) {
-            query.setParameter(FROM, lastSnapshot.lastEventTimestamp)
+            def query = entityManager.createQuery(criteria)
+            query.setParameter(AGGREGATE, aggregate).setParameter(UNTIL, snapshotTime)
+            if (lastSnapshot?.lastEventTimestamp) {
+                query.setParameter(FROM, lastSnapshot.lastEventTimestamp)
+            }
+
+            fromIterable query.resultList
         }
-
-        from query.resultList
         //tag::documented[]
     }
 
@@ -132,7 +142,7 @@ class PatientAccountQuery implements
         snapshot.deprecates << deprecatedAggregate
     }
 
-    Observable<EventApplyOutcome> applyPatientCreated(
+    Publisher<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientAccount snapshot) { // <10>
         if (snapshot.aggregate == event.aggregate) {
             snapshot.name = event.name
@@ -140,13 +150,13 @@ class PatientAccountQuery implements
         just CONTINUE // <11>
     }
 
-    Observable<EventApplyOutcome> applyProcedurePerformed(
+    Publisher<EventApplyOutcome> applyProcedurePerformed(
             ProcedurePerformed event, PatientAccount snapshot) {
         snapshot.balance += event.cost
         just CONTINUE
     }
 
-    Observable<EventApplyOutcome> applyPaymentMade(
+    Publisher<EventApplyOutcome> applyPaymentMade(
             PaymentMade event, PatientAccount snapshot) {
         snapshot.balance -= event.amount
         snapshot.moneyMade += event.amount

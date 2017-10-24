@@ -4,11 +4,11 @@ import com.github.rahulsom.grooves.api.events.DeprecatedBy;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-import static rx.Observable.just;
+import static io.reactivex.Flowable.just;
 
 public class PatientDeprecatedBy extends PatientEvent implements
         DeprecatedBy<Long, Patient, Long, PatientEvent> {
@@ -18,13 +18,13 @@ public class PatientDeprecatedBy extends PatientEvent implements
     @NotNull
     @Override
     @XmlTransient
-    public Observable<PatientDeprecates> getConverseObservable() {
+    public Publisher<PatientDeprecates> getConverseObservable() {
         return just(converse);
     }
 
     @NotNull
     @XmlTransient
-    public Observable<Patient> getDeprecatorObservable() {
+    public Publisher<Patient> getDeprecatorObservable() {
         return just(deprecator);
     }
 

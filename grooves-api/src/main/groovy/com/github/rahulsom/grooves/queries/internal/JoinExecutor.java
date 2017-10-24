@@ -3,11 +3,13 @@ package com.github.rahulsom.grooves.queries.internal;
 import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.*;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseJoin;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 import java.util.List;
 
-import static rx.Observable.just;
+import static com.github.rahulsom.grooves.queries.internal.Utils.flowable;
+import static com.github.rahulsom.grooves.queries.internal.Utils.single;
+import static io.reactivex.Single.just;
 
 /**
  * Executes a query as a Join.
@@ -54,16 +56,16 @@ public class JoinExecutor<
     }
 
     @Override
-    public Observable<SnapshotT> applyEvents(
+    public Publisher<SnapshotT> applyEvents(
             QueryT query,
             SnapshotT initialSnapshot,
-            Observable<EventT> events,
+            Publisher<EventT> events,
             List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
             AggregateT aggregate) {
 
 
         // s -> snapshotObservable
-        return events.reduce(just(initialSnapshot), (s, event) -> s.flatMap(snapshot -> {
+        return flowable(events).reduce(just(initialSnapshot), (s, event) -> s.flatMap(snapshot -> {
             if (!query.shouldEventsBeApplied(snapshot)) {
                 return just(snapshot);
             } else {
@@ -72,24 +74,22 @@ public class JoinExecutor<
                 if (event instanceof Deprecates) {
                     Deprecates<AggregateIdT, AggregateT, EventIdT, EventT> deprecatesEvent =
                             (Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>) event;
-                    return applyDeprecates(
-                            deprecatesEvent, query, events, deprecatesList, aggregate);
+                    return single(applyDeprecates(
+                            deprecatesEvent, query, events, deprecatesList, aggregate));
                 } else if (event instanceof DeprecatedBy) {
                     DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT> deprecatedByEvent =
                             (DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT>) event;
                     return applyDeprecatedBy(deprecatedByEvent, initialSnapshot);
                 } else if (classJoinE.isAssignableFrom(event.getClass())) {
                     JoinEventT joinEvent = (JoinEventT) event;
-                    return joinEvent
-                            .getJoinAggregateObservable()
+                    return single(joinEvent.getJoinAggregateObservable())
                             .map(joinedAggregate -> {
                                 initialSnapshot.getJoinedIds().add(joinedAggregate.getId());
                                 return initialSnapshot;
                             });
                 } else if (classDisjoinE.isAssignableFrom(event.getClass())) {
                     DisjoinEventT disjoinEvent = (DisjoinEventT) event;
-                    return disjoinEvent
-                            .getJoinAggregateObservable()
+                    return single(disjoinEvent.getJoinAggregateObservable())
                             .map(joinedAggregate -> {
                                 initialSnapshot.getJoinedIds().remove(joinedAggregate.getId());
                                 return initialSnapshot;
@@ -98,7 +98,8 @@ public class JoinExecutor<
                     return just(initialSnapshot);
                 }
             }
-        })).flatMap(it -> it);
+        })).toFlowable().flatMap(it -> it.toFlowable())
+                ;
 
     }
 }

@@ -3,9 +3,11 @@ package rxmongo
 import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
 import grails.gorm.rx.mongodb.RxMongoEntity
 import groovy.transform.EqualsAndHashCode
-import rx.Observable
+import org.reactivestreams.Publisher
 
-import static rx.Observable.*
+import static rx.Observable.empty
+import static rx.Observable.from
+import static rx.RxReactiveStreams.toPublisher
 
 /**
  * Represents a patient's health
@@ -26,8 +28,8 @@ class PatientHealth implements RxMongoEntity<PatientHealth>,
     String aggregateId
 
     @Override
-    Observable<Patient> getAggregateObservable() {
-        aggregateId ? Patient.get(aggregateId) : empty()
+    Publisher<Patient> getAggregateObservable() {
+        toPublisher(aggregateId ? Patient.get(aggregateId) : empty())
     }
 
     void setAggregate(Patient aggregate) { this.aggregateId = aggregate.id }
@@ -36,12 +38,12 @@ class PatientHealth implements RxMongoEntity<PatientHealth>,
     void setDeprecatedBy(Patient deprecator) {
         deprecatedById = deprecator.id
     }
-    @Override Observable<Patient> getDeprecatedByObservable() {
-        deprecatedById ? Patient.get(deprecatedById) : empty()
+    @Override Publisher<Patient> getDeprecatedByObservable() {
+        toPublisher(deprecatedById ? Patient.get(deprecatedById) : empty())
     }
 
-    @Override Observable<Patient> getDeprecatesObservable() {
-        deprecates ? from(deprecates) : empty()
+    @Override Publisher<Patient> getDeprecatesObservable() {
+        toPublisher(deprecates ? from(deprecates) : empty())
     }
 
     String name
