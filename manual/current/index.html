@@ -2029,7 +2029,7 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
             patientAccountRepository.findByAggregateIdAndLastEventTimestampLessThan(
                     aggregate.id!!, maxTimestamp)
 
-    override fun shouldEventsBeApplied(snapshot: PatientAccount?) = true <i class="conum" data-value="7"></i><b>(7)</b>
+    override fun shouldEventsBeApplied(snapshot: PatientAccount) = true <i class="conum" data-value="7"></i><b>(7)</b>
 
     override fun addToDeprecates(
             snapshot: PatientAccount, deprecatedAggregate: Patient) {
