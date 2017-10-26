@@ -3,6 +3,7 @@ package com.github.rahulsom.grooves.api;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,7 @@ public class OnSpec<
      *
      * @return The event after persisting
      */
-    public <T extends EventT> T apply(T event) {
+    @NotNull public <T extends EventT> T apply(@NotNull T event) {
         event.setAggregate(aggregate);
 
         if (event.getPosition() == null) {
@@ -58,9 +59,11 @@ public class OnSpec<
      *
      * @return The snapshot after persisting
      */
+    @NotNull
     public <QueryT extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
             SnapshotT, QueryT>> SnapshotT snapshotWith(
-                    QueryT query, Consumer<SnapshotT> beforePersist) {
+                    @NotNull QueryT query,
+                    @NotNull Consumer<SnapshotT> beforePersist) {
 
         SnapshotT snapshotT = query
                 .computeSnapshot(aggregate, Long.MAX_VALUE)
@@ -84,8 +87,9 @@ public class OnSpec<
      *
      * @return The snapshot after persisting
      */
+    @NotNull
     public <QueryT extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-            SnapshotT, QueryT>> SnapshotT snapshotWith(QueryT query) {
+            SnapshotT, QueryT>> SnapshotT snapshotWith(@NotNull QueryT query) {
         return snapshotWith(query, snapshotT -> {
         });
     }
@@ -94,19 +98,19 @@ public class OnSpec<
         return aggregate;
     }
 
-    public void setAggregate(AggregateT aggregate) {
+    public void setAggregate(@NotNull AggregateT aggregate) {
         this.aggregate = aggregate;
     }
 
-    public void setEntityConsumer(Consumer entityConsumer) {
+    public void setEntityConsumer(@NotNull Consumer entityConsumer) {
         this.entityConsumer = entityConsumer;
     }
 
-    public void setTimestampSupplier(Supplier<Date> timestampSupplier) {
+    public void setTimestampSupplier(@NotNull Supplier<Date> timestampSupplier) {
         this.timestampSupplier = timestampSupplier;
     }
 
-    public void setPositionSupplier(Supplier<Long> positionSupplier) {
+    public void setPositionSupplier(@NotNull Supplier<Long> positionSupplier) {
         this.positionSupplier = positionSupplier;
     }
 }

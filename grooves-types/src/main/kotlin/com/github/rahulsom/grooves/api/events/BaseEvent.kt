@@ -7,9 +7,9 @@ import java.util.Date
 /**
  * Base class for Events corresponding to [AggregateT].
  *
- * @param [AggregateIdT] The type for [AggregateT.id]
+ * @param [AggregateIdT] The type for [AggregateType.id]
  * @param [AggregateT]   Aggregate this event applies to
- * @param [EventIdT]     The type for [EventT.id]
+ * @param [EventIdT]     The type for [BaseEvent.id]
  * @param [EventT]       The base class for all events in the hierarchy for [AggregateT]. In
  *                       this case, it is a self reference.
  *

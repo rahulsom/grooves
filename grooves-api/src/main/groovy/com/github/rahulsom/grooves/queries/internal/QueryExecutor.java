@@ -80,7 +80,7 @@ public class QueryExecutor<
                     final EventIdT revertedEventId =
                             (EventIdT) ((RevertEvent) head).getRevertedEventId();
                     final Optional<EventT> revertedEvent = eventList.stream()
-                            .filter(it -> it.getId().equals(revertedEventId))
+                            .filter(it -> Objects.equals(it.getId(), revertedEventId))
                             .findFirst();
 
                     if (revertedEvent.isPresent()) {

@@ -4,12 +4,12 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Aggregate trait that simplifies computing snapshots from events.
@@ -45,7 +45,7 @@ public interface BaseQuery<
      *
      * @return The empty snapshot
      */
-    SnapshotT createEmptySnapshot();
+    @NotNull SnapshotT createEmptySnapshot();
 
     /**
      * Gets the last snapshot before said event. Is responsible for discarding attached entity.
@@ -55,7 +55,7 @@ public interface BaseQuery<
      *
      * @return An observable that returns at most one Snapshot
      */
-    Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate);
+    @NotNull Observable<SnapshotT> getSnapshot(long maxPosition, @NotNull AggregateT aggregate);
 
     /**
      * Gets the last snapshot before given timestamp. Is responsible for discarding attached entity.
@@ -65,7 +65,7 @@ public interface BaseQuery<
      *
      * @return An observable that returns at most one Snapshot
      */
-    Observable<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate);
+    @NotNull Observable<SnapshotT> getSnapshot(Date maxTimestamp, @NotNull AggregateT aggregate);
 
     /**
      * Decides whether applying more events is permitted on a snapshot.
@@ -74,7 +74,7 @@ public interface BaseQuery<
      *
      * @return whether more events can be applied
      */
-    boolean shouldEventsBeApplied(SnapshotT snapshot);
+    boolean shouldEventsBeApplied(@NotNull SnapshotT snapshot);
 
     /**
      * Finds all events older than a given event.
@@ -83,7 +83,7 @@ public interface BaseQuery<
      *
      * @return The list of events
      */
-    Observable<EventT> findEventsBefore(EventT event);
+    @NotNull Observable<EventT> findEventsBefore(@NotNull EventT event);
 
     /**
      * Adds an aggregate to the list of aggregates that are deprecated by the aggregate of a
@@ -92,7 +92,7 @@ public interface BaseQuery<
      * @param snapshot            The snapshot that points to the winning aggregate
      * @param deprecatedAggregate The aggregate that is deprecated
      */
-    void addToDeprecates(SnapshotT snapshot, AggregateT deprecatedAggregate);
+    void addToDeprecates(@NotNull SnapshotT snapshot, @NotNull AggregateT deprecatedAggregate);
 
     /**
      * Exception handler when applying events.
@@ -103,11 +103,12 @@ public interface BaseQuery<
      *
      * @return The outcome of handling the exception
      */
-    Observable<EventApplyOutcome> onException(Exception e, SnapshotT snapshot, EventT event);
+    @NotNull Observable<EventApplyOutcome> onException(
+            @NotNull Exception e, @NotNull SnapshotT snapshot, @NotNull EventT event);
 
     /**
      * @return An executor that applies events.
      */
-    Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-            QueryT> getExecutor();
+    @NotNull <ExecutorT extends Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            SnapshotT, QueryT>> ExecutorT getExecutor();
 }

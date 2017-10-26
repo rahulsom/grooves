@@ -4,6 +4,7 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
+import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public interface Executor<
      *
      * @return a list of events after the reverts have been applied
      */
-    Observable<EventT> applyReverts(Observable<EventT> events);
+    @NotNull Observable<EventT> applyReverts(@NotNull Observable<EventT> events);
 
     /**
      * Applies forward events on a snapshot
@@ -51,10 +52,10 @@ public interface Executor<
      *
      * @return The Snapshot that has been mutated
      */
-    Observable<SnapshotT> applyEvents(
-            QueryT query,
-            SnapshotT initialSnapshot,
-            Observable<EventT> events,
-            List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
-            AggregateT aggregate);
+    @NotNull Observable<SnapshotT> applyEvents(
+            @NotNull QueryT query,
+            @NotNull SnapshotT initialSnapshot,
+            @NotNull Observable<EventT> events,
+            @NotNull List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
+            @NotNull AggregateT aggregate);
 }

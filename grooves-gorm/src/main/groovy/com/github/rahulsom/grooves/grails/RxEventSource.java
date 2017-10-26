@@ -9,11 +9,9 @@ import grails.gorm.rx.RxEntity;
 import rx.Observable;
 
 import java.util.Date;
-import java.util.List;
 
 import static com.github.rahulsom.grooves.grails.QueryUtil.*;
 import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
-import static rx.Observable.from;
 
 /**
  * Supplies Events from an Rx Gorm Source.

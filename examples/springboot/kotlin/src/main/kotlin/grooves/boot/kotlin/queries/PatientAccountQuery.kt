@@ -42,7 +42,7 @@ class PatientAccountQuery :
             patientAccountRepository.findByAggregateIdAndLastEventTimestampLessThan(
                     aggregate.id!!, maxTimestamp)
 
-    override fun shouldEventsBeApplied(snapshot: PatientAccount?) = true // <7>
+    override fun shouldEventsBeApplied(snapshot: PatientAccount) = true // <7>
 
     override fun addToDeprecates(
             snapshot: PatientAccount, deprecatedAggregate: Patient) {

@@ -5,7 +5,6 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.DisjoinEvent;
 import com.github.rahulsom.grooves.api.events.JoinEvent;
 import com.github.rahulsom.grooves.api.snapshots.Join;
-import com.github.rahulsom.grooves.groovy.transformations.Query;
 import com.github.rahulsom.grooves.queries.JoinSupport;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
@@ -14,7 +13,6 @@ import grails.gorm.rx.RxEntity;
 import rx.Observable;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * RxGorm implementation of Join Support.

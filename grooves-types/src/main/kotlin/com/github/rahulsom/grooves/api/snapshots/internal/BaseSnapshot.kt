@@ -8,10 +8,10 @@ import rx.Observable
 /**
  * Marks a class as a snapshot. This makes no assumption about the type of snapshot.
  *
- * @param [AggregateIdT] The type of [AggregateT.id]
+ * @param [AggregateIdT] The type of [AggregateType.id]
  * @param [AggregateT]   The Aggregate this snapshot works over
- * @param [SnapshotIdT]  The type for [BaseSnapshot.id]
- * @param [EventIdT]     The type for [EventT.id]
+ * @param [SnapshotIdT]  The type for [id]
+ * @param [EventIdT]     The type for [BaseEvent.id]
  * @param [EventT]       The base type for events that apply to [AggregateT]
  *
  * @author Rahul Somasunderam
@@ -41,7 +41,7 @@ interface BaseSnapshot<
      *
      * This can be used for querying to speed up retrieval of snapshots when a request for one is made.
      */
-    fun setAggregate(aggregate: AggregateT): Unit
+    fun setAggregate(aggregate: AggregateT)
 
     /**
      * An Observable of the aggregate that deprecated this snapshot's aggregate.
@@ -52,7 +52,7 @@ interface BaseSnapshot<
     /**
      * Accepts an aggregate and sets that as the aggregate that this snapshot's aggregate has been deprecated by.
      */
-    fun setDeprecatedBy(deprecatingAggregate: AggregateT): Unit
+    fun setDeprecatedBy(deprecatingAggregate: AggregateT)
 
     /**
      * An Observable of aggregates that were deprecated by the aggregate of this snapshot.
@@ -67,5 +67,5 @@ interface BaseSnapshot<
      * This should come from one of [TemporalSnapshot], [VersionedSnapshot] or [Snapshot].
      * This information can be used for querying snapshots.
      */
-    fun setLastEvent(event: EventT): Unit
+    fun setLastEvent(event: EventT)
 }

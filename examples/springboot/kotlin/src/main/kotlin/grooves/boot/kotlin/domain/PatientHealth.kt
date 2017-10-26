@@ -6,8 +6,8 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import grooves.boot.kotlin.repositories.PatientRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Configurable
-import rx.Observable
-import rx.Observable.*
+import rx.Observable.empty
+import rx.Observable.just
 import java.util.*
 
 @Configurable

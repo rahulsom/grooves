@@ -9,7 +9,6 @@ import grails.gorm.rx.RxEntity;
 import rx.Observable;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Rx Gorm Support for Query Util.

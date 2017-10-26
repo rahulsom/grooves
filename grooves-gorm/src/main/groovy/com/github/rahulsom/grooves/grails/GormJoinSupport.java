@@ -13,7 +13,6 @@ import org.grails.datastore.gorm.GormEntity;
 import rx.Observable;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Gorm implementation of Join Support.
@@ -48,7 +47,9 @@ public interface GormJoinSupport<
         DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
                 JoinedAggregateIdT, JoinedAggregateT>,
         QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT> & Join
+                SnapshotT, QueryT> &
+                JoinSupport<AggregateIdT, AggregateT, EventIdT, EventT, JoinedAggregateIdT,
+                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT, QueryT>
         > extends
         JoinSupport<AggregateIdT, AggregateT, EventIdT, EventT, JoinedAggregateIdT,
                 JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT, QueryT>,

@@ -11,17 +11,13 @@ import rx.Observable;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Supplier;
 
 import static com.github.rahulsom.grooves.queries.internal.Utils.returnOrRedirect;
 import static com.github.rahulsom.grooves.queries.internal.Utils.stringify;
 import static java.util.stream.Collectors.toList;
-import static rx.Observable.empty;
-import static rx.Observable.error;
-import static rx.Observable.just;
+import static rx.Observable.*;
 
 /**
  * Default interface to help in building temporal snapshots.

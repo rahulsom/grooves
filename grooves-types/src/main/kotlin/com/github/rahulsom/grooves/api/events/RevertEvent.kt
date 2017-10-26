@@ -5,9 +5,9 @@ import com.github.rahulsom.grooves.api.AggregateType
 /**
  * Revert a prior event. A reverted event's effects are not applied when computing a snapshot.
  *
- * @param [AggregateIdT] The type for [AggregateT.id]
+ * @param [AggregateIdT] The type for [AggregateType.id]
  * @param [AggregateT]   Aggregate this event applies to
- * @param [EventIdT]     The type for [EventT.id]
+ * @param [EventIdT]     The type for [BaseEvent.id]
  * @param [EventT]       The base class for all events in the hierarchy for [AggregateT].
  *
  * @author Rahul Somasunderam
@@ -20,7 +20,7 @@ interface RevertEvent<
         BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT> {
 
     /**
-     * [EventT.id] from the event that should be reverted.
+     * [BaseEvent.id] from the event that should be reverted.
      */
     val revertedEventId: EventIdT
 }

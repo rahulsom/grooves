@@ -8,7 +8,6 @@ import com.github.rahulsom.grooves.api.snapshots.Join;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
-import com.github.rahulsom.grooves.queries.internal.SimpleQuery;
 import rx.Observable;
 
 /**
