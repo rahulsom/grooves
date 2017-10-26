@@ -2,6 +2,7 @@ package com.github.rahulsom.grooves.api;
 
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
@@ -45,12 +46,15 @@ public class EventsDsl<
      *
      * @return The aggregate after all the code has been executed
      */
+    @NotNull
     public <SnapshotIdT,
             SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
             > AggregateT on(
-            AggregateT aggregate, Consumer entityConsumer, Supplier<Long> positionSupplier,
-            Supplier<Date> timestampSupplier,
-            Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            @NotNull AggregateT aggregate,
+            @NotNull Consumer entityConsumer,
+            @NotNull Supplier<Long> positionSupplier,
+            @NotNull Supplier<Date> timestampSupplier,
+            @NotNull Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                     SnapshotT>> closure) {
 
         OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> spec =
@@ -63,22 +67,26 @@ public class EventsDsl<
         return aggregate;
     }
 
+    @NotNull
     public <SnapshotIdT,
             SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
                     EventT>> AggregateT on(
-            AggregateT aggregate, Consumer entityConsumer, Supplier<Long> positionSupplier,
-            Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            @NotNull AggregateT aggregate,
+            @NotNull Consumer entityConsumer,
+            @NotNull Supplier<Long> positionSupplier,
+            @NotNull Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                     SnapshotT>> closure) {
         return on(aggregate, entityConsumer, positionSupplier, Date::new,
                 closure);
     }
 
+    @NotNull
     public <SnapshotIdT,
             SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
                     EventT>> AggregateT on(
-            AggregateT aggregate,
-            Consumer entityConsumer,
-            Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            @NotNull AggregateT aggregate,
+            @NotNull Consumer entityConsumer,
+            @NotNull Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                     SnapshotT>> closure) {
         return on(aggregate, entityConsumer, () -> defaultPositionSupplier.incrementAndGet(),
                 Date::new, closure);

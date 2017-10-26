@@ -28,19 +28,19 @@ class PatientHealthQuery :
             PatientEvent.Applicable, String, PatientHealth, PatientHealthQuery>()
 
     @Autowired lateinit var patientEventRepository: PatientEventRepository
-    @Autowired lateinit var PatientHealthRepository: PatientHealthRepository
+    @Autowired lateinit var patientHealthRepository: PatientHealthRepository
 
     override fun createEmptySnapshot() = PatientHealth()
 
     override fun getSnapshot(maxPosition: Long, aggregate: Patient): Observable<PatientHealth> =
-            PatientHealthRepository.findByAggregateIdAndLastEventPositionLessThan(
+            patientHealthRepository.findByAggregateIdAndLastEventPositionLessThan(
                     aggregate.id!!, maxPosition)
 
     override fun getSnapshot(maxTimestamp: Date, aggregate: Patient): Observable<PatientHealth> =
-            PatientHealthRepository.findByAggregateIdAndLastEventTimestampLessThan(
+            patientHealthRepository.findByAggregateIdAndLastEventTimestampLessThan(
                     aggregate.id!!, maxTimestamp)
 
-    override fun shouldEventsBeApplied(snapshot: PatientHealth?) = true
+    override fun shouldEventsBeApplied(snapshot: PatientHealth) = true
 
     override fun addToDeprecates(snapshot: PatientHealth, deprecatedAggregate: Patient) {
         snapshot.deprecatesIds.add(deprecatedAggregate.id!!)

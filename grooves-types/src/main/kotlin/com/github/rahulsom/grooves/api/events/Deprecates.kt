@@ -10,9 +10,9 @@ import rx.Observable
  * The converse is [DeprecatedBy] which needs to be applied to the other aggregate which
  * loses the merge.
  *
- * @param [AggregateIdT] The type for [AggregateT.id]
+ * @param [AggregateIdT] The type for [AggregateType.id]
  * @param [AggregateT]   Aggregate this event applies to
- * @param [EventIdT]     The type for [EventT.id]
+ * @param [EventIdT]     The type for [BaseEvent.id]
  * @param [EventT]       The base class for all events in the hierarchy for [AggregateT].
  *
  * @author Rahul Somasunderam

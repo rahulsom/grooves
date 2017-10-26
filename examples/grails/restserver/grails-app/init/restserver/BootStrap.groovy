@@ -156,11 +156,11 @@ class BootStrap {
     Date currDate = Date.parse('yyyy-MM-dd', '2016-01-01')
 
     static class Applier {
-        private Patient aggregate;
-        private Consumer entityConsumer;
-        private Supplier<Date> timestampSupplier;
-        private Supplier<String> userSupplier;
-        private Supplier<Long> positionSupplier;
+        private Patient aggregate
+        private Consumer entityConsumer
+        private Supplier<Date> timestampSupplier
+        private Supplier<String> userSupplier
+        private Supplier<Long> positionSupplier
 
         /**
          * Applies an event to an aggregate. This involves checking if any important fields are
@@ -171,22 +171,22 @@ class BootStrap {
          *
          * @return The event after persisting
          */
-        public <T extends PatientEvent> T apply(T event) {
-            event.setAggregate(aggregate);
+        def <T extends PatientEvent> T apply(T event) {
+            event.setAggregate(aggregate)
 
             if (event.getCreatedBy() == null) {
-                event.setCreatedBy(userSupplier.get());
+                event.setCreatedBy(userSupplier.get())
             }
             if (event.getPosition() == null) {
-                event.setPosition(positionSupplier.get());
+                event.setPosition(positionSupplier.get())
             }
             if (event.getTimestamp() == null) {
-                event.setTimestamp(timestampSupplier.get());
+                event.setTimestamp(timestampSupplier.get())
             }
 
-            entityConsumer.accept(event);
+            entityConsumer.accept(event)
 
-            return event;
+            return event
         }
     }
     Patient on(Patient patient, @DelegatesTo(Applier) Closure closure) {

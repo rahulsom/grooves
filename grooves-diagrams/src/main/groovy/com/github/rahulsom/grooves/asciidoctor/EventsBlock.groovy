@@ -22,9 +22,9 @@ class EventsBlock extends BlockProcessor {
     @Override
     Object process(AbstractBlock parent, Reader reader, Map<String, Object> attributes) {
 
-        def docDir = new File(parent.document().attributes['docdir'])
+        def docDir = new File(parent.document.attributes['docdir'])
         def projectDir = docDir
-        (parent.document().attributes['projectdir'] as String).split('/').size().times {
+        (parent.document.attributes['projectdir'] as String).split('/').size().times {
             projectDir = projectDir.parentFile
         }
         def outDir = new File(projectDir, "build/asciidoc/html5")

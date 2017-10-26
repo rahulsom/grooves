@@ -8,7 +8,6 @@ import grooves.example.javaee.Database;
 import grooves.example.javaee.domain.Patient;
 import grooves.example.javaee.domain.PatientEvent;
 import org.apache.commons.lang3.SerializationUtils;
-import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 
 import java.io.Serializable;
@@ -72,7 +71,7 @@ public interface CustomQuerySupport<
     // end::documented[]
 
     default SnapshotT copy(SnapshotT it) {
-        return (SnapshotT) SerializationUtils.clone(it);
+        return SerializationUtils.clone(it);
     }
 
     // tag::documented[]

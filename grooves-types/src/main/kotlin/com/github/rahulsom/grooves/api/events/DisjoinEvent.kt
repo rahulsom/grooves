@@ -6,11 +6,11 @@ import rx.Observable
 /**
  * Breaks a join from [AggregateT] to [JoinedAggregateT] that had existed earlier.
  *
- * @param [AggregateIdT]       The type for [AggregateT.id]
+ * @param [AggregateIdT]       The type for [AggregateType.id]
  * @param [AggregateT]         Aggregate this event applies to
- * @param [EventIdT]           The type for [EventT.id]
+ * @param [EventIdT]           The type for [BaseEvent.id]
  * @param [EventT]             The base class for all events in the hierarchy for [AggregateT].
- * @param [JoinedAggregateIdT] The type of [JoinedAggregateT.id]
+ * @param [JoinedAggregateIdT] The type of the joined [AggregateType.id]
  * @param [JoinedAggregateT]   The target aggregate
  *
  * @author Rahul Somasunderam

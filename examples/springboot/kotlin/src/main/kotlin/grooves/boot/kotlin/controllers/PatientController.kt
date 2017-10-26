@@ -23,8 +23,6 @@ class PatientController {
     @Autowired lateinit var patientHealthQuery: PatientHealthQuery
     @Autowired lateinit var patientEventRepository: PatientEventRepository
 
-    private val log = LoggerFactory.getLogger(javaClass)
-
     @GetMapping("/patient")
     fun list() =
             patientRepository.findAllByOrderByUniqueIdAsc()

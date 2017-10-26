@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -221,14 +222,16 @@ public class BootStrap {
 
         e1.setAggregate(self);
         e1.setTimestamp(currDate);
-        e1.setPosition(database.events().filter(x -> x.getAggregate().equals(self)).count() + 1);
+        e1.setPosition(database.events().filter(x -> Objects.equals(x.getAggregate(), self))
+                .count() + 1);
         e1.setId(database.events().count() + 1);
 
         PatientDeprecates e2 = new PatientDeprecates(self, e1);
 
         e2.setAggregate(into);
         e2.setTimestamp(currDate);
-        e2.setPosition(database.events().filter(x -> x.getAggregate().equals(into)).count() + 1);
+        e2.setPosition(database.events().filter(x -> Objects.equals(x.getAggregate(), into))
+                .count() + 1);
         e2.setId(database.events().count() + 2);
 
         e1.setConverse(e2);

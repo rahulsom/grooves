@@ -4,6 +4,7 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.DeprecatedBy;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
+import org.jetbrains.annotations.NotNull;
 import rx.Observable;
 
 import java.util.List;
@@ -42,12 +43,18 @@ public class Utils {
      *
      * @return An observable of a snapshot.
      */
-    public static <
-            SnapshotT extends BaseSnapshot,
-            EventT extends BaseEvent
+    @NotNull public static <
+            AggregateIdT,
+            AggregateT extends AggregateType<AggregateIdT>,
+            EventIdT,
+            EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+            SnapshotIdT,
+            SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
             > Observable<SnapshotT> returnOrRedirect(
-            boolean redirect, List<EventT> events, SnapshotT it,
-            Supplier<Observable<SnapshotT>> redirectedSnapshot) {
+            boolean redirect,
+            @NotNull List<EventT> events,
+            @NotNull SnapshotT it,
+            @NotNull Supplier<Observable<SnapshotT>> redirectedSnapshot) {
         final EventT lastEvent =
                 events.isEmpty() ? null : events.get(events.size() - 1);
 
@@ -79,7 +86,7 @@ public class Utils {
      *
      * @return an observable of forward only events
      */
-    public static <
+    @NotNull public static <
             AggregateIdT,
             AggregateT extends AggregateType<AggregateIdT>,
             EventIdT,
@@ -89,10 +96,11 @@ public class Utils {
             QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                     SnapshotT, QueryT>
             > Observable<EventT> getForwardOnlyEvents(
-            List<EventT> events,
-            Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+            @NotNull List<EventT> events,
+            @NotNull Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                     QueryT> executor,
-            Supplier<Observable<Pair<SnapshotT, List<EventT>>>> fallbackSnapshotAndEvents) {
+            @NotNull Supplier<Observable<Pair<SnapshotT, List<EventT>>>>
+                    fallbackSnapshotAndEvents) {
         return executor.applyReverts(from(events))
                 .toList()
                 .map(Observable::just)
@@ -115,7 +123,8 @@ public class Utils {
      *
      * @return A String representation of events
      */
-    public static <EventT extends BaseEvent> String stringify(List<EventT> events) {
+    @NotNull public static <EventT extends BaseEvent> String stringify(
+            @NotNull List<EventT> events) {
         return events.stream()
                 .map(EventT::toString)
                 .collect(JOIN_EVENTS);
@@ -129,7 +138,8 @@ public class Utils {
      *
      * @return A String representation of events
      */
-    static <EventT extends BaseEvent> String ids(List<EventT> events) {
+    @NotNull static <EventT extends BaseEvent> String ids(
+            @NotNull List<EventT> events) {
         return events.stream()
                 .map(i -> String.valueOf(i.getId()))
                 .collect(JOIN_EVENT_IDS);

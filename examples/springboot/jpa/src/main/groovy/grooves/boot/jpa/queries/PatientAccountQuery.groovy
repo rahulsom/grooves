@@ -104,12 +104,12 @@ class PatientAccountQuery implements
         def criteria = lastSnapshot?.lastEventTimestamp ?
                 q.select(root).where(
                         cb.equal(root.get(AGGREGATE), cb.parameter(Patient, AGGREGATE)),
-                        cb.gt(root.get(TIMESTAMP), cb.parameter(Date, FROM)),
-                        cb.le(root.get(TIMESTAMP), cb.parameter(Date, UNTIL)),
+                        cb.greaterThan(root.get(TIMESTAMP), cb.parameter(Date, FROM)),
+                        cb.lessThanOrEqualTo(root.get(TIMESTAMP), cb.parameter(Date, UNTIL)),
                 ) :
                 q.select(root).where(
                         cb.equal(root.get(AGGREGATE), cb.parameter(Patient, AGGREGATE)),
-                        cb.le(root.get(TIMESTAMP), cb.parameter(Date, UNTIL)),
+                        cb.lessThanOrEqualTo(root.get(TIMESTAMP), cb.parameter(Date, UNTIL)),
                 )
 
         def query = entityManager.createQuery(criteria)

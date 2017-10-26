@@ -1,5 +1,7 @@
 package com.github.rahulsom.grooves.queries.internal;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Immutable class that can store two objects.
  *
@@ -12,16 +14,16 @@ public class Pair<FirstT, SecondT> {
     private final FirstT first;
     private final SecondT second;
 
-    public Pair(FirstT first, SecondT second) {
+    public Pair(@NotNull FirstT first, @NotNull SecondT second) {
         this.first = first;
         this.second = second;
     }
 
-    public FirstT getFirst() {
+    @NotNull public FirstT getFirst() {
         return first;
     }
 
-    public SecondT getSecond() {
+    @NotNull public SecondT getSecond() {
         return second;
     }
 }
