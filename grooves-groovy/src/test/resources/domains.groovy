@@ -5,11 +5,11 @@ import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
 import com.github.rahulsom.grooves.groovy.transformations.Aggregate
 import com.github.rahulsom.grooves.groovy.transformations.Event
 import groovy.transform.CompileStatic
+import org.reactivestreams.Publisher
 import rx.Observable
 
-import static rx.Observable.empty
-import static rx.Observable.from
-import static rx.Observable.just
+import static rx.Observable.*
+import static rx.RxReactiveStreams.toPublisher
 
 @CompileStatic @Aggregate class Account implements AggregateType<Long> {
     Long id
@@ -21,7 +21,9 @@ import static rx.Observable.just
     Long id, position
     Date timestamp
 
-    Observable<Account> getAggregateObservable() { just(aggregate) }
+    Publisher<Account> getAggregateObservable() {
+        toPublisher(aggregate ? just(aggregate) : empty()) as Publisher<Account>
+    }
 }
 
 @CompileStatic @Event(Account) class CashDeposit extends Transaction {}
@@ -36,16 +38,16 @@ import static rx.Observable.just
     Set<Account> deprecates
 
     @Override
-    Observable<Account> getAggregateObservable() {
-        (aggregate ? just(aggregate) : empty()) as Observable<Account>
+    Publisher<Account> getAggregateObservable() {
+        toPublisher(aggregate ? just(aggregate) : empty()) as Publisher<Account>
     }
 
-    @Override Observable<Account> getDeprecatedByObservable() {
-        (deprecatedBy ? just(deprecatedBy) : empty()) as Observable<Account>
+    @Override Publisher<Account> getDeprecatedByObservable() {
+        toPublisher((deprecatedBy ? just(deprecatedBy) : empty()) as Observable<Account>)
     }
 
     @Override
-    Observable<Account> getDeprecatesObservable() {
-        from(deprecates.toList())
+    Publisher<Account> getDeprecatesObservable() {
+        toPublisher(from(deprecates.toList()))
     }
 }

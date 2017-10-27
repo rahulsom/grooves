@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static rx.Observable.from;
-import static rx.Observable.just;
+import static rx.Observable.*;
+import static rx.RxReactiveStreams.toPublisher;
 
 public class PatientHealth
         implements JavaSnapshot<Long, Patient, Long, Long, PatientEvent>, Serializable {
@@ -31,22 +31,22 @@ public class PatientHealth
     @NotNull
     @Override
     @XmlTransient
-    public Observable<Patient> getAggregateObservable() {
-        return just(aggregate);
+    public Publisher<Patient> getAggregateObservable() {
+        return toPublisher(aggregate != null ? just(aggregate) : empty());
     }
 
     @NotNull
     @Override
     @XmlTransient
-    public Observable<Patient> getDeprecatedByObservable() {
-        return just(deprecatedBy);
+    public Publisher<Patient> getDeprecatedByObservable() {
+        return toPublisher(deprecatedBy != null ? just(deprecatedBy) : empty());
     }
 
     @NotNull
     @Override
     @XmlTransient
-    public Observable<Patient> getDeprecatesObservable() {
-        return from(deprecates);
+    public Publisher<Patient> getDeprecatesObservable() {
+        return toPublisher(from(deprecates));
     }
 
     @Override

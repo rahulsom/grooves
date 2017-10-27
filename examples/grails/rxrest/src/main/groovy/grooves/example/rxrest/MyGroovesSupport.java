@@ -9,10 +9,8 @@ import com.github.rahulsom.grooves.queries.QuerySupport;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import grails.gorm.rx.RxEntity;
 import org.grails.datastore.gorm.GormEntity;
-import rx.Observable;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Rx Gorm Support for Query Util.
@@ -44,23 +42,23 @@ public interface MyGroovesSupport<
         RxEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
 
     @Override
-    default Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
+    default Publisher<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
         return BlockingSnapshotSource.super.getSnapshot(maxPosition, aggregate);
     }
 
     @Override
-    default Observable<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
+    default Publisher<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
         return BlockingSnapshotSource.super.getSnapshot(maxTimestamp, aggregate);
     }
 
     @Override
-    default Observable<EventT> getUncomputedEvents(
+    default Publisher<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, long version) {
         return RxEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, version);
     }
 
     @Override
-    default Observable<EventT> getUncomputedEvents(
+    default Publisher<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
         return RxEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
     }

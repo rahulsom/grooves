@@ -7,6 +7,7 @@ import org.codehaus.groovy.ast.expr.Expression;
 import org.codehaus.groovy.control.SourceUnit;
 import org.codehaus.groovy.transform.AbstractASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformation;
+import org.reactivestreams.Publisher;
 import rx.Observable;
 
 import java.util.List;
@@ -67,7 +68,7 @@ public class QueryASTTransformation extends AbstractASTTransformation {
                                 final ClassNode returnType = implMethod.getReturnType();
                                 return parameters != null && parameters.length == 2
                                         && returnType.getName()
-                                                .equals(Observable.class.getName())
+                                                .equals(Publisher.class.getName())
                                         && returnType.getGenericsTypes()[0].getType().getName()
                                                 .equals(EventApplyOutcome.class.getName())
                                         && parameters[0].getType().getName()
@@ -90,7 +91,7 @@ public class QueryASTTransformation extends AbstractASTTransformation {
     }
 
     private String getObservableEventApplyOutcome() {
-        return ClassHelper.make(Observable.class).getName() + "<"
+        return ClassHelper.make(Publisher.class).getName() + "<"
                 + ClassHelper.make(EventApplyOutcome.class).getName() + ">";
     }
 }

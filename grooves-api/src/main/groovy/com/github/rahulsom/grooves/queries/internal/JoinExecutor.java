@@ -8,6 +8,7 @@ import rx.Observable;
 import java.util.List;
 
 import static rx.Observable.just;
+import static rx.RxReactiveStreams.toObservable;
 
 /**
  * Executes a query as a Join.
@@ -80,16 +81,14 @@ public class JoinExecutor<
                     return applyDeprecatedBy(deprecatedByEvent, initialSnapshot);
                 } else if (classJoinE.isAssignableFrom(event.getClass())) {
                     JoinEventT joinEvent = (JoinEventT) event;
-                    return joinEvent
-                            .getJoinAggregateObservable()
+                    return toObservable(joinEvent.getJoinAggregateObservable())
                             .map(joinedAggregate -> {
                                 initialSnapshot.getJoinedIds().add(joinedAggregate.getId());
                                 return initialSnapshot;
                             });
                 } else if (classDisjoinE.isAssignableFrom(event.getClass())) {
                     DisjoinEventT disjoinEvent = (DisjoinEventT) event;
-                    return disjoinEvent
-                            .getJoinAggregateObservable()
+                    return toObservable(disjoinEvent.getJoinAggregateObservable())
                             .map(joinedAggregate -> {
                                 initialSnapshot.getJoinedIds().remove(joinedAggregate.getId());
                                 return initialSnapshot;

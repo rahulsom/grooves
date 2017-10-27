@@ -2,13 +2,14 @@ package domains;
 
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 import java.util.Date;
 
+import static rx.Observable.empty;
 import static rx.Observable.just;
+import static rx.RxReactiveStreams.toPublisher;
 
 public abstract class Transaction implements BaseEvent<Long, Account, Long, Transaction> {
     Account aggregate;
@@ -66,7 +67,7 @@ public abstract class Transaction implements BaseEvent<Long, Account, Long, Tran
         return aggregate;
     }
 
-    public Observable<Account> getAggregateObservable() {
-        return just(aggregate);
+    public Publisher<Account> getAggregateObservable() {
+        return toPublisher(aggregate != null ? just(aggregate) : empty());
     }
 }

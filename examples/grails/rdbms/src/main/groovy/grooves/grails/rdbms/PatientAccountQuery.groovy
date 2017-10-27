@@ -6,10 +6,11 @@ import com.github.rahulsom.grooves.groovy.transformations.Query
 import grails.compiler.GrailsCompileStatic
 import grails.converters.JSON
 import groovy.json.JsonSlurper
-import rx.Observable
+import org.reactivestreams.Publisher
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 import static rx.Observable.just
+import static rx.RxReactiveStreams.toPublisher
 
 /**
  * Performs a query for Patient Account information
@@ -36,32 +37,32 @@ class PatientAccountQuery implements
     }
 
     @Override
-    Observable<EventApplyOutcome> onException(
+    Publisher<EventApplyOutcome> onException(
             Exception e, PatientAccount snapshot, PatientEvent event) {
         // ignore exceptions. Look at the mongo equivalent to see one possible way to handle
         // exceptions
-        just CONTINUE
+        toPublisher(just(CONTINUE))
     }
 
-    Observable<EventApplyOutcome> applyPatientCreated(
+    Publisher<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientAccount snapshot) {
         if (snapshot.aggregateId == event.aggregateId) {
             snapshot.name = event.name
         }
-        just CONTINUE
+        toPublisher(just(CONTINUE))
     }
 
-    Observable<EventApplyOutcome> applyProcedurePerformed(
+    Publisher<EventApplyOutcome> applyProcedurePerformed(
             ProcedurePerformed event, PatientAccount snapshot) {
         snapshot.balance += event.cost
-        just CONTINUE
+        toPublisher(just(CONTINUE))
     }
 
-    Observable<EventApplyOutcome> applyPaymentMade(
+    Publisher<EventApplyOutcome> applyPaymentMade(
             PaymentMade event, PatientAccount snapshot) {
         snapshot.balance -= event.amount
         snapshot.moneyMade += event.amount
-        just CONTINUE
+        toPublisher(just(CONTINUE))
     }
 
     final Class<PatientAccount> snapshotClass = PatientAccount

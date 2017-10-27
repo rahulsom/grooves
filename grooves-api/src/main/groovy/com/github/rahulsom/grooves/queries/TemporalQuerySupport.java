@@ -7,6 +7,7 @@ import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.queries.internal.*;
+import org.reactivestreams.Publisher;
 import rx.Observable;
 
 import java.text.SimpleDateFormat;
@@ -18,6 +19,8 @@ import static com.github.rahulsom.grooves.queries.internal.Utils.returnOrRedirec
 import static com.github.rahulsom.grooves.queries.internal.Utils.stringify;
 import static java.util.stream.Collectors.toList;
 import static rx.Observable.*;
+import static rx.RxReactiveStreams.toObservable;
+import static rx.RxReactiveStreams.toPublisher;
 
 /**
  * Default interface to help in building temporal snapshots.
@@ -56,7 +59,7 @@ public interface TemporalQuerySupport<
      */
     default Observable<SnapshotT> getLastUsableSnapshot(
             final AggregateT aggregate, Date maxTimestamp) {
-        return getSnapshot(maxTimestamp, aggregate)
+        return toObservable(getSnapshot(maxTimestamp, aggregate))
                 .defaultIfEmpty(createEmptySnapshot())
                 .doOnNext(it -> {
                     getLog().debug("  -> Last Usable Snapshot: {}",
@@ -95,7 +98,7 @@ public interface TemporalQuerySupport<
             AggregateT aggregate, Date moment, boolean reuseEarlierSnapshot) {
         if (reuseEarlierSnapshot) {
             return getLastUsableSnapshot(aggregate, moment).flatMap(lastSnapshot ->
-                    getUncomputedEvents(aggregate, lastSnapshot, moment).toList()
+                    toObservable(getUncomputedEvents(aggregate, lastSnapshot, moment)).toList()
                             .flatMap(events -> {
                                 if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
                                     List<EventT> reverts = events.stream()
@@ -118,8 +121,7 @@ public interface TemporalQuerySupport<
             SnapshotT lastSnapshot = createEmptySnapshot();
 
             final Observable<List<EventT>> uncomputedEvents =
-                    getUncomputedEvents(aggregate, lastSnapshot, moment)
-                            .toList();
+                    toObservable(getUncomputedEvents(aggregate, lastSnapshot, moment)).toList();
 
             return uncomputedEvents
                     .doOnNext(ue ->
@@ -166,8 +168,8 @@ public interface TemporalQuerySupport<
             getLog().info("Events: {}", events);
 
             if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
-                return snapshot
-                        .getAggregateObservable().flatMap(aggregate1 ->
+                return toObservable(snapshot.getAggregateObservable())
+                        .flatMap(aggregate1 ->
                                 aggregate1 == null ?
                                         computeSnapshotAndEvents(
                                                 aggregate, moment, redirect, events, snapshot) :
@@ -232,7 +234,7 @@ public interface TemporalQuerySupport<
                     getLog().info("  --> Computed: {}", snapshot);
                 })
                 .flatMap(it -> returnOrRedirect(redirect, events, it,
-                        () -> it.getDeprecatedByObservable()
+                        () -> toObservable(it.getDeprecatedByObservable())
                                 .flatMap(x -> computeSnapshot(x, moment))
                 ));
     }
@@ -243,12 +245,13 @@ public interface TemporalQuerySupport<
     }
 
     @Override
-    default Observable<EventT> findEventsBefore(EventT event) {
-        return event.getAggregateObservable().flatMap(aggregate ->
-                getUncomputedEvents(aggregate, null, event.getTimestamp())
-        );
+    default Publisher<EventT> findEventsBefore(EventT event) {
+        return toPublisher(toObservable(event.getAggregateObservable())
+                .flatMap(aggregate ->
+                        toObservable(getUncomputedEvents(aggregate, null, event.getTimestamp()))
+                ));
     }
 
-    Observable<EventT> getUncomputedEvents(
+    Publisher<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime);
 }

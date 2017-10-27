@@ -1,7 +1,7 @@
 package com.github.rahulsom.grooves.api.events
 
 import com.github.rahulsom.grooves.api.AggregateType
-import rx.Observable
+import org.reactivestreams.Publisher
 
 /**
  * Breaks a join from [AggregateT] to [JoinedAggregateT] that had existed earlier.
@@ -31,6 +31,6 @@ interface DisjoinEvent<
      * That makes it possible for a system at a later date to change it's problem space and answer questions that unidirectional joins can't.
      * Your directionality should match your plan in [JoinEvent]
      */
-    val joinAggregateObservable: Observable<JoinedAggregateT>
+    val joinAggregateObservable: Publisher<JoinedAggregateT>
 
 }

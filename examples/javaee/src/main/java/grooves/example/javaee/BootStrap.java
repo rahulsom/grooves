@@ -20,6 +20,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static rx.RxReactiveStreams.toObservable;
+
 @Singleton
 @Startup
 public class BootStrap {
@@ -238,7 +240,7 @@ public class BootStrap {
 
         database.addEvent(e1);
         database.addEvent(e2);
-        return e2.getConverseObservable().toBlocking().single();
+        return toObservable(e2.getConverseObservable()).toBlocking().single();
     }
 
     private Date date(String yyyyMMdd) {
@@ -262,7 +264,7 @@ public class BootStrap {
 
         Supplier<Long> positionSupplier =
                 () -> database.events()
-                        .filter(x -> x.getAggregateObservable()
+                        .filter(x -> toObservable(x.getAggregateObservable())
                                 .toBlocking()
                                 .single()
                                 .equals(patient))

@@ -4,7 +4,7 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 public interface SimpleQuery<
         AggregateIdT,
@@ -19,7 +19,7 @@ public interface SimpleQuery<
         > extends
         BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
 
-    Observable<EventApplyOutcome> applyEvent(ApplicableEventT event, SnapshotT snapshot);
+    Publisher<EventApplyOutcome> applyEvent(ApplicableEventT event, SnapshotT snapshot);
 
     @Override
     default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,

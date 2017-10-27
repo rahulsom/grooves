@@ -6,12 +6,14 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import grails.gorm.rx.RxEntity;
+import org.reactivestreams.Publisher;
 import rx.Observable;
 
 import java.util.Date;
 
 import static com.github.rahulsom.grooves.grails.QueryUtil.*;
 import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
+import static rx.RxReactiveStreams.toPublisher;
 
 /**
  * Supplies Snapshots from a Blocking Gorm Source.
@@ -40,28 +42,28 @@ public interface RxSnapshotSource<
     Class<SnapshotT> getSnapshotClass();
 
     @Override
-    default Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
+    default Publisher<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
         //noinspection unchecked
-        return (Observable<SnapshotT>) (maxPosition == Long.MAX_VALUE ?
+        return toPublisher((Observable<SnapshotT>) (maxPosition == Long.MAX_VALUE ?
                 invokeStaticMethod(getSnapshotClass(),
                         SNAPSHOTS_BY_AGGREGATE,
                         new Object[]{aggregate.getId(), LATEST_BY_POSITION}) :
                 invokeStaticMethod(
                         getSnapshotClass(),
                         SNAPSHOTS_BY_POSITION,
-                        new Object[]{aggregate.getId(), maxPosition, LATEST_BY_POSITION}));
+                        new Object[]{aggregate.getId(), maxPosition, LATEST_BY_POSITION})));
     }
 
     @Override
-    default Observable<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
+    default Publisher<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
         //noinspection unchecked
-        return (Observable<SnapshotT>) (maxTimestamp == null ?
+        return toPublisher((Observable<SnapshotT>) (maxTimestamp == null ?
                 invokeStaticMethod(getSnapshotClass(),
                         SNAPSHOTS_BY_AGGREGATE,
                         new Object[]{aggregate.getId(), LATEST_BY_POSITION}) :
                 invokeStaticMethod(getSnapshotClass(),
                         SNAPSHOTS_BY_TIMETTAMP,
-                        new Object[]{aggregate.getId(), maxTimestamp, LATEST_BY_POSITION}));
+                        new Object[]{aggregate.getId(), maxTimestamp, LATEST_BY_POSITION})));
     }
 
 }

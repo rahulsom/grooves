@@ -32,11 +32,11 @@ class GroovesAstTransformationsSpec extends Specification {
         then:
         errors[0] instanceof SyntaxErrorMessage
         def message0 = (errors[0] as SyntaxErrorMessage).cause.message
-        message0.matches(/Missing expected method .+Observable<.+EventApplyOutcome> applyCashDeposit\(.+CashDeposit event, .+Balance snapshot\)\n.+/)
+        message0.matches(/Missing expected method .+Publisher<.+EventApplyOutcome> applyCashDeposit\(.+CashDeposit event, .+Balance snapshot\)\n.+/)
 
         errors[1].class == SyntaxErrorMessage
         def message1 = (errors[1] as SyntaxErrorMessage).cause.message
-        message1.matches(/Missing expected method .+Observable<.+EventApplyOutcome> applyCashWithdrawal\(.+CashWithdrawal event, .+Balance snapshot\)\n.+/)
+        message1.matches(/Missing expected method .+Publisher<.+EventApplyOutcome> applyCashWithdrawal\(.+CashWithdrawal event, .+Balance snapshot\)\n.+/)
         retval == null
 
     }

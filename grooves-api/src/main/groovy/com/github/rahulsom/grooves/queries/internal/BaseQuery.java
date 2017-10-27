@@ -5,9 +5,9 @@ import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
 import org.jetbrains.annotations.NotNull;
+import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rx.Observable;
 
 import java.util.Date;
 
@@ -55,7 +55,7 @@ public interface BaseQuery<
      *
      * @return An observable that returns at most one Snapshot
      */
-    @NotNull Observable<SnapshotT> getSnapshot(long maxPosition, @NotNull AggregateT aggregate);
+    @NotNull Publisher<SnapshotT> getSnapshot(long maxPosition, @NotNull AggregateT aggregate);
 
     /**
      * Gets the last snapshot before given timestamp. Is responsible for discarding attached entity.
@@ -65,7 +65,7 @@ public interface BaseQuery<
      *
      * @return An observable that returns at most one Snapshot
      */
-    @NotNull Observable<SnapshotT> getSnapshot(Date maxTimestamp, @NotNull AggregateT aggregate);
+    @NotNull Publisher<SnapshotT> getSnapshot(Date maxTimestamp, @NotNull AggregateT aggregate);
 
     /**
      * Decides whether applying more events is permitted on a snapshot.
@@ -83,7 +83,7 @@ public interface BaseQuery<
      *
      * @return The list of events
      */
-    @NotNull Observable<EventT> findEventsBefore(@NotNull EventT event);
+    @NotNull Publisher<EventT> findEventsBefore(@NotNull EventT event);
 
     /**
      * Adds an aggregate to the list of aggregates that are deprecated by the aggregate of a
@@ -103,7 +103,7 @@ public interface BaseQuery<
      *
      * @return The outcome of handling the exception
      */
-    @NotNull Observable<EventApplyOutcome> onException(
+    @NotNull Publisher<EventApplyOutcome> onException(
             @NotNull Exception e, @NotNull SnapshotT snapshot, @NotNull EventT event);
 
     /**

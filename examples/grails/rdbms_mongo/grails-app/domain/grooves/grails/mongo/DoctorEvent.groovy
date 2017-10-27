@@ -7,9 +7,11 @@ import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.groovy.transformations.Event
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
-import rx.Observable
+import org.reactivestreams.Publisher
 
+import static rx.Observable.empty
 import static rx.Observable.just
+import static rx.RxReactiveStreams.toPublisher
 
 /**
  * Represents an Event on a Doctor
@@ -26,7 +28,9 @@ abstract class DoctorEvent implements BaseEvent<Long, Doctor, Long, DoctorEvent>
     Long position
     Doctor aggregate
 
-    Observable<Doctor> getAggregateObservable() { just(aggregate) }
+    Publisher<Doctor> getAggregateObservable() {
+        toPublisher(aggregate ? just(aggregate) : empty())
+    }
 
     static transients = ['revertedBy']
 
@@ -47,7 +51,7 @@ class DoctorCreated extends DoctorEvent {
 class DoctorGotPatient extends DoctorEvent
         implements JoinEvent<Long, Doctor, Long, DoctorEvent, Long, Patient> {
     Patient patient
-    @Override Observable<Patient> getJoinAggregateObservable() { just patient }
+    @Override Publisher<Patient> getJoinAggregateObservable() { toPublisher(just(patient)) }
 
     @Override String toString() { "Doctor $aggregate got $patient" }
 }
@@ -57,7 +61,7 @@ class DoctorGotPatient extends DoctorEvent
 class DoctorLostPatient extends DoctorEvent
         implements DisjoinEvent<Long, Doctor, Long, DoctorEvent, Long, Patient> {
     Patient patient
-    @Override Observable<Patient> getJoinAggregateObservable() { just patient }
+    @Override Publisher<Patient> getJoinAggregateObservable() { toPublisher(just(patient)) }
 
     @Override String toString() { "Doctor $aggregate lost $patient" }
 }
@@ -66,7 +70,7 @@ class DoctorLostPatient extends DoctorEvent
 class DoctorAddedToZipcode extends DoctorEvent
         implements JoinEvent<Long, Doctor, Long, DoctorEvent, Long, Zipcode> {
     Zipcode zipcode
-    @Override Observable<Zipcode> getJoinAggregateObservable() { just(zipcode) }
+    @Override Publisher<Zipcode> getJoinAggregateObservable() { toPublisher(just(zipcode)) }
 
     @Override String toString() { "Doctor $aggregate added to $zipcode" }
 
@@ -77,7 +81,7 @@ class DoctorAddedToZipcode extends DoctorEvent
 class DoctorRemovedFromZipcode extends DoctorEvent
         implements DisjoinEvent<Long, Doctor, Long, DoctorEvent, Long, Zipcode> {
     Zipcode zipcode
-    @Override Observable<Zipcode> getJoinAggregateObservable() { just(zipcode) }
+    @Override Publisher<Zipcode> getJoinAggregateObservable() { toPublisher(just(zipcode)) }
 
     @Override String toString() { "Doctor $aggregate removed from $zipcode" }
 

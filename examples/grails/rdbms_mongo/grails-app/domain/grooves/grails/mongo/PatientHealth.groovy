@@ -2,9 +2,10 @@ package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
 import groovy.transform.EqualsAndHashCode
-import rx.Observable
+import org.reactivestreams.Publisher
 
 import static rx.Observable.*
+import static rx.RxReactiveStreams.toPublisher
 
 /**
  * Represents a patient's health
@@ -27,15 +28,15 @@ class PatientHealth implements JavaSnapshot<Long, Patient, String, Long, Patient
     Patient getAggregate() { Patient.get(aggregateId) }
 
     @Override
-    Observable<Patient> getAggregateObservable() {
-        (aggregateId ? defer { just(aggregate) } : empty()) as Observable<Patient>
+    Publisher<Patient> getAggregateObservable() {
+        toPublisher(aggregateId ? defer { just(aggregate) } : empty())
     }
 
     void setAggregate(Patient aggregate) { this.aggregateId = aggregate.id }
 
     @Override
-    Observable<Patient> getDeprecatedByObservable() {
-        deprecatedById ? defer { just(deprecatedBy) } : empty()
+    Publisher<Patient> getDeprecatedByObservable() {
+        toPublisher(deprecatedById ? defer { just(deprecatedBy) } : empty())
     }
     Long deprecatedById
 
@@ -44,8 +45,10 @@ class PatientHealth implements JavaSnapshot<Long, Patient, String, Long, Patient
     void setDeprecatedBy(Patient aggregate) { deprecatedById = aggregate.id }
 
     @Override
-    Observable<Patient> getDeprecatesObservable() {
-        deprecatesIds ? from(deprecatesIds.toList()).flatMap { Patient.get(it) } : empty()
+    Publisher<Patient> getDeprecatesObservable() {
+        toPublisher(deprecatesIds ?
+                from(deprecatesIds.toList()).flatMap { Patient.get(it) } :
+                empty())
     }
     Set<Long> deprecatesIds
 

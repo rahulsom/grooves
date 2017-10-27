@@ -5,15 +5,14 @@ import com.github.rahulsom.grooves.queries.QuerySupport
 import com.github.rahulsom.grooves.queries.internal.SimpleExecutor
 import com.github.rahulsom.grooves.queries.internal.SimpleQuery
 import grooves.boot.kotlin.domain.Patient
-import grooves.boot.kotlin.domain.PatientHealth
 import grooves.boot.kotlin.domain.PatientEvent
+import grooves.boot.kotlin.domain.PatientHealth
 import grooves.boot.kotlin.domain.Procedure
-import grooves.boot.kotlin.repositories.PatientHealthRepository
 import grooves.boot.kotlin.repositories.PatientEventRepository
+import grooves.boot.kotlin.repositories.PatientHealthRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import rx.Observable
-import rx.Observable.just
+import reactor.core.publisher.Mono.just
 import java.lang.Exception
 import java.util.*
 
@@ -32,11 +31,11 @@ class PatientHealthQuery :
 
     override fun createEmptySnapshot() = PatientHealth()
 
-    override fun getSnapshot(maxPosition: Long, aggregate: Patient): Observable<PatientHealth> =
+    override fun getSnapshot(maxPosition: Long, aggregate: Patient) =
             patientHealthRepository.findByAggregateIdAndLastEventPositionLessThan(
                     aggregate.id!!, maxPosition)
 
-    override fun getSnapshot(maxTimestamp: Date, aggregate: Patient): Observable<PatientHealth> =
+    override fun getSnapshot(maxTimestamp: Date, aggregate: Patient) =
             patientHealthRepository.findByAggregateIdAndLastEventTimestampLessThan(
                     aggregate.id!!, maxTimestamp)
 

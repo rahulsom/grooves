@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import static rx.Observable.from;
 import static rx.Observable.just;
+import static rx.RxReactiveStreams.toObservable;
 
 /**
  * Utility objects and methods to help with Queries.
@@ -63,7 +64,7 @@ public class Utils {
                         && lastEvent instanceof DeprecatedBy
                         && redirect;
 
-        return it.getDeprecatedByObservable()
+        return toObservable(it.getDeprecatedByObservable())
                 .flatMap(deprecatedBy -> redirectToDeprecator ? redirectedSnapshot.get() : just(it))
                 .defaultIfEmpty(it);
 
