@@ -2,7 +2,6 @@ package grooves.example.rxrest
 
 import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
 import groovy.transform.EqualsAndHashCode
-import rx.Observable
 
 import static rx.Observable.*
 
@@ -50,12 +49,12 @@ class PatientAccount implements JavaSnapshot<Long, Patient, String, Long, Patien
 
     @Override String toString() { "PatientAccount($id, $aggregateId, $lastEventPosition)" }
 
-    @Override Observable<Patient> getDeprecatedByObservable() {
-        deprecatedBy ? just(deprecatedBy) : empty()
+    @Override Publisher<Patient> getDeprecatedByObservable() {
+        RxReactiveStreams.toPublisher(deprecatedBy ? just(deprecatedBy) : empty())
     }
 
     @Override
-    Observable<Patient> getDeprecatesObservable() {
-        deprecates ? from(deprecates) : empty()
+    Publisher<Patient> getDeprecatesObservable() {
+        RxReactiveStreams.toPublisher(deprecates ? from(deprecates) : empty())
     }
 }

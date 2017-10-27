@@ -2,7 +2,6 @@ package grooves.example.rxrest
 
 import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
 import groovy.transform.EqualsAndHashCode
-import rx.Observable
 
 import static rx.Observable.empty
 import static rx.Observable.from
@@ -32,8 +31,8 @@ class PatientHealth implements JavaSnapshot<Long, Patient, String, Long, Patient
 
     void setAggregate(Patient aggregate) { this.aggregateId = aggregate.id }
 
-    @Override Observable<Patient> getDeprecatedByObservable() {
-        deprecatedById ? Patient.get(deprecatedById) : empty()
+    @Override Publisher<Patient> getDeprecatedByObservable() {
+        RxReactiveStreams.toPublisher(deprecatedById ? Patient.get(deprecatedById) : empty())
     }
 
     Long deprecatedById
@@ -41,8 +40,9 @@ class PatientHealth implements JavaSnapshot<Long, Patient, String, Long, Patient
     void setDeprecatedBy(Patient aggregate) { deprecatedById = aggregate.id }
 
     @Override
-    Observable<Patient> getDeprecatesObservable() {
-        deprecatesIds ? from(deprecatesIds).flatMap { Patient.get(it) } : empty()
+    Publisher<Patient> getDeprecatesObservable() {
+        RxReactiveStreams.toPublisher(
+                deprecatesIds ? from(deprecatesIds).flatMap { Patient.get(it) } : empty())
     }
     Set<Long> deprecatesIds
 

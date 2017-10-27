@@ -8,6 +8,7 @@ import com.github.rahulsom.grooves.api.events.DeprecatedBy;
 import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
+import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
@@ -24,6 +25,7 @@ import static com.github.rahulsom.grooves.queries.internal.Utils.ids;
 import static com.github.rahulsom.grooves.queries.internal.Utils.stringify;
 import static rx.Observable.from;
 import static rx.Observable.just;
+import static rx.RxReactiveStreams.toObservable;
 
 /**
  * Executes a query. This makes a query more flexible by allowing the use of different query
@@ -182,11 +184,12 @@ public class QueryExecutor<
     Observable<SnapshotT> applyDeprecatedBy(
             final DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT> event,
             SnapshotT snapshot) {
-        return event.getDeprecatorObservable().reduce(snapshot, (snapshotT, aggregate) -> {
-            log.info("        -> {} will cause redirect to {}", event, aggregate);
-            snapshotT.setDeprecatedBy(aggregate);
-            return snapshotT;
-        });
+        return toObservable(event.getDeprecatorObservable())
+                .reduce(snapshot, (snapshotT, aggregate) -> {
+                    log.info("        -> {} will cause redirect to {}", event, aggregate);
+                    snapshotT.setDeprecatedBy(aggregate);
+                    return snapshotT;
+                });
     }
 
     /**
@@ -212,14 +215,16 @@ public class QueryExecutor<
         final SnapshotT newSnapshot = util.createEmptySnapshot();
         newSnapshot.setAggregate(aggregate);
 
-        return event.getConverseObservable().flatMap(converse -> event.getDeprecatedObservable()
+        return toObservable(event.getConverseObservable()).flatMap(converse ->
+                toObservable(event.getDeprecatedObservable())
                 .flatMap(deprecatedAggregate -> {
                     log.debug("        -> Deprecated Aggregate is: {}. Converse is: {}",
                             deprecatedAggregate, converse);
                     util.addToDeprecates(newSnapshot, deprecatedAggregate);
 
                     Observable<EventT> concatenatedEvents =
-                            events.concatWith(util.findEventsBefore((EventT) converse))
+                            events.concatWith(
+                                    toObservable(util.findEventsBefore((EventT) converse)))
                                     .cache();
                     return concatenatedEvents
                             .filter(it -> !isDeprecatesOrConverse(event, converse, it))
@@ -256,7 +261,8 @@ public class QueryExecutor<
         try {
             final Method method =
                     util.getClass().getMethod(methodName, event.getClass(), snapshot.getClass());
-            return (Observable<EventApplyOutcome>) method.invoke(util, event, snapshot);
+            return toObservable(
+                    (Publisher<EventApplyOutcome>) method.invoke(util, event, snapshot));
         } catch (Exception e1) {
             return handleException(util, methodName, snapshot, event, e1);
         }
@@ -265,7 +271,7 @@ public class QueryExecutor<
     private Observable<EventApplyOutcome> handleException(
             QueryT util, String methodName, SnapshotT snapshot, EventT event, Exception e1) {
         try {
-            return util.onException(e1, snapshot, event);
+            return toObservable(util.onException(e1, snapshot, event));
         } catch (Exception e2) {
             String description = String.format(
                     "{Snapshot: %s; Event: %s; method: %s; originalException: %s}",

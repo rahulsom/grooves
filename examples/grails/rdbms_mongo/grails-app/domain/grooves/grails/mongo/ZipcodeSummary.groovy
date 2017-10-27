@@ -3,12 +3,10 @@ package grooves.grails.mongo
 import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
-import rx.Observable
+import org.reactivestreams.Publisher
 
-import static rx.Observable.defer
-import static rx.Observable.empty
-import static rx.Observable.from
-import static rx.Observable.just
+import static rx.Observable.*
+import static rx.RxReactiveStreams.toPublisher
 
 /**
  * Represents the summary of all patients' health in a zipcode
@@ -28,24 +26,24 @@ class ZipcodeSummary implements JavaSnapshot<Long, Zipcode, String, Long, Zipcod
     Set<String> processingErrors = []
 
     @Override
-    Observable<Zipcode> getAggregateObservable() {
-        aggregateId ? defer { just aggregate } : empty()
+    Publisher<Zipcode> getAggregateObservable() {
+        toPublisher(aggregateId ? defer { just aggregate } : empty())
     }
     Long aggregateId
     Zipcode getAggregate() { Zipcode.get(aggregateId) }
     void setAggregate(Zipcode aggregate) { this.aggregateId = aggregate.id }
 
     @Override
-    Observable<Zipcode> getDeprecatedByObservable() {
-        deprecatedBy ? just(deprecatedBy) : empty()
+    Publisher<Zipcode> getDeprecatedByObservable() {
+        toPublisher(deprecatedBy ? just(deprecatedBy) : empty())
     }
     Long deprecatedById
     Zipcode getDeprecatedBy() { Zipcode.get(deprecatedById) }
     void setDeprecatedBy(Zipcode aggregate) { deprecatedById = aggregate.id }
 
     @Override
-    Observable<Zipcode> getDeprecatesObservable() {
-        deprecatesIds ? from(deprecatesIds).flatMap { Zipcode.get it } : empty()
+    Publisher<Zipcode> getDeprecatesObservable() {
+        toPublisher(deprecatesIds ? from(deprecatesIds).flatMap { Zipcode.get it } : empty())
     }
     Set<Long> deprecatesIds
     Set<Zipcode> getDeprecates() { deprecatesIds.collect { Zipcode.get(it) }.toSet() }

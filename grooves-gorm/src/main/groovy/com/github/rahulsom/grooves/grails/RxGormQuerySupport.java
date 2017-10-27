@@ -6,7 +6,7 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import grails.gorm.rx.RxEntity;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 import java.util.Date;
 
@@ -44,23 +44,23 @@ public interface RxGormQuerySupport<
                 SnapshotT, QueryT> {
 
     @Override
-    default Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
+    default Publisher<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
         return RxSnapshotSource.super.getSnapshot(maxPosition, aggregate);
     }
 
     @Override
-    default Observable<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
+    default Publisher<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
         return RxSnapshotSource.super.getSnapshot(maxTimestamp, aggregate);
     }
 
     @Override
-    default Observable<EventT> getUncomputedEvents(
+    default Publisher<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, long version) {
         return RxEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, version);
     }
 
     @Override
-    default Observable<EventT> getUncomputedEvents(
+    default Publisher<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
         return RxEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
     }

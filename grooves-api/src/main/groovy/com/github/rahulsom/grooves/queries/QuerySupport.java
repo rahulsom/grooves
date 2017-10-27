@@ -6,6 +6,7 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
+import org.reactivestreams.Publisher;
 import rx.Observable;
 
 /**
@@ -41,7 +42,7 @@ public interface QuerySupport<
     }
 
     @Override
-    default Observable<EventT> findEventsBefore(EventT event) {
+    default Publisher<EventT> findEventsBefore(EventT event) {
         return VersionedQuerySupport.super.findEventsBefore(event);
     }
 }

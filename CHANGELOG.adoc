@@ -5,6 +5,9 @@
 * Remove `createdBy` and `getAudit`.
   They are too opinionated.
 * Use Lombok for Java Examples.
+* Use Reactive Streams for APIs.
+  This will allow use of RxJava2, Akka and Reactor with ease.
+  RxJava1 will take some work.
 
 == 0.2.1
 * Allow subclasses in annotations.

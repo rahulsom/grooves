@@ -7,6 +7,7 @@ import com.github.rahulsom.grooves.queries.QuerySupport;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.grails.datastore.gorm.GormEntity;
+import org.reactivestreams.Publisher;
 import rx.Observable;
 
 import java.util.Date;
@@ -19,6 +20,7 @@ import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
 import static rx.Observable.defer;
 import static rx.Observable.empty;
 import static rx.Observable.just;
+import static rx.RxReactiveStreams.toPublisher;
 
 /**
  * Supplies Snapshots from a Blocking Gorm Source.
@@ -47,8 +49,8 @@ public interface BlockingSnapshotSource<
     SnapshotT detachSnapshot(SnapshotT snapshot);
 
     @Override
-    default Observable<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
-        return defer(() -> {
+    default Publisher<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
+        return toPublisher(defer(() -> {
             //noinspection unchecked
             List<SnapshotT> snapshots = (List<SnapshotT>) (maxPosition == Long.MAX_VALUE ?
                     invokeStaticMethod(
@@ -63,12 +65,12 @@ public interface BlockingSnapshotSource<
             return DefaultGroovyMethods.asBoolean(snapshots) ?
                     just(detachSnapshot(snapshots.get(0))) :
                     empty();
-        });
+        }));
     }
 
     @Override
-    default Observable<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
-        return defer(() -> {
+    default Publisher<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
+        return toPublisher(defer(() -> {
             //noinspection unchecked
             List<SnapshotT> snapshots = (List<SnapshotT>) (maxTimestamp == null ?
                     invokeStaticMethod(
@@ -82,7 +84,7 @@ public interface BlockingSnapshotSource<
             return DefaultGroovyMethods.asBoolean(snapshots) ?
                     just(detachSnapshot(snapshots.get(0))) :
                     empty();
-        });
+        }));
     }
 
     Class<SnapshotT> getSnapshotClass();

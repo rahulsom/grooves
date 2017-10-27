@@ -6,8 +6,11 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import grooves.boot.kotlin.repositories.PatientRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Configurable
-import rx.Observable.empty
-import rx.Observable.just
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Flux.empty
+import reactor.core.publisher.Mono
+import reactor.core.publisher.Mono.just
+import rx.RxReactiveStreams.toPublisher
 import java.math.BigDecimal
 import java.util.*
 
@@ -31,7 +34,7 @@ class PatientAccount : Snapshot<String, Patient, String, String, PatientEvent> {
 
     @JsonIgnore
     override fun getAggregateObservable() = // <4>
-            aggregateId?.let { patientRepository!!.findAllById(just(it)) } ?: empty()
+            aggregateId?.let { patientRepository!!.findAllById(just(it)) } ?: Flux.empty()
 
     override fun setAggregate(aggregate: Patient) {
         this.aggregateId = aggregate.id
@@ -43,7 +46,7 @@ class PatientAccount : Snapshot<String, Patient, String, String, PatientEvent> {
 
     @JsonIgnore
     override fun getDeprecatedByObservable() = // <5>
-            deprecator?.let { just(it) } ?: empty()
+            deprecator?.let { just(it) } ?: Mono.empty()
 
     override fun setDeprecatedBy(deprecatingAggregate: Patient) {
         deprecator = deprecatingAggregate

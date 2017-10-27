@@ -6,6 +6,8 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
 import rx.Observable;
 
+import static rx.RxReactiveStreams.toObservable;
+
 public class SimpleExecutor<
         AggregateIdT,
         AggregateT extends AggregateType<AggregateIdT>,
@@ -24,6 +26,6 @@ public class SimpleExecutor<
     @Override
     protected Observable<EventApplyOutcome> callMethod(
             QueryT query, String methodName, SnapshotT snapshot, EventT event) {
-        return query.applyEvent((ApplicableEventT) event, snapshot);
+        return toObservable(query.applyEvent((ApplicableEventT) event, snapshot));
     }
 }

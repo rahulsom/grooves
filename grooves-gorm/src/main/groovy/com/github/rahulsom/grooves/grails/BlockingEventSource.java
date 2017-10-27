@@ -6,7 +6,7 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import org.grails.datastore.gorm.GormEntity;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +15,7 @@ import static com.github.rahulsom.grooves.grails.QueryUtil.*;
 import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
 import static rx.Observable.defer;
 import static rx.Observable.from;
+import static rx.RxReactiveStreams.toPublisher;
 
 /**
  * Supplies Events from a Blocking Gorm Source.
@@ -40,21 +41,21 @@ public interface BlockingEventSource<
         QueryT> {
 
     @Override
-    default Observable<EventT> getUncomputedEvents(
+    default Publisher<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, long version) {
         final long position =
                 lastSnapshot == null || lastSnapshot.getLastEventPosition() == null ? 0 :
                         lastSnapshot.getLastEventPosition();
         //noinspection unchecked
-        return defer(() -> from((List<EventT>) invokeStaticMethod(
+        return toPublisher(defer(() -> from((List<EventT>) invokeStaticMethod(
                 getEventClass(),
                 UNCOMPUTED_EVENTS_BY_VERSION,
                 new Object[]{aggregate, position, version, INCREMENTAL_BY_POSITION}
-        )));
+        ))));
     }
 
     @Override
-    default Observable<EventT> getUncomputedEvents(
+    default Publisher<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
         final Date lastEventTimestamp = lastSnapshot.getLastEventTimestamp();
         final String method = lastEventTimestamp == null ?
@@ -64,8 +65,8 @@ public interface BlockingEventSource<
                 new Object[]{aggregate, snapshotTime, INCREMENTAL_BY_TIMESTAMP} :
                 new Object[]{aggregate, lastEventTimestamp, snapshotTime, INCREMENTAL_BY_TIMESTAMP};
         //noinspection unchecked
-        return defer(() ->
-                from((List<EventT>) invokeStaticMethod(getEventClass(), method, params)));
+        return toPublisher(defer(() ->
+                from((List<EventT>) invokeStaticMethod(getEventClass(), method, params))));
     }
 
     /**

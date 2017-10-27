@@ -3,11 +3,12 @@ package grooves.example.javaee.domain;
 import com.github.rahulsom.grooves.api.events.Deprecates;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
 import javax.xml.bind.annotation.XmlTransient;
 
 import static rx.Observable.just;
+import static rx.RxReactiveStreams.toPublisher;
 
 public class PatientDeprecates extends PatientEvent
         implements Deprecates<Long, Patient, Long, PatientEvent> {
@@ -17,15 +18,15 @@ public class PatientDeprecates extends PatientEvent
     @NotNull
     @Override
     @XmlTransient
-    public Observable<PatientDeprecatedBy> getConverseObservable() {
-        return just(converse);
+    public Publisher<PatientDeprecatedBy> getConverseObservable() {
+        return toPublisher(just(converse));
     }
 
     @NotNull
     @Override
     @XmlTransient
-    public Observable<Patient> getDeprecatedObservable() {
-        return just(deprecated);
+    public Publisher<Patient> getDeprecatedObservable() {
+        return toPublisher(just(deprecated));
     }
 
     @Override

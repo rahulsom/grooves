@@ -44,7 +44,7 @@ public class QueryProcessorTest {
                 .hadErrorContaining("Method not implemented\n    rx.Observable<" + EAC_CLASS
                         + "> applyCashDeposit(domains.CashDeposit,domains.Balance)")
                 .inFile(balanceQuery)
-                .onLine(15)
+                .onLine(19)
                 .atColumn(1);
     }
 

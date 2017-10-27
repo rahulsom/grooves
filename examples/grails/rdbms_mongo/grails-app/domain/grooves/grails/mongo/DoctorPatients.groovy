@@ -2,9 +2,10 @@ package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.api.snapshots.JavaJoin
 import groovy.transform.EqualsAndHashCode
-import rx.Observable
+import org.reactivestreams.Publisher
 
 import static rx.Observable.*
+import static rx.RxReactiveStreams.toPublisher
 
 /**
  * Joins Doctor with Patients
@@ -26,15 +27,15 @@ class DoctorPatients implements JavaJoin<Long, Doctor, String, Long, Long, Docto
     Doctor getAggregate() { Doctor.get(aggregateId) }
 
     @Override
-    Observable<Doctor> getAggregateObservable() {
-        aggregateId ? just(aggregate) : empty()
+    Publisher<Doctor> getAggregateObservable() {
+        toPublisher(aggregateId ? just(aggregate) : empty())
     }
 
     void setAggregate(Doctor aggregate) { this.aggregateId = aggregate.id }
 
     @Override
-    Observable<Doctor> getDeprecatedByObservable() {
-        deprecatedBy ? just(deprecatedBy) : empty()
+    Publisher<Doctor> getDeprecatedByObservable() {
+        toPublisher(deprecatedBy ? just(deprecatedBy) : empty())
     }
     Long deprecatedById
 
@@ -43,8 +44,8 @@ class DoctorPatients implements JavaJoin<Long, Doctor, String, Long, Long, Docto
     void setDeprecatedBy(Doctor aggregate) { deprecatedById = aggregate.id }
 
     @Override
-    Observable<Doctor> getDeprecatesObservable() {
-        deprecatesIds ? from(deprecatesIds).flatMap { Doctor.get(it) } : empty()
+    Publisher<Doctor> getDeprecatesObservable() {
+        toPublisher(deprecatesIds ? from(deprecatesIds).flatMap { Doctor.get(it) } : empty())
     }
     Set<Long> deprecatesIds
 

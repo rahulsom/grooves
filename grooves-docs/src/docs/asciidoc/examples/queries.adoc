@@ -27,7 +27,7 @@ include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/querie
 <13> We name our methods `apply<EventType>`.
   This is required.
   It is not enforced though.
-<14> Each of these methods takes the event and the snapshot as inputs and returns an `Observable<EventApplyOutcome>` as output.
+<14> Each of these methods takes the event and the snapshot as inputs and returns an `Publisher<EventApplyOutcome>` as output.
   It can `CONTINUE` or `RETURN`.
 
 [source,groovy,indent=0,role="secondary"]
@@ -51,7 +51,7 @@ include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/qu
 <10> We name our methods `apply<EventType>`.
   This is required.
   Your IDE might not point out if you don't do it right, but the compiler will.
-<11> Each of these methods takes the event and the snapshot as inputs and returns an `Observable<EventApplyOutcome>` as output.
+<11> Each of these methods takes the event and the snapshot as inputs and returns an `Publisher<EventApplyOutcome>` as output.
   It can `CONTINUE` or `RETURN`.
 
 [source,groovy,indent=0,role="secondary"]
@@ -81,7 +81,7 @@ include::{sourcedir}/examples/grails/rdbms_mongo/src/main/groovy/grooves/grails/
 <12> We name our methods `apply<EventType>`.
   This is required.
   Your IDE might not point out if you don't do it right, but the compiler will.
-<13> Each of these methods takes the event and the snapshot as inputs and returns an `Observable<EventApplyOutcome>` as output.
+<13> Each of these methods takes the event and the snapshot as inputs and returns an `Publisher<EventApplyOutcome>` as output.
   It can `CONTINUE` or `RETURN`.
 
 [source,kotlin,indent=0,role="secondary"]

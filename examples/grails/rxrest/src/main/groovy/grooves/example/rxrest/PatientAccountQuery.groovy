@@ -3,7 +3,6 @@ package grooves.example.rxrest
 import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.groovy.transformations.Query
 import grails.compiler.GrailsCompileStatic
-import rx.Observable
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 import static rx.Observable.just
@@ -33,14 +32,14 @@ class PatientAccountQuery implements
     }
 
     @Override
-    Observable<EventApplyOutcome> onException(
+    Publisher<EventApplyOutcome> onException(
             Exception e, PatientAccount snapshot, PatientEvent event) {
         // ignore exceptions. Look at the mongo equivalent to see one possible way to handle
         // exceptions
         just CONTINUE
     }
 
-    Observable<EventApplyOutcome> applyPatientCreated(
+    Publisher<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientAccount snapshot) {
 
         if (snapshot.aggregateId == event.aggregateId) {
@@ -49,13 +48,13 @@ class PatientAccountQuery implements
         just CONTINUE
     }
 
-    Observable<EventApplyOutcome> applyProcedurePerformed(
+    Publisher<EventApplyOutcome> applyProcedurePerformed(
             ProcedurePerformed event, PatientAccount snapshot) {
         snapshot.balance += event.cost.toBigDecimal()
         just CONTINUE
     }
 
-    Observable<EventApplyOutcome> applyPaymentMade(
+    Publisher<EventApplyOutcome> applyPaymentMade(
             PaymentMade event, PatientAccount snapshot) {
         snapshot.balance -= event.amount.toBigDecimal()
         snapshot.moneyMade += event.amount.toBigDecimal()

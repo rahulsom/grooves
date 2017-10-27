@@ -7,6 +7,7 @@ import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
 import com.github.rahulsom.grooves.queries.internal.*;
+import org.reactivestreams.Publisher;
 import rx.Observable;
 
 import java.util.ArrayList;
@@ -15,9 +16,9 @@ import java.util.List;
 import static com.github.rahulsom.grooves.queries.internal.Utils.returnOrRedirect;
 import static com.github.rahulsom.grooves.queries.internal.Utils.stringify;
 import static java.util.stream.Collectors.toList;
-import static rx.Observable.empty;
-import static rx.Observable.error;
-import static rx.Observable.just;
+import static rx.Observable.*;
+import static rx.RxReactiveStreams.toObservable;
+import static rx.RxReactiveStreams.toPublisher;
 
 /**
  * Default interface to help in building versioned snapshots.
@@ -57,7 +58,7 @@ public interface VersionedQuerySupport<
      */
     default Observable<SnapshotT> getLastUsableSnapshot(
             final AggregateT aggregate, long maxPosition) {
-        return getSnapshot(maxPosition, aggregate)
+        return toObservable(getSnapshot(maxPosition, aggregate))
                 .defaultIfEmpty(createEmptySnapshot())
                 .doOnNext(it -> {
                     final String snapshotAsString =
@@ -99,7 +100,7 @@ public interface VersionedQuerySupport<
             AggregateT aggregate, long version, boolean reuseEarlierSnapshot) {
         if (reuseEarlierSnapshot) {
             return getLastUsableSnapshot(aggregate, version).flatMap(lastSnapshot ->
-                    getUncomputedEvents(aggregate, lastSnapshot, version).toList()
+                    toObservable(getUncomputedEvents(aggregate, lastSnapshot, version)).toList()
                             .flatMap(events -> {
                                 if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
                                     List<EventT> reverts = events.stream()
@@ -121,8 +122,7 @@ public interface VersionedQuerySupport<
             SnapshotT lastSnapshot = createEmptySnapshot();
 
             final Observable<List<EventT>> uncomputedEvents =
-                    getUncomputedEvents(aggregate, lastSnapshot, version)
-                            .toList();
+                    toObservable(getUncomputedEvents(aggregate, lastSnapshot, version)).toList();
 
             return uncomputedEvents
                     .doOnNext(ue -> getLog().debug("     Events since origin: {}",
@@ -137,7 +137,7 @@ public interface VersionedQuerySupport<
         return new QueryExecutor<>();
     }
 
-    Observable<EventT> getUncomputedEvents(
+    Publisher<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, long version);
 
 
@@ -176,8 +176,7 @@ public interface VersionedQuerySupport<
             getLog().info("Events: {}", events);
 
             if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
-                return lastUsableSnapshot
-                        .getAggregateObservable()
+                return toObservable(lastUsableSnapshot.getAggregateObservable())
                         .flatMap(aggregate1 -> aggregate1 == null ?
                                 computeSnapshotAndEvents(
                                         aggregate, version, redirect, events, lastUsableSnapshot) :
@@ -243,16 +242,16 @@ public interface VersionedQuerySupport<
                     getLog().info("  --> Computed: {}", snapshot);
                 })
                 .flatMap(it -> returnOrRedirect(redirect, events, it,
-                        () -> it.getDeprecatedByObservable()
+                        () -> toObservable(it.getDeprecatedByObservable())
                                 .flatMap(x -> computeSnapshot(x, version))
                 ));
     }
 
     @Override
-    default Observable<EventT> findEventsBefore(EventT event) {
-        return event
-                .getAggregateObservable()
-                .flatMap(aggregate -> getUncomputedEvents(aggregate, null, event.getPosition()));
+    default Publisher<EventT> findEventsBefore(EventT event) {
+        return toPublisher(toObservable(event.getAggregateObservable())
+                .flatMap(aggregate ->
+                        toObservable(getUncomputedEvents(aggregate, null, event.getPosition()))));
     }
 
 }

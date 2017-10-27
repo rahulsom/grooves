@@ -6,12 +6,13 @@ import com.github.rahulsom.grooves.api.events.Deprecates
 import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.groovy.transformations.Event
 import groovy.transform.ToString
-import rx.Observable
+import org.reactivestreams.Publisher
 
 import javax.persistence.*
 
 import static rx.Observable.empty
 import static rx.Observable.just
+import static rx.RxReactiveStreams.toPublisher
 
 /**
  * Domain Model for Patient Event
@@ -31,7 +32,9 @@ abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEve
     @Column(nullable = false) Long position //<4>
     @OneToOne Patient aggregate
 
-    Observable<Patient> getAggregateObservable() { aggregate ? just(aggregate) : empty() } // <5>
+    Publisher<Patient> getAggregateObservable() {
+        toPublisher(aggregate ? just(aggregate) : empty())
+    } // <5>
 
 }
 // end::abstract[]
@@ -84,8 +87,8 @@ class PatientDeprecatedBy extends PatientEvent implements
     @OneToOne PatientDeprecates converse
     @OneToOne Patient deprecator
 
-    Observable<PatientDeprecates> getConverseObservable() { just(converse) }
-    Observable<Patient> getDeprecatorObservable() { just(deprecator) }
+    Publisher<PatientDeprecates> getConverseObservable() { toPublisher(just(converse)) }
+    Publisher<Patient> getDeprecatorObservable() { toPublisher(just(deprecator)) }
 
     @Override String toString() { "PatientDeprecatedBy(deprecator=$deprecator)" }
 }
@@ -96,8 +99,8 @@ class PatientDeprecates extends PatientEvent
     @OneToOne PatientDeprecatedBy converse
     @OneToOne Patient deprecated
 
-    Observable<PatientDeprecatedBy> getConverseObservable() { just(converse) }
-    Observable<Patient> getDeprecatedObservable() { just(deprecated) }
+    Publisher<PatientDeprecatedBy> getConverseObservable() { toPublisher(just(converse)) }
+    Publisher<Patient> getDeprecatedObservable() { toPublisher(just(deprecated)) }
 
     @Override String toString() { "PatientDeprecates(deprecated=$deprecated)" }
 }

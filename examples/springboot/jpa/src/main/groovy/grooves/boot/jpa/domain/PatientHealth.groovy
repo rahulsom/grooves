@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
 import groovy.transform.ToString
-import rx.Observable
+import org.reactivestreams.Publisher
 
 import javax.persistence.*
 
 import static rx.Observable.*
+import static rx.RxReactiveStreams.toPublisher
 
 /**
  * Domain Model for Patient Health
@@ -34,16 +35,16 @@ class PatientHealth implements JavaSnapshot<Long, Patient, Long, Long, PatientEv
 
     int processingErrors = 0
 
-    @Override @JsonIgnore Observable<Patient> getAggregateObservable() {
-        aggregate ? just(aggregate) : empty()
+    @Override @JsonIgnore Publisher<Patient> getAggregateObservable() {
+        toPublisher(aggregate ? just(aggregate) : empty())
     }
 
-    @Override @JsonIgnore Observable<Patient> getDeprecatedByObservable() {
-        deprecatedBy ? just(deprecatedBy) : empty()
+    @Override @JsonIgnore Publisher<Patient> getDeprecatedByObservable() {
+        toPublisher(deprecatedBy ? just(deprecatedBy) : empty())
     }
 
-    @Override @JsonIgnore Observable<Patient> getDeprecatesObservable() {
-        from(deprecates.toList())
+    @Override @JsonIgnore Publisher<Patient> getDeprecatesObservable() {
+        toPublisher(from(deprecates.toList()))
     }
 
 }
