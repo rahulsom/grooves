@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController
 
 import javax.persistence.EntityManager
 
+import static rx.RxReactiveStreams.toObservable
+
 /**
  * Serves Patient Resources over HTTP
  *
@@ -50,7 +52,7 @@ class PatientController {
                         patientAccountQuery.computeSnapshot(patient, date) :
                         patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE)
 
-        def resp = computation.toBlocking().first()
+        def resp = toObservable(computation).toBlocking().first()
         if (!resp) {
             throw new RuntimeException('Could not compute account snapshot')
         }
@@ -70,7 +72,7 @@ class PatientController {
                         patientHealthQuery.computeSnapshot(patient, date) :
                         patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE)
 
-        def resp = computation.toBlocking().first()
+        def resp = toObservable(computation).toBlocking().first()
         if (!resp) {
             throw new RuntimeException('Could not compute health snapshot')
         }

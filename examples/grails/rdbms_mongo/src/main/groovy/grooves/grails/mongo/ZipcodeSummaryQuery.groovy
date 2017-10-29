@@ -4,6 +4,7 @@ import grails.compiler.GrailsCompileStatic
 import rx.Observable
 
 import static rx.Observable.from
+import static rx.RxReactiveStreams.toObservable
 
 /**
  * Summarizes the patients' health within a zipcode
@@ -14,7 +15,7 @@ import static rx.Observable.from
 class ZipcodeSummaryQuery {
 
     Observable<ZipcodeSummary> computeSnapshot(Zipcode aggregate, Date moment) {
-        new ZipcodePatientsQuery().computeSnapshot(aggregate, moment).
+        toObservable(new ZipcodePatientsQuery().computeSnapshot(aggregate, moment)).
                 flatMap {
                     from(it.joinedIds).
                             flatMap {

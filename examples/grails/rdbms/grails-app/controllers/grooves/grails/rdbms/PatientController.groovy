@@ -5,6 +5,7 @@ import grails.rx.web.RxController
 import grails.transaction.Transactional
 
 import static org.springframework.http.HttpStatus.NOT_FOUND
+import static rx.RxReactiveStreams.toObservable
 
 /**
  * Allows access to Patient information over HTTP
@@ -32,7 +33,7 @@ class PatientController implements RxController {
                         query.computeSnapshot(patient, params.date('date')) :
                         query.computeSnapshot(patient, Long.MAX_VALUE)
 
-        snapshot.
+        toObservable(snapshot).
                 map { patientAccount ->
                     patientAccount.toString().length()
                     rx.respond patientAccount
@@ -47,7 +48,7 @@ class PatientController implements RxController {
                         query.computeSnapshot(patient, params.date('date')) :
                         query.computeSnapshot(patient, Long.MAX_VALUE)
 
-        snapshot.map { s ->
+        toObservable(snapshot).map { s ->
             s.toString().length()
             JSON.use('deep') {
                 rx.render(s as JSON)

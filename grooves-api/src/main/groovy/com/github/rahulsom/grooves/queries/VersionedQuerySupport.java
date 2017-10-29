@@ -7,18 +7,17 @@ import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
 import com.github.rahulsom.grooves.queries.internal.*;
+import io.reactivex.Flowable;
 import org.reactivestreams.Publisher;
-import rx.Observable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.rahulsom.grooves.queries.internal.Utils.returnOrRedirect;
 import static com.github.rahulsom.grooves.queries.internal.Utils.stringify;
+import static io.reactivex.Flowable.*;
 import static java.util.stream.Collectors.toList;
-import static rx.Observable.*;
-import static rx.RxReactiveStreams.toObservable;
-import static rx.RxReactiveStreams.toPublisher;
+
 
 /**
  * Default interface to help in building versioned snapshots.
@@ -54,11 +53,11 @@ public interface VersionedQuerySupport<
      * @param aggregate   The aggregate for which a snapshot is to be computed
      * @param maxPosition The maximum allowed version of the snapshot that is deemed usable
      *
-     * @return An Observable that returns at most one snapshot
+     * @return An Flowable that returns at most one snapshot
      */
-    default Observable<SnapshotT> getLastUsableSnapshot(
+    default Flowable<SnapshotT> getLastUsableSnapshot(
             final AggregateT aggregate, long maxPosition) {
-        return toObservable(getSnapshot(maxPosition, aggregate))
+        return fromPublisher(getSnapshot(maxPosition, aggregate))
                 .defaultIfEmpty(createEmptySnapshot())
                 .doOnNext(it -> {
                     final String snapshotAsString =
@@ -79,7 +78,7 @@ public interface VersionedQuerySupport<
      *
      * @return A Tuple containing the snapshot and the events
      */
-    default Observable<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
+    default Flowable<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
             AggregateT aggregate, long version) {
         return getSnapshotAndEventsSince(aggregate, version, true);
     }
@@ -96,11 +95,13 @@ public interface VersionedQuerySupport<
      *
      * @return A Tuple containing the snapshot and the events
      */
-    default Observable<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
+    default Flowable<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
             AggregateT aggregate, long version, boolean reuseEarlierSnapshot) {
         if (reuseEarlierSnapshot) {
             return getLastUsableSnapshot(aggregate, version).flatMap(lastSnapshot ->
-                    toObservable(getUncomputedEvents(aggregate, lastSnapshot, version)).toList()
+                    fromPublisher(getUncomputedEvents(aggregate, lastSnapshot, version))
+                            .toList()
+                            .toFlowable()
                             .flatMap(events -> {
                                 if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
                                     List<EventT> reverts = events.stream()
@@ -121,8 +122,10 @@ public interface VersionedQuerySupport<
         } else {
             SnapshotT lastSnapshot = createEmptySnapshot();
 
-            final Observable<List<EventT>> uncomputedEvents =
-                    toObservable(getUncomputedEvents(aggregate, lastSnapshot, version)).toList();
+            final Flowable<List<EventT>> uncomputedEvents =
+                    fromPublisher(getUncomputedEvents(aggregate, lastSnapshot, version))
+                            .toList()
+                            .toFlowable();
 
             return uncomputedEvents
                     .doOnNext(ue -> getLog().debug("     Events since origin: {}",
@@ -147,9 +150,9 @@ public interface VersionedQuerySupport<
      * @param aggregate The aggregate
      * @param version   The version number, starting at 1
      *
-     * @return An Observable that returns at most one Snapshot
+     * @return An Flowable that returns at most one Snapshot
      */
-    default Observable<SnapshotT> computeSnapshot(AggregateT aggregate, long version) {
+    default Publisher<SnapshotT> computeSnapshot(AggregateT aggregate, long version) {
         return computeSnapshot(aggregate, version, true);
     }
 
@@ -161,34 +164,34 @@ public interface VersionedQuerySupport<
      * @param redirect  If there has been a deprecation, redirect to the current aggregate's
      *                  snapshot. Defaults to true.
      *
-     * @return An Observable that returns at most one Snapshot
+     * @return An Flowable that returns at most one Snapshot
      */
-    default Observable<SnapshotT> computeSnapshot(
+    default Publisher<SnapshotT> computeSnapshot(
             AggregateT aggregate, long version, boolean redirect) {
 
         getLog().info("Computing snapshot for {} version {}",
                 aggregate, version == Long.MAX_VALUE ? "<LATEST>" : version);
 
-        return getSnapshotAndEventsSince(aggregate, version).flatMap(seTuple2 -> {
+        return (getSnapshotAndEventsSince(aggregate, version).flatMap(seTuple2 -> {
             List<EventT> events = seTuple2.getSecond();
             SnapshotT lastUsableSnapshot = seTuple2.getFirst();
 
             getLog().info("Events: {}", events);
 
             if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
-                return toObservable(lastUsableSnapshot.getAggregateObservable())
+                return fromPublisher(lastUsableSnapshot.getAggregateObservable())
                         .flatMap(aggregate1 -> aggregate1 == null ?
                                 computeSnapshotAndEvents(
                                         aggregate, version, redirect, events, lastUsableSnapshot) :
                                 empty())
-                        .map(Observable::just)
+                        .map(Flowable::just)
                         .defaultIfEmpty(computeSnapshotAndEvents(
                                 aggregate, version, redirect, events, lastUsableSnapshot))
                         .flatMap(it -> it);
             }
             return computeSnapshotAndEvents(
                     aggregate, version, redirect, events, lastUsableSnapshot);
-        });
+        }));
 
     }
 
@@ -204,32 +207,36 @@ public interface VersionedQuerySupport<
      *
      * @return An observable of the snapshot
      */
-    default Observable<SnapshotT> computeSnapshotAndEvents(
+    default Flowable<SnapshotT> computeSnapshotAndEvents(
             AggregateT aggregate, long version, boolean redirect, List<EventT> events,
             SnapshotT lastUsableSnapshot) {
         lastUsableSnapshot.setAggregate(aggregate);
 
-        Observable<EventT> forwardOnlyEvents = Utils.getForwardOnlyEvents(
+        Flowable<EventT> forwardOnlyEvents = Utils.getForwardOnlyEvents(
                 events, getExecutor(), () -> getSnapshotAndEventsSince(aggregate, version, false)
         );
 
-        Observable<EventT> applicableEvents = forwardOnlyEvents
+        Flowable<EventT> applicableEvents = forwardOnlyEvents
                 .filter(e -> e instanceof Deprecates)
                 .toList()
+                .toFlowable()
                 .flatMap(list -> {
                     if (list.isEmpty()) {
                         return forwardOnlyEvents;
                     } else {
-                        Observable<Pair<SnapshotT, List<EventT>>> snapshotAndEventsSince =
+                        Flowable<Pair<SnapshotT, List<EventT>>> snapshotAndEventsSince =
                                 getSnapshotAndEventsSince(aggregate, version, false);
-                        return snapshotAndEventsSince.flatMap(p -> Utils.getForwardOnlyEvents(
-                                p.getSecond(), getExecutor(), () -> error(
-                                        new GroovesException("Couldn't apply deprecates events"))));
+                        return snapshotAndEventsSince.flatMap(p ->
+                                Utils.getForwardOnlyEvents(
+                                        p.getSecond(),
+                                        getExecutor(),
+                                        () -> error(new GroovesException(
+                                                "Couldn't apply deprecates events"))
+                                ));
                     }
                 });
 
-
-        final Observable<SnapshotT> snapshotObservable =
+        final Flowable<SnapshotT> snapshotObservable =
                 getExecutor().applyEvents((QueryT) this, lastUsableSnapshot, applicableEvents,
                         new ArrayList<>(), aggregate);
 
@@ -242,16 +249,16 @@ public interface VersionedQuerySupport<
                     getLog().info("  --> Computed: {}", snapshot);
                 })
                 .flatMap(it -> returnOrRedirect(redirect, events, it,
-                        () -> toObservable(it.getDeprecatedByObservable())
-                                .flatMap(x -> computeSnapshot(x, version))
+                        () -> fromPublisher(it.getDeprecatedByObservable())
+                                .flatMap(x -> fromPublisher(computeSnapshot(x, version)))
                 ));
     }
 
     @Override
     default Publisher<EventT> findEventsBefore(EventT event) {
-        return toPublisher(toObservable(event.getAggregateObservable())
+        return fromPublisher(event.getAggregateObservable())
                 .flatMap(aggregate ->
-                        toObservable(getUncomputedEvents(aggregate, null, event.getPosition()))));
+                        fromPublisher(getUncomputedEvents(aggregate, null, event.getPosition())));
     }
 
 }

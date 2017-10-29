@@ -7,7 +7,6 @@ import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
 import org.reactivestreams.Publisher;
-import rx.Observable;
 
 /**
  * Aggregate trait that simplifies computing temporal snapshots from events.

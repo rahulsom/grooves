@@ -22,6 +22,8 @@ description = "Support for completeness of queries in Groovy code"
 dependencies {
     compile project(':grooves-api')
     compile 'org.codehaus.groovy:groovy:2.4.8'
+    testCompile 'io.reactivex:rxjava-reactive-streams:1.2.1'
+    testCompile 'io.reactivex:rxjava:1.2.9'
 
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }

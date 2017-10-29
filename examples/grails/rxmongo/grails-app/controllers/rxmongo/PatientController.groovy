@@ -3,6 +3,7 @@ package rxmongo
 import grails.rx.web.RxController
 
 import static org.springframework.http.HttpStatus.NOT_FOUND
+import static rx.RxReactiveStreams.toObservable
 
 /**
  * Serves up patient data
@@ -26,11 +27,11 @@ class PatientController implements RxController {
         def query = new PatientAccountQuery()
         Patient.get(objectRequest.id).
                 flatMap { patient ->
-                    objectRequest.version ?
+                    toObservable(objectRequest.version ?
                             query.computeSnapshot(patient, objectRequest.version) :
                             objectRequest.date ?
                                     query.computeSnapshot(patient, objectRequest.date) :
-                                    query.computeSnapshot(patient, Long.MAX_VALUE)
+                                    query.computeSnapshot(patient, Long.MAX_VALUE))
                 }.
                 map { patientAccount ->
                     rx.respond patientAccount
@@ -41,11 +42,11 @@ class PatientController implements RxController {
         def query = new PatientHealthQuery()
         Patient.get(objectRequest.id).
                 flatMap { patient ->
-                    objectRequest.version ?
+                    toObservable(objectRequest.version ?
                             query.computeSnapshot(patient, objectRequest.version) :
                             objectRequest.date ?
                                     query.computeSnapshot(patient, objectRequest.date) :
-                                    query.computeSnapshot(patient, Long.MAX_VALUE)
+                                    query.computeSnapshot(patient, Long.MAX_VALUE))
                 }.
                 map { patientHealth ->
                     rx.respond patientHealth

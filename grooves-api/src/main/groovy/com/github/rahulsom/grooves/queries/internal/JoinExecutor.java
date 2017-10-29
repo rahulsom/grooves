@@ -3,12 +3,12 @@ package com.github.rahulsom.grooves.queries.internal;
 import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.*;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseJoin;
-import rx.Observable;
+import io.reactivex.Flowable;
 
 import java.util.List;
 
-import static rx.Observable.just;
-import static rx.RxReactiveStreams.toObservable;
+import static io.reactivex.Flowable.fromPublisher;
+import static io.reactivex.Flowable.just;
 
 /**
  * Executes a query as a Join.
@@ -55,10 +55,10 @@ public class JoinExecutor<
     }
 
     @Override
-    public Observable<SnapshotT> applyEvents(
+    public Flowable<SnapshotT> applyEvents(
             QueryT query,
             SnapshotT initialSnapshot,
-            Observable<EventT> events,
+            Flowable<EventT> events,
             List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
             AggregateT aggregate) {
 
@@ -81,14 +81,14 @@ public class JoinExecutor<
                     return applyDeprecatedBy(deprecatedByEvent, initialSnapshot);
                 } else if (classJoinE.isAssignableFrom(event.getClass())) {
                     JoinEventT joinEvent = (JoinEventT) event;
-                    return toObservable(joinEvent.getJoinAggregateObservable())
+                    return fromPublisher(joinEvent.getJoinAggregateObservable())
                             .map(joinedAggregate -> {
                                 initialSnapshot.getJoinedIds().add(joinedAggregate.getId());
                                 return initialSnapshot;
                             });
                 } else if (classDisjoinE.isAssignableFrom(event.getClass())) {
                     DisjoinEventT disjoinEvent = (DisjoinEventT) event;
-                    return toObservable(disjoinEvent.getJoinAggregateObservable())
+                    return fromPublisher(disjoinEvent.getJoinAggregateObservable())
                             .map(joinedAggregate -> {
                                 initialSnapshot.getJoinedIds().remove(joinedAggregate.getId());
                                 return initialSnapshot;
@@ -97,7 +97,7 @@ public class JoinExecutor<
                     return just(initialSnapshot);
                 }
             }
-        })).flatMap(it -> it);
+        })).toFlowable().flatMap(it -> it);
 
     }
 }

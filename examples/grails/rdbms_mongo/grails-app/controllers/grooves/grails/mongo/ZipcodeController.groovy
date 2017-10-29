@@ -4,6 +4,8 @@ import grails.converters.JSON
 import grails.rx.web.RxController
 import grails.transaction.Transactional
 
+import static rx.RxReactiveStreams.toObservable
+
 /**
  * HTTP API for Zipcode
  *
@@ -27,7 +29,7 @@ class ZipcodeController implements RxController {
                 new ZipcodeSummaryQuery().computeSnapshot(zipcode, params.date('date')) :
                 new ZipcodeSummaryQuery().computeSnapshot(zipcode, new Date())
 
-        snapshot.map { s ->
+        toObservable(snapshot).map { s ->
             JSON.use('deep') {
                 rx.render(s as JSON)
             }
@@ -40,7 +42,7 @@ class ZipcodeController implements RxController {
                 params['date'] ?
                         new ZipcodePatientsQuery().computeSnapshot(zipcode, params.date('date')) :
                         new ZipcodePatientsQuery().computeSnapshot(zipcode, new Date())
-        snapshot.map { s ->
+        toObservable(snapshot).map { s ->
             JSON.use('deep') {
                 rx.render(s as JSON)
             }

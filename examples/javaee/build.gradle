@@ -26,6 +26,8 @@ dependencies {
     compile project(':grooves-java')
     compile 'org.apache.commons:commons-lang3:3.5'
     compile 'org.projectlombok:lombok:1.16.18'
+    compile 'io.reactivex:rxjava-reactive-streams:1.2.1'
+    compile 'io.reactivex:rxjava:1.2.9'
 
     def cargoVersion = '1.6.3'
     cargo "org.codehaus.cargo:cargo-core-uberjar:$cargoVersion",
