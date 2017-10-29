@@ -2,9 +2,11 @@ package com.github.rahulsom.grooves.groovy.transformations
 
 import org.codehaus.groovy.control.MultipleCompilationErrorsException
 import org.codehaus.groovy.control.messages.SyntaxErrorMessage
-import rx.Observable
+import org.reactivestreams.Publisher
 import spock.lang.Shared
 import spock.lang.Specification
+
+import static rx.RxReactiveStreams.toObservable
 
 class GroovesAstTransformationsSpec extends Specification {
 
@@ -14,8 +16,8 @@ class GroovesAstTransformationsSpec extends Specification {
 
         then:
         notThrown(MultipleCompilationErrorsException)
-        retval instanceof Observable
-        (retval as Observable).toBlocking().first()
+        retval instanceof Publisher
+        toObservable(retval as Publisher).toBlocking().first()
     }
 
     def 'test missing events'() {

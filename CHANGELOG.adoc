@@ -7,7 +7,9 @@
 * Use Lombok for Java Examples.
 * Use Reactive Streams for APIs.
   This will allow use of RxJava2, Akka and Reactor with ease.
-  RxJava1 will take some work.
+  RxJava1 will involve https://github.com/ReactiveX/RxJavaReactiveStreams[RxReactiveStreams] and take some work.
+* Java completeness checks are now supported
+* Null checking has been enhanced
 
 == 0.2.1
 * Allow subclasses in annotations.

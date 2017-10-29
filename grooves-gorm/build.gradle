@@ -25,6 +25,8 @@ dependencies {
     compile project(':grooves-groovy')
     compileOnly 'org.grails:grails-datastore-gorm:6.0.7.RELEASE'
     compileOnly 'org.grails:grails-datastore-gorm-rx:6.0.7.RELEASE'
+    compile 'io.reactivex:rxjava-reactive-streams:1.2.1'
+    compile 'io.reactivex:rxjava:1.2.9'
 
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }

@@ -6,6 +6,7 @@ import org.reactivestreams.Publisher
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 import static rx.Observable.just
+import static rx.RxReactiveStreams.toPublisher
 
 /**
  * Finds patients within a zipcode

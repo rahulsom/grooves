@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Configurable
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
-import rx.RxReactiveStreams.toPublisher
 import java.util.*
 
 @Configurable
@@ -50,10 +49,7 @@ class PatientHealth : Snapshot<String, Patient, String, String, PatientEvent> {
 
     @JsonIgnore
     override fun getDeprecatesObservable() =
-            if (deprecatesIds != null)
-                patientRepository.findAllById(deprecatesIds)
-            else
-                Flux.empty()
+            patientRepository.findAllById(deprecatesIds)
 
     override fun toString() = "PatientAccount(id=$id, aggregate=$aggregateId, " +
             "lastEventPosition=$lastEventPosition, lastEventTimestamp=$lastEventTimestamp)"

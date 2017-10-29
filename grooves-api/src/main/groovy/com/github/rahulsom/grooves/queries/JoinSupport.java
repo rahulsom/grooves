@@ -9,7 +9,6 @@ import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
 import org.reactivestreams.Publisher;
-import rx.Observable;
 
 /**
  * Default interface that makes joins easier to write.

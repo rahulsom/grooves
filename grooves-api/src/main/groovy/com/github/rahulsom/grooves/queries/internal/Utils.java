@@ -4,17 +4,15 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.DeprecatedBy;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
+import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import rx.Observable;
 
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import static rx.Observable.from;
-import static rx.Observable.just;
-import static rx.RxReactiveStreams.toObservable;
+import static io.reactivex.Flowable.*;
 
 /**
  * Utility objects and methods to help with Queries.
@@ -51,11 +49,11 @@ public class Utils {
             EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
             SnapshotIdT,
             SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
-            > Observable<SnapshotT> returnOrRedirect(
+            > Flowable<SnapshotT> returnOrRedirect(
             boolean redirect,
             @NotNull List<EventT> events,
             @NotNull SnapshotT it,
-            @NotNull Supplier<Observable<SnapshotT>> redirectedSnapshot) {
+            @NotNull Supplier<Flowable<SnapshotT>> redirectedSnapshot) {
         final EventT lastEvent =
                 events.isEmpty() ? null : events.get(events.size() - 1);
 
@@ -64,7 +62,7 @@ public class Utils {
                         && lastEvent instanceof DeprecatedBy
                         && redirect;
 
-        return toObservable(it.getDeprecatedByObservable())
+        return fromPublisher(it.getDeprecatedByObservable())
                 .flatMap(deprecatedBy -> redirectToDeprecator ? redirectedSnapshot.get() : just(it))
                 .defaultIfEmpty(it);
 
@@ -96,24 +94,25 @@ public class Utils {
             SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
             QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                     SnapshotT, QueryT>
-            > Observable<EventT> getForwardOnlyEvents(
+            > Flowable<EventT> getForwardOnlyEvents(
             @NotNull List<EventT> events,
             @NotNull Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                     QueryT> executor,
-            @NotNull Supplier<Observable<Pair<SnapshotT, List<EventT>>>>
+            @NotNull Supplier<Flowable<Pair<SnapshotT, List<EventT>>>>
                     fallbackSnapshotAndEvents) {
-        return executor.applyReverts(from(events))
+        return executor.applyReverts(fromIterable(events))
                 .toList()
-                .map(Observable::just)
+                .map(Flowable::just)
                 .onErrorReturn(throwable -> executor
                         .applyReverts(
                                 fallbackSnapshotAndEvents.get()
-                                        .flatMap(it -> from(it.getSecond()))
+                                        .flatMap(it -> fromIterable(it.getSecond()))
                         )
-                        .toList()
+                        .toList().toFlowable()
                 )
+                .toFlowable()
                 .flatMap(it -> it)
-                .flatMap(Observable::from);
+                .flatMap(Flowable::fromIterable);
     }
 
     /**

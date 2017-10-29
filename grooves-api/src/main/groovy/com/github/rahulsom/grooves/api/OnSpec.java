@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static io.reactivex.Flowable.fromPublisher;
+
 public class OnSpec<
         AggregateIdT,
         AggregateT extends AggregateType<AggregateIdT>,
@@ -65,10 +67,8 @@ public class OnSpec<
                     @NotNull QueryT query,
                     @NotNull Consumer<SnapshotT> beforePersist) {
 
-        SnapshotT snapshotT = query
-                .computeSnapshot(aggregate, Long.MAX_VALUE)
-                .toBlocking()
-                .single();
+        SnapshotT snapshotT = fromPublisher(query.computeSnapshot(aggregate, Long.MAX_VALUE))
+                .blockingFirst();
 
         beforePersist.accept(snapshotT);
         entityConsumer.accept(snapshotT);
