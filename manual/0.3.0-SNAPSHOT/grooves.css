@@ -1,0 +1,38 @@
+@import url('http://themes.asciidoctor.org/stylesheets/foundation.css?v=8');
+/*@import url('https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.3/themes/prism.min.css');*/
+
+.switch--item:not(:first-child) {
+    border-left: #2ba6cb solid 0.1px !important;
+}
+
+.switch--item.selected {
+    background-color: #2ba6cb !important;
+    color: #fff !important;
+    font-weight: bold;
+}
+
+.switch--item {
+    color: #2ba6cb !important;
+}
+
+.switch {
+    border-color: #2ba6cb !important;
+}
+
+.colist>table tr>td:first-of-type {
+    padding: .75em;
+    line-height: 1;
+    vertical-align: top;
+}
+
+pre, pre>code {
+    font-family: "Fira Code", "Droid Sans Mono","DejaVu Sans Mono",monospace;
+}
+
+pre[class*=language-] {
+    margin: 0;
+}
+
+.literalblock > .content pre, .listingblock > .content pre {
+    background-color: #fcfcfc;
+}

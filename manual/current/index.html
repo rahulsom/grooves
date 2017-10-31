@@ -6,8 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
 <title>Grooves</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
-<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="./grooves.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="./coderay-asciidoctor.css">
 <style>
@@ -91,56 +90,41 @@ $(addBlockSwitches);
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_introduction">1. Introduction</a>
+<li><a href="#_introduction">Introduction</a>
 <ul class="sectlevel2">
-<li><a href="#_event_sourcing_concepts">1.1. Event Sourcing Concepts</a></li>
-<li><a href="#_cqrs">1.2. CQRS</a></li>
-<li><a href="#_representing_events">1.3. Representing Events</a></li>
+<li><a href="#_event_sourcing_concepts">Event Sourcing Concepts</a></li>
+<li><a href="#_cqrs">CQRS</a></li>
+<li><a href="#_representing_events">Representing Events</a></li>
 </ul>
 </li>
-<li><a href="#_hurdles">2. Hurdles</a>
+<li><a href="#_hurdles">Hurdles</a>
 <ul class="sectlevel2">
-<li><a href="#_completeness_of_queries">2.1. Completeness of Queries</a></li>
-<li><a href="#_reverting_events">2.2. Reverting Events</a></li>
-<li><a href="#_merging_aggregates">2.3. Merging Aggregates</a></li>
-<li><a href="#_reverting_merges">2.4. Reverting Merges</a></li>
-<li><a href="#_performing_joins">2.5. Performing joins</a></li>
-<li><a href="#_performing_disjoins">2.6. Performing disjoins</a></li>
+<li><a href="#_completeness_of_queries">Completeness of Queries</a></li>
+<li><a href="#_reverting_events">Reverting Events</a></li>
+<li><a href="#_merging_aggregates">Merging Aggregates</a></li>
+<li><a href="#_reverting_merges">Reverting Merges</a></li>
+<li><a href="#_performing_joins">Performing joins</a></li>
+<li><a href="#_performing_disjoins">Performing disjoins</a></li>
 </ul>
 </li>
-<li><a href="#_how_grooves_solves_it">3. How Grooves solves it</a></li>
-<li><a href="#_event_sourcing_with_grooves">4. Event Sourcing with Grooves</a>
+<li><a href="#_how_grooves_solves_it">How Grooves solves it</a></li>
+<li><a href="#_event_sourcing_with_grooves">Event Sourcing with Grooves</a>
 <ul class="sectlevel2">
-<li><a href="#_dependencies">4.1. Dependencies</a></li>
-<li><a href="#_aggregates">4.2. Aggregates</a></li>
-<li><a href="#_events">4.3. Events</a></li>
-<li><a href="#_snapshots">4.4. Snapshots</a></li>
-<li><a href="#_queries">4.5. Queries</a></li>
+<li><a href="#_dependencies">Dependencies</a></li>
+<li><a href="#_aggregates">Aggregates</a></li>
+<li><a href="#_events">Events</a></li>
+<li><a href="#_snapshots">Snapshots</a></li>
+<li><a href="#_queries">Queries</a></li>
 </ul>
 </li>
-<li><a href="#_creating_your_own_diagrams">5. Creating your own diagrams</a></li>
-<li><a href="#_support">6. Support</a></li>
+<li><a href="#_creating_your_own_diagrams">Creating your own diagrams</a></li>
+<li><a href="#_support">Support</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
-<style>
-.switch--item:not(:first-child) {
-    border-left: #7a2518 solid 0.1px;
-}
-
-.colist>table tr>td:first-of-type {
-    padding: .75em;
-    line-height: 1;
-    vertical-align: top;
-}
-
-pre, pre>code {
-    font-family: "Fira Code", "Droid Sans Mono","DejaVu Sans Mono",monospace;
-}
-</style>
 <div class="paragraph">
 <p>Formerly, <em>Groovy + Event Sourcing</em>.
 Now, <em>Grooves</em> is just a name.
@@ -150,7 +134,7 @@ Examples and tests are included in java, kotlin, and of course, groovy.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_introduction">1. Introduction</h2>
+<h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Event Sourcing is a way of storing data for flexible retrieval.
@@ -159,19 +143,19 @@ We treat our database like a log file.
 It is a record of everything that happened as events, and we read these events in order to compute the state of things like we do while debugging an application from the logs.</p>
 </div>
 <div class="sect2">
-<h3 id="_event_sourcing_concepts">1.1. Event Sourcing Concepts</h3>
+<h3 id="_event_sourcing_concepts">Event Sourcing Concepts</h3>
 <div class="paragraph">
 <p>Here are some things that we will need to get familiar with, that are relevant to Event Sourcing.</p>
 </div>
 <div class="sect3">
-<h4 id="_aggregate">1.1.1. Aggregate</h4>
+<h4 id="_aggregate">Aggregate</h4>
 <div class="paragraph">
 <p>An aggregate is a type of object that you are interested in managing data about.
 A classic example would be a bank account.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_event">1.1.2. Event</h4>
+<h4 id="_event">Event</h4>
 <div class="paragraph">
 <p>An event is an atomic change that needs to occur on the aggregate.
 A suitable example for the bank account would be a transaction.
@@ -185,7 +169,7 @@ We will however, store the event in the data store so we know when we read to re
 </div>
 </div>
 <div class="sect3">
-<h4 id="_snapshot">1.1.3. Snapshot</h4>
+<h4 id="_snapshot">Snapshot</h4>
 <div class="paragraph">
 <p>A snapshot is a way of looking at the state of an aggregate at a point in time.
 In our banking example, this could be your account balance.</p>
@@ -193,20 +177,20 @@ In our banking example, this could be your account balance.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_cqrs">1.2. CQRS</h3>
+<h3 id="_cqrs">CQRS</h3>
 <div class="paragraph">
 <p>Event Sourcing works particularly well with CQRS - Command Query Responsibility Segregation.
 There are a couple of types of objects that are relevant to Event Sourcing and CQRS.</p>
 </div>
 <div class="sect3">
-<h4 id="_command">1.2.1. Command</h4>
+<h4 id="_command">Command</h4>
 <div class="paragraph">
 <p>A command is an input which causes one or more events to be stored.
 It typically represents a broad intention of the user.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_query">1.2.2. Query</h4>
+<h4 id="_query">Query</h4>
 <div class="paragraph">
 <p>A query is a computation that needs to be performed in order to obtain a snapshot.</p>
 </div>
@@ -245,7 +229,7 @@ It typically represents a broad intention of the user.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_representing_events">1.3. Representing Events</h3>
+<h3 id="_representing_events">Representing Events</h3>
 <div class="paragraph">
 <p>This is how we&#8217;ll be representing events in the documentation.</p>
 </div>
@@ -286,7 +270,7 @@ It doesn&#8217;t mean anything special.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_hurdles">2. Hurdles</h2>
+<h2 id="_hurdles">Hurdles</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>While the theory is very simple, in practice, it&#8217;s a little more complicated.
@@ -294,7 +278,7 @@ The functions that you see above are very simple at first glance, but implementi
 That is the problem that Grooves aims to solve.</p>
 </div>
 <div class="sect2">
-<h3 id="_completeness_of_queries">2.1. Completeness of Queries</h3>
+<h3 id="_completeness_of_queries">Completeness of Queries</h3>
 <div class="paragraph">
 <p>When applying events on a Snapshot, you need to be sure that you have handled every single event type.
 Let&#8217;s say you&#8217;ve got 3 types of events for an aggregate and 2 snapshots.
@@ -307,7 +291,7 @@ Alas, Groovy and Java do not have case classes.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_reverting_events">2.2. Reverting Events</h3>
+<h3 id="_reverting_events">Reverting Events</h3>
 <div class="paragraph">
 <p>Some times events are entered into an aggregate&#8217;s timeline in error.
 This could be a system error, or a human error.
@@ -348,7 +332,7 @@ For example, you might be able to revert a revert event.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_merging_aggregates">2.3. Merging Aggregates</h3>
+<h3 id="_merging_aggregates">Merging Aggregates</h3>
 <div class="paragraph">
 <p><code>DeprecatedBy</code> and <code>Deprecates</code> is a pair of events that work together on aggregates of the same type.
 Sometimes, real world things merge together.
@@ -382,7 +366,7 @@ Some systems might choose to continue adding events on an aggregate like 5.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_reverting_merges">2.4. Reverting Merges</h3>
+<h3 id="_reverting_merges">Reverting Merges</h3>
 <div class="paragraph">
 <p>Lets assume we got confused with a pair of aggregates like these and performed a merge like this.</p>
 </div>
@@ -402,7 +386,7 @@ This is complicated, but necessary in order to make the reads on both aggregates
 </div>
 </div>
 <div class="sect2">
-<h3 id="_performing_joins">2.5. Performing joins</h3>
+<h3 id="_performing_joins">Performing joins</h3>
 <div class="paragraph">
 <p>In an event sourced system, even joins are just events.
 That way we can preserve their temporal changes.</p>
@@ -414,7 +398,7 @@ That way we can preserve their temporal changes.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_performing_disjoins">2.6. Performing disjoins</h3>
+<h3 id="_performing_disjoins">Performing disjoins</h3>
 <div class="paragraph">
 <p>Since joins can change with time, you could have a situation where you need to perform a <code>disjoin</code>.
 In our example here, Mr Spock stops being the Science Officer when he becomes captain.
@@ -434,7 +418,7 @@ The difference between a disjoin and a revert is the same as the difference betw
 </div>
 </div>
 <div class="sect1">
-<h2 id="_how_grooves_solves_it">3. How Grooves solves it</h2>
+<h2 id="_how_grooves_solves_it">How Grooves solves it</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Grooves assumes nothing about your persistence framework or whether you&#8217;re building a webapp or a batch application.
@@ -460,7 +444,7 @@ There are examples in the repository for some options you could use.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_event_sourcing_with_grooves">4. Event Sourcing with Grooves</h2>
+<h2 id="_event_sourcing_with_grooves">Event Sourcing with Grooves</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section contains example code with annotations that indicate what is being done, and why.
@@ -485,12 +469,13 @@ This is the most thorough example in our codebase.
 It is the only one that demonstrates joins.</p>
 </li>
 <li>
-<p>Kotlin - This is a SpringBoot Reactive Web project that uses RxMongo for persistence.</p>
+<p>Kotlin - This is a SpringBoot Reactive Web project that uses RxMongo for persistence.
+This example uses Spring Reactor as the Reactive Streams Framework.</p>
 </li>
 </ul>
 </div>
 <div class="sect2">
-<h3 id="_dependencies">4.1. Dependencies</h3>
+<h3 id="_dependencies">Dependencies</h3>
 <div class="paragraph">
 <p>The examples here use gradle to manage dependencies.
 You could very well be using Maven, or ant+ivy, or leiningen, or sbt.</p>
@@ -612,7 +597,7 @@ That contains the interfaces for your aggregates, events, and snapshots.</td>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_aggregates">4.2. Aggregates</h3>
+<h3 id="_aggregates">Aggregates</h3>
 <div class="paragraph">
 <p>In our examples, to begin with, we will use one aggregate - a patient.
 We&#8217;ll model our system such that there are events that get applied on a Patient&#8217;s timeline.</p>
@@ -785,12 +770,12 @@ We are using mongo on spring boot here. So we are using <code>String</code>.</td
 </div>
 </div>
 <div class="sect2">
-<h3 id="_events">4.3. Events</h3>
+<h3 id="_events">Events</h3>
 <div class="paragraph">
 <p>In our example, we&#8217;re going to have a bunch of events that will modify the computed state of the <code>Patient</code>.</p>
 </div>
 <div class="sect3">
-<h4 id="_your_base_event">4.3.1. Your Base Event</h4>
+<h4 id="_your_base_event">Your Base Event</h4>
 <div class="paragraph">
 <p>Let&#8217;s start with the PatientEvent first.
 <code>PatientEvent</code> is the base event for all events related to <code>Patient</code>.</p>
@@ -1003,7 +988,7 @@ In our case, it doesn&#8217;t matter much since we&#8217;re using Hibernate, whi
 </div>
 </div>
 <div class="sect3">
-<h4 id="_your_business_events">4.3.2. Your business events</h4>
+<h4 id="_your_business_events">Your business events</h4>
 <div class="paragraph">
 <p>Next up, let&#8217;s look at our first event, <code>PatientCreated</code>.</p>
 </div>
@@ -1126,7 +1111,7 @@ All application events will go there.</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_standard_grooves_events">4.3.3. Standard Grooves Events</h4>
+<h4 id="_standard_grooves_events">Standard Grooves Events</h4>
 <div class="paragraph">
 <p>There are some Standard Grooves Events - JoinEvent, DisjoinEvent, DeprecatedBy, Deprecates, RevertEvent.
 Their implementation is similar to one another, but slightly different from your business events.</p>
@@ -1256,7 +1241,7 @@ Even if you do, you cannot process this event.</td>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_snapshots">4.4. Snapshots</h3>
+<h3 id="_snapshots">Snapshots</h3>
 <div class="paragraph">
 <p>Let&#8217;s start with a snapshot that manages account balance for a patient.</p>
 </div>
@@ -1566,7 +1551,7 @@ It is empty when the aggregate is not deprecated.</td>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_queries">4.5. Queries</h3>
+<h3 id="_queries">Queries</h3>
 <div class="listingblock primary">
 <div class="title">Java</div>
 <div class="content">
@@ -1697,7 +1682,7 @@ Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <
 <tr>
 <td><i class="conum" data-value="10"></i><b>10</b></td>
 <td>This annotation is the final step in verification of completeness.
-The AST Transformation checks that all <code>@Event`s associated with the `@Aggregate</code> are accounted for in the <code>@Query</code>.</td>
+The AST Transformation checks that all <code>@Event</code> s associated with the <code>@Aggregate</code> are accounted for in the <code>@Query</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="11"></i><b>11</b></td>
@@ -1797,7 +1782,7 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
 <td>This annotation is the final step in verification of completeness.
-The AST Transformation checks that all <code>@Event`s associated with the `@Aggregate</code> are accounted for in the <code>@Query</code>.</td>
+The AST Transformation checks that all <code>@Event</code> s associated with the <code>@Aggregate</code> are accounted for in the <code>@Query</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -1964,7 +1949,7 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
 <td>This annotation is the final step in verification of completeness.
-The AST Transformation checks that all <code>@Event`s associated with the `@Aggregate</code> are accounted for in the <code>@Query</code>.</td>
+The AST Transformation checks that all <code>@Event</code> s associated with the <code>@Aggregate</code> are accounted for in the <code>@Query</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
@@ -2138,7 +2123,7 @@ Kotlin will check for completeness when you use the <code>when</code> keyword as
 </div>
 </div>
 <div class="sect1">
-<h2 id="_creating_your_own_diagrams">5. Creating your own diagrams</h2>
+<h2 id="_creating_your_own_diagrams">Creating your own diagrams</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>In a gradle project, if you&#8217;re using asciidoctor for documentation, you can generate diagrams using <code>grooves-diagrams</code>.</p>
@@ -2210,7 +2195,7 @@ dependencies {
 </div>
 </div>
 <div class="sect1">
-<h2 id="_support">6. Support</h2>
+<h2 id="_support">Support</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>If you&#8217;re having trouble using this, head over to <a href="https://github.com/rahulsom/grooves/issues">Github Issues</a> and raise a question.
@@ -2223,6 +2208,12 @@ If you feel that the design can be enhanced, please open a ticket and start a di
 </div>
 </div>
 </div>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.3/prism.min.js"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.3/components/prism-clike.min.js"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.3/components/prism-java.min.js"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.3/components/prism-groovy.min.js"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.3/components/prism-groovy.min.js"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.3/components/prism-kotlin.min.js"></script>-->
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   messageStyle: "none",
