@@ -21,7 +21,7 @@ include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/querie
 <9> The implementation of this method must return all events for an aggregate that are more recent than the last event of `lastSnapshot`, but lead up to `snapshotTime`.
   Think of the range as exclusive of `lastSnapshot`, but inclusive of `snapshotTime`.
 <10> This annotation is the final step in verification of completeness.
-  The AST Transformation checks that all `@Event`s associated with the `@Aggregate` are accounted for in the `@Query`.
+  The AST Transformation checks that all `@Event` s associated with the `@Aggregate` are accounted for in the `@Query`.
 <11> Here we implement our default interface
 <12> This method gets called if no prior snapshot that is usable is found.
 <13> We name our methods `apply<EventType>`.
@@ -36,7 +36,7 @@ include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/querie
 include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/queries/PatientAccountQuery.groovy[tags=documented]
 ----
 <1> This annotation is the final step in verification of completeness.
-  The AST Transformation checks that all `@Event`s associated with the `@Aggregate` are accounted for in the `@Query`.
+  The AST Transformation checks that all `@Event` s associated with the `@Aggregate` are accounted for in the `@Query`.
 <2> `QuerySupport` allows computing both temporal and versioned snapshots.
 <3> The implementation of this method will return a snapshot that's older than the `maxPosition`.
 <4> The implementation of this method will return a snapshot that's older than the `maxTimestamp`.
@@ -70,7 +70,7 @@ include::{sourcedir}/examples/grails/rdbms_mongo/src/main/groovy/grooves/grails/
   `BlockingSnapshotSource` and `RxSnapshotSource` do the same for snapshots.
 <4> This is an example of using the `BlockingEventSource`.
 <5> This annotation is the final step in verification of completeness.
-  The AST Transformation checks that all `@Event`s associated with the `@Aggregate` are accounted for in the `@Query`.
+  The AST Transformation checks that all `@Event` s associated with the `@Aggregate` are accounted for in the `@Query`.
 <6> Here we'll implement the interface we just wrote.
 <7> This configures the event class.
 <8> This configures the snapshot class.
