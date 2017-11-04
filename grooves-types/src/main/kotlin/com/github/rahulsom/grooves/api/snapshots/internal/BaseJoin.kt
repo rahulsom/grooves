@@ -6,12 +6,12 @@ import com.github.rahulsom.grooves.api.events.BaseEvent
 /**
  * A special kind of [BaseSnapshot] that stores information about joined entities.
  *
- * @param [AggregateIdT]       The type of [AggregateType.id]
- * @param [AggregateT]         The Aggregate this snapshot works over
- * @param [JoinIdT]            The type for [BaseJoin.id]
+ * @param [AggregateIdT] The type of [AggregateType.id]
+ * @param [AggregateT] The Aggregate this snapshot works over
+ * @param [JoinIdT] The type for [BaseJoin.id]
  * @param [JoinedAggregateIdT] The type for the id of the aggregate that [AggregateT] to
- * @param [EventIdT]           The type for [BaseEvent.id]
- * @param [EventT]             The base type for events that apply to [AggregateT]
+ * @param [EventIdT] The type for [BaseEvent.id]
+ * @param [EventT] The base type for events that apply to [AggregateT]
  *
  * @author Rahul Somasunderam
  */

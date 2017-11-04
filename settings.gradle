@@ -7,14 +7,14 @@ releasable.each { include "grooves-${it}" }
 include "grooves-docs"
 include 'grooves-example-test'
 def examples = [
-        'springboot/jpa',
-        'springboot/kotlin',
+        'springboot:jpa',
+        'springboot:kotlin',
         'javaee',
-        'grails/rdbms',
-        'grails/rdbms_mongo',
+        'grails:rdbms',
+        'grails:rdbms_mongo',
         // This one fails for some netty bug
         // 'grails/restserver', 'grails/rxrest',
-        'grails/rxmongo',
+        'grails:rxmongo',
 ]
 
-examples.each { include "examples/${it}" }
+examples.each { include "examples:${it}" }

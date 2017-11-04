@@ -2,16 +2,16 @@ package com.github.rahulsom.grooves.api.events
 
 import com.github.rahulsom.grooves.api.AggregateType
 import org.reactivestreams.Publisher
-import java.util.*
+import java.util.Date
 
 /**
  * Base class for Events corresponding to [AggregateT].
  *
  * @param [AggregateIdT] The type for [AggregateType.id]
- * @param [AggregateT]   Aggregate this event applies to
- * @param [EventIdT]     The type for [BaseEvent.id]
- * @param [EventT]       The base class for all events in the hierarchy for [AggregateT]. In
- *                       this case, it is a self reference.
+ * @param [AggregateT] Aggregate this event applies to
+ * @param [EventIdT] The type for [BaseEvent.id]
+ * @param [EventT] The base class for all events in the hierarchy for [AggregateT]. In
+ *                 this case, it is a self reference.
  *
  * @author Rahul Somasunderam
  */

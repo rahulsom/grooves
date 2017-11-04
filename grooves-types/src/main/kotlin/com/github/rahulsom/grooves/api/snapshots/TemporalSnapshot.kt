@@ -9,10 +9,10 @@ import java.util.Date
  * Marks a class as a temporal snapshot.
  *
  * @param [AggregateIdT] The type of [AggregateType.id]
- * @param [AggregateT]   The Aggregate this snapshot works over
- * @param [SnapshotIdT]  The type for [BaseSnapshot.id]
- * @param [EventIdT]     The type for [BaseEvent.id]
- * @param [EventT]       The base type for events that apply to [AggregateT]
+ * @param [AggregateT] The Aggregate this snapshot works over
+ * @param [SnapshotIdT] The type for [BaseSnapshot.id]
+ * @param [EventIdT] The type for [BaseEvent.id]
+ * @param [EventT] The base type for events that apply to [AggregateT]
  *
  * @author Rahul Somasunderam
  */

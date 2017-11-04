@@ -107,6 +107,9 @@ public interface BaseQuery<
             @NotNull Exception e, @NotNull SnapshotT snapshot, @NotNull EventT event);
 
     /**
+     * Provide an executor to execute the query
+     *
+     * @param <ExecutorT> The type of Executor that executes the query
      * @return An executor that applies events.
      */
     @NotNull <ExecutorT extends Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,

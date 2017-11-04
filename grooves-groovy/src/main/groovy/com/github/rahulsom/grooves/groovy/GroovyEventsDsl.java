@@ -44,7 +44,7 @@ public class GroovyEventsDsl<
             AggregateT aggregate, Consumer entityConsumer, Supplier<Long> positionSupplier,
             Supplier<Date> timestampSupplier, @DelegatesTo(OnSpec.class) Closure closure) {
 
-        OnSpec spec = new OnSpec();
+        OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, ?, ?> spec = new OnSpec<>();
         spec.setAggregate(aggregate);
         spec.setEntityConsumer(entityConsumer);
         spec.setTimestampSupplier(timestampSupplier);
