@@ -21,9 +21,9 @@ apply plugin:"war"
 apply plugin:"org.grails.grails-web"
 apply plugin:"org.grails.plugins.views-json"
 apply plugin: "com.sourcemuse.mongo"
+apply plugin: 'com.wiredforcode.spawn'
 apply from: "../../../gradle/codenarc/codenarc.gradle"
 // apply from: "../../../gradle/cobertura.gradle"
-apply plugin: 'com.wiredforcode.spawn'
 
 repositories {
     mavenLocal()

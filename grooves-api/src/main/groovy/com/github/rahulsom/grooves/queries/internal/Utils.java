@@ -37,8 +37,12 @@ public class Utils {
      * @param events             The sequence of events
      * @param it                 The snapshot
      * @param redirectedSnapshot A computation for the redirected snapshot
-     * @param <SnapshotT>        The type of the snapshot
+     * @param <AggregateIdT>     The type of {@link AggregateT}'s id
+     * @param <AggregateT>       The type of Aggregate
+     * @param <EventIdT>         The type of {@link EventT}'s id
      * @param <EventT>           The type of the event
+     * @param <SnapshotIdT>      The type of {@link SnapshotT}'s id
+     * @param <SnapshotT>        The type of the snapshot
      *
      * @return An observable of a snapshot.
      */

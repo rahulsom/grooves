@@ -1,23 +1,6 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url "https://plugins.gradle.org/m2/" }
-    }
-    dependencies {
-        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
-        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
-        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
-        classpath 'com.netflix.nebula:gradle-info-plugin:3.+'
-        classpath "gradle.plugin.com.srcclr:gradle:2.2.3"
-    }
-}
-
-apply plugin: 'com.bmuschko.nexus'
-apply from: '../gradle/publishing.gradle'
-apply plugin: 'nebula.info'
 apply plugin: 'groovy'
+apply from: '../gradle/publishing.gradle'
 apply from: '../gradle/jacoco.gradle'
-apply plugin: "com.srcclr.gradle"
 
 description = "Integration with Grails' GORM API"
 
@@ -33,10 +16,6 @@ dependencies {
 
 groovydoc {
     exclude '**/*.java'
-}
-
-srcclr {
-  apiToken = System.getenv()['SRC_CLR_TOKEN']
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {

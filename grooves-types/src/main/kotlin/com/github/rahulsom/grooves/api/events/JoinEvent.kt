@@ -6,12 +6,12 @@ import org.reactivestreams.Publisher
 /**
  * Creates a join from [AggregateT] to [JoinedAggregateT] that had not existed earlier.
  *
- * @param [AggregateIdT]       The type for [AggregateType.id]
- * @param [AggregateT]         Aggregate this event applies to
- * @param [EventIdT]           The type for [BaseEvent.id]
- * @param [EventT]             The base class for all events in the hierarchy for [AggregateT].
+ * @param [AggregateIdT] The type for [AggregateType.id]
+ * @param [AggregateT] Aggregate this event applies to
+ * @param [EventIdT] The type for [BaseEvent.id]
+ * @param [EventT] The base class for all events in the hierarchy for [AggregateT].
  * @param [JoinedAggregateIdT] The type of the joined [AggregateType.id]
- * @param [JoinedAggregateT]   The target aggregate
+ * @param [JoinedAggregateT] The target aggregate
  *
  * @author Rahul Somasunderam
  */

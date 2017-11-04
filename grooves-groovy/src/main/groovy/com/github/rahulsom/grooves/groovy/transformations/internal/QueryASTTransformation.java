@@ -8,7 +8,6 @@ import org.codehaus.groovy.control.SourceUnit;
 import org.codehaus.groovy.transform.AbstractASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformation;
 import org.reactivestreams.Publisher;
-import rx.Observable;
 
 import java.util.List;
 import java.util.Optional;

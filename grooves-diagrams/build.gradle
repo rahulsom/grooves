@@ -1,20 +1,6 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url "https://plugins.gradle.org/m2/" }
-    }
-    dependencies {
-        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
-        classpath 'com.netflix.nebula:gradle-info-plugin:3.+'
-        classpath "gradle.plugin.com.srcclr:gradle:2.2.3"
-    }
-}
-
-apply plugin: 'com.bmuschko.nexus'
-apply from: '../gradle/publishing.gradle'
 apply plugin: 'groovy'
+apply from: '../gradle/publishing.gradle'
 apply from: '../gradle/jacoco.gradle'
-apply plugin: "com.srcclr.gradle"
 
 description = "Asciidoctor Extension to generate Event Sourcing Diagrams like those on https://rahulsom.github.io/grooves"
 
@@ -26,13 +12,9 @@ repositories {
 dependencies {
     compile 'org.asciidoctor:asciidoctorj:1.5.4.1'
     compile 'com.github.sommeri:less4j:1.17.2'
-    compile 'org.slf4j:slf4j-api:1.7.22'
+    compile "org.slf4j:slf4j-api:$slf4jVersion"
 
     compileOnly 'org.kordamp.gipsy:gipsy:0.4.1'
-}
-
-srcclr {
-    apiToken = System.getenv()['SRC_CLR_TOKEN']
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {

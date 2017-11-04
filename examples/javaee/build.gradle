@@ -23,6 +23,7 @@ repositories {
 
 dependencies {
     providedCompile 'javax:javaee-api:7.0'
+    compileOnly 'org.jetbrains:annotations:15.0'
     compile project(':grooves-java')
     compile 'org.apache.commons:commons-lang3:3.5'
     compile 'org.projectlombok:lombok:1.16.18'

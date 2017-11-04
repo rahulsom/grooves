@@ -2,7 +2,6 @@ package domains;
 
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
-import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
 
 import java.util.Date;
@@ -22,13 +21,11 @@ public abstract class Transaction implements BaseEvent<Long, Account, Long, Tran
         this.position = position;
     }
 
-    @Nullable
     @Override
     public Long getPosition() {
         return position;
     }
 
-    @Nullable
     @Override
     public Long getId() {
         return id;
@@ -39,7 +36,6 @@ public abstract class Transaction implements BaseEvent<Long, Account, Long, Tran
         this.revertedBy = revertedBy;
     }
 
-    @Nullable
     @Override
     public RevertEvent<Long, Account, Long, Transaction> getRevertedBy() {
         return revertedBy;
@@ -50,7 +46,6 @@ public abstract class Transaction implements BaseEvent<Long, Account, Long, Tran
         this.timestamp = timestamp;
     }
 
-    @Nullable
     @Override
     public Date getTimestamp() {
         return timestamp;
@@ -61,7 +56,6 @@ public abstract class Transaction implements BaseEvent<Long, Account, Long, Tran
         this.aggregate = aggregate;
     }
 
-    @Nullable
     @Override
     public Account getAggregate() {
         return aggregate;

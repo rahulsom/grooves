@@ -6,8 +6,14 @@ buildscript {
     }
     dependencies {
         classpath "com.bmuschko:gradle-nexus-plugin:2.3.1"
+        classpath "gradle.plugin.com.srcclr:gradle:2.2.3"
+        classpath 'com.netflix.nebula:gradle-info-plugin:3.+'
     }
 }
+
+apply plugin: com.bmuschko.gradle.nexus.NexusPlugin
+apply plugin: com.srcclr.gradle.SrcclrPlugin
+apply plugin: nebula.plugin.info.InfoPlugin
 
 modifyPom {
     project {
@@ -53,4 +59,8 @@ extraArchive {
 
 nexus {
     sign = !version.toString().contains('-SNAPSHOT')
+}
+
+srcclr {
+    apiToken = System.getenv()['SRC_CLR_TOKEN']
 }

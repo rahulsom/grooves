@@ -1,7 +1,6 @@
 package domains;
 
 import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot;
-import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
 
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ public class Balance implements JavaSnapshot<Long, Account, String, Long, Transa
         this.id = id;
     }
 
-    @Nullable
     @Override
     public String getId() {
         return id;
@@ -39,13 +37,11 @@ public class Balance implements JavaSnapshot<Long, Account, String, Long, Transa
         this.lastEventTimestamp = lastEventTimestamp;
     }
 
-    @Nullable
     @Override
     public Long getLastEventPosition() {
         return lastEventPosition;
     }
 
-    @Nullable
     @Override
     public Date getLastEventTimestamp() {
         return lastEventTimestamp;

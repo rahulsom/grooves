@@ -4,7 +4,7 @@ buildscript {
         maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
-        classpath 'com.gradle:build-scan-plugin:1.7.4'
+        classpath 'com.gradle:build-scan-plugin:1.10.1'
         classpath 'me.champeau.gradle:buildscan-recipes-plugin:0.2.0'
         classpath 'fr.jcgay:gradle-notifier:1.1.0'
         classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
@@ -18,7 +18,7 @@ apply plugin: 'me.champeau.buildscan-recipes'
 apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'org.sonarqube'
 apply plugin: 'nebula.nebula-release'
-apply plugin: fr.jcgay.gradle.notifier.GradleNotifierPlugin
+// apply plugin: fr.jcgay.gradle.notifier.GradleNotifierPlugin
 
 allprojects {
     group = 'com.github.rahulsom'

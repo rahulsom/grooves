@@ -1,44 +1,32 @@
 buildscript {
-    ext {
-        kotlinVersion = '1.1.51'
-    }
     repositories {
         jcenter()
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
-        classpath 'com.netflix.nebula:gradle-info-plugin:3.+'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:1.0.3"
-        classpath "gradle.plugin.com.srcclr:gradle:2.2.3"
+        classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:2.2.1"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:+"
     }
 }
 
-apply plugin: 'com.bmuschko.nexus'
-apply from: '../gradle/publishing.gradle'
 apply plugin: 'groovy'
 apply plugin: 'kotlin'
-apply from: '../gradle/jacoco.gradle'
 apply plugin: "org.jlleitschuh.gradle.ktlint"
-apply plugin: "com.srcclr.gradle"
 apply plugin: "org.jetbrains.dokka"
+apply from: '../gradle/publishing.gradle'
+apply from: '../gradle/jacoco.gradle'
 
 description = "Types that are used by Grooves to build an Event Sourcing system"
 
 dependencies {
-    compileOnly 'org.codehaus.groovy:groovy:2.4.8'
+    compileOnly "org.codehaus.groovy:groovy:$groovyVersion"
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion"
-    compile 'org.slf4j:slf4j-api:1.7.22'
+    compile "org.slf4j:slf4j-api:$slf4jVersion"
     compile 'org.reactivestreams:reactive-streams:1.0.1'
 
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
-}
-
-srcclr {
-  apiToken = System.getenv()['SRC_CLR_TOKEN']
 }
 
 dokka {
