@@ -14,8 +14,8 @@ apply plugin: 'groovy'
 apply plugin: 'kotlin'
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply plugin: "org.jetbrains.dokka"
-apply from: '../gradle/publishing.gradle'
-apply from: '../gradle/jacoco.gradle'
+apply from: "$rootDir/gradle/publishing.gradle"
+apply from: "$rootDir/gradle/jacoco.gradle"
 
 description = "Types that are used by Grooves to build an Event Sourcing system"
 

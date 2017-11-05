@@ -5,5 +5,12 @@ jacoco {
 }
 
 if (project.tasks.findByName('test')) {
-    test.finalizedBy jacocoTestReport
+    project.tasks.findByName('test').finalizedBy jacocoTestReport
+}
+if (project.tasks.findByName('integrationTest')) {
+
+    def integrationTestTask = project.tasks.findByName('integrationTest')
+    integrationTestTask.finalizedBy jacocoTestReport
+    integrationTest.jacoco.destinationFile = file("$buildDir/jacoco/test.exec")
+    integrationTest.jacoco.append = true
 }

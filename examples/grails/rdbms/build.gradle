@@ -18,8 +18,8 @@ apply plugin: "war"
 apply plugin: "org.grails.grails-web"
 apply plugin: "org.grails.grails-gsp"
 apply plugin: "asset-pipeline"
-apply from: "../../../gradle/codenarc/codenarc.gradle"
-apply from: "../../../gradle/cobertura.gradle"
+apply from: "$rootDir/gradle/codenarc/codenarc.gradle"
+apply from: "$rootDir/gradle/jacoco.gradle"
 
 repositories {
     mavenLocal()

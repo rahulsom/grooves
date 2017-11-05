@@ -1,6 +1,6 @@
 apply plugin: 'java'
-apply from: '../gradle/publishing.gradle'
-apply from: '../gradle/jacoco.gradle'
+apply from: "$rootDir/gradle/publishing.gradle"
+apply from: "$rootDir/gradle/jacoco.gradle"
 
 description = "AspectJ Support for Java implementations of Grooves"
 

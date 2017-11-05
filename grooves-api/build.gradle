@@ -1,6 +1,6 @@
 apply plugin: 'groovy'
-apply from: '../gradle/publishing.gradle'
-apply from: '../gradle/jacoco.gradle'
+apply from: "$rootDir/gradle/publishing.gradle"
+apply from: "$rootDir/gradle/jacoco.gradle"
 
 description = "APIs that help in computation of Grooves based Snapshots"
 
