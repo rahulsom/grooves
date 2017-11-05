@@ -2,6 +2,7 @@
 
 function check() {
     ./gradlew check --scan --build-cache --configure-on-demand
+    bash <(curl -s https://codecov.io/bash) -t $CODECOV_IO_TOKEN
 }
 
 function build() {
