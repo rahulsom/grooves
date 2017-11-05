@@ -4,6 +4,7 @@ import grooves.boot.jpa.domain.Patient
 import grooves.boot.jpa.queries.PatientAccountQuery
 import grooves.boot.jpa.queries.PatientHealthQuery
 import grooves.boot.jpa.repositories.PatientRepository
+import io.reactivex.Flowable
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 import javax.persistence.EntityManager
-
-import static rx.RxReactiveStreams.toObservable
 
 /**
  * Serves Patient Resources over HTTP
@@ -52,7 +51,7 @@ class PatientController {
                         patientAccountQuery.computeSnapshot(patient, date) :
                         patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE)
 
-        def resp = toObservable(computation).toBlocking().first()
+        def resp = Flowable.fromPublisher(computation).blockingFirst()
         if (!resp) {
             throw new RuntimeException('Could not compute account snapshot')
         }
@@ -72,7 +71,7 @@ class PatientController {
                         patientHealthQuery.computeSnapshot(patient, date) :
                         patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE)
 
-        def resp = toObservable(computation).toBlocking().first()
+        def resp = Flowable.fromPublisher(computation).blockingFirst()
         if (!resp) {
             throw new RuntimeException('Could not compute health snapshot')
         }

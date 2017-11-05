@@ -10,9 +10,7 @@ import org.reactivestreams.Publisher
 
 import javax.persistence.*
 
-import static rx.Observable.empty
-import static rx.Observable.just
-import static rx.RxReactiveStreams.toPublisher
+import static io.reactivex.Flowable.*
 
 /**
  * Domain Model for Patient Event
@@ -33,7 +31,7 @@ abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEve
     @OneToOne Patient aggregate
 
     Publisher<Patient> getAggregateObservable() {
-        toPublisher(aggregate ? just(aggregate) : empty())
+        aggregate ? just(aggregate) : empty()
     } // <5>
 
 }
@@ -87,8 +85,8 @@ class PatientDeprecatedBy extends PatientEvent implements
     @OneToOne PatientDeprecates converse
     @OneToOne Patient deprecator
 
-    Publisher<PatientDeprecates> getConverseObservable() { toPublisher(just(converse)) }
-    Publisher<Patient> getDeprecatorObservable() { toPublisher(just(deprecator)) }
+    Publisher<PatientDeprecates> getConverseObservable() { just(converse) }
+    Publisher<Patient> getDeprecatorObservable() { just(deprecator) }
 
     @Override String toString() { "PatientDeprecatedBy(deprecator=$deprecator)" }
 }
@@ -99,8 +97,8 @@ class PatientDeprecates extends PatientEvent
     @OneToOne PatientDeprecatedBy converse
     @OneToOne Patient deprecated
 
-    Publisher<PatientDeprecatedBy> getConverseObservable() { toPublisher(just(converse)) }
-    Publisher<Patient> getDeprecatedObservable() { toPublisher(just(deprecated)) }
+    Publisher<PatientDeprecatedBy> getConverseObservable() { just(converse) }
+    Publisher<Patient> getDeprecatedObservable() { just(deprecated) }
 
     @Override String toString() { "PatientDeprecates(deprecated=$deprecated)" }
 }

@@ -13,8 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 import javax.persistence.EntityManager
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
-import static rx.Observable.*
-import static rx.RxReactiveStreams.toPublisher
+import static io.reactivex.Flowable.*
 
 /**
  * Query for Patient Account
@@ -47,7 +46,7 @@ class PatientAccountQuery implements
                 patientAccountRepository.findAllByAggregateId(aggregate.id) :
                 patientAccountRepository.findAllByAggregateIdAndLastEventPositionLessThan(
                         aggregate.id, maxPosition)
-        toPublisher(snapshots ? just(detachSnapshot(snapshots[0])) : empty())
+        snapshots ? just(detachSnapshot(snapshots[0])) : empty()
         //tag::documented[]
     }
 
@@ -58,7 +57,7 @@ class PatientAccountQuery implements
                 patientAccountRepository.findAllByAggregateId(aggregate.id) :
                 patientAccountRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
                         aggregate.id, maxTimestamp)
-        toPublisher(snapshots ? just(detachSnapshot(snapshots[0])) : empty())
+        snapshots ? just(detachSnapshot(snapshots[0])) : empty()
         //tag::documented[]
     }
 
@@ -71,7 +70,7 @@ class PatientAccountQuery implements
     Publisher<EventApplyOutcome> onException(
             Exception e, PatientAccount snapshot, PatientEvent event) { // <6>
         snapshot.processingErrors++
-        toPublisher(just(CONTINUE))
+        just(CONTINUE)
     }
 
     @Override
@@ -86,10 +85,10 @@ class PatientAccountQuery implements
                 cb.gt(root.get(POSITION), lastSnapshot?.lastEventPosition ?: 0L),
                 cb.le(root.get(POSITION), version),
         )
-        toPublisher(from(entityManager
+        fromIterable(entityManager
                         .createQuery(criteria)
                         .setParameter(AGGREGATE, patient)
-                        .resultList))
+                        .resultList)
         //tag::documented[]
     }
 
@@ -117,7 +116,7 @@ class PatientAccountQuery implements
             query.setParameter(FROM, lastSnapshot.lastEventTimestamp)
         }
 
-        toPublisher(from(query.resultList))
+        fromIterable(query.resultList)
         //tag::documented[]
     }
 
@@ -136,20 +135,20 @@ class PatientAccountQuery implements
         if (snapshot.aggregate == event.aggregate) {
             snapshot.name = event.name
         }
-        toPublisher(just(CONTINUE)) // <11>
+        just(CONTINUE) // <11>
     }
 
     Publisher<EventApplyOutcome> applyProcedurePerformed(
             ProcedurePerformed event, PatientAccount snapshot) {
         snapshot.balance += event.cost
-        toPublisher(just(CONTINUE))
+        just(CONTINUE)
     }
 
     Publisher<EventApplyOutcome> applyPaymentMade(
             PaymentMade event, PatientAccount snapshot) {
         snapshot.balance -= event.amount
         snapshot.moneyMade += event.amount
-        toPublisher(just(CONTINUE))
+        just(CONTINUE)
     }
 
     //end::documented[]

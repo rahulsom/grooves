@@ -8,8 +8,7 @@ import org.reactivestreams.Publisher
 
 import javax.persistence.*
 
-import static rx.Observable.*
-import static rx.RxReactiveStreams.toPublisher
+import static io.reactivex.Flowable.*
 
 /**
  * Domain Model for Patient Health
@@ -36,15 +35,15 @@ class PatientHealth implements JavaSnapshot<Long, Patient, Long, Long, PatientEv
     int processingErrors = 0
 
     @Override @JsonIgnore Publisher<Patient> getAggregateObservable() {
-        toPublisher(aggregate ? just(aggregate) : empty())
+        aggregate ? just(aggregate) : empty()
     }
 
     @Override @JsonIgnore Publisher<Patient> getDeprecatedByObservable() {
-        toPublisher(deprecatedBy ? just(deprecatedBy) : empty())
+        deprecatedBy ? just(deprecatedBy) : empty()
     }
 
     @Override @JsonIgnore Publisher<Patient> getDeprecatesObservable() {
-        toPublisher(from(deprecates.toList()))
+        fromIterable(deprecates.toList())
     }
 
 }

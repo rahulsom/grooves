@@ -14,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 import javax.persistence.EntityManager
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
-import static rx.Observable.*
-import static rx.RxReactiveStreams.toPublisher
+import static io.reactivex.Flowable.*
 
 /**
  * Query for Patient Health
@@ -43,7 +42,7 @@ class PatientHealthQuery implements
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
                 patientHealthRepository.findAllByAggregateIdAndLastEventPositionLessThan(
                         aggregate.id, maxPosition)
-        toPublisher(snapshots ? just(detachSnapshot(snapshots[0])) : empty())
+        snapshots ? just(detachSnapshot(snapshots[0])) : empty()
     }
 
     @Override
@@ -52,24 +51,24 @@ class PatientHealthQuery implements
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
                 patientHealthRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
                         aggregate.id, maxTimestamp)
-        toPublisher(snapshots ? just(detachSnapshot(snapshots[0])) : empty())
+        snapshots ? just(detachSnapshot(snapshots[0])) : empty()
     }
 
     @Override
     Publisher<PatientEvent> getUncomputedEvents(
             Patient patient, PatientHealth lastSnapshot, long version) {
-        toPublisher(from(patientEventRepository.getUncomputedEventsByVersion(
-                patient, lastSnapshot?.lastEventPosition ?: 0L, version)))
+        fromIterable(patientEventRepository.getUncomputedEventsByVersion(
+                patient, lastSnapshot?.lastEventPosition ?: 0L, version))
     }
 
     @Override
     Publisher<PatientEvent> getUncomputedEvents(
             Patient patient, PatientHealth lastSnapshot, Date snapshotTime) {
-        toPublisher(from(lastSnapshot?.lastEventTimestamp ?
+        fromIterable(lastSnapshot?.lastEventTimestamp ?
                 patientEventRepository.getUncomputedEventsByDateRange(
                         patient, lastSnapshot.lastEventTimestamp, snapshotTime) :
                 patientEventRepository.getUncomputedEventsUntilDate(
-                        patient, snapshotTime)))
+                        patient, snapshotTime))
     }
 
     @Override
@@ -86,7 +85,7 @@ class PatientHealthQuery implements
     Publisher<EventApplyOutcome> onException(
             Exception e, PatientHealth snapshot, PatientEvent event) {
         snapshot.processingErrors++
-        toPublisher(just(CONTINUE))
+        just(CONTINUE)
     }
 
     Publisher<EventApplyOutcome> applyPatientCreated(
@@ -94,20 +93,20 @@ class PatientHealthQuery implements
         if (snapshot.aggregate == event.aggregate) {
             snapshot.name = event.name
         }
-        toPublisher(just(CONTINUE))
+        just(CONTINUE)
     }
 
     Publisher<EventApplyOutcome> applyProcedurePerformed(
             ProcedurePerformed event, PatientHealth snapshot) {
         snapshot.procedures << new Procedure(code: event.code, date: event.timestamp)
-        toPublisher(just(CONTINUE))
+        just(CONTINUE)
     }
 
     @SuppressWarnings('UnusedMethodParameter')
     Publisher<EventApplyOutcome> applyPaymentMade(
             PaymentMade event, PatientHealth snapshot) {
         // Ignore payments
-        toPublisher(just(CONTINUE))
+        just(CONTINUE)
     }
 
     PatientHealth detachSnapshot(PatientHealth snapshot) {
