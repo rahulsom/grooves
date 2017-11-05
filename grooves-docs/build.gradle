@@ -25,7 +25,11 @@ asciidoctor {
         include 'index.adoc'
     }
     attributes 'sourcedir': rootDir.absolutePath,
-            'version': project.version.toString()
+            'version': project.version.toString(),
+            'toc': 'left',
+            'source-highlighter': 'coderay',
+            'icons': 'font',
+            'stylesheet': 'grooves.css'
 }
 
 asciidoctor.dependsOn ':grooves-diagrams:jar'

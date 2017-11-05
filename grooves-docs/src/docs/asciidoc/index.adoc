@@ -1,11 +1,7 @@
 = Grooves
 :stem:
-:toc: left
 :nofooter:
-:source-highlighter: coderay
-:icons: font
 :linkcss:
-:stylesheet: grooves.css
 :docinfo1:
 
 Formerly, _Groovy + Event Sourcing_.
