@@ -1,6 +1,6 @@
-https://semaphoreci.com/rahulsom/grooves[image:https://semaphoreci.com/api/v1/rahulsom/grooves/branches/0-1-x/shields_badge.svg[Build
-Status]]
+https://semaphoreci.com/rahulsom/grooves[image:https://semaphoreci.com/api/v1/rahulsom/grooves/branches/0-1-x/shields_badge.svg[Build Status]]
 https://opensource.org/licenses/Apache-2.0[image:https://img.shields.io/badge/License-Apache%202.0-blue.svg[License]]
+https://codecov.io/gh/rahulsom/grooves[image:https://codecov.io/gh/rahulsom/grooves/branch/master/graph/badge.svg[codecov]]
 
 = Grooves
 

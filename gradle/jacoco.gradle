@@ -16,11 +16,7 @@ if (project.tasks.findByName('integrationTest')) {
 
 jacocoTestReport {
     reports {
-        html {
-            enabled = true
-        }
-        xml {
-            enabled = true
-        }
+        html.enabled = true
+        xml.enabled = true
     }
 }
