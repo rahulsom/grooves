@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 function check() {
     ./gradlew check --scan --build-cache --configure-on-demand

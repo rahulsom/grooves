@@ -16,8 +16,8 @@ class BootStrap {
     private static final int ONE_DAY = 24 * 60 * 60 * 1000
     private static final String START_DATE = '2016-01-01'
 
-    private final PatientAccountQuery patientAccountQuery = new PatientAccountQuery()
-    private final PatientHealthQuery patientHealthQuery = new PatientHealthQuery()
+//    private final PatientAccountQuery patientAccountQuery = new PatientAccountQuery()
+//    private final PatientHealthQuery patientHealthQuery = new PatientHealthQuery()
 
     def init = { servletContext ->
         def campbell = on(new Zipcode(uniqueId: '95008').save(flush: true, failOnError: true)) {
@@ -156,14 +156,14 @@ class BootStrap {
             apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
             apply new PaymentMade(amount: 100.25)
 
-            snapshotWith patientAccountQuery
-            snapshotWith patientHealthQuery
+            // snapshotWith patientAccountQuery
+            // snapshotWith patientHealthQuery
 
             apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
             apply new PaymentMade(amount: 180.00)
 
-            snapshotWith patientAccountQuery
-            snapshotWith patientHealthQuery
+            // snapshotWith patientAccountQuery
+            // snapshotWith patientHealthQuery
         }
     }
 
@@ -176,14 +176,14 @@ class BootStrap {
             apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
             apply new PaymentMade(amount: 100.25)
 
-            snapshotWith patientAccountQuery
-            snapshotWith patientHealthQuery
+            // snapshotWith patientAccountQuery
+            // snapshotWith patientHealthQuery
 
             apply new ProcedurePerformed(code: 'FLUSHOT', cost: 32.40)
             apply new PaymentMade(amount: 180.00)
 
-            snapshotWith patientAccountQuery
-            snapshotWith patientHealthQuery
+            // snapshotWith patientAccountQuery
+            // snapshotWith patientHealthQuery
         }
     }
 
@@ -198,19 +198,19 @@ class BootStrap {
             apply new PatientEventReverted(revertedEventId: gluc.id)
             def pmt = apply new PaymentMade(amount: 30.00)
 
-            snapshotWith patientAccountQuery
-            snapshotWith patientHealthQuery
+            // snapshotWith patientAccountQuery
+            // snapshotWith patientHealthQuery
 
             apply new PatientEventReverted(revertedEventId: pmt.id)
             apply new PaymentMade(amount: 60.00)
 
-            snapshotWith patientAccountQuery
-            snapshotWith patientHealthQuery
+            // snapshotWith patientAccountQuery
+            // snapshotWith patientHealthQuery
 
             apply new PaymentMade(amount: 60.00)
 
-            snapshotWith patientAccountQuery
-            snapshotWith patientHealthQuery
+            // snapshotWith patientAccountQuery
+            // snapshotWith patientHealthQuery
         }
 
     }
@@ -224,16 +224,16 @@ class BootStrap {
             apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
             apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
 
-            snapshotWith patientAccountQuery
-            snapshotWith patientHealthQuery
+            // snapshotWith patientAccountQuery
+            // snapshotWith patientHealthQuery
         }
 
         on(patient2) {
             apply new PatientCreated(name: 'Freddie Mercury')
             apply new PaymentMade(amount: 100.25)
 
-            snapshotWith patientAccountQuery
-            snapshotWith patientHealthQuery
+            // snapshotWith patientAccountQuery
+            // snapshotWith patientHealthQuery
         }
 
         currDate += 1
@@ -250,16 +250,16 @@ class BootStrap {
             apply new ProcedurePerformed(code: 'ANNUALPHYSICAL', cost: 170.00)
             apply new ProcedurePerformed(code: 'GLUCOSETEST', cost: 78.93)
 
-            snapshotWith patientAccountQuery
-            snapshotWith patientHealthQuery
+            // snapshotWith patientAccountQuery
+            // snapshotWith patientHealthQuery
         }
 
         on(patient2) {
             apply new PatientCreated(name: 'Sarah Palin')
             apply new PaymentMade(amount: 100.25)
 
-            snapshotWith patientAccountQuery
-            snapshotWith patientHealthQuery
+            // snapshotWith patientAccountQuery
+            // snapshotWith patientHealthQuery
         }
 
         currDate += 1
@@ -311,7 +311,7 @@ class BootStrap {
     Doctor on(Doctor doctor, @DelegatesTo(OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { DoctorEvent.countByAggregate(doctor) + 1 }
-        new GroovyEventsDsl<Doctor, Long, DoctorEvent>().on(
+        new GroovyEventsDsl<Long, Doctor, Long, DoctorEvent>().on(
                 doctor, eventSaver, positionSupplier, closure)
     }
 

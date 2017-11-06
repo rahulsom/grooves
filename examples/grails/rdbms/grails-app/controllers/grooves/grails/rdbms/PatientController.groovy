@@ -51,7 +51,7 @@ class PatientController implements RxController {
         toObservable(snapshot).map { s ->
             s.toString().length()
             JSON.use('deep') {
-                rx.render(s as JSON)
+                rx.render(s as JSON, contentType: 'application/json')
             }
         }
     }

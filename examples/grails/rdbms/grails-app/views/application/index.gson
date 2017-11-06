@@ -4,7 +4,7 @@ import grails.plugins.*
 import org.grails.core.artefact.*
 
 model {
-	GrailsApplication grailsApplication
+	GrailsApplication grailsApplication	
 	GrailsPluginManager pluginManager
 }
 

@@ -1,6 +1,5 @@
 package grooves.grails.mongo
 
-import grails.converters.JSON
 import grails.rx.web.RxController
 import grails.transaction.Transactional
 
@@ -12,7 +11,7 @@ import static rx.RxReactiveStreams.toObservable
  * @author Rahul Somasunderam
  */
 @Transactional(readOnly = true)
-@SuppressWarnings(['DuplicateStringLiteral'])
+@SuppressWarnings(['DuplicateStringLiteral', 'DuplicateMapLiteral'])
 class ZipcodeController implements RxController {
 
     def index(Integer max) {
@@ -29,10 +28,8 @@ class ZipcodeController implements RxController {
                 new ZipcodeSummaryQuery().computeSnapshot(zipcode, params.date('date')) :
                 new ZipcodeSummaryQuery().computeSnapshot(zipcode, new Date())
 
-        toObservable(snapshot).map { s ->
-            JSON.use('deep') {
-                rx.render(s as JSON)
-            }
+        snapshot.map { s ->
+            rx.respond(s)
         }
     }
 
@@ -43,9 +40,7 @@ class ZipcodeController implements RxController {
                         new ZipcodePatientsQuery().computeSnapshot(zipcode, params.date('date')) :
                         new ZipcodePatientsQuery().computeSnapshot(zipcode, new Date())
         toObservable(snapshot).map { s ->
-            JSON.use('deep') {
-                rx.render(s as JSON)
-            }
+            rx.respond(s)
         }
     }
 

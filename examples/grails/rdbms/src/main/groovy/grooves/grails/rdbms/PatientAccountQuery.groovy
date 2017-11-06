@@ -41,12 +41,14 @@ class PatientAccountQuery implements
             Exception e, PatientAccount snapshot, PatientEvent event) {
         // ignore exceptions. Look at the mongo equivalent to see one possible way to handle
         // exceptions
+        log.warn "$e occurred while applying $event"
         toPublisher(just(CONTINUE))
     }
 
     Publisher<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientAccount snapshot) {
-        if (snapshot.aggregateId == event.aggregateId) {
+        if (snapshot.aggregateId == event.aggregate.id) {
+            log.info 'Setting name'
             snapshot.name = event.name
         }
         toPublisher(just(CONTINUE))

@@ -1,6 +1,5 @@
 package grooves.grails.mongo
 
-import grails.converters.JSON
 import grails.rx.web.RxController
 import grails.transaction.Transactional
 
@@ -51,9 +50,7 @@ class PatientController implements RxController {
                         query.computeSnapshot(patient, Long.MAX_VALUE)
 
         toObservable(snapshot).map { s ->
-            JSON.use('deep') {
-                rx.render(s as JSON)
-            }
+            rx.respond(s)
         }
     }
 

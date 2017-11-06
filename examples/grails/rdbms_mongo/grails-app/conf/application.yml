@@ -1,11 +1,16 @@
 ---
 grails:
-    profile: web
+    profile: rest-api
     codegen:
-        defaultPackage: grooves.example.grails.mongo
+        defaultPackage: rdbms_mongo
     spring:
         transactionManagement:
             proxies: false
+    gorm:
+        reactor:
+            # Whether to translate GORM events into Reactor events
+            # Disabled by default for performance reasons
+            events: false
 info:
     app:
         name: '@info.app.name@'
@@ -36,28 +41,22 @@ grails:
                         - Presto
                         - Trident
         types:
-            all: '*/*'
-            atom: application/atom+xml
-            css: text/css
-            csv: text/csv
-            form: application/x-www-form-urlencoded
-            html:
-              - text/html
-              - application/xhtml+xml
-            js: text/javascript
             json:
               - application/json
               - text/json
-            multipartForm: multipart/form-data
-            pdf: application/pdf
-            rss: application/rss+xml
-            text: text/plain
             hal:
               - application/hal+json
               - application/hal+xml
             xml:
               - text/xml
               - application/xml
+            atom: application/atom+xml
+            css: text/css
+            csv: text/csv
+            js: text/javascript
+            rss: application/rss+xml
+            text: text/plain
+            all: '*/*'
     urlmapping:
         cache:
             maxsize: 1000
@@ -65,35 +64,19 @@ grails:
         defaultScope: singleton
     converters:
         encoding: UTF-8
-    views:
-        default:
-            codec: html
-        gsp:
-            encoding: UTF-8
-            htmlcodec: xml
-            codecs:
-                expression: html
-                scriptlets: html
-                taglib: none
-                staticparts: none
-endpoints:
-    jmx:
-        unique-names: true
 
 ---
 hibernate:
     cache:
         queries: false
-        use_second_level_cache: true
+        use_second_level_cache: false
         use_query_cache: false
-        region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
-
 dataSource:
     pooled: true
     jmxExport: true
     driverClassName: org.h2.Driver
     username: sa
-    password:
+    password: ''
 
 environments:
     development:

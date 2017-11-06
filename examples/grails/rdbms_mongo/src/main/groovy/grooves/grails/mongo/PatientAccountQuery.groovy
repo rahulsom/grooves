@@ -45,7 +45,7 @@ class PatientAccountQuery
 
     Publisher<EventApplyOutcome> applyPatientCreated( // <12>
             PatientCreated event, PatientAccount snapshot) {
-        if (snapshot.aggregateId == event.aggregateId) {
+        if (snapshot.aggregateId == event.aggregate.id) {
             snapshot.name = event.name
         }
         toPublisher(just(CONTINUE)) // <13>

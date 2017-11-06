@@ -60,7 +60,7 @@ class PatientAddedToZipcode extends PatientEvent implements
     @Override Publisher<Zipcode> getJoinAggregateObservable() { toPublisher(just(zipcode)) }
 
     @Override String toString() {
-        "<${aggregateId}.$id> $ts sent to zipcode ${zipcode.uniqueId}" }
+        "<${aggregate.id}.$id> $ts sent to zipcode ${zipcode.uniqueId}" }
 
     static transients = ['joinAggregate']
 }
@@ -72,7 +72,7 @@ class PatientRemovedFromZipcode extends PatientEvent implements
     @Override Publisher<Zipcode> getJoinAggregateObservable() { toPublisher(just(zipcode)) }
 
     @Override String toString() {
-        "<${aggregateId}.$id> $ts removed from zipcode ${zipcode.uniqueId}" }
+        "<${aggregate.id}.$id> $ts removed from zipcode ${zipcode.uniqueId}" }
 
     static transients = ['joinAggregate']
 }
@@ -84,7 +84,7 @@ class ProcedurePerformed extends PatientEvent {
     BigDecimal cost
 
     @Override String toString() {
-        "<${aggregateId}.$id> $ts performed $code for \$ $cost" }
+        "<${aggregate.id}.$id> $ts performed $code for \$ $cost" }
 }
 
 @Event(Patient)
@@ -104,12 +104,12 @@ class PatientEventReverted
 
     //end::reverted[]
     @Override String toString() {
-        "<${aggregateId}.$id> $ts reverted #$revertedEventId" }
+        "<${aggregate.id}.$id> $ts reverted #$revertedEventId" }
     //tag::reverted[]
 }
 //end::reverted[]
 
-@EqualsAndHashCode
+@EqualsAndHashCode(includes = ['id', 'aggregate', 'timestamp', 'deprecator'])
 class PatientDeprecatedBy extends PatientEvent implements
         DeprecatedBy<Long, Patient, Long, PatientEvent> {
     static hasOne = [
@@ -121,10 +121,10 @@ class PatientDeprecatedBy extends PatientEvent implements
     Publisher<Patient> getDeprecatorObservable() { toPublisher(just(deprecator)) }
 
     @Override String toString() {
-        "<${aggregateId}.$id> $ts deprecated by #${deprecator.id}" }
+        "<${aggregate.id}.$id> $ts deprecated by #${deprecator.id}" }
 }
 
-@EqualsAndHashCode
+@EqualsAndHashCode(includes = ['id', 'aggregate', 'timestamp', 'deprecated'])
 class PatientDeprecates extends PatientEvent implements
         Deprecates<Long, Patient, Long, PatientEvent> {
     static belongsTo = [
@@ -136,5 +136,5 @@ class PatientDeprecates extends PatientEvent implements
     Publisher<Patient> getDeprecatedObservable() { toPublisher(just(deprecated)) }
 
     @Override String toString() {
-        "<${aggregateId}.$id> $ts deprecates #${deprecated.id}" }
+        "<${aggregate.id}.$id> $ts deprecates #${deprecated.id}" }
 }
