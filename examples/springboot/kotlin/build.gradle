@@ -49,8 +49,8 @@ dependencies {
     compile 'org.springframework:spring-aspects:5.0.0.M5'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
-    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
-    testCompile 'org.spockframework:spock-spring:1.0-groovy-2.4'
+    testCompile "org.spockframework:spock-core:$spockVersion"
+    testCompile "org.spockframework:spock-spring:$spockVersion"
     testCompile 'io.projectreactor.addons:reactor-test'
 
     compile project(':grooves-api')
