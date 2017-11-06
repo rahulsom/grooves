@@ -2,6 +2,6 @@ apply plugin: 'groovy'
 apply from: "$rootDir/gradle/codenarc/codenarc.gradle"
 
 dependencies {
-    compile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    compile "org.spockframework:spock-core:$spockVersion"
     compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
 }
