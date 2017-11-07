@@ -6,7 +6,6 @@ import grooves.example.javaee.domain.PatientHealth;
 import grooves.example.javaee.queries.PatientAccountQuery;
 import grooves.example.javaee.queries.PatientHealthQuery;
 import org.reactivestreams.Publisher;
-import rx.Observable;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -77,7 +76,7 @@ public class PatientResource {
         final Patient patient = database.patients()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .get();
+                .orElse(null);
 
         Publisher<PatientHealth> computation =
                 version != null ?
@@ -115,7 +114,7 @@ public class PatientResource {
         final Patient patient = database.patients()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
-                .get();
+                .orElse(null);
 
         Publisher<PatientAccount> computation =
                 version != null ?
