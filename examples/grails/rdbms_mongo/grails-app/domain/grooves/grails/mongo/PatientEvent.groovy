@@ -109,7 +109,7 @@ class PatientEventReverted
 }
 //end::reverted[]
 
-@EqualsAndHashCode
+@EqualsAndHashCode(excludes = 'converse')
 class PatientDeprecatedBy extends PatientEvent implements
         DeprecatedBy<Long, Patient, Long, PatientEvent> {
     static hasOne = [
@@ -124,7 +124,7 @@ class PatientDeprecatedBy extends PatientEvent implements
         "<${aggregateId}.$id> $ts deprecated by #${deprecator.id}" }
 }
 
-@EqualsAndHashCode
+@EqualsAndHashCode(excludes = 'converse')
 class PatientDeprecates extends PatientEvent implements
         Deprecates<Long, Patient, Long, PatientEvent> {
     static belongsTo = [

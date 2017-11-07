@@ -1,7 +1,7 @@
 package rxmongo
 
 import com.github.rahulsom.grooves.test.AbstractPatientSpec
-import grails.test.mixin.integration.Integration
+import grails.testing.mixin.integration.Integration
 import groovyx.net.http.RESTClient
 import org.springframework.beans.factory.annotation.Value
 
