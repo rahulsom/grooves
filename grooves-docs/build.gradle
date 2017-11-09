@@ -47,6 +47,9 @@ githubPages {
             from(file("$buildDir/asciidoc/html5")) {
                 into "manual/current"
             }
+            from(rootProject.file('grooves-site')) {
+                into '.'
+            }
         }
     }
     credentials {
