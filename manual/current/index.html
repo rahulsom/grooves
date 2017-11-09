@@ -460,7 +460,7 @@ For the code to actually work, those would be required.</p>
 </li>
 <li>
 <p>Groovy - A project that uses SpringBoot and JPA for persistence.
-It&#8217;s written using Groovy.</p>
+It&#8217;s written using Groovy. This uses RxJava2 as the Reactive Streams Framework.</p>
 </li>
 <li>
 <p>Gorm - It&#8217;s a grails project that uses Hibernate for persisting events and aggregates.
@@ -844,7 +844,7 @@ Again, since we&#8217;re using collections, it doesn&#8217;t matter.</td>
     <span class="annotation">@OneToOne</span> Patient aggregate
 
     Publisher&lt;Patient&gt; getAggregateObservable() {
-        toPublisher(aggregate ? just(aggregate) : empty())
+        aggregate ? just(aggregate) : empty()
     } <i class="conum" data-value="5"></i><b>(5)</b>
 
 }</code></pre>
@@ -1328,15 +1328,15 @@ It is empty when the aggregate is not deprecated.</td>
     <span class="type">int</span> processingErrors = <span class="integer">0</span>
 
     <span class="annotation">@Override</span> <span class="annotation">@JsonIgnore</span> Publisher&lt;Patient&gt; getAggregateObservable() { <i class="conum" data-value="4"></i><b>(4)</b>
-        toPublisher(aggregate ? just(aggregate) : empty())
+        aggregate ? just(aggregate) : empty()
     }
 
     <span class="annotation">@Override</span> <span class="annotation">@JsonIgnore</span> Publisher&lt;Patient&gt; getDeprecatedByObservable() { <i class="conum" data-value="5"></i><b>(5)</b>
-        toPublisher(deprecatedBy ? just(deprecatedBy) : empty())
+        deprecatedBy ? just(deprecatedBy) : empty()
     }
 
     <span class="annotation">@Override</span> <span class="annotation">@JsonIgnore</span> Publisher&lt;Patient&gt; getDeprecatesObservable() { <i class="conum" data-value="6"></i><b>(6)</b>
-        toPublisher(from(deprecates.toList()))
+        fromIterable(deprecates.toList())
     }
 }</code></pre>
 </div>
@@ -1730,7 +1730,7 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
     Publisher&lt;EventApplyOutcome&gt; onException(
             <span class="exception">Exception</span> e, PatientAccount snapshot, PatientEvent event) { <i class="conum" data-value="6"></i><b>(6)</b>
         snapshot.processingErrors++
-        toPublisher(just(CONTINUE))
+        just(CONTINUE)
     }
 
     <span class="annotation">@Override</span>
@@ -1758,20 +1758,20 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
         <span class="keyword">if</span> (snapshot.aggregate == event.aggregate) {
             snapshot.name = event.name
         }
-        toPublisher(just(CONTINUE)) <i class="conum" data-value="11"></i><b>(11)</b>
+        just(CONTINUE) <i class="conum" data-value="11"></i><b>(11)</b>
     }
 
     Publisher&lt;EventApplyOutcome&gt; applyProcedurePerformed(
             ProcedurePerformed event, PatientAccount snapshot) {
         snapshot.balance += event.cost
-        toPublisher(just(CONTINUE))
+        just(CONTINUE)
     }
 
     Publisher&lt;EventApplyOutcome&gt; applyPaymentMade(
             PaymentMade event, PatientAccount snapshot) {
         snapshot.balance -= event.amount
         snapshot.moneyMade += event.amount
-        toPublisher(just(CONTINUE))
+        just(CONTINUE)
     }
 
 }</code></pre>
