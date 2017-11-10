@@ -1,36 +1,40 @@
 @import url('https://fonts.googleapis.com/css?family=Monoton|Roboto:300,700');
-
 #intro {
     background-color: transparent;
     text-align: center;
 }
-
 #intro h1 {
     font-family: 'Monoton', cursive;
+    animation-name: example;
+    animation-duration: 12s;
+    animation-iteration-count: infinite;
+    transform: rotate(-1.5deg);
+    text-shadow: 8px 8px 8px rgba(128,128,128,.25);
 }
-
 .btn {
     border-color: rgb(92, 92, 92);
 }
-
 a.btn {
     color: rgb(92, 92, 92);
 }
-
 * {
     font-family: "Roboto", "Helvetica Neue", sans-serif;
     font-weight: 300;
     font-size: 1.02em;
 }
-
 body {
     min-height: 900px;
 }
-
 strong {
     font-weight: 700;
 }
-
 .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
     margin-bottom: 1.5rem;
+}
+@keyframes example {
+    0%   {color: red;}
+    25%  {color: darkgoldenrod;}
+    50%  {color: blue;}
+    75%  {color: green;}
+    100% {color: red;}
 }
