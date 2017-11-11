@@ -11,11 +11,11 @@ import static rx.Observable.*;
 import static rx.RxReactiveStreams.toPublisher;
 
 public class Balance implements JavaSnapshot<Long, Account, String, Long, Transaction> {
-    String id;
-    Long lastEventPosition;
-    Date lastEventTimestamp;
-    Account aggregate, deprecatedBy;
-    Set<Account> deprecates;
+    private String id;
+    private Long lastEventPosition;
+    private Date lastEventTimestamp;
+    private Account aggregate, deprecatedBy;
+    private Set<Account> deprecates;
 
     @Override
     public void setId(String id) {
