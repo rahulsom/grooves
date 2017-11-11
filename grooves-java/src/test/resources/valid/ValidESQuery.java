@@ -32,12 +32,14 @@ class ValidESQuery implements QuerySupport<Long, Account, Long, Transaction, Str
     }
 
     @Override
-    public Publisher<Transaction> getUncomputedEvents(Account aggregate, Balance lastSnapshot, long version) {
+    public Publisher<Transaction> getUncomputedEvents(
+            Account aggregate, Balance lastSnapshot, long version) {
         return toPublisher(empty());
     }
 
     @Override
-    public Publisher<Transaction> getUncomputedEvents(Account aggregate, Balance lastSnapshot, Date snapshotTime) {
+    public Publisher<Transaction> getUncomputedEvents(
+            Account aggregate, Balance lastSnapshot, Date snapshotTime) {
         return toPublisher(empty());
     }
 
@@ -51,7 +53,8 @@ class ValidESQuery implements QuerySupport<Long, Account, Long, Transaction, Str
     }
 
     @Override
-    public Publisher<EventApplyOutcome> onException(Exception e, Balance snapshot, Transaction event) {
+    public Publisher<EventApplyOutcome> onException(
+            Exception e, Balance snapshot, Transaction event) {
         return toPublisher(just(CONTINUE));
     }
 
@@ -59,7 +62,8 @@ class ValidESQuery implements QuerySupport<Long, Account, Long, Transaction, Str
         return toPublisher(just(CONTINUE));
     }
 
-    public Publisher<EventApplyOutcome> applyCashWithdrawal(CashWithdrawal event, Balance snapshot) {
+    public Publisher<EventApplyOutcome> applyCashWithdrawal(
+            CashWithdrawal event, Balance snapshot) {
         return toPublisher(just(CONTINUE));
     }
 }

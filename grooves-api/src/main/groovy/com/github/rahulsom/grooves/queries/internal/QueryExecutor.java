@@ -100,9 +100,6 @@ public class QueryExecutor<
         });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Flowable<SnapshotT> applyEvents(
             QueryT query,

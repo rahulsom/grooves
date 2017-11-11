@@ -6,6 +6,7 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
+import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
 /**
@@ -35,6 +36,8 @@ public interface QuerySupport<
         VersionedQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                 SnapshotT, QueryT> {
 
+    @NotNull
+    @Override
     default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
             SnapshotT, QueryT> getExecutor() {
         return new QueryExecutor<>();

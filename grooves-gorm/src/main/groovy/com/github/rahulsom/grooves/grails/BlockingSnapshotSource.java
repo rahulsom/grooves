@@ -8,18 +8,13 @@ import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.grails.datastore.gorm.GormEntity;
 import org.reactivestreams.Publisher;
-import rx.Observable;
 
 import java.util.Date;
 import java.util.List;
 
-import static com.github.rahulsom.grooves.grails.QueryUtil.LATEST_BY_POSITION;
-import static com.github.rahulsom.grooves.grails.QueryUtil.LATEST_BY_TIMESTAMP;
-import static com.github.rahulsom.grooves.grails.QueryUtil.SNAPSHOTS_BY_AGGREGATE;
+import static com.github.rahulsom.grooves.grails.QueryUtil.*;
 import static org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod;
-import static rx.Observable.defer;
-import static rx.Observable.empty;
-import static rx.Observable.just;
+import static rx.Observable.*;
 import static rx.RxReactiveStreams.toPublisher;
 
 /**
@@ -59,7 +54,7 @@ public interface BlockingSnapshotSource<
                             new Object[]{aggregate.getId(), LATEST_BY_POSITION}) :
                     invokeStaticMethod(
                             getSnapshotClass(),
-                            QueryUtil.SNAPSHOTS_BY_POSITION,
+                            SNAPSHOTS_BY_POSITION,
                             new Object[]{aggregate.getId(), maxPosition, LATEST_BY_POSITION}));
 
             return DefaultGroovyMethods.asBoolean(snapshots) ?
@@ -79,7 +74,7 @@ public interface BlockingSnapshotSource<
                             new Object[]{aggregate.getId(), LATEST_BY_TIMESTAMP}) :
                     invokeStaticMethod(
                             getSnapshotClass(),
-                            QueryUtil.SNAPSHOTS_BY_TIMETTAMP,
+                            SNAPSHOTS_BY_TIMETTAMP,
                             new Object[]{aggregate.getId(), maxTimestamp, LATEST_BY_TIMESTAMP}));
             return DefaultGroovyMethods.asBoolean(snapshots) ?
                     just(detachSnapshot(snapshots.get(0))) :

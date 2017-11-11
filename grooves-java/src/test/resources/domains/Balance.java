@@ -14,7 +14,8 @@ public class Balance implements JavaSnapshot<Long, Account, String, Long, Transa
     private String id;
     private Long lastEventPosition;
     private Date lastEventTimestamp;
-    private Account aggregate, deprecatedBy;
+    private Account aggregate;
+    private Account deprecatedBy;
     private Set<Account> deprecates;
 
     @Override

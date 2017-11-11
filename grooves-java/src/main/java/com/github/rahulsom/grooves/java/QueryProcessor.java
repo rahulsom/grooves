@@ -85,7 +85,7 @@ public class QueryProcessor extends AbstractProcessor {
                 .stream()
                 .anyMatch(it -> it.toString().equals(expectedMethod));
         if (!found) {
-            String msg = String.format("%s\n  %s<%s> %s",
+            String msg = String.format("%s%n  %s<%s> %s",
                     ERROR_MESSAGE, OBSERVABLE_TYPE, EVENT_APPLY_OUTCOME_TYPE,
                     expectedMethod);
             Messager messager = processingEnv.getMessager();

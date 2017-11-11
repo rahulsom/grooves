@@ -32,12 +32,14 @@ class IncorrectReturnType implements QuerySupport<Long, Account, Long, Transacti
     }
 
     @Override
-    public Publisher<Transaction> getUncomputedEvents(Account aggregate, Balance lastSnapshot, long version) {
+    public Publisher<Transaction> getUncomputedEvents(
+            Account aggregate, Balance lastSnapshot, long version) {
         return empty();
     }
 
     @Override
-    public Publisher<Transaction> getUncomputedEvents(Account aggregate, Balance lastSnapshot, Date snapshotTime) {
+    public Publisher<Transaction> getUncomputedEvents(
+            Account aggregate, Balance lastSnapshot, Date snapshotTime) {
         return empty();
     }
 
@@ -51,7 +53,8 @@ class IncorrectReturnType implements QuerySupport<Long, Account, Long, Transacti
     }
 
     @Override
-    public Publisher<EventApplyOutcome> onException(Exception e, Balance snapshot, Transaction event) {
+    public Publisher<EventApplyOutcome> onException(
+            Exception e, Balance snapshot, Transaction event) {
         return toPublisher(just(CONTINUE));
     }
 

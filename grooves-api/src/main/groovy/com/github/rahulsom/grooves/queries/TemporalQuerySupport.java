@@ -8,6 +8,7 @@ import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.queries.internal.*;
 import io.reactivex.Flowable;
+import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
 import java.text.SimpleDateFormat;
@@ -247,6 +248,7 @@ public interface TemporalQuerySupport<
                 ));
     }
 
+    @NotNull
     default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT
             > getExecutor() {
         return new QueryExecutor<>();

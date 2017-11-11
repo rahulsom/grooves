@@ -32,7 +32,6 @@ public class BootStrap {
     private static final String FLUSHOT_COST = "32.40";
     private static final String GLUCOSETEST_NAME = "GLUCOSETEST";
     private static final String GLUCOSETEST_COST = "78.93";
-    private static final String ANONYMOUS = "anonymous";
 
     private static long idGenerator = 1;
 

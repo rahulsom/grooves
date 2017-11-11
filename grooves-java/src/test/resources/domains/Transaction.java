@@ -13,7 +13,8 @@ import static rx.RxReactiveStreams.toPublisher;
 public abstract class Transaction implements BaseEvent<Long, Account, Long, Transaction> {
     private Account aggregate;
     private RevertEvent<Long, Account, Long, Transaction> revertedBy;
-    private Long id, position;
+    private Long id;
+    private Long position;
     private Date timestamp;
 
     @Override
