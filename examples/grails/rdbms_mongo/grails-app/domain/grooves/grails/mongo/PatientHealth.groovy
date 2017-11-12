@@ -1,6 +1,6 @@
 package grooves.grails.mongo
 
-import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
+import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import groovy.transform.EqualsAndHashCode
 import org.reactivestreams.Publisher
 
@@ -14,12 +14,12 @@ import static rx.RxReactiveStreams.toPublisher
  */
 @SuppressWarnings(['DuplicateStringLiteral',])
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition',])
-class PatientHealth implements JavaSnapshot<Long, Patient, String, Long, PatientEvent> {
+class PatientHealth implements Snapshot<Long, Patient, String, Long, PatientEvent> {
 
     static mapWith = 'mongo'
 
     String id
-    Long lastEventPosition
+    long lastEventPosition
     Date lastEventTimestamp
     Set<String> processingErrors = []
 

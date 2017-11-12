@@ -48,7 +48,7 @@ public interface CustomQuerySupport<
                 .filter(it -> it.getSecond().equals(aggregate)
                         && it.getFirst().getLastEventPosition() < maxPosition)
                 .map(Pair::getFirst)
-                .sorted((x, y) -> x.getLastEventPosition().compareTo(y.getLastEventPosition()))
+                .sorted((x, y) -> (int) (x.getLastEventPosition() - y.getLastEventPosition()))
                 .takeFirst(it -> true)
                 .filter(Objects::nonNull)
                 .map(this::copy));
@@ -66,7 +66,7 @@ public interface CustomQuerySupport<
                 .filter(it -> it.getSecond().equals(aggregate)
                         && it.getFirst().getLastEventTimestamp().compareTo(maxTimestamp) < 1)
                 .map(Pair::getFirst)
-                .sorted((x, y) -> x.getLastEventPosition().compareTo(y.getLastEventPosition()))
+                .sorted((x, y) -> (int) (x.getLastEventPosition() - y.getLastEventPosition()))
                 .takeFirst(it -> true)
                 .filter(Objects::nonNull)
                 .map(this::copy));

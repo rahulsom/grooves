@@ -4,9 +4,8 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
-		maven { url "https://repo.spring.io/snapshot" }
-		maven { url "https://repo.spring.io/milestone" }
         maven { url "https://repo.grails.org/grails/core" }
+        maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.2" }
 	}
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
@@ -35,10 +34,9 @@ compileTestKotlin {
 
 repositories {
 	mavenCentral()
-	maven { url "https://repo.spring.io/snapshot" }
 	maven { url "https://repo.spring.io/milestone" }
+    maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.2" }
 }
-
 
 dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
@@ -46,7 +44,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}"
     compile "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
     compile "io.reactivex:rxjava-reactive-streams"
-    compile 'org.springframework:spring-aspects:5.0.0.M5'
+    compile 'org.springframework:spring-aspects'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile "org.spockframework:spock-core:$spockVersion"
@@ -54,7 +52,7 @@ dependencies {
     testCompile 'io.projectreactor.addons:reactor-test'
 
     compile project(':grooves-api')
-    testCompile project(':grooves-example-test')
+    compile project(':grooves-example-test')
 }
 
 tasks.findByName('bootRun').dependsOn 'startMongoDb'

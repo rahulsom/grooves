@@ -7,7 +7,7 @@ Let's start with a snapshot that manages account balance for a patient.
 ----
 include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/domain/PatientAccount.java[tags=documented]
 ----
-<1> For most snapshots, you may implement `JavaSnapshot`.
+<1> For most snapshots, you may implement `Snapshot`.
 <2> The `lastEventPosition` is useful when locating snapshots by version.
 <3> The `lastEventTimestamp` is useful when locating snapshots by timestamp.
 <4> The `aggregateObservable` getter points to the aggregate from the snapshot.
@@ -20,7 +20,7 @@ include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/domain
 ----
 include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/domain/PatientAccount.groovy[tags=documented]
 ----
-<1> For most snapshots, you may implement `JavaSnapshot`.
+<1> For most snapshots, you may implement `Snapshot`.
 <2> The `lastEventPosition` is useful when locating snapshots by version.
 <3> The `lastEventTimestamp` is useful when locating snapshots by timestamp.
 <4> The `aggregateObservable` getter points to the aggregate from the snapshot.
@@ -33,7 +33,7 @@ include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/do
 ----
 include::{sourcedir}/examples/grails/rdbms_mongo/grails-app/domain/grooves/grails/mongo/PatientAccount.groovy[tags=documented]
 ----
-<1> For most snapshots, you may implement `JavaSnapshot`.
+<1> For most snapshots, you may implement `Snapshot`.
 <2> The `lastEventPosition` is useful when locating snapshots by version.
 <3> The `lastEventTimestamp` is useful when locating snapshots by timestamp.
 <4> The `aggregateObservable` getter points to the aggregate from the snapshot.

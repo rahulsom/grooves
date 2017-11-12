@@ -13,11 +13,23 @@ import java.util.*
 
 @Configurable
 class PatientHealth : Snapshot<String, Patient, String, String, PatientEvent> {
+    override fun setLastEventTimestamp(timestamp: Date) {
+        lastEventTimestamp = timestamp
+    }
+
+    override fun getLastEventPosition() = lastEventPosition
+
+    override fun getLastEventTimestamp() = lastEventTimestamp
+
+    override fun setLastEventPosition(position: Long) {
+        lastEventPosition = position
+    }
+
     override var id: String? = null
-    override var lastEventPosition: Long? = null
+    internal var lastEventPosition: Long = 0
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    override var lastEventTimestamp: Date? = null
+    internal var lastEventTimestamp: Date? = null
     val deprecatesIds: MutableList<String> = mutableListOf()
     private var deprecator: Patient? = null
     var aggregateId: String? = null
@@ -29,7 +41,7 @@ class PatientHealth : Snapshot<String, Patient, String, String, PatientEvent> {
 
     @JsonIgnore
     override fun getAggregateObservable() =
-                    aggregateId?.let { patientRepository.findAllById(just(it)) } ?: Flux.empty()
+            aggregateId?.let { patientRepository.findAllById(just(it)) } ?: Flux.empty()
 
     override fun setAggregate(aggregate: Patient) {
         this.aggregateId = aggregate.id

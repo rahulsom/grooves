@@ -1,8 +1,8 @@
 package grooves.example.javaee;
 
-import com.github.rahulsom.grooves.api.EventsDsl;
-import com.github.rahulsom.grooves.api.OnSpec;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
+import com.github.rahulsom.grooves.test.EventsDsl;
+import com.github.rahulsom.grooves.test.OnSpec;
 import grooves.example.javaee.domain.*;
 import grooves.example.javaee.queries.PatientAccountQuery;
 import grooves.example.javaee.queries.PatientHealthQuery;
@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import static rx.RxReactiveStreams.toObservable;
 
+@SuppressWarnings("UnusedReturnValue")
 @Singleton
 @Startup
 public class BootStrap {
@@ -55,8 +56,11 @@ public class BootStrap {
         this.database = database;
     }
 
+    /**
+     * Sets up data for tests.
+     */
     @PostConstruct
-    void init() {
+    public void init() {
         setupJohnLennon();
         setupRingoStarr();
         setupPaulMcCartney();

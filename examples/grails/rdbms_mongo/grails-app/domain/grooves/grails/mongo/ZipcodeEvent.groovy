@@ -24,7 +24,7 @@ abstract class ZipcodeEvent implements BaseEvent<Long, Zipcode, Long, ZipcodeEve
 
     RevertEvent<Long, Zipcode, Long, ZipcodeEvent> revertedBy
     Date timestamp
-    Long position
+    long position
     Zipcode aggregate
     Publisher<Zipcode> getAggregateObservable() {
         toPublisher(aggregate ? just(aggregate) : empty())

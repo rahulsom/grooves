@@ -44,8 +44,10 @@ public interface RxEventSource<
     @Override
     default Publisher<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, long version) {
-        final long position = lastSnapshot == null || lastSnapshot.getLastEventPosition() == null ?
-                0 : lastSnapshot.getLastEventPosition();
+        boolean missingOrEmptySnapshot =
+                lastSnapshot == null || lastSnapshot.getLastEventPosition() == 0;
+
+        final long position = missingOrEmptySnapshot ? 0 : lastSnapshot.getLastEventPosition();
 
         //noinspection unchecked
         return toPublisher((Observable<EventT>) invokeStaticMethod(

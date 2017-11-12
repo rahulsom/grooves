@@ -1,7 +1,0 @@
-import grooves.grails.restserver.PatientEvent
-
-model {
-	PatientEvent patientEvent
-}
-
-json tmpl.patientEvent(patientEvent)

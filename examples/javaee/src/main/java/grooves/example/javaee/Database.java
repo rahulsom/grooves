@@ -59,5 +59,4 @@ public class Database {
                 && timestamp.compareTo(upperBoundInclusive) <= 0;
     }
 
-
 }

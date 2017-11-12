@@ -1,6 +1,6 @@
 package rxmongo
 
-import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
+import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import grails.gorm.rx.mongodb.RxMongoEntity
 import groovy.transform.EqualsAndHashCode
 import org.reactivestreams.Publisher
@@ -17,10 +17,10 @@ import static rx.RxReactiveStreams.toPublisher
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition'])
 @SuppressWarnings(['DuplicateNumberLiteral'])
 class PatientAccount implements RxMongoEntity<PatientAccount>,
-        JavaSnapshot<String, Patient, String, String, PatientEvent> {
+        Snapshot<String, Patient, String, String, PatientEvent> {
 
     String id
-    Long lastEventPosition
+    long lastEventPosition
     Date lastEventTimestamp
     String deprecatedById
     Set<Patient> deprecates

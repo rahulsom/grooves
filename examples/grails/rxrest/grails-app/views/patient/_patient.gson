@@ -1,7 +1,0 @@
-import grooves.example.rxrest.Patient
-
-model {
-	Patient patient
-}
-
-json g.render(patient)

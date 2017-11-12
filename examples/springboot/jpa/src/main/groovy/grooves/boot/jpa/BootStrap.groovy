@@ -1,7 +1,7 @@
 package grooves.boot.jpa
 
-import com.github.rahulsom.grooves.api.OnSpec
-import com.github.rahulsom.grooves.groovy.GroovyEventsDsl
+import com.github.rahulsom.grooves.test.GroovyEventsDsl
+import com.github.rahulsom.grooves.test.OnSpec
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.queries.PatientAccountQuery
 import grooves.boot.jpa.queries.PatientHealthQuery

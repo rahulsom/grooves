@@ -2,9 +2,6 @@ package com.github.rahulsom.grooves.api.snapshots.internal
 
 import com.github.rahulsom.grooves.api.AggregateType
 import com.github.rahulsom.grooves.api.events.BaseEvent
-import com.github.rahulsom.grooves.api.snapshots.Snapshot
-import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot
-import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot
 import org.reactivestreams.Publisher
 
 /**
@@ -62,12 +59,4 @@ interface BaseSnapshot<
      */
     fun getDeprecatesObservable(): Publisher<AggregateT>
 
-    /**
-     * Accepts an event and uses the information in it to set properties of the snapshot.
-     *
-     * Ideally you shouldn't have to implement this.
-     * This should come from one of [TemporalSnapshot], [VersionedSnapshot] or [Snapshot].
-     * This information can be used for querying snapshots.
-     */
-    fun setLastEvent(event: EventT)
 }

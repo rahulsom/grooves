@@ -34,7 +34,7 @@ dependencies {
     cargo "org.codehaus.cargo:cargo-core-uberjar:$cargoVersion",
             "org.codehaus.cargo:cargo-ant:$cargoVersion"
 
-    testCompile project(':grooves-example-test')
+    compile project(':grooves-example-test')
 }
 
 cargo {

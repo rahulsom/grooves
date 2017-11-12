@@ -34,7 +34,7 @@ interface BaseEvent<AggregateIdT, AggregateT : AggregateType<AggregateIdT>, Even
      * This is the time an event was received by the system.
      * It is important that the system store/apply events in order.
      */
-    var timestamp: Date?
+    var timestamp: Date
 
     /**
      * The event that reverted this event.
@@ -54,6 +54,6 @@ interface BaseEvent<AggregateIdT, AggregateT : AggregateType<AggregateIdT>, Even
      * The ordinal position of this Event.
      * Systems can choose between using global positions, i.e. a version number for the whole system, or, an aggregate specific position, i.e. a version number for the aggregate.
      */
-    var position: Long?
+    var position: Long
 
 }

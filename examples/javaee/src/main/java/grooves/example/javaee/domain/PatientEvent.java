@@ -22,7 +22,7 @@ public abstract class PatientEvent implements BaseEvent<Long, Patient, Long, Pat
     @Getter @Setter
     private RevertEvent<Long, Patient, Long, PatientEvent> revertedBy;  // <2>
     @Getter @Setter private Date timestamp; // <3>
-    @Getter @Setter private Long position; // <4>
+    @Getter @Setter private long position; // <4>
 
     // end::documented[]
     @XmlTransient

@@ -30,8 +30,8 @@ sealed class PatientEvent : BaseEvent<String, Patient, String, PatientEvent> { /
     override var revertedBy: RevertEvent<String, Patient, String, PatientEvent>? = null // <3>
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    override var timestamp: Date? = null // <4>
-    override var position: Long? = null // <5>
+    lateinit override var timestamp: Date // <4>
+    override var position: Long = 0 // <5>
 
     fun getType() = this.javaClass.simpleName
 

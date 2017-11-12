@@ -1,7 +1,7 @@
 package rxmongo
 
-import com.github.rahulsom.grooves.api.OnSpec
-import com.github.rahulsom.grooves.groovy.GroovyEventsDsl
+import com.github.rahulsom.grooves.test.GroovyEventsDsl
+import com.github.rahulsom.grooves.test.OnSpec
 
 import java.util.function.Consumer
 

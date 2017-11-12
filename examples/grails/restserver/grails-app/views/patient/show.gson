@@ -1,7 +1,0 @@
-import grooves.grails.restserver.Patient
-
-model {
-	Patient patient
-}
-
-json tmpl.patient(patient)

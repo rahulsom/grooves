@@ -57,7 +57,7 @@ dependencies {
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
     compile project(':grooves-gorm')
-    testCompile project(':grooves-example-test')
+    compile project(':grooves-example-test')
 
 }
 

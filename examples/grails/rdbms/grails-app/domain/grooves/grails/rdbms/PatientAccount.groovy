@@ -1,6 +1,6 @@
 package grooves.grails.rdbms
 
-import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
+import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import groovy.transform.EqualsAndHashCode
 import org.reactivestreams.Publisher
 
@@ -14,9 +14,9 @@ import static rx.RxReactiveStreams.toPublisher
  */
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition'])
 @SuppressWarnings(['DuplicateNumberLiteral'])
-class PatientAccount implements JavaSnapshot<Long, Patient, Long, Long, PatientEvent> {
+class PatientAccount implements Snapshot<Long, Patient, Long, Long, PatientEvent> {
 
-    Long lastEventPosition
+    long lastEventPosition
     Date lastEventTimestamp
     Patient deprecatedBy
     Set<Patient> deprecates

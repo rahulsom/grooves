@@ -16,11 +16,23 @@ import java.util.*
 // tag::documented[]
 @Configurable
 class PatientAccount : Snapshot<String, Patient, String, String, PatientEvent> { // <1>
+    override fun setLastEventTimestamp(timestamp: Date) {
+        lastEventTimestamp = timestamp
+    }
+
+    override fun getLastEventPosition() = lastEventPosition
+
+    override fun getLastEventTimestamp() = lastEventTimestamp
+
+    override fun setLastEventPosition(position: Long) {
+        lastEventPosition = position
+    }
+
     override var id: String? = null
-    override var lastEventPosition: Long? = null // <2>
+    internal var lastEventPosition: Long = 0 // <2>
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    override var lastEventTimestamp: Date? = null // <3>
+    internal var lastEventTimestamp: Date? = null // <3>
     val deprecatesIds: MutableList<String> = mutableListOf()
     private var deprecator: Patient? = null
     var aggregateId: String? = null
@@ -57,6 +69,7 @@ class PatientAccount : Snapshot<String, Patient, String, String, PatientEvent> {
                 patientRepository!!.findAllById(deprecatesIds)
             else
                 empty()
+
     // end::documented[]
     override fun toString(): String {
         return "PatientAccount(id=$id, aggregate=$aggregateId, " +

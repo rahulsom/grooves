@@ -3,7 +3,10 @@ package com.github.rahulsom.grooves.queries.internal;
 import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.DeprecatedBy;
+import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
+import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
+import com.github.rahulsom.grooves.queries.TemporalQuerySupport;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 
@@ -142,11 +145,26 @@ public class Utils {
      *
      * @return A String representation of events
      */
-    @NotNull static <EventT extends BaseEvent> String ids(
+    @NotNull public static <EventT extends BaseEvent> String ids(
             @NotNull List<EventT> events) {
         return events.stream()
                 .map(i -> String.valueOf(i.getId()))
                 .collect(JOIN_EVENT_IDS);
     }
 
+    /**
+     * Sets the last event of a snapshot. Detects the kind of snapshot and sets required
+     * properties appropriately
+     *
+     * @param snapshot The snapshot
+     * @param event The last event
+     */
+    public static void setLastEvent(@NotNull BaseSnapshot snapshot, @NotNull BaseEvent event) {
+        if (snapshot instanceof VersionedSnapshot) {
+            ((VersionedSnapshot) snapshot).setLastEventPosition(event.getPosition());
+        }
+        if (snapshot instanceof TemporalSnapshot) {
+            ((TemporalSnapshot) snapshot).setLastEventTimestamp(event.getTimestamp());
+        }
+    }
 }

@@ -1,8 +1,6 @@
-package com.github.rahulsom.grooves.groovy;
+package com.github.rahulsom.grooves.test;
 
 import com.github.rahulsom.grooves.api.AggregateType;
-import com.github.rahulsom.grooves.api.EventsDsl;
-import com.github.rahulsom.grooves.api.OnSpec;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
@@ -93,6 +91,5 @@ public class GroovyEventsDsl<
         return on(aggregate, entityConsumer, () -> getDefaultPositionSupplier().incrementAndGet(),
                 Date::new, closure);
     }
-
 
 }

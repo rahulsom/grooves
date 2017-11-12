@@ -1,5 +1,6 @@
-package com.github.rahulsom.grooves.api;
+package com.github.rahulsom.grooves.test;
 
+import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +56,7 @@ public class EventsDsl<
             @NotNull Supplier<Long> positionSupplier,
             @NotNull Supplier<Date> timestampSupplier,
             @NotNull Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                    SnapshotT>> closure) {
+                                SnapshotT>> closure) {
 
         OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> spec =
                 new OnSpec<>();
