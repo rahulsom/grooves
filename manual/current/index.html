@@ -791,7 +791,7 @@ We are using mongo on spring boot here. So we are using <code>String</code>.</td
     <span class="annotation">@Getter</span> <span class="annotation">@Setter</span>
     <span class="directive">private</span> RevertEvent&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, PatientEvent&gt; revertedBy;  <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">Date</span> timestamp; <i class="conum" data-value="3"></i><b>(3)</b>
-    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">Long</span> position; <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="type">long</span> position; <i class="conum" data-value="4"></i><b>(4)</b>
 
     <span class="annotation">@Override</span>
     <span class="annotation">@NotNull</span>
@@ -840,7 +840,7 @@ Again, since we&#8217;re using collections, it doesn&#8217;t matter.</td>
     <span class="annotation">@GeneratedValue</span> <span class="annotation">@Id</span> <span class="predefined-type">Long</span> id
     <span class="annotation">@Transient</span> RevertEvent&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, PatientEvent&gt; revertedBy <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="annotation">@Column</span>(nullable = <span class="predefined-constant">false</span>) <span class="predefined-type">Date</span> timestamp <i class="conum" data-value="3"></i><b>(3)</b>
-    <span class="annotation">@Column</span>(nullable = <span class="predefined-constant">false</span>) <span class="predefined-type">Long</span> position <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="annotation">@Column</span>(nullable = <span class="predefined-constant">false</span>) <span class="type">long</span> position <i class="conum" data-value="4"></i><b>(4)</b>
     <span class="annotation">@OneToOne</span> Patient aggregate
 
     Publisher&lt;Patient&gt; getAggregateObservable() {
@@ -883,7 +883,7 @@ In our case, it doesn&#8217;t matter much since we&#8217;re using JPA, which is 
 
     RevertEvent&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, PatientEvent&gt; revertedBy  <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="predefined-type">Date</span> timestamp  <i class="conum" data-value="3"></i><b>(3)</b>
-    <span class="predefined-type">Long</span> position  <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="type">long</span> position  <i class="conum" data-value="4"></i><b>(4)</b>
     Patient aggregate
     Publisher&lt;Patient&gt; getAggregateObservable() {
         toPublisher(aggregate ? just(aggregate) : empty())
@@ -935,8 +935,8 @@ sealed class PatientEvent : BaseEvent&lt;String, Patient, String, PatientEvent&g
     override var revertedBy: RevertEvent&lt;String, Patient, String, PatientEvent&gt;? = null <i class="conum" data-value="3"></i><b>(3)</b>
 
     @JsonFormat(pattern = &quot;yyyy-MM-dd'T'HH:mm:ss.SSSZ&quot;)
-    override var timestamp: Date? = null <i class="conum" data-value="4"></i><b>(4)</b>
-    override var position: Long? = null <i class="conum" data-value="5"></i><b>(5)</b>
+    lateinit override var timestamp: Date <i class="conum" data-value="4"></i><b>(4)</b>
+    override var position: Long = 0 <i class="conum" data-value="5"></i><b>(5)</b>
 
     fun getType() = this.javaClass.simpleName
 
@@ -1249,13 +1249,13 @@ Even if you do, you cannot process this event.</td>
 <div class="title">Java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">PatientAccount</span>
-        <span class="directive">implements</span> JavaSnapshot&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, <span class="predefined-type">Long</span>, PatientEvent&gt;, <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="directive">implements</span> Snapshot&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, <span class="predefined-type">Long</span>, PatientEvent&gt;, <i class="conum" data-value="1"></i><b>(1)</b>
         <span class="predefined-type">Serializable</span> {
     <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">Long</span> id;
     <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> Patient aggregate;
     <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> Patient deprecatedBy;
     <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Patient&gt; deprecates = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;&gt;();
-    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">Long</span> lastEventPosition; <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="type">long</span> lastEventPosition; <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">Date</span> lastEventTimestamp; <i class="conum" data-value="3"></i><b>(3)</b>
 
     <span class="annotation">@Getter</span> <span class="annotation">@Setter</span> <span class="directive">private</span> <span class="predefined-type">String</span> name;
@@ -1280,7 +1280,7 @@ Even if you do, you cannot process this event.</td>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>For most snapshots, you may implement <code>JavaSnapshot</code>.</td>
+<td>For most snapshots, you may implement <code>Snapshot</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -1308,11 +1308,11 @@ It is empty when the aggregate is not deprecated.</td>
 <div class="listingblock secondary">
 <div class="title">Groovy</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="type">class</span> <span class="class">PatientAccount</span> <span class="directive">implements</span> JavaSnapshot&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, <span class="predefined-type">Long</span>, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="type">class</span> <span class="class">PatientAccount</span> <span class="directive">implements</span> Snapshot&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">Long</span>, <span class="predefined-type">Long</span>, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
 
     <span class="annotation">@GeneratedValue</span> <span class="annotation">@Id</span> <span class="predefined-type">Long</span> id
 
-    <span class="annotation">@Column</span>(nullable = <span class="predefined-constant">false</span>) <span class="predefined-type">Long</span> lastEventPosition <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="annotation">@Column</span>(nullable = <span class="predefined-constant">false</span>) <span class="type">long</span> lastEventPosition <i class="conum" data-value="2"></i><b>(2)</b>
 
     <span class="annotation">@JsonFormat</span>(pattern = <span class="string"><span class="delimiter">&quot;</span><span class="content">yyyy-MM-dd'T'HH:mm:ss.SSSZ</span><span class="delimiter">&quot;</span></span>)
     <span class="annotation">@Column</span>(nullable = <span class="predefined-constant">false</span>) <span class="predefined-type">Date</span> lastEventTimestamp <i class="conum" data-value="3"></i><b>(3)</b>
@@ -1345,7 +1345,7 @@ It is empty when the aggregate is not deprecated.</td>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>For most snapshots, you may implement <code>JavaSnapshot</code>.</td>
+<td>For most snapshots, you may implement <code>Snapshot</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -1373,12 +1373,12 @@ It is empty when the aggregate is not deprecated.</td>
 <div class="listingblock secondary">
 <div class="title">Gorm</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="type">class</span> <span class="class">PatientAccount</span> <span class="directive">implements</span> JavaSnapshot&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">String</span>, <span class="predefined-type">Long</span>, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="type">class</span> <span class="class">PatientAccount</span> <span class="directive">implements</span> Snapshot&lt;<span class="predefined-type">Long</span>, Patient, <span class="predefined-type">String</span>, <span class="predefined-type">Long</span>, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
 
     <span class="directive">static</span> mapWith = <span class="string"><span class="delimiter">'</span><span class="content">mongo</span><span class="delimiter">'</span></span>
 
     <span class="predefined-type">String</span> id
-    <span class="predefined-type">Long</span> lastEventPosition <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="type">long</span> lastEventPosition <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="predefined-type">Date</span> lastEventTimestamp <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="predefined-type">Set</span>&lt;<span class="predefined-type">String</span>&gt; processingErrors = <span class="type">[]</span>
 
@@ -1440,7 +1440,7 @@ It is empty when the aggregate is not deprecated.</td>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>For most snapshots, you may implement <code>JavaSnapshot</code>.</td>
+<td>For most snapshots, you may implement <code>Snapshot</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -1470,11 +1470,23 @@ It is empty when the aggregate is not deprecated.</td>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="kotlin">@Configurable
 class PatientAccount : Snapshot&lt;String, Patient, String, String, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    override fun setLastEventTimestamp(timestamp: Date) {
+        lastEventTimestamp = timestamp
+    }
+
+    override fun getLastEventPosition() = lastEventPosition
+
+    override fun getLastEventTimestamp() = lastEventTimestamp
+
+    override fun setLastEventPosition(position: Long) {
+        lastEventPosition = position
+    }
+
     override var id: String? = null
-    override var lastEventPosition: Long? = null <i class="conum" data-value="2"></i><b>(2)</b>
+    internal var lastEventPosition: Long = 0 <i class="conum" data-value="2"></i><b>(2)</b>
 
     @JsonFormat(pattern = &quot;yyyy-MM-dd'T'HH:mm:ss.SSSZ&quot;)
-    override var lastEventTimestamp: Date? = null <i class="conum" data-value="3"></i><b>(3)</b>
+    internal var lastEventTimestamp: Date? = null <i class="conum" data-value="3"></i><b>(3)</b>
     val deprecatesIds: MutableList&lt;String&gt; = mutableListOf()
     private var deprecator: Patient? = null
     var aggregateId: String? = null
@@ -1511,6 +1523,7 @@ class PatientAccount : Snapshot&lt;String, Patient, String, String, PatientEvent
                 patientRepository!!.findAllById(deprecatesIds)
             else
                 empty()
+
 }</code></pre>
 </div>
 </div>
