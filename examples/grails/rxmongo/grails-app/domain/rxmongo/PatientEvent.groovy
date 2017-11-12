@@ -26,7 +26,7 @@ class PatientEvent implements RxMongoEntity<PatientEvent>,
     String id
     RevertEvent<String, Patient, String, PatientEvent> revertedBy
     Date timestamp
-    Long position
+    long position
     Patient aggregate
     Publisher<Patient> getAggregateObservable() {
         toPublisher(aggregate ? just(aggregate) : empty())

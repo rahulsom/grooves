@@ -25,7 +25,7 @@ abstract class DoctorEvent implements BaseEvent<Long, Doctor, Long, DoctorEvent>
 
     RevertEvent<Long, Doctor, Long, DoctorEvent> revertedBy
     Date timestamp
-    Long position
+    long position
     Doctor aggregate
 
     Publisher<Doctor> getAggregateObservable() {

@@ -4,4 +4,8 @@ apply from: "$rootDir/gradle/codenarc/codenarc.gradle"
 dependencies {
     compile "org.spockframework:spock-core:$spockVersion"
     compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
+    compile "org.slf4j:slf4j-api:$slf4jVersion"
+    compileOnly 'org.jetbrains:annotations:15.0'
+
+    compile project(':grooves-api')
 }

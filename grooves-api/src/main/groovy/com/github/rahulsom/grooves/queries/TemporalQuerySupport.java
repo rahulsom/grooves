@@ -116,7 +116,6 @@ public interface TemporalQuerySupport<
                                 }
                             }));
 
-
         } else {
             SnapshotT lastSnapshot = createEmptySnapshot();
 
@@ -130,7 +129,6 @@ public interface TemporalQuerySupport<
                             getLog().debug("     Events since origin: {}", stringify(ue)))
                     .map(ue -> new Pair<>(lastSnapshot, ue));
         }
-
 
     }
 
@@ -238,7 +236,7 @@ public interface TemporalQuerySupport<
         return snapshotTypeObservable
                 .doOnNext(snapshot -> {
                     if (!events.isEmpty()) {
-                        snapshot.setLastEvent(events.get(events.size() - 1));
+                        Utils.setLastEvent(snapshot, events.get(events.size() - 1));
                     }
                     getLog().info("  --> Computed: {}", snapshot);
                 })

@@ -1,7 +1,7 @@
 package grooves.boot.kotlin
 
-import com.github.rahulsom.grooves.api.EventsDsl
-import com.github.rahulsom.grooves.api.OnSpec
+import com.github.rahulsom.grooves.test.EventsDsl
+import com.github.rahulsom.grooves.test.OnSpec
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import com.github.rahulsom.grooves.queries.QuerySupport
 import grooves.boot.kotlin.domain.Patient
@@ -15,7 +15,6 @@ import grooves.boot.kotlin.repositories.PatientEventBlockingRepository
 import grooves.boot.kotlin.repositories.PatientHealthRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.reactive.ReactiveCrudRepository
-import org.springframework.data.repository.reactive.RxJava1CrudRepository
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
@@ -166,7 +165,7 @@ class BootStrap {
     private fun <SnapshotT : Snapshot<String, Patient, String, String, PatientEvent>,
             QueryT : QuerySupport<String, Patient, String, PatientEvent, String, SnapshotT,
                     QueryT>> snapshotWith(
-            it: OnSpec<String, Patient, String, PatientEvent, String,
+            it: com.github.rahulsom.grooves.test.OnSpec<String, Patient, String, PatientEvent, String,
                     out Snapshot<String, Patient, String, String, PatientEvent>>,
             query: QueryT, repository: ReactiveCrudRepository<SnapshotT, String>
     ) =
@@ -208,7 +207,7 @@ class BootStrap {
                         .parse("2016-01-01T00:00:00.000Z")
             }
 
-    fun on(patient: Patient, closure: (OnSpec<String, Patient, String, PatientEvent, String,
+    fun on(patient: Patient, closure: (com.github.rahulsom.grooves.test.OnSpec<String, Patient, String, PatientEvent, String,
             out Snapshot<String, Patient, String, String, PatientEvent>>) -> Unit): Patient {
         val eventSaver: (Any) -> Unit = {
             when (it) {
@@ -220,7 +219,7 @@ class BootStrap {
             currDate.add(Calendar.DATE, 1)
             currDate.time
         }
-        return EventsDsl<String, Patient, String, PatientEvent>()
+        return com.github.rahulsom.grooves.test.EventsDsl<String, Patient, String, PatientEvent>()
                 .on<String, Snapshot<String, Patient, String, String, PatientEvent>>(
                         patient, eventSaver, positionSupplier, timestampSupplier,
                         closure)

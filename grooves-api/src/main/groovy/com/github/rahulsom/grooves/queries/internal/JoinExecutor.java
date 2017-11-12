@@ -62,7 +62,6 @@ public class JoinExecutor<
             List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
             AggregateT aggregate) {
 
-
         // s -> snapshotObservable
         return events.reduce(just(initialSnapshot), (s, event) -> s.flatMap(snapshot -> {
             if (!query.shouldEventsBeApplied(snapshot)) {

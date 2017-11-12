@@ -1,7 +1,9 @@
 buildscript {
+    ext {
+        springBootVersion = '1.5.2.RELEASE'
+    }
     repositories {
         mavenCentral()
-        maven { url "https://repo.spring.io/snapshot" }
         maven { url "https://repo.spring.io/milestone" }
     }
     dependencies {
@@ -24,10 +26,7 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
-    maven { url "https://repo.spring.io/snapshot" }
-    maven { url "https://repo.spring.io/milestone" }
 }
-
 
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -43,7 +42,7 @@ dependencies {
     testCompile 'org.spockframework:spock-spring'
 
     compile project(':grooves-groovy')
-    testCompile project(':grooves-example-test')
+    compile project(':grooves-example-test')
 }
 
 sonarqube {

@@ -26,11 +26,4 @@ interface Join<
         in EventT : BaseEvent<AggregateIdT, AggregateT, EventIdT, in EventT>> :
         TemporalJoin<AggregateIdT, AggregateT, JoinIdT, JoinedAggregateIdT, EventIdT, EventT>,
         VersionedJoin<AggregateIdT, AggregateT, JoinIdT, JoinedAggregateIdT, EventIdT, EventT>,
-        Snapshot<AggregateIdT, AggregateT, JoinIdT, EventIdT, EventT> {
-
-    override fun setLastEvent(event: EventT) {
-        this.lastEventTimestamp = event.timestamp
-        this.lastEventPosition = event.position
-    }
-
-}
+        Snapshot<AggregateIdT, AggregateT, JoinIdT, EventIdT, EventT>

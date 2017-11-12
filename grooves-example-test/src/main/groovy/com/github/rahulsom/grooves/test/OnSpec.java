@@ -1,5 +1,6 @@
-package com.github.rahulsom.grooves.api;
+package com.github.rahulsom.grooves.test;
 
+import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
@@ -39,12 +40,12 @@ public class OnSpec<
     @NotNull public <T extends EventT> T apply(@NotNull T event) {
         event.setAggregate(aggregate);
 
-        if (event.getPosition() == null) {
+        if (event.getPosition() == 0) {
             event.setPosition(positionSupplier.get());
         }
-        if (event.getTimestamp() == null) {
-            event.setTimestamp(timestampSupplier.get());
-        }
+        //if (event.getTimestamp() == null) {
+        event.setTimestamp(timestampSupplier.get());
+        //}
 
         entityConsumer.accept(event);
 

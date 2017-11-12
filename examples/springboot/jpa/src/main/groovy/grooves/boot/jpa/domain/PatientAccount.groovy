@@ -2,7 +2,7 @@ package grooves.boot.jpa.domain
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot
+import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import groovy.transform.ToString
 import org.reactivestreams.Publisher
 
@@ -19,11 +19,11 @@ import static io.reactivex.Flowable.*
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
 @SuppressWarnings(['DuplicateNumberLiteral'])
 // tag::documented[]
-class PatientAccount implements JavaSnapshot<Long, Patient, Long, Long, PatientEvent> { // <1>
+class PatientAccount implements Snapshot<Long, Patient, Long, Long, PatientEvent> { // <1>
 
     @GeneratedValue @Id Long id
 
-    @Column(nullable = false) Long lastEventPosition // <2>
+    @Column(nullable = false) long lastEventPosition // <2>
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     @Column(nullable = false) Date lastEventTimestamp // <3>

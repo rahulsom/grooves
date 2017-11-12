@@ -74,7 +74,7 @@ class PatientHealthQuery :
                     just(CONTINUE)
                 }
                 is PatientEvent.Applicable.ProcedurePerformed -> {
-                    snapshot.procedures.add(Procedure(event.code, event.timestamp!!))
+                    snapshot.procedures.add(Procedure(event.code, event.timestamp))
                     just(CONTINUE)
                 }
                 is PatientEvent.Applicable.PaymentMade -> {

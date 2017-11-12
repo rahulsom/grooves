@@ -1,6 +1,6 @@
 package grooves.grails.mongo
 
-import com.github.rahulsom.grooves.api.snapshots.JavaJoin
+import com.github.rahulsom.grooves.api.snapshots.Join
 import groovy.transform.EqualsAndHashCode
 import org.reactivestreams.Publisher
 
@@ -13,12 +13,12 @@ import static rx.RxReactiveStreams.toPublisher
  * @author Rahul Somasunderam
  */
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition',])
-class DoctorPatients implements JavaJoin<Long, Doctor, String, Long, Long, DoctorEvent> {
+class DoctorPatients implements Join<Long, Doctor, String, Long, Long, DoctorEvent> {
 
     static mapWith = 'mongo'
 
     String id
-    Long lastEventPosition
+    long lastEventPosition
     Date lastEventTimestamp
     Set<String> processingErrors = []
 
@@ -67,4 +67,10 @@ class DoctorPatients implements JavaJoin<Long, Doctor, String, Long, Long, Docto
     static transients = ['aggregate', 'deprecatedBy', 'deprecates',]
 
     @Override String toString() { "DoctorPatients($id, $aggregateId, $lastEventPosition)" }
+
+    @Override
+    void setJoinedIds(List<? extends Long> list) {
+        this.joinedIds = list
+    }
+
 }

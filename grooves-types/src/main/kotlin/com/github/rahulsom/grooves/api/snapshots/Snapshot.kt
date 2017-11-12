@@ -22,11 +22,4 @@ interface Snapshot<
         EventIdT,
         in EventT : BaseEvent<AggregateIdT, AggregateT, EventIdT, in EventT>> :
         VersionedSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
-        TemporalSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT> {
-
-    override fun setLastEvent(event: EventT) {
-        this.lastEventTimestamp = event.timestamp
-        this.lastEventPosition = event.position
-    }
-
-}
+        TemporalSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>

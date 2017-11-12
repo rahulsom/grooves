@@ -1,5 +1,13 @@
 = Changelog
 
+== 0.4.0
+* Make position and timestamp non nullable in Events
+* Remove examples for RxGorm REST. It doesn't appear to be well supported.
+* Reduce default method reliance for kotlin interfaces.
+* Make it easier to contribute to grooves-site.
+* Remove `JavaJoin` and `JavaSnapshot` types.
+  The `Join` and `Snapshot` types are sufficient.
+
 == 0.3.0
 * Support completeness verification in java using annotations.
 * Remove `createdBy` and `getAudit`.

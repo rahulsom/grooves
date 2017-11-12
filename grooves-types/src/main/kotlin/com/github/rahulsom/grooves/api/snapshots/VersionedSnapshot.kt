@@ -28,9 +28,7 @@ interface VersionedSnapshot<
      *
      * This is useful in finding a matching or suitable snapshot based on the version of a snapshot.
      */
-    var lastEventPosition: Long?
+    fun getLastEventPosition(): Long
+    fun setLastEventPosition(position: Long)
 
-    override fun setLastEvent(event: EventT) {
-        this.lastEventPosition = event.position
-    }
 }

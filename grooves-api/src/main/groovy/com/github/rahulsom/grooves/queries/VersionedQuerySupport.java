@@ -19,7 +19,6 @@ import static com.github.rahulsom.grooves.queries.internal.Utils.stringify;
 import static io.reactivex.Flowable.*;
 import static java.util.stream.Collectors.toList;
 
-
 /**
  * Default interface to help in building versioned snapshots.
  *
@@ -62,7 +61,7 @@ public interface VersionedQuerySupport<
                 .defaultIfEmpty(createEmptySnapshot())
                 .doOnNext(it -> {
                     final String snapshotAsString =
-                            it.getLastEventPosition() == null ? "<none>" :
+                            it.getLastEventPosition() == 0 ? "<none>" :
                                     it.getLastEventPosition() == 0 ? "<none>" :
                                             it.toString();
                     getLog().debug("  -> Last Usable Snapshot: {}", snapshotAsString);
@@ -144,7 +143,6 @@ public interface VersionedQuerySupport<
 
     Publisher<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, long version);
-
 
     /**
      * Computes a snapshot for specified version of an aggregate.
@@ -245,7 +243,7 @@ public interface VersionedQuerySupport<
         return snapshotObservable
                 .doOnNext(snapshot -> {
                     if (!events.isEmpty()) {
-                        snapshot.setLastEvent(events.get(events.size() - 1));
+                        Utils.setLastEvent(snapshot, events.get(events.size() - 1));
                     }
 
                     getLog().info("  --> Computed: {}", snapshot);

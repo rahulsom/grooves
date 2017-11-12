@@ -21,7 +21,7 @@ abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEve
 
     RevertEvent<Long, Patient, Long, PatientEvent> revertedBy  // <2>
     Date timestamp  // <3>
-    Long position  // <4>
+    long position  // <4>
     Patient aggregate
     Publisher<Patient> getAggregateObservable() {
         toPublisher(aggregate ? just(aggregate) : empty())

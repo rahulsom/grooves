@@ -1,6 +1,6 @@
 package grooves.example.javaee.domain;
 
-import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot;
+import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,13 +17,13 @@ import static rx.Observable.*;
 import static rx.RxReactiveStreams.toPublisher;
 
 public class PatientHealth
-        implements JavaSnapshot<Long, Patient, Long, Long, PatientEvent>, Serializable {
+        implements Snapshot<Long, Patient, Long, Long, PatientEvent>, Serializable {
     @Getter @Setter private List<Procedure> procedures = new ArrayList<>();
     @Getter @Setter private Long id;
     @Getter @Setter private Patient aggregate;
     @Getter @Setter private Patient deprecatedBy;
     @Getter @Setter private List<Patient> deprecates = new ArrayList<>();
-    @Getter @Setter private Long lastEventPosition;
+    @Getter @Setter private long lastEventPosition;
     @Getter @Setter private Date lastEventTimestamp;
 
     @Getter @Setter private String name;

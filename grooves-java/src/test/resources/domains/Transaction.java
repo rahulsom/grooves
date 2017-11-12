@@ -14,16 +14,16 @@ public abstract class Transaction implements BaseEvent<Long, Account, Long, Tran
     private Account aggregate;
     private RevertEvent<Long, Account, Long, Transaction> revertedBy;
     private Long id;
-    private Long position;
+    private long position;
     private Date timestamp;
 
     @Override
-    public void setPosition(Long position) {
+    public void setPosition(long position) {
         this.position = position;
     }
 
     @Override
-    public Long getPosition() {
+    public long getPosition() {
         return position;
     }
 

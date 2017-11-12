@@ -48,7 +48,7 @@ public class QueryExecutor<
         > implements Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
         QueryT> {
 
-    final Logger log = LoggerFactory.getLogger(getClass());
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     private static <T> List<T> plus(List<T> list, T element) {
         List<T> retval = new ArrayList<>();

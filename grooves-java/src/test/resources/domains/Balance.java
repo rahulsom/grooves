@@ -1,6 +1,6 @@
 package domains;
 
-import com.github.rahulsom.grooves.api.snapshots.JavaSnapshot;
+import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import org.reactivestreams.Publisher;
 
 import java.util.ArrayList;
@@ -10,9 +10,9 @@ import java.util.Set;
 import static rx.Observable.*;
 import static rx.RxReactiveStreams.toPublisher;
 
-public class Balance implements JavaSnapshot<Long, Account, String, Long, Transaction> {
+public class Balance implements Snapshot<Long, Account, String, Long, Transaction> {
     private String id;
-    private Long lastEventPosition;
+    private long lastEventPosition;
     private Date lastEventTimestamp;
     private Account aggregate;
     private Account deprecatedBy;
@@ -29,7 +29,7 @@ public class Balance implements JavaSnapshot<Long, Account, String, Long, Transa
     }
 
     @Override
-    public void setLastEventPosition(Long lastEventPosition) {
+    public void setLastEventPosition(long lastEventPosition) {
         this.lastEventPosition = lastEventPosition;
     }
 
@@ -39,7 +39,7 @@ public class Balance implements JavaSnapshot<Long, Account, String, Long, Transa
     }
 
     @Override
-    public Long getLastEventPosition() {
+    public long getLastEventPosition() {
         return lastEventPosition;
     }
 
