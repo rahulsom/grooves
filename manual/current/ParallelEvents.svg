@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" height="200" width="950.0">
-  <!--Generated on Sun Nov 12 22:16:37 UTC 2017 from
+  <!--Generated on Wed Nov 15 07:11:44 UTC 2017 from
 |Patient,1,John Lennon
   - 1 2016-01-02 created as John Lennon (Normal)
   - 2 2016-01-03 performed FLUSHOT for $ 32.40 (Normal)
@@ -118,7 +118,7 @@
   <!--|Patient,1,John Lennon-->
   <!-- -->
   <!--   aggregate-->
-  <g id="aggregate554790917" class="aggregate">
+  <g id="aggregate285253528" class="aggregate">
     <rect x="10" y="45" width="100" height="40"/>
     <text x="15" y="63" class="type">Patient</text>
     <text x="15" y="81" class="id">1</text>
@@ -126,28 +126,28 @@
     <line x1="110" y1="65" x2="850.0" y2="65" class="eventLine" marker-end="url(#triangle)"/>
   </g>
   <!--  - 1 2016-01-02 created as John Lennon (Normal)-->
-  <g id="event1703196565" class="event Normal ">
+  <g id="event445709546" class="event Normal ">
     <circle cx="210" cy="65" r="14" stroke-dasharray="2, 5" class="eventCreated Normal"/>
     <circle cx="210" cy="65" r="10" class="event Normal "/>
     <text x="210" y="65" class="eventId">1</text>
   </g>
   <!--  - 2 2016-01-03 performed FLUSHOT for $ 32.40 (Normal)-->
-  <g id="event1707341801" class="event Normal ">
+  <g id="event1032405185" class="event Normal ">
     <circle cx="260" cy="65" r="10" class="event Normal "/>
     <text x="260" y="65" class="eventId">2</text>
   </g>
   <!--  - 3 2016-01-04 performed GLUCOSETEST for $ 78.93 (Normal)-->
-  <g id="event511673922" class="event Normal ">
+  <g id="event503356262" class="event Normal ">
     <circle cx="310" cy="65" r="10" class="event Normal "/>
     <text x="310" y="65" class="eventId">3</text>
   </g>
   <!--  - 4 2016-01-08 paid $ 100.25 (Normal)-->
-  <g id="event294859440" class="event Normal ">
+  <g id="event2050590473" class="event Normal ">
     <circle cx="460" cy="65" r="10" class="event Normal "/>
     <text x="460" y="65" class="eventId">4</text>
   </g>
   <!--  - 5 2016-01-19 paid $ 100.25 (Normal)-->
-  <g id="event1563013218" class="event Normal ">
+  <g id="event1267370054" class="event Normal ">
     <circle cx="760" cy="65" r="10" class="event Normal "/>
     <text x="760" y="65" class="eventId">5</text>
   </g>
@@ -155,7 +155,7 @@
   <!--|Patient,1,Ringo Starr-->
   <!-- -->
   <!--   aggregate-->
-  <g id="aggregate1065771027" class="aggregate">
+  <g id="aggregate1363927546" class="aggregate">
     <rect x="10" y="145" width="100" height="40"/>
     <text x="15" y="163" class="type">Patient</text>
     <text x="15" y="181" class="id">1</text>
@@ -163,23 +163,23 @@
     <line x1="110" y1="165" x2="850.0" y2="165" class="eventLine" marker-end="url(#triangle)"/>
   </g>
   <!--  - 1 2016-01-10 created as Ringo Starr (Normal)-->
-  <g id="event1797193681" class="event Normal ">
+  <g id="event1890726696" class="event Normal ">
     <circle cx="560" cy="165" r="14" stroke-dasharray="2, 5" class="eventCreated Normal"/>
     <circle cx="560" cy="165" r="10" class="event Normal "/>
     <text x="560" y="165" class="eventId">1</text>
   </g>
   <!--  - 2 2016-01-11 performed FLUSHOT for $ 32.40 (Normal)-->
-  <g id="event1247374314" class="event Normal ">
+  <g id="event1031474067" class="event Normal ">
     <circle cx="610" cy="165" r="10" class="event Normal "/>
     <text x="610" y="165" class="eventId">2</text>
   </g>
   <!--  - 3 2016-01-12 performed GLUCOSETEST for $ 78.93 (Normal)-->
-  <g id="event1453712647" class="event Normal ">
+  <g id="event1546732647" class="event Normal ">
     <circle cx="660" cy="165" r="10" class="event Normal "/>
     <text x="660" y="165" class="eventId">3</text>
   </g>
   <!--  - 4 2016-01-19 paid $ 100.25 (Normal)-->
-  <g id="event361782750" class="event Normal ">
+  <g id="event1613893860" class="event Normal ">
     <circle cx="760" cy="165" r="10" class="event Normal "/>
     <text x="760" y="165" class="eventId">4</text>
   </g>
