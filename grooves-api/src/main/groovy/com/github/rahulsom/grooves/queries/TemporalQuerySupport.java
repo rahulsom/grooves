@@ -252,8 +252,9 @@ public interface TemporalQuerySupport<
         return new QueryExecutor<>();
     }
 
+    @NotNull
     @Override
-    default Publisher<EventT> findEventsBefore(EventT event) {
+    default Publisher<EventT> findEventsBefore(@NotNull EventT event) {
         return fromPublisher(event.getAggregateObservable())
                 .flatMap(aggregate ->
                         fromPublisher(getUncomputedEvents(aggregate, null, event.getTimestamp())))

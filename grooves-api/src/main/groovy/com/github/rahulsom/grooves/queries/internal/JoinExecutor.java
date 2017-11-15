@@ -4,6 +4,7 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.*;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseJoin;
 import io.reactivex.Flowable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -54,13 +55,14 @@ public class JoinExecutor<
         this.classDisjoinE = classDisjoinE;
     }
 
+    @NotNull
     @Override
     public Flowable<SnapshotT> applyEvents(
-            QueryT query,
-            SnapshotT initialSnapshot,
-            Flowable<EventT> events,
-            List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
-            AggregateT aggregate) {
+            @NotNull QueryT query,
+            @NotNull SnapshotT initialSnapshot,
+            @NotNull Flowable<EventT> events,
+            @NotNull List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
+            @NotNull AggregateT aggregate) {
 
         // s -> snapshotObservable
         return events.reduce(just(initialSnapshot), (s, event) -> s.flatMap(snapshot -> {

@@ -43,8 +43,9 @@ public interface QuerySupport<
         return new QueryExecutor<>();
     }
 
+    @NotNull
     @Override
-    default Publisher<EventT> findEventsBefore(EventT event) {
+    default Publisher<EventT> findEventsBefore(@NotNull EventT event) {
         return VersionedQuerySupport.super.findEventsBefore(event);
     }
 }

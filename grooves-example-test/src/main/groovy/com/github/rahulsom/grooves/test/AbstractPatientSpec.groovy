@@ -319,7 +319,7 @@ abstract class AbstractPatientSpec extends Specification {
         6  | 1       || 'Tina Fey'    | 0.0
         6  | 2       || 'Tina Fey'    | 170.00
         6  | 3       || 'Tina Fey'    | 248.93
-//        6  | 4       || 'Sarah Palin' | 148.68 // Redirect to correct version to pass
+        6  | 4       || 'Sarah Palin' | 148.68 // Redirect to correct version to pass
         6  | 5       || 'Tina Fey'    | 248.93
         7  | 1       || 'Sarah Palin' | 0.0
         7  | 2       || 'Sarah Palin' | -100.25

@@ -9,6 +9,7 @@ import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
 import io.reactivex.Flowable;
+import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,8 +65,9 @@ public class QueryExecutor<
      *
      * @return An Flowable of forward only events
      */
+    @NotNull
     @Override
-    public Flowable<EventT> applyReverts(Flowable<EventT> events) {
+    public Flowable<EventT> applyReverts(@NotNull Flowable<EventT> events) {
 
         return events.toList().toFlowable().flatMap(eventList -> {
             log.debug("     Event Ids (includes reverts that won't be applied): {}",
@@ -100,13 +102,14 @@ public class QueryExecutor<
         });
     }
 
+    @NotNull
     @Override
     public Flowable<SnapshotT> applyEvents(
-            QueryT query,
-            SnapshotT initialSnapshot,
-            Flowable<EventT> events,
-            List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
-            AggregateT aggregate) {
+            @NotNull QueryT query,
+            @NotNull SnapshotT initialSnapshot,
+            @NotNull Flowable<EventT> events,
+            @NotNull List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
+            @NotNull AggregateT aggregate) {
 
         final AtomicBoolean stopApplyingEvents = new AtomicBoolean(false);
 

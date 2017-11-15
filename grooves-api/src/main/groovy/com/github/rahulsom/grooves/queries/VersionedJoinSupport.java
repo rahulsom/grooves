@@ -8,6 +8,7 @@ import com.github.rahulsom.grooves.api.snapshots.VersionedJoin;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Default interface that makes versioned joins easier to write.
@@ -50,6 +51,7 @@ public interface VersionedJoinSupport<
 
     Class<DisjoinEventT> getDisjoinEventClass();
 
+    @NotNull
     @Override
     default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT
             > getExecutor() {

@@ -8,6 +8,7 @@ import com.github.rahulsom.grooves.api.snapshots.Join;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
+import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
 /**
@@ -49,14 +50,16 @@ public interface JoinSupport<
         TemporalJoinSupport<AggregateIdT, AggregateT, EventIdT, EventT, JoinedAggregateIdT,
                 JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT, QueryT> {
 
+    @NotNull
     @Override
     default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT
             > getExecutor() {
         return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
     }
 
+    @NotNull
     @Override
-    default Publisher<EventT> findEventsBefore(EventT event) {
+    default Publisher<EventT> findEventsBefore(@NotNull EventT event) {
         return VersionedJoinSupport.super.findEventsBefore(event);
     }
 }

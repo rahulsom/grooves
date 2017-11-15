@@ -3,11 +3,13 @@ package com.github.rahulsom.grooves.queries;
 import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.GroovesException;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
+import com.github.rahulsom.grooves.api.events.DeprecatedBy;
 import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
 import com.github.rahulsom.grooves.queries.internal.*;
 import io.reactivex.Flowable;
+import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
@@ -240,22 +242,36 @@ public interface VersionedQuerySupport<
                 getExecutor().applyEvents((QueryT) this, lastUsableSnapshot, applicableEvents,
                         new ArrayList<>(), aggregate);
 
+        EventT lastEvent = events.isEmpty() ? null : events.get(events.size() - 1);
+
+        Function<AggregateT, Publisher<SnapshotT>> deprecatorToSnapshot =
+                x -> {
+                    DeprecatedBy deprecatedBy = (DeprecatedBy) lastEvent;
+                    return fromPublisher(
+                            fromPublisher(
+                                    (Publisher<Deprecates>) deprecatedBy.getConverseObservable())
+                                    .flatMap(deprecates ->
+                                            computeSnapshot(x, deprecates.getPosition()))
+                    );
+                };
+
         return snapshotObservable
                 .doOnNext(snapshot -> {
                     if (!events.isEmpty()) {
-                        Utils.setLastEvent(snapshot, events.get(events.size() - 1));
+                        Utils.setLastEvent(snapshot, lastEvent);
                     }
 
                     getLog().info("  --> Computed: {}", snapshot);
                 })
                 .flatMap(it -> returnOrRedirect(redirect, events, it,
                         () -> fromPublisher(it.getDeprecatedByObservable())
-                                .flatMap(x -> fromPublisher(computeSnapshot(x, version)))
+                                .flatMap(deprecatorToSnapshot)
                 ));
     }
 
+    @NotNull
     @Override
-    default Publisher<EventT> findEventsBefore(EventT event) {
+    default Publisher<EventT> findEventsBefore(@NotNull EventT event) {
         return fromPublisher(event.getAggregateObservable())
                 .flatMap(aggregate ->
                         fromPublisher(getUncomputedEvents(aggregate, null, event.getPosition())));
