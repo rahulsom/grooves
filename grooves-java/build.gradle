@@ -7,7 +7,7 @@ description = "AspectJ Support for Java implementations of Grooves"
 dependencies {
     compile project(':grooves-api')
     compile 'com.google.auto.service:auto-service:1.0-rc3'
-    compileOnly 'org.jetbrains:annotations:15.0'
+    compileOnly "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
 
     testCompile 'com.google.testing.compile:compile-testing:0.11'
     testCompile 'io.reactivex:rxjava-reactive-streams:1.2.1'

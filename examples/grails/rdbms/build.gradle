@@ -6,7 +6,7 @@ buildscript {
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
-        classpath "org.grails.plugins:views-gradle:1.1.6"
+        classpath "org.grails.plugins:views-gradle:$grailsViewsVersion"
     }
 }
 
@@ -53,8 +53,6 @@ dependencies {
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails.plugins:geb"
     testCompile "org.grails:grails-datastore-rest-client"
-    testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
-    testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
     compile "org.grails.plugins:rxjava"
 
