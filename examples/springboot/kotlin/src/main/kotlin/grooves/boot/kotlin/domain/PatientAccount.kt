@@ -16,23 +16,12 @@ import java.util.*
 // tag::documented[]
 @Configurable
 class PatientAccount : Snapshot<String, Patient, String, String, PatientEvent> { // <1>
-    override fun setLastEventTimestamp(timestamp: Date) {
-        lastEventTimestamp = timestamp
-    }
-
-    override fun getLastEventPosition() = lastEventPosition
-
-    override fun getLastEventTimestamp() = lastEventTimestamp
-
-    override fun setLastEventPosition(position: Long) {
-        lastEventPosition = position
-    }
 
     override var id: String? = null
-    internal var lastEventPosition: Long = 0 // <2>
+    override var lastEventPosition: Long = 0 // <2>
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    internal var lastEventTimestamp: Date? = null // <3>
+    override var lastEventTimestamp: Date? = null// <3>
     val deprecatesIds: MutableList<String> = mutableListOf()
     private var deprecator: Patient? = null
     var aggregateId: String? = null

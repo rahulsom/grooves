@@ -29,7 +29,6 @@ interface TemporalSnapshot<
      *
      * This is useful in finding a matching or suitable snapshot based on the timestamp of a snapshot.
      */
-    fun getLastEventTimestamp(): Date?
-    fun setLastEventTimestamp(timestamp: Date)
+    var lastEventTimestamp: Date?
 
 }
