@@ -1470,23 +1470,12 @@ It is empty when the aggregate is not deprecated.</td>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="kotlin">@Configurable
 class PatientAccount : Snapshot&lt;String, Patient, String, String, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
-    override fun setLastEventTimestamp(timestamp: Date) {
-        lastEventTimestamp = timestamp
-    }
-
-    override fun getLastEventPosition() = lastEventPosition
-
-    override fun getLastEventTimestamp() = lastEventTimestamp
-
-    override fun setLastEventPosition(position: Long) {
-        lastEventPosition = position
-    }
 
     override var id: String? = null
-    internal var lastEventPosition: Long = 0 <i class="conum" data-value="2"></i><b>(2)</b>
+    override var lastEventPosition: Long = 0 <i class="conum" data-value="2"></i><b>(2)</b>
 
     @JsonFormat(pattern = &quot;yyyy-MM-dd'T'HH:mm:ss.SSSZ&quot;)
-    internal var lastEventTimestamp: Date? = null <i class="conum" data-value="3"></i><b>(3)</b>
+    override var lastEventTimestamp: Date? = null<i class="conum" data-value="3"></i><b>(3)</b>
     val deprecatesIds: MutableList&lt;String&gt; = mutableListOf()
     private var deprecator: Patient? = null
     var aggregateId: String? = null
