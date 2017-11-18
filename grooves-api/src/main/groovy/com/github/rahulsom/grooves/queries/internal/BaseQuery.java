@@ -20,7 +20,6 @@ import java.util.Date;
  * @param <EventT>       The type of the Event
  * @param <SnapshotIdT>  The type of the {@link SnapshotT}'s id field
  * @param <SnapshotT>    The type of the Snapshot
- * @param <QueryT>       A reference to the query type. Typically a self reference.
  *
  * @author Rahul Somasunderam
  */
@@ -30,9 +29,7 @@ public interface BaseQuery<
         EventIdT,
         EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT>
+        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
         > {
 
     default Logger getLog() {
@@ -109,9 +106,8 @@ public interface BaseQuery<
     /**
      * Provide an executor to execute the query
      *
-     * @param <ExecutorT> The type of Executor that executes the query
      * @return An executor that applies events.
      */
-    @NotNull <ExecutorT extends Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-            SnapshotT, QueryT>> ExecutorT getExecutor();
+    @NotNull Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            SnapshotT> getExecutor();
 }

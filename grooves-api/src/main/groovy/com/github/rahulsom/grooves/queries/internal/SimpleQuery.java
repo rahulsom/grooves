@@ -17,13 +17,12 @@ public interface SimpleQuery<
         QueryT extends SimpleQuery<AggregateIdT, AggregateT, EventIdT, EventT, ApplicableEventT,
                 SnapshotIdT, SnapshotT, QueryT>
         > extends
-        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
+        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     Publisher<EventApplyOutcome> applyEvent(ApplicableEventT event, SnapshotT snapshot);
 
     @Override
-    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-            QueryT> getExecutor() {
+    default SimpleExecutor getExecutor() {
         return new SimpleExecutor<>();
     }
 }

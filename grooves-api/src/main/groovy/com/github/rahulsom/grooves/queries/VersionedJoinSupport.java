@@ -8,6 +8,7 @@ import com.github.rahulsom.grooves.api.snapshots.VersionedJoin;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
+import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -42,8 +43,7 @@ public interface VersionedJoinSupport<
                 JoinedAggregateIdT, JoinedAggregateT>,
         DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
                 JoinedAggregateIdT, JoinedAggregateT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT>
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
         > extends
         VersionedQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                 SnapshotT, QueryT> {
@@ -53,8 +53,7 @@ public interface VersionedJoinSupport<
 
     @NotNull
     @Override
-    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT
-            > getExecutor() {
+    default JoinExecutor getExecutor() {
         return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
     }
 

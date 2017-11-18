@@ -36,7 +36,7 @@ public interface GormQuerySupport<
         SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT> &
                 GormEntity<SnapshotT>,
         QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT>
+                SnapshotT>
         > extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
         SnapshotT, QueryT>, //<1>
         BlockingEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,

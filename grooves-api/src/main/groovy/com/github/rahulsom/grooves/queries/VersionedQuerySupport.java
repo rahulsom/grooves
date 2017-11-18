@@ -42,11 +42,10 @@ public interface VersionedQuerySupport<
         SnapshotIdT,
         SnapshotT extends VersionedSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
                 EventT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-                QueryT>
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
         >
         extends
-        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
+        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     /**
      * Finds the last usable snapshot. For a given maxPosition, finds a snapshot that's older than
@@ -138,8 +137,7 @@ public interface VersionedQuerySupport<
     }
 
     @NotNull
-    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT
-            > getExecutor() {
+    default QueryExecutor getExecutor() {
         return new QueryExecutor<>();
     }
 

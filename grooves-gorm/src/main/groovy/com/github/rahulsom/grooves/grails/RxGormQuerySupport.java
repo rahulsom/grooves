@@ -35,7 +35,7 @@ public interface RxGormQuerySupport<
         SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
                 & RxEntity<SnapshotT>,
         QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT>
+                SnapshotT>
         > extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
         SnapshotT, QueryT>,
         RxSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,

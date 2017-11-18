@@ -42,10 +42,10 @@ public interface TemporalQuerySupport<
         SnapshotIdT,
         SnapshotT extends TemporalSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
                 EventT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-                QueryT>>
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                SnapshotT>>
         extends
-        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
+        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     /**
      * Finds the last usable snapshot. For a given maxTimestamp, finds a snapshot whose last event
@@ -247,8 +247,8 @@ public interface TemporalQuerySupport<
     }
 
     @NotNull
-    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT
-            > getExecutor() {
+    @Override
+    default QueryExecutor getExecutor() {
         return new QueryExecutor<>();
     }
 

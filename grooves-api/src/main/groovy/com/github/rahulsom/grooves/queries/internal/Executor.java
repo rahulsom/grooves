@@ -18,7 +18,6 @@ import java.util.List;
  * @param <EventT>       The type of Event
  * @param <SnapshotIdT>  The type of {@link SnapshotT}'s id
  * @param <SnapshotT>    The type of Snapshot
- * @param <QueryT>       The type of the query using the executor
  *
  * @author Rahul Somasunderam
  */
@@ -28,9 +27,7 @@ public interface Executor<
         EventIdT,
         EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-                QueryT>
+        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
         > {
     /**
      * Applies reverts to a list of events and then returns forward events.
@@ -53,7 +50,8 @@ public interface Executor<
      * @return The Snapshot that has been mutated
      */
     @NotNull Flowable<SnapshotT> applyEvents(
-            @NotNull QueryT query,
+            @NotNull BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
+                    query,
             @NotNull SnapshotT initialSnapshot,
             @NotNull Flowable<EventT> events,
             @NotNull List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
