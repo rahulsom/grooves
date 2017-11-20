@@ -6,7 +6,6 @@ import com.github.rahulsom.grooves.api.events.DeprecatedBy;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
-import com.github.rahulsom.grooves.queries.TemporalQuerySupport;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 

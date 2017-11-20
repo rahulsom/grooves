@@ -7,7 +7,10 @@ import com.github.rahulsom.grooves.api.events.DeprecatedBy;
 import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
-import com.github.rahulsom.grooves.queries.internal.*;
+import com.github.rahulsom.grooves.queries.internal.BaseQuery;
+import com.github.rahulsom.grooves.queries.internal.Pair;
+import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
+import com.github.rahulsom.grooves.queries.internal.Utils;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +48,8 @@ public interface VersionedQuerySupport<
         QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
         >
         extends
-        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        VersionedQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     /**
      * Finds the last usable snapshot. For a given maxPosition, finds a snapshot that's older than
@@ -176,7 +180,7 @@ public interface VersionedQuerySupport<
             List<EventT> events = seTuple2.getSecond();
             SnapshotT lastUsableSnapshot = seTuple2.getFirst();
 
-            getLog().info("Events: {}", events);
+            getLog().info("     Events including redirects: {}", Utils.stringify(events));
 
             if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
                 return fromPublisher(lastUsableSnapshot.getAggregateObservable())
@@ -274,5 +278,15 @@ public interface VersionedQuerySupport<
                 .flatMap(aggregate ->
                         fromPublisher(getUncomputedEvents(aggregate, null, event.getPosition())));
     }
+
+    /**
+     * Gets the last snapshot before said event. Is responsible for discarding attached entity.
+     *
+     * @param maxPosition The position before which a snapshot is required
+     * @param aggregate   The aggregate for which a snapshot is required
+     *
+     * @return An observable that returns at most one Snapshot
+     */
+    @NotNull Publisher<SnapshotT> getSnapshot(long maxPosition, @NotNull AggregateT aggregate);
 
 }

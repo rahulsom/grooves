@@ -45,26 +45,6 @@ public interface BaseQuery<
     @NotNull SnapshotT createEmptySnapshot();
 
     /**
-     * Gets the last snapshot before said event. Is responsible for discarding attached entity.
-     *
-     * @param maxPosition The position before which a snapshot is required
-     * @param aggregate   The aggregate for which a snapshot is required
-     *
-     * @return An observable that returns at most one Snapshot
-     */
-    @NotNull Publisher<SnapshotT> getSnapshot(long maxPosition, @NotNull AggregateT aggregate);
-
-    /**
-     * Gets the last snapshot before given timestamp. Is responsible for discarding attached entity.
-     *
-     * @param maxTimestamp The maximum timestamp of the snapshot
-     * @param aggregate    The aggregate for which a snapshot is required
-     *
-     * @return An observable that returns at most one Snapshot
-     */
-    @NotNull Publisher<SnapshotT> getSnapshot(Date maxTimestamp, @NotNull AggregateT aggregate);
-
-    /**
      * Decides whether applying more events is permitted on a snapshot.
      *
      * @param snapshot The snapshot

@@ -4,6 +4,7 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
+import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
 public interface SimpleQuery<
@@ -21,6 +22,7 @@ public interface SimpleQuery<
 
     Publisher<EventApplyOutcome> applyEvent(ApplicableEventT event, SnapshotT snapshot);
 
+    @NotNull
     @Override
     default SimpleExecutor getExecutor() {
         return new SimpleExecutor<>();

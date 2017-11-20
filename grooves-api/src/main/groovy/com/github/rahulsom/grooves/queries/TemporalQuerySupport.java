@@ -6,7 +6,10 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
-import com.github.rahulsom.grooves.queries.internal.*;
+import com.github.rahulsom.grooves.queries.internal.BaseQuery;
+import com.github.rahulsom.grooves.queries.internal.Pair;
+import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
+import com.github.rahulsom.grooves.queries.internal.Utils;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
@@ -45,7 +48,8 @@ public interface TemporalQuerySupport<
         QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                 SnapshotT>>
         extends
-        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        TemporalQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     /**
      * Finds the last usable snapshot. For a given maxTimestamp, finds a snapshot whose last event
@@ -165,7 +169,7 @@ public interface TemporalQuerySupport<
             List<EventT> events = seTuple2.getSecond();
             SnapshotT snapshot = seTuple2.getFirst();
 
-            getLog().info("Events: {}", events);
+            getLog().info("     Events including redirects: {}", Utils.stringify(events));
 
             if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
                 return fromPublisher(snapshot.getAggregateObservable())
@@ -263,4 +267,15 @@ public interface TemporalQuerySupport<
 
     Publisher<EventT> getUncomputedEvents(
             AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime);
+
+    /**
+     * Gets the last snapshot before given timestamp. Is responsible for discarding attached entity.
+     *
+     * @param maxTimestamp The maximum timestamp of the snapshot
+     * @param aggregate    The aggregate for which a snapshot is required
+     *
+     * @return An observable that returns at most one Snapshot
+     */
+    @NotNull Publisher<SnapshotT> getSnapshot(Date maxTimestamp, @NotNull AggregateT aggregate);
+
 }
