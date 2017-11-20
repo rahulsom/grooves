@@ -78,3 +78,8 @@ link:examples/javaee[examples/javaee]::
    The persistence here is completely made up using a few `List` objects.
    The reason for that is to show how you don't have to be tied to any one persistence mechanism.
 
+link:examples/pushstyle[examples/pushstyle]::
+   This uses Kotlin and Guava EventBus.
+   The snapshots are persisted using jOOQ.
+   The events are never persisted. They are processed as they come on the EventBus.
+

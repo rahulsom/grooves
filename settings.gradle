@@ -7,14 +7,27 @@ releasable.each { include "grooves-${it}" }
 include "grooves-docs"
 include 'grooves-example-test'
 def examples = [
+
+        /* SpringBoot + Jpa + Groovy */
         'springboot:jpa',
+
+        /* SpringBoot + Kotlin + Mongo */
         'springboot:kotlin',
+
+        /* JavaEE + Java + Data Structures for persistence */
         'javaee',
+
+        /* Grails + RDBMS */
         'grails:rdbms',
+
+        /* Grails + RDBMS for events + Mongo for snapshots */
         'grails:rdbms_mongo',
-        // This one fails for some netty bug
-        // 'grails/restserver', 'grails/rxrest',
+
+        /* Grails + RxMongo */
         'grails:rxmongo',
+
+        /* Guava EventBus for events + Kotlin + jOOQ for snapshots  */
+        'pushstyle',
 ]
 
 examples.each { include "examples:${it}" }

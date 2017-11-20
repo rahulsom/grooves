@@ -6,7 +6,6 @@ import com.github.rahulsom.grooves.api.events.DeprecatedBy;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
-import com.github.rahulsom.grooves.queries.TemporalQuerySupport;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 
@@ -100,11 +99,12 @@ public class Utils {
             SnapshotIdT,
             SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
             QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                    SnapshotT, QueryT>
+                    SnapshotT>,
+            ExecutorT extends Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                    SnapshotT>
             > Flowable<EventT> getForwardOnlyEvents(
             @NotNull List<EventT> events,
-            @NotNull Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-                    QueryT> executor,
+            @NotNull ExecutorT executor,
             @NotNull Supplier<Flowable<Pair<SnapshotT, List<EventT>>>>
                     fallbackSnapshotAndEvents) {
         return executor.applyReverts(fromIterable(events))

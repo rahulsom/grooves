@@ -44,10 +44,8 @@ public class QueryExecutor<
         EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         SnapshotIdT,
         SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-                QueryT>
-        > implements Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-        QueryT> {
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
+        > implements Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -105,7 +103,8 @@ public class QueryExecutor<
     @NotNull
     @Override
     public Flowable<SnapshotT> applyEvents(
-            @NotNull QueryT query,
+            @NotNull BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                    SnapshotT> query,
             @NotNull SnapshotT initialSnapshot,
             @NotNull Flowable<EventT> events,
             @NotNull List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
@@ -131,7 +130,7 @@ public class QueryExecutor<
                     return applyDeprecatedBy(deprecatedByEvent, snapshot);
                 } else {
                     String methodName = "apply" + event.getClass().getSimpleName();
-                    return callMethod(query, methodName, snapshot, event)
+                    return callMethod((QueryT) query, methodName, snapshot, event)
                             .flatMap(retval -> handleMethodResponse(
                                     stopApplyingEvents, snapshot, methodName, retval));
                 }
@@ -191,7 +190,7 @@ public class QueryExecutor<
      * Applies a {@link Deprecates} event to a snapshot.
      *
      * @param event            The {@link Deprecates} event
-     * @param util             The Query Util instance
+     * @param query            The Query Util instance
      * @param events           All {@link EventT}s that have been gathered so far
      * @param deprecatesEvents The list of {@link Deprecates} events that have been collected so
      *                         far
@@ -201,13 +200,14 @@ public class QueryExecutor<
      */
     Flowable<SnapshotT> applyDeprecates(
             final Deprecates<AggregateIdT, AggregateT, EventIdT, EventT> event,
-            final QueryT util,
+            final BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+                    SnapshotT> query,
             final Flowable<EventT> events,
             final List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesEvents,
             AggregateT aggregate) {
 
         log.info("        -> {} will cause recomputation", event);
-        final SnapshotT newSnapshot = util.createEmptySnapshot();
+        final SnapshotT newSnapshot = query.createEmptySnapshot();
         newSnapshot.setAggregate(aggregate);
 
         return fromPublisher(event.getConverseObservable()).flatMap(converse ->
@@ -215,12 +215,12 @@ public class QueryExecutor<
                         .flatMap(deprecatedAggregate -> {
                             log.debug("        -> Deprecated Aggregate is: {}. Converse is: {}",
                                     deprecatedAggregate, converse);
-                            util.addToDeprecates(newSnapshot, deprecatedAggregate);
+                            query.addToDeprecates(newSnapshot, deprecatedAggregate);
 
                             Flowable<EventT> concatenatedEvents =
                                     events.concatWith(
-                                            fromPublisher(util.findEventsBefore((EventT) converse)))
-                                            .cache();
+                                            fromPublisher(query.findEventsBefore((EventT) converse))
+                                    ).cache();
                             return concatenatedEvents
                                     .filter(it -> !isDeprecatesOrConverse(event, converse, it))
                                     .toSortedList(Comparator.comparing(EventT::getTimestamp))
@@ -228,7 +228,7 @@ public class QueryExecutor<
                                     .doOnNext(it ->
                                             log.debug("Reassembled Events: {}", stringify(it)))
                                     .flatMap(sortedEvents -> applyEvents(
-                                            util, newSnapshot,
+                                            query, newSnapshot,
                                             applyReverts(fromIterable(sortedEvents)),
                                             plus(deprecatesEvents, event), aggregate));
                         }));
@@ -246,7 +246,7 @@ public class QueryExecutor<
     /**
      * Calls a method on a Query Util instance.
      *
-     * @param util       The Query Util instance
+     * @param query      The Query Util instance
      * @param methodName The method to be called
      * @param snapshot   The snapshot to be passed to the method
      * @param event      The event to be passed to the method
@@ -255,21 +255,21 @@ public class QueryExecutor<
      *         Util instance, or an Observable that asks to RETURN if that fails.
      */
     protected Flowable<EventApplyOutcome> callMethod(
-            QueryT util, String methodName, final SnapshotT snapshot, final EventT event) {
+            QueryT query, String methodName, final SnapshotT snapshot, final EventT event) {
         try {
             final Method method =
-                    util.getClass().getMethod(methodName, event.getClass(), snapshot.getClass());
+                    query.getClass().getMethod(methodName, event.getClass(), snapshot.getClass());
             return fromPublisher(
-                    (Publisher<EventApplyOutcome>) method.invoke(util, event, snapshot));
+                    (Publisher<EventApplyOutcome>) method.invoke(query, event, snapshot));
         } catch (Exception e1) {
-            return handleException(util, methodName, snapshot, event, e1);
+            return handleException(query, methodName, snapshot, event, e1);
         }
     }
 
     private Flowable<EventApplyOutcome> handleException(
-            QueryT util, String methodName, SnapshotT snapshot, EventT event, Exception e1) {
+            QueryT query, String methodName, SnapshotT snapshot, EventT event, Exception e1) {
         try {
-            return fromPublisher(util.onException(e1, snapshot, event));
+            return fromPublisher(query.onException(e1, snapshot, event));
         } catch (Exception e2) {
             String description = String.format(
                     "{Snapshot: %s; Event: %s; method: %s; originalException: %s}",

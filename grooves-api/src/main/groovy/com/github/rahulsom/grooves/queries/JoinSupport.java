@@ -42,8 +42,7 @@ public interface JoinSupport<
         DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
                 JoinedAggregateIdT, JoinedAggregateT>,
         QueryT extends
-                BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-                        QueryT>>
+                BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>>
         extends
         VersionedJoinSupport<AggregateIdT, AggregateT, EventIdT, EventT, JoinedAggregateIdT,
                 JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT, QueryT>,
@@ -52,8 +51,7 @@ public interface JoinSupport<
 
     @NotNull
     @Override
-    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT
-            > getExecutor() {
+    default JoinExecutor getExecutor() {
         return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
     }
 

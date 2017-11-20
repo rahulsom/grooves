@@ -42,8 +42,7 @@ public interface TemporalJoinSupport<
                 JoinedAggregateIdT, JoinedAggregateT>,
         DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
                 JoinedAggregateIdT, JoinedAggregateT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT>
+        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
         > extends
         TemporalQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                 SnapshotT, QueryT> {
@@ -54,8 +53,7 @@ public interface TemporalJoinSupport<
 
     @NotNull
     @Override
-    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT
-            > getExecutor() {
+    default JoinExecutor getExecutor() {
         return new JoinExecutor(getJoinEventClass(), getDisjoinEventClass());
     }
 }

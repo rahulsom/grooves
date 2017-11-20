@@ -20,7 +20,6 @@ import java.util.Date;
  * @param <EventT>       The type of the Event
  * @param <SnapshotIdT>  The type of the {@link SnapshotT}'s id field
  * @param <SnapshotT>    The type of the Snapshot
- * @param <QueryT>       A reference to the query type. Typically a self reference.
  *
  * @author Rahul Somasunderam
  */
@@ -30,9 +29,7 @@ public interface BaseQuery<
         EventIdT,
         EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT>
+        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
         > {
 
     default Logger getLog() {
@@ -46,26 +43,6 @@ public interface BaseQuery<
      * @return The empty snapshot
      */
     @NotNull SnapshotT createEmptySnapshot();
-
-    /**
-     * Gets the last snapshot before said event. Is responsible for discarding attached entity.
-     *
-     * @param maxPosition The position before which a snapshot is required
-     * @param aggregate   The aggregate for which a snapshot is required
-     *
-     * @return An observable that returns at most one Snapshot
-     */
-    @NotNull Publisher<SnapshotT> getSnapshot(long maxPosition, @NotNull AggregateT aggregate);
-
-    /**
-     * Gets the last snapshot before given timestamp. Is responsible for discarding attached entity.
-     *
-     * @param maxTimestamp The maximum timestamp of the snapshot
-     * @param aggregate    The aggregate for which a snapshot is required
-     *
-     * @return An observable that returns at most one Snapshot
-     */
-    @NotNull Publisher<SnapshotT> getSnapshot(Date maxTimestamp, @NotNull AggregateT aggregate);
 
     /**
      * Decides whether applying more events is permitted on a snapshot.
@@ -109,9 +86,8 @@ public interface BaseQuery<
     /**
      * Provide an executor to execute the query
      *
-     * @param <ExecutorT> The type of Executor that executes the query
      * @return An executor that applies events.
      */
-    @NotNull <ExecutorT extends Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-            SnapshotT, QueryT>> ExecutorT getExecutor();
+    @NotNull Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            SnapshotT> getExecutor();
 }

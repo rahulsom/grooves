@@ -47,7 +47,7 @@ public interface RxGormJoinSupport<
         DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
                 JoinedAggregateIdT, JoinedAggregateT>,
         QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT>
+                SnapshotT>
         > extends
         JoinSupport<AggregateIdT, AggregateT, EventIdT, EventT, JoinedAggregateIdT,
                 JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT, QueryT>,
@@ -56,8 +56,7 @@ public interface RxGormJoinSupport<
                 SnapshotT, QueryT> {
 
     @Override
-    default Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-            SnapshotT, QueryT> getExecutor() {
+    default JoinExecutor getExecutor() {
         //noinspection unchecked
         return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
     }
