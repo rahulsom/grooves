@@ -1,0 +1,12 @@
+= Push Style
+
+Demonstrates Push Style Event Sourcing using Grooves.
+
+== Getting Started
+
+- A good starting point to understand this example would be looking at `PushTest.kt`.
+- `ContextManager` and `ContextAwareScheduler` together help carry data correctly through RxJava's threads.
+- `EventService` defines `query` in a way that does not require defining classes.
+
+Looking at these things should help you design your own solution based on Push.
+While this is purely push based, you can create a system that uses push when possible, and resorts to pull when necessary.

@@ -1,6 +1,7 @@
 package grooves.example.push
 
 import com.google.common.eventbus.EventBus
+import com.google.common.util.concurrent.AbstractService
 import com.google.inject.Inject
 import grooves.example.pushstyle.Public
 import grooves.example.pushstyle.Tables.BALANCE
@@ -10,15 +11,21 @@ import java.util.*
 import grooves.example.pushstyle.tables.Balance as BalanceTable
 
 class Application @Inject constructor(
-        val eventBus: EventBus, eventService: EventService, val database: Database,
-        dslContext: DSLContext) {
+        val eventBus: EventBus, val eventService: EventService, val database: Database,
+        val dslContext: DSLContext): AbstractService() {
 
-    private val log = getLogger(this.javaClass)
+    public override fun doStop() {
+        dslContext.dropTable(BALANCE)
+        eventBus.unregister(eventService)
+        log.error("======== Shutting down ========")
+    }
 
-    init {
-        log.error("Setting up schema")
+    public override fun doStart() {
+        log.error("")
+        log.error("")
+        log.error("")
+        log.error("========= Starting up =========")
         dslContext.createSchemaIfNotExists(Public.PUBLIC).execute()
-        log.error("Setting up table")
         dslContext.createTableIfNotExists(BALANCE)
                 .column(BALANCE.B_ID)
                 .column(BALANCE.B_VERSION)
@@ -26,10 +33,11 @@ class Application @Inject constructor(
                 .column(BALANCE.B_ACCOUNT)
                 .column(BALANCE.BALANCE_)
                 .execute()
-        log.error("Registering eventService")
         eventBus.register(eventService)
         log.error("doStart complete")
     }
+
+    private val log = getLogger(this.javaClass)
 
     fun deposit(accountId: String, position: Long, atmId: String, amount: Long) =
             eventBus.post(

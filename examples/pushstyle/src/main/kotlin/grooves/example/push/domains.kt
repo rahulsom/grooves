@@ -4,8 +4,10 @@ import com.github.rahulsom.grooves.api.AggregateType
 import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
+import grooves.example.pushstyle.tables.records.BalanceRecord
 import io.reactivex.Flowable
 import org.reactivestreams.Publisher
+import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -55,8 +57,6 @@ class Balance() : Snapshot<String, Account, String, String, Transaction> {
     var deprecates = mutableListOf<Account>()
     internal var deprecatedBy: Account? = null
 
-
-
     var balance: Long = 0
 
     constructor(id: String?, aggregate: Account?, balance: Long, lastEventPosition: Long,
@@ -66,6 +66,15 @@ class Balance() : Snapshot<String, Account, String, String, Transaction> {
         this.balance = balance
         this.lastEventPosition = lastEventPosition
         this.lastEventTimestamp = lastEventTimestamp
+    }
+
+    constructor(balance: BalanceRecord):
+            this(balance.bId, Account(balance.bAccount), balance.balance,
+                    balance.bVersion, balance.bTime)
+
+    fun toBalanceRecord(): BalanceRecord {
+        return BalanceRecord(id, lastEventPosition, Timestamp.from(lastEventTimestamp?.toInstant()),
+                aggregate?.id, balance)
     }
 
     override fun getAggregateObservable(): Publisher<Account> =
@@ -94,4 +103,6 @@ class Balance() : Snapshot<String, Account, String, String, Transaction> {
         return "Balance(id=$idPart, aggregate=$aggPart, lastEventTimestamp=$ts, " +
                 "version=$lastEventPosition, balance=$balance)"
     }
+
+
 }

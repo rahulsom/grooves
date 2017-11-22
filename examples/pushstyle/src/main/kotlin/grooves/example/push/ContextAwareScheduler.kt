@@ -8,6 +8,13 @@ import io.reactivex.internal.schedulers.NewThreadWorker
 import io.reactivex.internal.schedulers.RxThreadFactory
 import java.util.concurrent.TimeUnit
 
+/**
+ * This and [ContextManager] are based on
+ * [http://akarnokd.blogspot.com/2015/05/schedulers-part-1.html](http://akarnokd.blogspot.com/2015/05/schedulers-part-1.html).
+ *
+ * This allows to create an execution context for the RxJava2 to simulate [ThreadLocal] in a way
+ * that works for RxJava even though RxJava manages threads differently.
+ */
 object ContextAwareScheduler : Scheduler() {
 
     private val worker = NewThreadWorker(RxThreadFactory("ContextAwareScheduler"))
@@ -25,7 +32,9 @@ object ContextAwareScheduler : Scheduler() {
 
             val context = ContextManager.get()
             val contextAwareRunnable = {
-                ContextManager.set(context)
+                if (context != null) {
+                    ContextManager.set(context)
+                }
                 runnable.run()
             }
 
@@ -39,16 +48,3 @@ object ContextAwareScheduler : Scheduler() {
 
 }
 
-object ContextManager {
-
-    internal val ctx = ThreadLocal<Any>()
-
-    fun get(): Any {
-        return ctx.get()
-    }
-
-    fun set(context: Any) {
-        ctx.set(context)
-    }
-
-}
