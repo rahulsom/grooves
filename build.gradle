@@ -48,7 +48,7 @@ project.afterEvaluate {
     }
 
     if (!version.toString().endsWith('-SNAPSHOT')) {
-        tasks.release.dependsOn 'closeAndPromoteRepository', 'srcclr'
+        tasks.release.dependsOn 'closeAndPromoteRepository'// , 'srcclr'
     }
 }
 
