@@ -115,6 +115,8 @@ $(addBlockSwitches);
 <li><a href="#_events">Events</a></li>
 <li><a href="#_snapshots">Snapshots</a></li>
 <li><a href="#_queries">Queries</a></li>
+<li><a href="#_joins">Joins</a></li>
+<li><a href="#_frp_style">FRP Style</a></li>
 </ul>
 </li>
 <li><a href="#_creating_your_own_diagrams">Creating your own diagrams</a></li>
@@ -2120,6 +2122,73 @@ Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <
 Kotlin will check for completeness when you use the <code>when</code> keyword as part of an <code>expression</code>.</td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_joins">Joins</h3>
+<div class="paragraph">
+<p>Joins are just snapshots of a different kind.
+With Grooves, they&#8217;re always <em>One-To-Many</em>. <em>One-To-One</em> is just a special case of <em>One-To-Many</em>.
+This is a good example for <a href="https://github.com/rahulsom/grooves/blob/master/examples/grails/rdbms_mongo/grails-app/domain/grooves/grails/mongo/ZipcodePatients.groovy">a join</a>.</p>
+</div>
+<div class="paragraph">
+<p>The query used to compute a Join is slightly different.
+It only concerns itself with two forward events - the <code>JoinEvent</code> and the <code>DisjoinEvent</code>.
+This is a good example for such a <a href="https://github.com/rahulsom/grooves/blob/master/examples/grails/rdbms_mongo/src/main/groovy/grooves/grails/mongo/ZipcodePatientsQuery.groovy">query</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_frp_style">FRP Style</h3>
+<div class="paragraph">
+<p>Sometimes, it is not ideal to create classes to implement the queries.
+Since 0.4.0, grooves has experimental support for doing this in a somewhat <em>Functional Reactive Programming</em> style.</p>
+</div>
+<div class="paragraph">
+<p>This is an example for such a query in Kotlin.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="kotlin">    val query =
+            Grooves.versioned&lt;String, Account, String, Transaction, String, Balance&gt;()
+                    .withSnapshot { version, account -&gt;
+                        log.info(&quot;getBalance($account, $version)&quot;)
+                        Maybe.fromCallable { database.getBalance(account, version) }
+                                .map { dbBalance -&gt; Balance(dbBalance) }
+                                .toFlowable()
+                    }
+                    .withEmptySnapshot { Balance() }
+                    .withEvents { account, balance, version -&gt;
+                        val transaction =
+                                ContextManager.get()?.get(&quot;transaction&quot;) as Transaction?
+                        if (transaction != null)
+                            just(transaction)
+                        else
+                            empty()
+                    }
+                    // .withApplyEvents { balance -&gt; true }
+                    .withDeprecator { balance, deprecatingAccount -&gt; /* No op */ }
+                    .withExceptionHandler { exception, balance, transaction -&gt;
+                        log.warn(&quot;$exception occurred&quot;)
+                        just(CONTINUE)
+                    }
+                    .withEventHandler(this::updateBalance)
+                    .build()
+
+    private fun updateBalance(transaction: Transaction, balance: Balance) =
+            when (transaction) {
+                is Transaction.Deposit -&gt; {
+                    balance.balance += transaction.amount
+                    just(CONTINUE)
+                }
+                is Transaction.Withdraw -&gt; {
+                    balance.balance -= transaction.amount
+                    just(CONTINUE)
+                }
+            }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The full source for <em>Push Style</em> Event Sourcing with <em>jOOQ</em> and FRP, look at <a href="https://github.com/rahulsom/grooves/tree/master/examples/pushstyle">this subproject</a>.</p>
 </div>
 </div>
 </div>
