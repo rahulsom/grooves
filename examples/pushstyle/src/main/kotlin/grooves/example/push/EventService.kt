@@ -19,6 +19,7 @@ class EventService {
 
     val log = LoggerFactory.getLogger(this.javaClass)
 
+    // tag::documented[]
     val query =
             Grooves.versioned<String, Account, String, Transaction, String, Balance>()
                     .withSnapshot { version, account ->
@@ -56,6 +57,7 @@ class EventService {
                     just(CONTINUE)
                 }
             }
+    // end::documented[]
 
     @Suppress("unused")
     @Subscribe

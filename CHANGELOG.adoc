@@ -7,6 +7,7 @@
 * Make it easier to contribute to grooves-site.
 * Remove `JavaJoin` and `JavaSnapshot` types.
   The `Join` and `Snapshot` types are sufficient.
+* Add support for FRP Style queries and push style event sourcing.
 
 == 0.3.0
 * Support completeness verification in java using annotations.
