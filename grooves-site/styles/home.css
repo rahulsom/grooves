@@ -22,9 +22,6 @@ a.btn {
     font-weight: 300;
     font-size: 1.02em;
 }
-body {
-    min-height: 900px;
-}
 strong {
     font-weight: 700;
 }
@@ -37,4 +34,7 @@ strong {
     50%  {color: blue;}
     75%  {color: green;}
     100% {color: red;}
+}
+.heading {
+    margin: 6rem 0;
 }
