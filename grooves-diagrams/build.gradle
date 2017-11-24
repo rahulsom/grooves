@@ -11,7 +11,12 @@ repositories {
 
 dependencies {
     compile 'org.asciidoctor:asciidoctorj:1.5.4.1'
-    compile 'com.github.sommeri:less4j:1.17.2'
+    compile 'org.jruby:jruby-complete:9.1.14.0'
+
+    compile('com.github.sommeri:less4j:1.17.2') {
+        exclude group: 'com.google.protobuf'
+    }
+    compile 'commons-beanutils:commons-beanutils:1.9.3'
     compile "org.slf4j:slf4j-api:$slf4jVersion"
 
     compileOnly 'org.kordamp.gipsy:gipsy:0.4.1'
@@ -19,5 +24,5 @@ dependencies {
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
-    from javadoc.outputDirectory
+    from javadoc.destinationDir
 }
