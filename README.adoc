@@ -13,73 +13,80 @@ Documentation can be found https://rahulsom.github.io/grooves/[here].
 
 == Modules
 
-https://oss.sonatype.org/#nexus-search;quick~grooves-gorm[grooves-gorm]::
-    This is for you if you're using GORM for persistence.
-    It has interfaces that need to know the domain object used, and build flexible queries without forcing you to write the code to read domain objects from the database.
+[cols="1,3"]
+|===
+
+a|grooves-gorm
 
 image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-gorm/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-gorm"]
+a|This is for you if you're using GORM for persistence.
+It has interfaces that need to know the domain object used, and build flexible queries without forcing you to write the code to read domain objects from the database.
 
-
-https://oss.sonatype.org/#nexus-search;quick~grooves-groovy[grooves-groovy]::
-    This is for you if you want to write your queries in groovy, but are not using GORM.
-    You will have to implement your own data access, but will get support for checking completeness of queries based on groovy AST Transformations.
+a|grooves-groovy
 
 image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-groovy/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-groovy"]
+a|This is for you if you want to write your queries in groovy, but are not using GORM.
+You will have to implement your own data access, but will get support for checking completeness of queries based on groovy AST Transformations.
 
-
-https://oss.sonatype.org/#nexus-search;quick~grooves-java[grooves-java]::
-    This is for you if you want to write your queries in java.
-    You will have to implement your own data access, but will get support for checking completeness of queries based on Annotation Processors.
+a|grooves-java
 
 image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-java/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-java"]
+a|This is for you if you want to write your queries in java.
+You will have to implement your own data access, but will get support for checking completeness of queries based on Annotation Processors.
 
-
-https://oss.sonatype.org/#nexus-search;quick~grooves-api[grooves-api]::
-    This is for you if you are not using groovy or java, or don't care about verifying completeness of queries.
-    For example, you could use this for writing code with Kotlin.
+a|grooves-api
 
 image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-api/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-api"]
+a|This is for you if you are not using groovy or java, or don't care about verifying completeness of queries.
+For example, you could use this for writing code with Kotlin.
 
-
-https://oss.sonatype.org/#nexus-search;quick~grooves-types[grooves-types]::
-    This contains types that are used in `grooves-api`.
-    It is very unlikely you'll be using this directly.
+a|grooves-types
 
 image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-types/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-types"]
+a|This contains types that are used in `grooves-api`.
+It is very unlikely you'll be using this directly.
 
-https://oss.sonatype.org/#nexus-search;quick~grooves-diagrams[grooves-diagrams]::
-    This is an asciidoctor extension that allows you to generate diagrams like those in grooves' documentation.
+a|grooves-diagrams
 
 image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-diagrams/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-diagrams"]
+a|This is an asciidoctor extension that allows you to generate diagrams like those in grooves' documentation.
+
+|===
 
 == Examples
 
-link:examples/grails/rdbms[examples/grails/rdbms]::
-   This uses grails (with groovy) backed by Hibernate (through GORM).
+[cols="1,3"]
+|===
 
-link:examples/grails/rdbms_mongo[examples/grails/rdbms_mongo]::
-   This uses grails (with groovy) backed by Hibernate (through GORM) for events and aggregates and MongoDB (through GORM) for snapshots.
+|link:examples/grails/rdbms[examples/grails/rdbms]
+|This uses grails (with groovy) backed by Hibernate (through GORM).
 
-link:examples/grails/rxmongo[examples/grails/rxmongo]::
-   This uses grails (with groovy) backed by MongoDB (through GORM).
-   The API is entirely reactive.
-   It is based on https://gorm.grails.org/6.0.x/rx/manual/[rx-gorm-mongo].
+|link:examples/grails/rdbms_mongo[examples/grails/rdbms_mongo]
+|This uses grails (with groovy) backed by Hibernate (through GORM) for events and aggregates and MongoDB (through GORM) for snapshots.
 
-link:examples/springboot/jpa[examples/springboot/jpa]::
-   This uses Springboot and JPA repositories for everything.
-   All the code is written in groovy.
+|link:examples/grails/rxmongo[examples/grails/rxmongo]
+|This uses grails (with groovy) backed by MongoDB (through GORM).
+The API is entirely reactive.
+It is based on https://gorm.grails.org/6.0.x/rx/manual/[rx-gorm-mongo].
 
-link:examples/springboot/kotlin[examples/springboot/kotlin]::
-   This uses Spring Reactive Web and RxMongo repositories for everything.
-   All the code is written in kotlin.
+|link:examples/springboot/jpa[examples/springboot/jpa]
+|This uses Springboot and JPA repositories for everything.
+All the code is written in groovy.
 
-link:examples/javaee[examples/javaee]::
-   This uses Java and JavaEE for the APIs.
-   The persistence here is completely made up using a few `List` objects.
-   The reason for that is to show how you don't have to be tied to any one persistence mechanism.
+|link:examples/springboot/kotlin[examples/springboot/kotlin]
+|This uses Spring Reactive Web and RxMongo repositories for everything.
+All the code is written in kotlin.
 
-link:examples/pushstyle[examples/pushstyle]::
-   This uses Kotlin and Guava EventBus.
-   The snapshots are persisted using jOOQ.
-   The events are never persisted. They are processed as they come on the EventBus.
+|link:examples/javaee[examples/javaee]
+|This uses Java and JavaEE for the APIs.
+The persistence here is completely made up using a few `List` objects.
+The reason for that is to show how you don't have to be tied to any one persistence mechanism.
+
+|link:examples/pushstyle[examples/pushstyle]
+|This uses Kotlin and Guava EventBus.
+The snapshots are persisted using jOOQ.
+The events are never persisted. They are processed as they come on the EventBus.
+
+|===
+
 
