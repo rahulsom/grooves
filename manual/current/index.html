@@ -2147,43 +2147,43 @@ Since 0.4.0, grooves has experimental support for doing this in a somewhat <em>F
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">    val query =
-            Grooves.versioned&lt;String, Account, String, Transaction, String, Balance&gt;()
-                    .withSnapshot { version, account -&gt;
-                        log.info("getBalance($account, $version)")
-                        Maybe.fromCallable { database.getBalance(account, version) }
-                                .map { dbBalance -&gt; Balance(dbBalance) }
-                                .toFlowable()
-                    }
-                    .withEmptySnapshot { Balance() }
-                    .withEvents { account, balance, version -&gt;
-                        val transaction =
-                                ContextManager.get()?.get("transaction") as Transaction?
-                        if (transaction != null)
-                            just(transaction)
-                        else
-                            empty()
-                    }
-                    .withApplyEvents { balance -&gt; true }
-                    .withDeprecator { balance, deprecatingAccount -&gt; /* No op */ }
-                    .withExceptionHandler { exception, balance, transaction -&gt;
-                        log.warn("$exception occurred")
-                        just(CONTINUE)
-                    }
-                    .withEventHandler(this::updateBalance)
-                    .build()
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">val query =
+        Grooves.versioned&lt;String, Account, String, Transaction, String, Balance&gt;()
+                .withSnapshot { version, account -&gt;
+                    log.info("getBalance($account, $version)")
+                    Maybe.fromCallable { database.getBalance(account, version) }
+                            .map { dbBalance -&gt; Balance(dbBalance) }
+                            .toFlowable()
+                }
+                .withEmptySnapshot { Balance() }
+                .withEvents { account, balance, version -&gt;
+                    val transaction =
+                            ContextManager.get()?.get("transaction") as Transaction?
+                    if (transaction != null)
+                        just(transaction)
+                    else
+                        empty()
+                }
+                .withApplyEvents { balance -&gt; true }
+                .withDeprecator { balance, deprecatingAccount -&gt; /* No op */ }
+                .withExceptionHandler { exception, balance, transaction -&gt;
+                    log.warn("$exception occurred")
+                    just(CONTINUE)
+                }
+                .withEventHandler(this::updateBalance)
+                .build()
 
-    private fun updateBalance(transaction: Transaction, balance: Balance) =
-            when (transaction) {
-                is Transaction.Deposit -&gt; {
-                    balance.balance += transaction.amount
-                    just(CONTINUE)
-                }
-                is Transaction.Withdraw -&gt; {
-                    balance.balance -= transaction.amount
-                    just(CONTINUE)
-                }
-            }</code></pre>
+private fun updateBalance(transaction: Transaction, balance: Balance) =
+        when (transaction) {
+            is Transaction.Deposit -&gt; {
+                balance.balance += transaction.amount
+                just(CONTINUE)
+            }
+            is Transaction.Withdraw -&gt; {
+                balance.balance -= transaction.amount
+                just(CONTINUE)
+            }
+        }</code></pre>
 </div>
 </div>
 <div class="paragraph">
