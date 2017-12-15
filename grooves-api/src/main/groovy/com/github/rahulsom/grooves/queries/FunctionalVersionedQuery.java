@@ -196,6 +196,8 @@ public class FunctionalVersionedQuery<
 
         /**
          * Builds the Functional Versioned Query.
+         *
+         * @return A Versioned Query
          */
         public VersionedQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                         SnapshotT> build() {

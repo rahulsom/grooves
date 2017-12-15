@@ -88,6 +88,7 @@ public class Utils {
      * @param <SnapshotIdT>             The type of {@link SnapshotT}'s id
      * @param <SnapshotT>               The type of Snapshot
      * @param <QueryT>                  The type of Query
+     * @param <ExecutorT>               The type of the query executor
      *
      * @return an observable of forward only events
      */

@@ -37,7 +37,7 @@ class EventService {
                         else
                             empty()
                     }
-                    // .withApplyEvents { balance -> true }
+                    .withApplyEvents { balance -> true }
                     .withDeprecator { balance, deprecatingAccount -> /* No op */ }
                     .withExceptionHandler { exception, balance, transaction ->
                         log.warn("$exception occurred")

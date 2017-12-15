@@ -1,5 +1,5 @@
 @import url('https://rahulsom.github.io/grooves/styles/foundation.css');
-/*@import url('https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.3/themes/prism.min.css');*/
+@import url('https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.3/themes/prism.min.css');
 
 .switch--item:not(:first-child) {
     border-left: #2ba6cb solid 0.1px !important;
@@ -35,4 +35,8 @@ pre[class*=language-] {
 
 .literalblock > .content pre, .listingblock > .content pre {
     background-color: #fcfcfc;
+}
+
+code b {
+    display: none;
 }

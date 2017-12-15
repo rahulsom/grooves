@@ -196,6 +196,8 @@ public class FunctionalTemporalQuery<
 
         /**
          * Builds the Functional Temporal Query.
+         *
+         * @return A Temporal Query
          */
         public TemporalQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                 SnapshotT> build() {
