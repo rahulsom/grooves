@@ -2164,7 +2164,7 @@ Since 0.4.0, grooves has experimental support for doing this in a somewhat <em>F
                         else
                             empty()
                     }
-                    // .withApplyEvents { balance -&gt; true }
+                    .withApplyEvents { balance -&gt; true }
                     .withDeprecator { balance, deprecatingAccount -&gt; /* No op */ }
                     .withExceptionHandler { exception, balance, transaction -&gt;
                         log.warn("$exception occurred")
