@@ -2148,15 +2148,15 @@ Since 0.4.0, grooves has experimental support for doing this in a somewhat <em>F
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">val query =
-        Grooves.versioned&lt;String, Account, String, Transaction, String, Balance&gt;()
-                .withSnapshot { version, account -&gt;
+        Grooves.versioned&lt;String, Account, String, Transaction, String, Balance&gt;() <i class="conum" data-value="1"></i><b>(1)</b>
+                .withSnapshot { version, account -&gt; <i class="conum" data-value="2"></i><b>(2)</b>
                     log.info("getBalance($account, $version)")
                     Maybe.fromCallable { database.getBalance(account, version) }
                             .map { dbBalance -&gt; Balance(dbBalance) }
                             .toFlowable()
                 }
-                .withEmptySnapshot { Balance() }
-                .withEvents { account, balance, version -&gt;
+                .withEmptySnapshot { Balance() } <i class="conum" data-value="3"></i><b>(3)</b>
+                .withEvents { account, balance, version -&gt; <i class="conum" data-value="4"></i><b>(4)</b>
                     val transaction =
                             ContextManager.get()?.get("transaction") as Transaction?
                     if (transaction != null)
@@ -2164,14 +2164,14 @@ Since 0.4.0, grooves has experimental support for doing this in a somewhat <em>F
                     else
                         empty()
                 }
-                .withApplyEvents { balance -&gt; true }
-                .withDeprecator { balance, deprecatingAccount -&gt; /* No op */ }
-                .withExceptionHandler { exception, balance, transaction -&gt;
+                .withApplyEvents { balance -&gt; true } <i class="conum" data-value="5"></i><b>(5)</b>
+                .withDeprecator { balance, deprecatingAccount -&gt; /* No op */ } <i class="conum" data-value="6"></i><b>(6)</b>
+                .withExceptionHandler { exception, balance, transaction -&gt; <i class="conum" data-value="7"></i><b>(7)</b>
                     log.warn("$exception occurred")
                     just(CONTINUE)
                 }
-                .withEventHandler(this::updateBalance)
-                .build()
+                .withEventHandler(this::updateBalance) <i class="conum" data-value="8"></i><b>(8)</b>
+                .build() <i class="conum" data-value="9"></i><b>(9)</b>
 
 private fun updateBalance(transaction: Transaction, balance: Balance) =
         when (transaction) {
@@ -2185,6 +2185,57 @@ private fun updateBalance(transaction: Transaction, balance: Balance) =
             }
         }</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>Grooves</code> is a class that allows creating FRP style queries.
+You can start with <code>versioned</code> or <code>temporal</code>.
+It returns a query builder.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This method helps Grooves fetch a prior snapshot from the datastore. <code>account</code> is an aggregate.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This method helps Grooves create a new snapshot when none was found by the previous method.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>This method helps Grooves fetch events since the last known snapshot.
+<code>account</code> is the aggregate.
+<code>balance</code> is the last known snapshot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>This method is optional and by default returns true.
+<code>balance</code> is the snapshot.
+This allows inspecting the snapshot to determine if Grooves should continue processing events.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>This method allows Grooves to execute some code when a deprecation event is found.
+<code>balance</code> is the snapshot
+<code>deprecatingAccount</code> is the aggregate the deprecates the aggregate of <code>balance</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>This method helps Grooves decide what to do on an exception.
+Returning an observable that says <code>CONTINUE</code> means processing will continue.
+Returning an observable that says <code>RETURN</code> means processing will stop and the value will be returned.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>This allows Grooves to apply events on a snapshot as shown in the function <code>updateBalance</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>This returns an instance of <code>VersionedQuery</code>.
+That can be used to compute snapshots.</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The full source for <em>Push Style</em> Event Sourcing with <em>jOOQ</em> and FRP, look at <a href="https://github.com/rahulsom/grooves/tree/master/examples/pushstyle">this subproject</a>.</p>
