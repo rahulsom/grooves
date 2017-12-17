@@ -2128,12 +2128,108 @@ Kotlin will check for completeness when you use the <code>when</code> keyword as
 <div class="paragraph">
 <p>Joins are just snapshots of a different kind.
 With Grooves, they&#8217;re always <em>One-To-Many</em>. <em>One-To-One</em> is just a special case of <em>One-To-Many</em>.
-This is a good example for <a href="https://github.com/rahulsom/grooves/blob/master/examples/grails/rdbms_mongo/grails-app/domain/grooves/grails/mongo/ZipcodePatients.groovy">a join</a>.</p>
+This is a good example for [join events] in a GORM based project.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">class DoctorGotPatient extends DoctorEvent <i class="conum" data-value="1"></i><b>(1)</b>
+        implements JoinEvent&lt;Long, Doctor, Long, DoctorEvent, Long, Patient&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
+    Patient patient
+    @Override Publisher&lt;Patient&gt; getJoinAggregateObservable() { toPublisher(just(patient)) }
+}
+class DoctorLostPatient extends DoctorEvent
+        implements DisjoinEvent&lt;Long, Doctor, Long, DoctorEvent, Long, Patient&gt; { <i class="conum" data-value="3"></i><b>(3)</b>
+    Patient patient
+    @Override Publisher&lt;Patient&gt; getJoinAggregateObservable() { toPublisher(just(patient)) } <i class="conum" data-value="4"></i><b>(4)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This extends a base class corresponding to its aggregate</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This implements <code>JoinEvent</code> to mark the beginning of a join</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This class implements <code>DisjoinEvent</code> to mark the end of a join</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The method <code>getJoinAggregateObservable</code> allows redirections from deprecated aggregates.</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The query used to compute a Join is slightly different.
 It only concerns itself with two forward events - the <code>JoinEvent</code> and the <code>DisjoinEvent</code>.
-This is a good example for such a <a href="https://github.com/rahulsom/grooves/blob/master/examples/grails/rdbms_mongo/src/main/groovy/grooves/grails/mongo/ZipcodePatientsQuery.groovy">query</a>.</p>
+This is a good example for such a <a href="https://github.com/rahulsom/grooves/blob/master/examples/grails/rdbms_mongo/src/main/groovy/grooves/grails/mongo/DoctorPatientsQuery.groovy">query</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">class DoctorPatientsQuery implements JoinSupport&lt; <i class="conum" data-value="1"></i><b>(1)</b>
+        Long, Doctor, <i class="conum" data-value="2"></i><b>(2)</b>
+        Long, DoctorEvent, <i class="conum" data-value="3"></i><b>(3)</b>
+        Long, Patient, <i class="conum" data-value="4"></i><b>(4)</b>
+        String, DoctorPatients, <i class="conum" data-value="5"></i><b>(5)</b>
+        DoctorGotPatient, DoctorLostPatient, <i class="conum" data-value="6"></i><b>(6)</b>
+        DoctorPatientsQuery&gt; { <i class="conum" data-value="7"></i><b>(7)</b>
+
+    final Class disjoinEventClass = DoctorLostPatient <i class="conum" data-value="8"></i><b>(8)</b>
+    final Class joinEventClass = DoctorGotPatient <i class="conum" data-value="9"></i><b>(9)</b>
+
+    // Skipping familiar methods <i class="conum" data-value="10"></i><b>(10)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>JoinSupport</code> is similar to <code>QuerySupport</code>.
+It does not require implementing methods for each event.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This says that the aggregate for which this computes joins is <code>Doctor</code> whose id is <code>Long</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This says that the base class for events for which this computes joins is <code>DoctorEvent</code> whose id is <code>Long</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>This says that the joined aggregate for which this computes joins is <code>Patient</code> whose id is <code>Long</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>This says that the join computed is <code>DoctorPatients</code> whose id is <code>String</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The events that represent a join and a disjoin are <code>DoctorGotPatient</code>, <code>DoctorLostPatient</code> respectively.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>This says that the class of the query is <code>DoctorPatientsQuery</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>This is another reference to the disjoin event.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>This is another reference to the join event.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>Methods that you&#8217;ve seen in typical queries have been skipped here.</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
