@@ -36,7 +36,7 @@ public class FunctionalVersionedQuery<
         SnapshotT extends VersionedSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
                 EventT>,
         QueryT extends FunctionalVersionedQuery<AggregateIdT, AggregateT, EventIdT, EventT,
-                        SnapshotIdT, SnapshotT, QueryT>
+                SnapshotIdT, SnapshotT, QueryT>
         > implements
         VersionedQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT>,
@@ -51,6 +51,9 @@ public class FunctionalVersionedQuery<
     private TriFunction<Exception, SnapshotT, EventT,
             Publisher<EventApplyOutcome>> exceptionHandler;
     private BiFunction<EventT, SnapshotT, Publisher<EventApplyOutcome>> eventHandler;
+
+    FunctionalVersionedQuery() {
+    }
 
     @NotNull
     @Override
@@ -119,7 +122,7 @@ public class FunctionalVersionedQuery<
             SnapshotT extends VersionedSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
                     EventT>,
             QueryT extends FunctionalVersionedQuery<AggregateIdT, AggregateT, EventIdT, EventT,
-                                SnapshotIdT, SnapshotT, QueryT>
+                    SnapshotIdT, SnapshotT, QueryT>
             > {
         private BiFunction<Long, AggregateT, Publisher<SnapshotT>> snapshot;
         private Supplier<SnapshotT> emptySnapshot;
@@ -142,27 +145,28 @@ public class FunctionalVersionedQuery<
                 SnapshotT extends VersionedSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
                         EventT>,
                 QueryT extends FunctionalVersionedQuery<AggregateIdT, AggregateT, EventIdT, EventT,
-                                        SnapshotIdT, SnapshotT, QueryT>
+                        SnapshotIdT, SnapshotT, QueryT>
                 > Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> newBuilder() {
             return new Builder<>();
         }
 
-        public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-                QueryT> withSnapshot(BiFunction<Long, AggregateT, Publisher<SnapshotT>> snapshot) {
+        public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT>
+                withSnapshot(
+                BiFunction<Long, AggregateT, @NotNull Publisher<@NotNull SnapshotT>> snapshot) {
             this.snapshot = snapshot;
             return this;
         }
 
         public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-                QueryT> withEmptySnapshot(Supplier<SnapshotT> emptySnapshot) {
+                QueryT> withEmptySnapshot(@NotNull Supplier<@NotNull SnapshotT> emptySnapshot) {
             this.emptySnapshot = emptySnapshot;
             return this;
         }
 
         public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> withEvents(TriFunction<AggregateT, SnapshotT, Long,
-                Publisher<EventT>> events) {
+                @NotNull Publisher<@NotNull EventT>> events) {
             this.events = events;
             return this;
         }
@@ -181,15 +185,16 @@ public class FunctionalVersionedQuery<
 
         public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> withExceptionHandler(
-                        TriFunction<Exception, SnapshotT, EventT,
-                                Publisher<EventApplyOutcome>> exceptionHandler) {
+                TriFunction<Exception, SnapshotT, EventT,
+                        @NotNull Publisher<@NotNull EventApplyOutcome>> exceptionHandler) {
             this.exceptionHandler = exceptionHandler;
             return this;
         }
 
         public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> withEventHandler(
-                        BiFunction<EventT, SnapshotT, Publisher<EventApplyOutcome>> eventHandler) {
+                BiFunction<EventT, SnapshotT,
+                        @NotNull Publisher<@NotNull EventApplyOutcome>> eventHandler) {
             this.eventHandler = eventHandler;
             return this;
         }
@@ -200,9 +205,9 @@ public class FunctionalVersionedQuery<
          * @return A Versioned Query
          */
         public VersionedQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                        SnapshotT> build() {
+                SnapshotT> build() {
             FunctionalVersionedQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                                SnapshotT, QueryT> functionalVersionedQuery =
+                    SnapshotT, QueryT> functionalVersionedQuery =
                     new FunctionalVersionedQuery<>();
             functionalVersionedQuery.deprecator = this.deprecator;
             functionalVersionedQuery.events = this.events;

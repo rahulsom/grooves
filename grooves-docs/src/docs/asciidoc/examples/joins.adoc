@@ -1,0 +1,35 @@
+=== Joins
+
+Joins are just snapshots of a different kind.
+With Grooves, they're always _One-To-Many_. _One-To-One_ is just a special case of _One-To-Many_.
+This is a good example for [join events] in a GORM based project.
+
+[source,groovy]
+----
+include::{sourcedir}/examples/grails/rdbms_mongo/grails-app/domain/grooves/grails/mongo/DoctorEvent.groovy[tags=joins]
+----
+<1> This extends a base class corresponding to its aggregate
+<2> This implements `JoinEvent` to mark the beginning of a join
+<3> This class implements `DisjoinEvent` to mark the end of a join
+<4> The method `getJoinAggregateObservable` allows redirections from deprecated aggregates.
+
+The query used to compute a Join is slightly different.
+It only concerns itself with two forward events - the `JoinEvent` and the `DisjoinEvent`.
+This is a good example for such a https://github.com/rahulsom/grooves/blob/master/examples/grails/rdbms_mongo/src/main/groovy/grooves/grails/mongo/DoctorPatientsQuery.groovy[query].
+
+[source,groovy]
+----
+include::{sourcedir}/examples/grails/rdbms_mongo/src/main/groovy/grooves/grails/mongo/DoctorPatientsQuery.groovy[tags=joins]
+----
+<1> `JoinSupport` is similar to `QuerySupport`.
+  It does not require implementing methods for each event.
+<2> This says that the aggregate for which this computes joins is `Doctor` whose id is `Long`.
+<3> This says that the base class for events for which this computes joins is `DoctorEvent` whose id is `Long`.
+<4> This says that the joined aggregate for which this computes joins is `Patient` whose id is `Long`.
+<5> This says that the join computed is `DoctorPatients` whose id is `String`.
+<6> The events that represent a join and a disjoin are `DoctorGotPatient`, `DoctorLostPatient` respectively.
+<7> This says that the class of the query is `DoctorPatientsQuery`.
+<8> This is another reference to the disjoin event.
+<9> This is another reference to the join event.
+<10> Methods that you've seen in typical queries have been skipped here.
+  You don't however need `applyXXXEvent` methods.

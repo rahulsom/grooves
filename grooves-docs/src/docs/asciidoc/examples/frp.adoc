@@ -1,0 +1,33 @@
+=== FRP Style
+
+Sometimes, it is not ideal to create classes to implement the queries.
+Since 0.4.0, grooves has experimental support for doing this in a somewhat _Functional Reactive Programming_ style.
+
+This is an example for such a query in Kotlin.
+
+[source,kotlin,indent=0]
+----
+include::{sourcedir}/examples/pushstyle/src/main/kotlin/grooves/example/push/EventService.kt[tags=documented]
+----
+<1> `Grooves` is a class that allows creating FRP style queries.
+  You can start with `versioned` or `temporal`.
+  It returns a query builder.
+<2> This method helps Grooves fetch a prior snapshot from the datastore. `account` is an aggregate.
+<3> This method helps Grooves create a new snapshot when none was found by the previous method.
+<4> This method helps Grooves fetch events since the last known snapshot.
+  `account` is the aggregate.
+  `balance` is the last known snapshot.
+<5> This method is optional and by default returns true.
+  `balance` is the snapshot.
+  This allows inspecting the snapshot to determine if Grooves should continue processing events.
+<6> This method allows Grooves to execute some code when a deprecation event is found.
+  `balance` is the snapshot
+  `deprecatingAccount` is the aggregate the deprecates the aggregate of `balance`.
+<7> This method helps Grooves decide what to do on an exception.
+  Returning an observable that says `CONTINUE` means processing will continue.
+  Returning an observable that says `RETURN` means processing will stop and the value will be returned.
+<8> This allows Grooves to apply events on a snapshot as shown in the function `updateBalance`.
+<9> This returns an instance of `VersionedQuery`.
+  That can be used to compute snapshots.
+
+The full source for _Push Style_ Event Sourcing with _jOOQ_ and FRP, look at https://github.com/rahulsom/grooves/tree/master/examples/pushstyle[this subproject].

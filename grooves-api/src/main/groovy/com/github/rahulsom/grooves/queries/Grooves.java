@@ -4,8 +4,38 @@ import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
+import org.jetbrains.annotations.NotNull;
 
+/**
+ * Supports Functional Reactive Programming style querying.
+ *
+ * @author Rahul Somasunderam
+ */
 public class Grooves {
+
+    /**
+     * Creates a builder for a versioned query.
+     * <pre>{@code
+     *     Grooves.versioned()
+     *          .withSnapshot(version, snapshot -> ?)
+     *          .withEmptySnapshot(-> ?)
+     *          .withEvents(aggregate, snapshot, version -> ?)
+     *          .withApplyEvents(snapshot -> true)
+     *          .withDeprecator(snapshot, deprecatingAggregate -> ?)
+     *          .withExceptionHandler(exception, snapshot, event -> ?)
+     *          .withEventHandler(event, balance -> ?)
+     *          .build();
+     * }</pre>
+     *
+     * @param <AggregateIdT> The type of {@link AggregateT}'s id
+     * @param <AggregateT>   The aggregate over which the query executes
+     * @param <EventIdT>     The type of the {@link EventT}'s id field
+     * @param <EventT>       The type of the Event
+     * @param <SnapshotIdT>  The type of the {@link SnapshotT}'s id field
+     * @param <SnapshotT>    The type of the Snapshot
+     * @return a query builder
+     */
+    @NotNull
     public static <
             AggregateIdT,
             AggregateT extends AggregateType<AggregateIdT>,
@@ -19,6 +49,29 @@ public class Grooves {
         return FunctionalVersionedQuery.Builder.newBuilder();
     }
 
+    /**
+     * Creates a builder for a temporal query.
+     * <pre>{@code
+     *     Grooves.temporal()
+     *          .withSnapshot(date, snapshot -> ?)
+     *          .withEmptySnapshot(-> ?)
+     *          .withEvents(aggregate, snapshot, date -> ?)
+     *          .withApplyEvents(snapshot -> true)
+     *          .withDeprecator(snapshot, deprecatingAggregate -> ?)
+     *          .withExceptionHandler(exception, snapshot, event -> ?)
+     *          .withEventHandler(event, balance -> ?)
+     *          .build();
+     * }</pre>
+     *
+     * @param <AggregateIdT> The type of {@link AggregateT}'s id
+     * @param <AggregateT>   The aggregate over which the query executes
+     * @param <EventIdT>     The type of the {@link EventT}'s id field
+     * @param <EventT>       The type of the Event
+     * @param <SnapshotIdT>  The type of the {@link SnapshotT}'s id field
+     * @param <SnapshotT>    The type of the Snapshot
+     * @return a query builder
+     */
+    @NotNull
     public static <
             AggregateIdT,
             AggregateT extends AggregateType<AggregateIdT>,

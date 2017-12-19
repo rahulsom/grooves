@@ -46,25 +46,31 @@ class DoctorCreated extends DoctorEvent {
     @Override String toString() { "Doctor $name created" }
 }
 
-@Event(Doctor)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
-class DoctorGotPatient extends DoctorEvent
-        implements JoinEvent<Long, Doctor, Long, DoctorEvent, Long, Patient> {
+//tag::joins[]
+class DoctorGotPatient extends DoctorEvent // <1>
+        implements JoinEvent<Long, Doctor, Long, DoctorEvent, Long, Patient> { // <2>
     Patient patient
     @Override Publisher<Patient> getJoinAggregateObservable() { toPublisher(just(patient)) }
+//end::joins[]
 
     @Override String toString() { "Doctor $aggregate got $patient" }
+//tag::joins[]
 }
+//end::joins[]
 
-@Event(Doctor)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
+//tag::joins[]
 class DoctorLostPatient extends DoctorEvent
-        implements DisjoinEvent<Long, Doctor, Long, DoctorEvent, Long, Patient> {
+        implements DisjoinEvent<Long, Doctor, Long, DoctorEvent, Long, Patient> { // <3>
     Patient patient
-    @Override Publisher<Patient> getJoinAggregateObservable() { toPublisher(just(patient)) }
+    @Override Publisher<Patient> getJoinAggregateObservable() { toPublisher(just(patient)) } // <4>
+//end::joins[]
 
     @Override String toString() { "Doctor $aggregate lost $patient" }
+//tag::joins[]
 }
+//end::joins[]
 
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class DoctorAddedToZipcode extends DoctorEvent

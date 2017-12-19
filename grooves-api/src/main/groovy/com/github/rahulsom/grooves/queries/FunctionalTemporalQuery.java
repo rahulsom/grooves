@@ -52,6 +52,9 @@ public class FunctionalTemporalQuery<
             Publisher<EventApplyOutcome>> exceptionHandler;
     private BiFunction<EventT, SnapshotT, Publisher<EventApplyOutcome>> eventHandler;
 
+    FunctionalTemporalQuery() {
+    }
+
     @NotNull
     @Override
     public SimpleExecutor getExecutor() {
@@ -149,20 +152,21 @@ public class FunctionalTemporalQuery<
         }
 
         public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-                QueryT> withSnapshot(BiFunction<Date, AggregateT, Publisher<SnapshotT>> snapshot) {
+                QueryT> withSnapshot(BiFunction<Date, AggregateT,
+                @NotNull Publisher<@NotNull SnapshotT>> snapshot) {
             this.snapshot = snapshot;
             return this;
         }
 
         public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-                QueryT> withEmptySnapshot(Supplier<SnapshotT> emptySnapshot) {
+                QueryT> withEmptySnapshot(@NotNull Supplier<@NotNull SnapshotT> emptySnapshot) {
             this.emptySnapshot = emptySnapshot;
             return this;
         }
 
         public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> withEvents(TriFunction<AggregateT, SnapshotT, Date,
-                Publisher<EventT>> events) {
+                @NotNull Publisher<@NotNull EventT>> events) {
             this.events = events;
             return this;
         }
@@ -181,15 +185,16 @@ public class FunctionalTemporalQuery<
 
         public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> withExceptionHandler(
-                        TriFunction<Exception, SnapshotT, EventT,
-                                Publisher<EventApplyOutcome>> exceptionHandler) {
+                TriFunction<Exception, SnapshotT, EventT,
+                        @NotNull Publisher<@NotNull EventApplyOutcome>> exceptionHandler) {
             this.exceptionHandler = exceptionHandler;
             return this;
         }
 
         public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> withEventHandler(
-                        BiFunction<EventT, SnapshotT, Publisher<EventApplyOutcome>> eventHandler) {
+                BiFunction<EventT, SnapshotT,
+                        @NotNull Publisher<@NotNull EventApplyOutcome>> eventHandler) {
             this.eventHandler = eventHandler;
             return this;
         }

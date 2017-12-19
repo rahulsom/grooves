@@ -53,30 +53,9 @@ include::examples/snapshot.adoc[]
 
 include::examples/queries.adoc[]
 
-=== Joins
+include::examples/joins.adoc[]
 
-Joins are just snapshots of a different kind.
-With Grooves, they're always _One-To-Many_. _One-To-One_ is just a special case of _One-To-Many_.
-This is a good example for https://github.com/rahulsom/grooves/blob/master/examples/grails/rdbms_mongo/grails-app/domain/grooves/grails/mongo/ZipcodePatients.groovy[a join].
-
-The query used to compute a Join is slightly different.
-It only concerns itself with two forward events - the `JoinEvent` and the `DisjoinEvent`.
-This is a good example for such a https://github.com/rahulsom/grooves/blob/master/examples/grails/rdbms_mongo/src/main/groovy/grooves/grails/mongo/ZipcodePatientsQuery.groovy[query].
-
-=== FRP Style
-
-Sometimes, it is not ideal to create classes to implement the queries.
-Since 0.4.0, grooves has experimental support for doing this in a somewhat _Functional Reactive Programming_ style.
-
-This is an example for such a query in Kotlin.
-
-[source,kotlin]
-----
-include::{sourcedir}/examples/pushstyle/src/main/kotlin/grooves/example/push/EventService.kt[tags=documented]
-----
-
-The full source for _Push Style_ Event Sourcing with _jOOQ_ and FRP, look at https://github.com/rahulsom/grooves/tree/master/examples/pushstyle[this subproject].
-
+include::examples/frp.adoc[]
 
 include::diagramming.adoc[]
 

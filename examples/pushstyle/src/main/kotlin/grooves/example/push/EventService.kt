@@ -21,15 +21,15 @@ class EventService {
 
     // tag::documented[]
     val query =
-            Grooves.versioned<String, Account, String, Transaction, String, Balance>()
-                    .withSnapshot { version, account ->
+            Grooves.versioned<String, Account, String, Transaction, String, Balance>() // <1>
+                    .withSnapshot { version, account -> // <2>
                         log.info("getBalance($account, $version)")
                         Maybe.fromCallable { database.getBalance(account, version) }
                                 .map { dbBalance -> Balance(dbBalance) }
                                 .toFlowable()
                     }
-                    .withEmptySnapshot { Balance() }
-                    .withEvents { account, balance, version ->
+                    .withEmptySnapshot { Balance() } // <3>
+                    .withEvents { account, balance, version -> // <4>
                         val transaction =
                                 ContextManager.get()?.get("transaction") as Transaction?
                         if (transaction != null)
@@ -37,14 +37,14 @@ class EventService {
                         else
                             empty()
                     }
-                    .withApplyEvents { balance -> true }
-                    .withDeprecator { balance, deprecatingAccount -> /* No op */ }
-                    .withExceptionHandler { exception, balance, transaction ->
+                    .withApplyEvents { balance -> true } // <5>
+                    .withDeprecator { balance, deprecatingAccount -> /* No op */ } // <6>
+                    .withExceptionHandler { exception, balance, transaction -> // <7>
                         log.warn("$exception occurred")
                         just(CONTINUE)
                     }
-                    .withEventHandler(this::updateBalance)
-                    .build()
+                    .withEventHandler(this::updateBalance) // <8>
+                    .build() // <9>
 
     private fun updateBalance(transaction: Transaction, balance: Balance) =
             when (transaction) {
