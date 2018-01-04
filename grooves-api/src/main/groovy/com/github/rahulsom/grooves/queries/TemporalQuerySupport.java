@@ -1,8 +1,6 @@
 package com.github.rahulsom.grooves.queries;
 
-import com.github.rahulsom.grooves.api.GroovesException;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
-import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
@@ -18,8 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.github.rahulsom.grooves.queries.internal.Utils.returnOrRedirect;
-import static com.github.rahulsom.grooves.queries.internal.Utils.stringify;
+import static com.github.rahulsom.grooves.queries.internal.Utils.*;
 import static io.reactivex.Flowable.*;
 import static java.util.stream.Collectors.toList;
 
@@ -31,7 +28,6 @@ import static java.util.stream.Collectors.toList;
  * @param <EventT>       The type of the Event
  * @param <SnapshotIdT>  The type of the {@link SnapshotT}'s id field
  * @param <SnapshotT>    The type of the Snapshot
- * @param <QueryT>       A reference to the query type. Typically a self reference.
  *
  * @author Rahul Somasunderam
  */
@@ -40,8 +36,8 @@ public interface TemporalQuerySupport<
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
-        QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>>
+        SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
+        >
         extends
         BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
         TemporalQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
@@ -208,29 +204,16 @@ public interface TemporalQuerySupport<
             SnapshotT lastUsableSnapshot) {
         lastUsableSnapshot.setAggregate(aggregate);
 
-        Flowable<EventT> forwardOnlyEvents = Utils.getForwardOnlyEvents(events, getExecutor(),
+        Flowable<EventT> forwardOnlyEvents = getForwardOnlyEvents(events, getExecutor(),
                 () -> getSnapshotAndEventsSince(aggregate, moment, false));
 
-        Flowable<EventT> applicableEvents = forwardOnlyEvents
-                .filter(e -> e instanceof Deprecates)
-                .toList()
-                .toFlowable()
-                .flatMap(list -> {
-                    if (list.isEmpty()) {
-                        return forwardOnlyEvents;
-                    } else {
-                        Flowable<Pair<SnapshotT, List<EventT>>> snapshotAndEventsSince =
-                                getSnapshotAndEventsSince(aggregate, moment, false);
-                        return snapshotAndEventsSince.flatMap(p -> Utils.getForwardOnlyEvents(
-                                p.getSecond(),
-                                getExecutor(),
-                                () -> error(new GroovesException(
-                                        "Couldn't apply deprecates events"))));
-                    }
-                });
+        Flowable<EventT> applicableEvents =
+                getApplicableEvents(forwardOnlyEvents, getExecutor(), () ->
+                        getSnapshotAndEventsSince(aggregate, moment, false)
+                );
 
         final Flowable<SnapshotT> snapshotTypeObservable =
-                getExecutor().applyEvents((QueryT) this, lastUsableSnapshot, applicableEvents,
+                getExecutor().applyEvents(this, lastUsableSnapshot, applicableEvents,
                         new ArrayList<>(), aggregate);
         return snapshotTypeObservable
                 .doOnNext(snapshot -> {

@@ -19,8 +19,8 @@ class DoctorPatientsQuery implements JoinSupport< // <1>
         Long, DoctorEvent, // <3>
         Patient, // <4>
         String, DoctorPatients, // <5>
-        DoctorGotPatient, DoctorLostPatient, // <6>
-        DoctorPatientsQuery> { // <7>
+        DoctorGotPatient, DoctorLostPatient // <6>
+        > { // <7>
 
     final Class disjoinEventClass = DoctorLostPatient // <8>
     final Class joinEventClass = DoctorGotPatient // <9>

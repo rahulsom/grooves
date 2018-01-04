@@ -18,10 +18,8 @@ import java.util.*
 
 @Component
 class PatientHealthQuery :
-        QuerySupport<Patient, String, PatientEvent, String, PatientHealth,
-                PatientHealthQuery>,
-        SimpleQuery<Patient, String, PatientEvent, PatientEvent.Applicable, String,
-                PatientHealth, PatientHealthQuery> {
+        QuerySupport<Patient, String, PatientEvent, String, PatientHealth>,
+        SimpleQuery<Patient, String, PatientEvent, PatientEvent.Applicable, String, PatientHealth> {
 
     override fun getExecutor() = SimpleExecutor<Patient, String, PatientEvent,
             PatientEvent.Applicable, String, PatientHealth, PatientHealthQuery>()

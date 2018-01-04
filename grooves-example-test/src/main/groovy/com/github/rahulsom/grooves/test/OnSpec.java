@@ -62,7 +62,7 @@ public class OnSpec<
      */
     @NotNull
     public <QueryT extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT,
-            SnapshotT, QueryT>> SnapshotT snapshotWith(
+            SnapshotT>> SnapshotT snapshotWith(
                     @NotNull QueryT query,
                     @NotNull Consumer<SnapshotT> beforePersist) {
 
@@ -88,7 +88,7 @@ public class OnSpec<
      */
     @NotNull
     public <QueryT extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT,
-            SnapshotT, QueryT>> SnapshotT snapshotWith(@NotNull QueryT query) {
+            SnapshotT>> SnapshotT snapshotWith(@NotNull QueryT query) {
         return snapshotWith(query, snapshotT -> {
         });
     }

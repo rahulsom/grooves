@@ -18,8 +18,7 @@ import static rx.RxReactiveStreams.toPublisher
 @Query(aggregate = Patient, snapshot = PatientHealth)
 @GrailsCompileStatic
 class PatientHealthQuery implements
-        GormQuerySupport<Long, Patient, Long, PatientEvent, Long, PatientHealth,
-                PatientHealthQuery> {
+        GormQuerySupport<Long, Patient, Long, PatientEvent, Long, PatientHealth> {
 
     final Class<PatientHealth> snapshotClass = PatientHealth
     final Class<PatientEvent> eventClass = PatientEvent

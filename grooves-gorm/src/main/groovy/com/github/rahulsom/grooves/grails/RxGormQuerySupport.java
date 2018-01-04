@@ -28,19 +28,12 @@ public interface RxGormQuerySupport<
         AggregateIdT,
         AggregateT extends GormAggregate<AggregateIdT> & RxEntity<AggregateT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>
-                & RxEntity<EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT> & RxEntity<EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-                & RxEntity<SnapshotT>,
-        QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT>
-        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT,
-        SnapshotT, QueryT>,
-        RxSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT>,
-        RxEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT> {
+        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> & RxEntity<SnapshotT>
+        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        RxSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        RxEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     @Override
     default Publisher<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {

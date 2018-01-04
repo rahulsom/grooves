@@ -41,18 +41,12 @@ public interface GormJoinSupport<
         SnapshotT extends Join<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT, EventT> &
                 GormEntity<SnapshotT>,
         JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT> &
-                JoinSupport<AggregateT, EventIdT, EventT,
-                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT, QueryT>
+        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>
         > extends
         JoinSupport<AggregateT, EventIdT, EventT,
-                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT, QueryT>,
-        BlockingEventSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-                QueryT>,
-        BlockingSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT> {
+                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT>,
+        BlockingEventSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        BlockingSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     @Override
     default JoinExecutor getExecutor() {

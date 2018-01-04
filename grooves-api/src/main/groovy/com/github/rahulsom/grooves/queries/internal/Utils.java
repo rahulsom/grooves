@@ -1,7 +1,9 @@
 package com.github.rahulsom.grooves.queries.internal;
 
+import com.github.rahulsom.grooves.api.GroovesException;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.DeprecatedBy;
+import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
@@ -46,7 +48,8 @@ public class Utils {
      *
      * @return An observable of a snapshot.
      */
-    @NotNull public static <
+    @NotNull
+    public static <
             AggregateT,
             EventIdT,
             EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
@@ -88,7 +91,8 @@ public class Utils {
      *
      * @return an observable of forward only events
      */
-    @NotNull public static <
+    @NotNull
+    public static <
             AggregateT,
             EventIdT,
             EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
@@ -99,8 +103,7 @@ public class Utils {
             > Flowable<EventT> getForwardOnlyEvents(
             @NotNull List<EventT> events,
             @NotNull ExecutorT executor,
-            @NotNull Supplier<Flowable<Pair<SnapshotT, List<EventT>>>>
-                    fallbackSnapshotAndEvents) {
+            @NotNull Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> fallbackSnapshotAndEvents) {
         return executor.applyReverts(fromIterable(events))
                 .toList()
                 .map(Flowable::just)
@@ -124,7 +127,8 @@ public class Utils {
      *
      * @return A String representation of events
      */
-    @NotNull public static <EventT extends BaseEvent> String stringify(
+    @NotNull
+    public static <EventT extends BaseEvent> String stringify(
             @NotNull List<EventT> events) {
         return events.stream()
                 .map(EventT::toString)
@@ -139,7 +143,8 @@ public class Utils {
      *
      * @return A String representation of events
      */
-    @NotNull public static <EventT extends BaseEvent> String ids(
+    @NotNull
+    public static <EventT extends BaseEvent> String ids(
             @NotNull List<EventT> events) {
         return events.stream()
                 .map(i -> String.valueOf(i.getId()))
@@ -151,7 +156,7 @@ public class Utils {
      * properties appropriately
      *
      * @param snapshot The snapshot
-     * @param event The last event
+     * @param event    The last event
      */
     public static void setLastEvent(@NotNull BaseSnapshot snapshot, @NotNull BaseEvent event) {
         if (snapshot instanceof VersionedSnapshot) {
@@ -160,5 +165,41 @@ public class Utils {
         if (snapshot instanceof TemporalSnapshot) {
             ((TemporalSnapshot) snapshot).setLastEventTimestamp(event.getTimestamp());
         }
+    }
+
+    /**
+     * Computes applicable events.
+     *
+     * @param <AggregateT>           The aggregate over which the query executes
+     * @param <EventIdT>             The type of the {@link EventT}'s id field
+     * @param <EventT>               The type of the Event
+     * @param <SnapshotIdT>          The type of the {@link SnapshotT}'s id field
+     * @param <SnapshotT>            The type of the Snapshot
+     * @param forwardOnlyEvents      Known forward only events
+     * @param executor               An instance of Executor
+     * @param snapshotAndEventsSince Events to use if forwardOnlyEvents is empty
+     *
+     * @return events that can be applied.
+     */
+    public static <
+            AggregateT,
+            EventIdT,
+            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+            SnapshotIdT,
+            SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
+            > Flowable<EventT> getApplicableEvents(
+            Flowable<EventT> forwardOnlyEvents, Executor executor,
+            Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> snapshotAndEventsSince) {
+        return forwardOnlyEvents
+                .filter(e -> e instanceof Deprecates)
+                .toList()
+                .toFlowable()
+                .flatMap(list -> list.isEmpty() ?
+                        forwardOnlyEvents :
+                        snapshotAndEventsSince.get().flatMap(p ->
+                                getForwardOnlyEvents(p.getSecond(), executor, () ->
+                                        error(new GroovesException(
+                                                "Couldn't apply deprecates events")))
+                        ));
     }
 }

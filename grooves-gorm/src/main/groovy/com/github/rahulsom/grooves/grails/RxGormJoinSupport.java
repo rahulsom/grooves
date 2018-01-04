@@ -38,18 +38,15 @@ public interface RxGormJoinSupport<
         JoinedAggregateIdT,
         JoinedAggregateT extends GormAggregate<JoinedAggregateIdT> & RxEntity<JoinedAggregateT>,
         SnapshotIdT,
-        SnapshotT extends Join<AggregateT, SnapshotIdT,
-                JoinedAggregateT, EventIdT, EventT> & RxEntity<SnapshotT>,
+        SnapshotT extends Join<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT, EventT> &
+                RxEntity<SnapshotT>,
         JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT>
+        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>
         > extends
         JoinSupport<AggregateT, EventIdT, EventT,
-                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT, QueryT>,
-        RxEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT>,
-        RxSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT> {
+                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT>,
+        RxEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        RxSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     @Override
     default JoinExecutor getExecutor() {

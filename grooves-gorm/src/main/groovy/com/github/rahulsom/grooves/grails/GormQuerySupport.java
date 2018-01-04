@@ -29,19 +29,13 @@ public interface GormQuerySupport<
         AggregateIdT,
         AggregateT extends GormAggregate<AggregateIdT> & GormEntity<AggregateT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT> &
-                GormEntity<EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT> & GormEntity<EventT>,
         SnapshotIdT,
         SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> &
-                GormEntity<SnapshotT>,
-        QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT>
-        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT,
-        SnapshotT, QueryT>, //<1>
-        BlockingEventSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-                QueryT>,
-        BlockingSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT> {
+                GormEntity<SnapshotT>
+        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>, //<1>
+        BlockingEventSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        BlockingSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     Class<EventT> getEventClass(); // <2>
 

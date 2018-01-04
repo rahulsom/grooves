@@ -34,10 +34,8 @@ public interface BlockingSnapshotSource<
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
         SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> &
-                GormEntity<SnapshotT>,
-        QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
-        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-        QueryT> {
+                GormEntity<SnapshotT>
+        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     SnapshotT detachSnapshot(SnapshotT snapshot);
 

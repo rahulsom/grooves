@@ -32,11 +32,8 @@ public interface RxEventSource<
         EventT extends BaseEvent<AggregateT, EventIdT, EventT> &
                 RxEntity<EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
-        QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT>
-        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT,
-        SnapshotT, QueryT> {
+        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
+        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     Class<EventT> getEventClass();
 

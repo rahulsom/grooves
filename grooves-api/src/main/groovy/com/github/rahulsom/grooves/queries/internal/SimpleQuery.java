@@ -12,9 +12,7 @@ public interface SimpleQuery<
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         ApplicableEventT extends EventT,
         SnapshotIdT,
-        SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
-        QueryT extends SimpleQuery<AggregateT, EventIdT, EventT, ApplicableEventT,
-                SnapshotIdT, SnapshotT, QueryT>
+        SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
         > extends
         BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 

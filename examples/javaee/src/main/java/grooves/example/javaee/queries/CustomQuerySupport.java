@@ -27,9 +27,8 @@ import static rx.RxReactiveStreams.toPublisher;
 
 // tag::documented[]
 public interface CustomQuerySupport<
-        SnapshotT extends Snapshot<Patient, Long, Long, PatientEvent> & Serializable, // <1>
-        QueryT extends CustomQuerySupport<SnapshotT, QueryT>// <2>
-        > extends QuerySupport<Patient, Long, PatientEvent, Long, SnapshotT, QueryT> { // <3>
+        SnapshotT extends Snapshot<Patient, Long, Long, PatientEvent> & Serializable // <1>
+        > extends QuerySupport<Patient, Long, PatientEvent, Long, SnapshotT> { // <3>
 
     // end::documented[]
     Database getDatabase();

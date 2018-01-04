@@ -183,7 +183,7 @@ class BootStrap {
         def positionSupplier = {
             (PatientEvent.countByAggregate(patient).toBlocking().single()?.longValue() ?: 0l) + 1 }
         def dateSupplier = { currDate += 1; currDate }
-        new GroovyEventsDsl<String, Patient, String, PatientEvent>().on(
+        new GroovyEventsDsl<Patient, String, PatientEvent>().on(
                 patient, eventSaver, positionSupplier, dateSupplier, closure)
     }
 

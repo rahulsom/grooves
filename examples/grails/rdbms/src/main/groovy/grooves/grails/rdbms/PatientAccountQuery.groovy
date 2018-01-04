@@ -20,8 +20,7 @@ import static rx.RxReactiveStreams.toPublisher
 @Query(aggregate = Patient, snapshot = PatientAccount)
 @GrailsCompileStatic
 class PatientAccountQuery implements
-        GormQuerySupport<Long, Patient, Long, PatientEvent, Long, PatientAccount,
-                PatientAccountQuery> {
+        GormQuerySupport<Long, Patient, Long, PatientEvent, Long, PatientAccount> {
 
     @Override
     PatientAccount createEmptySnapshot() { new PatientAccount(deprecates: []) }

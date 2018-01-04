@@ -30,17 +30,13 @@ public interface JoinSupport<
         JoinedAggregateT,
         SnapshotIdT,
         SnapshotT extends Join<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT, EventT>,
-        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT,
-                JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT,
-                JoinedAggregateT>,
-        QueryT extends
-                BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>>
-        extends
+        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
+        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>
+        > extends
         VersionedJoinSupport<AggregateT, EventIdT, EventT,
-                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT, QueryT>,
+                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT>,
         TemporalJoinSupport<AggregateT, EventIdT, EventT,
-                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT, QueryT> {
+                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT> {
 
     @NotNull
     @Override

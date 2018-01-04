@@ -18,8 +18,7 @@ class ZipcodePatientsQuery implements GormJoinSupport<
         Long, ZipcodeEvent,
         Long, Patient,
         String, ZipcodePatients,
-        ZipcodeGotPatient, ZipcodeLostPatient,
-        ZipcodePatientsQuery> {
+        ZipcodeGotPatient, ZipcodeLostPatient> {
 
     final Class snapshotClass = ZipcodePatients
     final Class disjoinEventClass = ZipcodeLostPatient

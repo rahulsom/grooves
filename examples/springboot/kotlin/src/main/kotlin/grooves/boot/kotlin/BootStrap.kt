@@ -1,7 +1,5 @@
 package grooves.boot.kotlin
 
-import com.github.rahulsom.grooves.test.EventsDsl
-import com.github.rahulsom.grooves.test.OnSpec
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import com.github.rahulsom.grooves.queries.QuerySupport
 import grooves.boot.kotlin.domain.Patient
@@ -163,8 +161,7 @@ class BootStrap {
     }
 
     private fun <SnapshotT : Snapshot<Patient, String, String, PatientEvent>,
-            QueryT : QuerySupport<Patient, String, PatientEvent, String, SnapshotT,
-                    QueryT>> snapshotWith(
+            QueryT : QuerySupport<Patient, String, PatientEvent, String, SnapshotT>> snapshotWith(
             it: com.github.rahulsom.grooves.test.OnSpec<Patient, String, PatientEvent, String,
                     out Snapshot<Patient, String, String, PatientEvent>>,
             query: QueryT, repository: ReactiveCrudRepository<SnapshotT, String>

@@ -21,7 +21,6 @@ import java.util.function.Supplier;
  * @param <EventT>       The type of the Event
  * @param <SnapshotIdT>  The type of the {@link SnapshotT}'s id field
  * @param <SnapshotT>    The type of the Snapshot
- * @param <QueryT>       A reference to the query type. Typically a self reference.
  *
  * @author Rahul Somasunderam
  */
@@ -31,14 +30,12 @@ public class FunctionalVersionedQuery<
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
         SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT,
-                EventT>,
-        QueryT extends FunctionalVersionedQuery<AggregateT, EventIdT, EventT,
-                SnapshotIdT, SnapshotT, QueryT>
+                EventT>
         > implements
-        VersionedQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-                QueryT>,
-        SimpleQuery<AggregateT, EventIdT, EventT, EventT, SnapshotIdT, SnapshotT,
-                QueryT> {
+        VersionedQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
+                >,
+        SimpleQuery<AggregateT, EventIdT, EventT, EventT, SnapshotIdT, SnapshotT
+                > {
 
     private BiFunction<Long, AggregateT, Publisher<SnapshotT>> snapshot;
     private Supplier<SnapshotT> emptySnapshot;
@@ -116,7 +113,7 @@ public class FunctionalVersionedQuery<
             SnapshotIdT,
             SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
             QueryT extends FunctionalVersionedQuery<AggregateT, EventIdT, EventT,
-                    SnapshotIdT, SnapshotT, QueryT>
+                    SnapshotIdT, SnapshotT>
             > {
         private BiFunction<Long, AggregateT, Publisher<SnapshotT>> snapshot;
         private Supplier<SnapshotT> emptySnapshot;
@@ -137,7 +134,7 @@ public class FunctionalVersionedQuery<
                 SnapshotIdT,
                 SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
                 QueryT extends FunctionalVersionedQuery<AggregateT, EventIdT, EventT,
-                        SnapshotIdT, SnapshotT, QueryT>
+                        SnapshotIdT, SnapshotT>
                 > Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> newBuilder() {
             return new Builder<>();
@@ -199,7 +196,7 @@ public class FunctionalVersionedQuery<
         public VersionedQuery<AggregateT, EventIdT, EventT, SnapshotIdT,
                 SnapshotT> build() {
             FunctionalVersionedQuery<AggregateT, EventIdT, EventT, SnapshotIdT,
-                    SnapshotT, QueryT> functionalVersionedQuery =
+                    SnapshotT> functionalVersionedQuery =
                     new FunctionalVersionedQuery<>();
             functionalVersionedQuery.deprecator = this.deprecator;
             functionalVersionedQuery.events = this.events;

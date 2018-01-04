@@ -15,7 +15,7 @@ import com.github.rahulsom.grooves.api.events.BaseEvent
 interface BaseJoin<
         AggregateT,
         JoinIdT,
-        JoinedAggregateT,
+        in JoinedAggregateT,
         EventIdT,
         in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
         BaseSnapshot<AggregateT, JoinIdT, EventIdT, EventT> {

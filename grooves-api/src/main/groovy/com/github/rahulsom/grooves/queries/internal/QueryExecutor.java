@@ -47,8 +47,7 @@ public class QueryExecutor<
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     private static <T> List<T> plus(List<T> list, T element) {
-        List<T> retval = new ArrayList<>();
-        retval.addAll(list);
+        List<T> retval = new ArrayList<>(list);
         retval.add(element);
         return retval;
     }

@@ -13,11 +13,9 @@ public class SimpleExecutor<
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         ApplicableEventT extends EventT,
         SnapshotIdT,
-        SnapshotT extends
-                BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
+        SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
         QueryT extends
-                SimpleQuery<AggregateT, EventIdT, EventT, ApplicableEventT,
-                        SnapshotIdT, SnapshotT, QueryT>
+                SimpleQuery<AggregateT, EventIdT, EventT, ApplicableEventT, SnapshotIdT, SnapshotT>
         > extends
         QueryExecutor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
 

@@ -19,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
  * @param <SnapshotT>          The type of Snapshot that is computed
  * @param <JoinEventT>         The type of the Join Event
  * @param <DisjoinEventT>      The type of the disjoin event
- * @param <QueryT>             A reference to the query type. Typically a self reference.
  *
  * @author Rahul Somasunderam
  */
@@ -32,10 +31,9 @@ public interface VersionedJoinSupport<
         SnapshotT extends VersionedJoin<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT,
                 EventT>,
         JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
+        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>
         > extends
-        VersionedQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
+        VersionedQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
     Class<JoinEventT> getJoinEventClass();
 
     Class<DisjoinEventT> getDisjoinEventClass();

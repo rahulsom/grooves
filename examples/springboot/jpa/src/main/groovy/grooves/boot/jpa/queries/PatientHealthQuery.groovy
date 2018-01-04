@@ -25,7 +25,7 @@ import static io.reactivex.Flowable.*
 @Component
 @Query(aggregate = Patient, snapshot = PatientHealth)
 class PatientHealthQuery implements
-        QuerySupport<Patient, Long, PatientEvent, Long, PatientHealth, PatientHealthQuery> {
+        QuerySupport<Patient, Long, PatientEvent, Long, PatientHealth> {
 
     @Autowired EntityManager entityManager
     @Autowired PatientHealthRepository patientHealthRepository
