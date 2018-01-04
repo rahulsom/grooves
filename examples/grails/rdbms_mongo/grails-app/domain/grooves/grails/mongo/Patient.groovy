@@ -1,8 +1,9 @@
 package grooves.grails.mongo
 
-// tag::documented[]
+import com.github.rahulsom.grooves.grails.GormAggregate
 import com.github.rahulsom.grooves.groovy.transformations.Aggregate
-import com.github.rahulsom.grooves.api.AggregateType
+
+// tag::documented[]
 import groovy.transform.EqualsAndHashCode
 
 // end::documented[]
@@ -14,7 +15,7 @@ import groovy.transform.EqualsAndHashCode
 // tag::documented[]
 @Aggregate // <1>
 @EqualsAndHashCode(includes = ['uniqueId'])
-class Patient implements AggregateType<Long> { //<2>
+class Patient implements GormAggregate<Long> { //<2>
 
     // Long id // <3>
     String uniqueId

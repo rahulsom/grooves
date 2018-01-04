@@ -6,7 +6,7 @@ import lombok.Getter;
 
 public class PatientEventReverted
         extends PatientEvent // <1>
-        implements RevertEvent<Long, Patient, Long, PatientEvent> { // <2>
+        implements RevertEvent<Patient, Long, PatientEvent> { // <2>
     @Getter private Long revertedEventId; // <3>
     //end::documented[]
 

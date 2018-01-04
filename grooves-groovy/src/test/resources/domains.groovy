@@ -11,13 +11,13 @@ import rx.Observable
 import static rx.Observable.*
 import static rx.RxReactiveStreams.toPublisher
 
-@CompileStatic @Aggregate class Account implements AggregateType<Long> {
+@CompileStatic @Aggregate class Account implements AggregateType {
     Long id
 }
 
-@CompileStatic abstract class Transaction implements BaseEvent<Long, Account, Long, Transaction> {
+@CompileStatic abstract class Transaction implements BaseEvent<Account, Long, Transaction> {
     Account aggregate
-    RevertEvent<Long, Account, Long, Transaction> revertedBy
+    RevertEvent<Account, Long, Transaction> revertedBy
     Long id
     long position
     Date timestamp
@@ -31,7 +31,7 @@ import static rx.RxReactiveStreams.toPublisher
 
 @CompileStatic @Event(Account) class CashWithdrawal extends Transaction {}
 
-@CompileStatic class Balance implements Snapshot<Long, Account, String, Long, Transaction> {
+@CompileStatic class Balance implements Snapshot<Account, String, Long, Transaction> {
     String id
     long lastEventPosition
     Date lastEventTimestamp

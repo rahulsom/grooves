@@ -1,7 +1,7 @@
 package grooves.grails.mongo
 
+import com.github.rahulsom.grooves.grails.GormAggregate
 import com.github.rahulsom.grooves.groovy.transformations.Aggregate
-import com.github.rahulsom.grooves.api.AggregateType
 import groovy.transform.EqualsAndHashCode
 
 /**
@@ -11,7 +11,7 @@ import groovy.transform.EqualsAndHashCode
  */
 @Aggregate
 @EqualsAndHashCode(includes = ['uniqueId'])
-class Zipcode implements AggregateType<Long> {
+class Zipcode implements GormAggregate<Long> {
 
     String uniqueId
     static constraints = {

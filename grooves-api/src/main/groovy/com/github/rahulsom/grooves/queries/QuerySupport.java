@@ -21,19 +21,16 @@ import org.reactivestreams.Publisher;
  * @author Rahul Somasunderam
  */
 public interface QuerySupport<
-        AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT extends AggregateType,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
+        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
+        QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
         >
         extends
-        TemporalQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT>,
-        VersionedQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT> {
+        TemporalQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT>,
+        VersionedQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
 
     @NotNull
     @Override

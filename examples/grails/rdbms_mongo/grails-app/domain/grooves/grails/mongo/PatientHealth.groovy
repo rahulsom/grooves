@@ -14,7 +14,7 @@ import static rx.RxReactiveStreams.toPublisher
  */
 @SuppressWarnings(['DuplicateStringLiteral',])
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition',])
-class PatientHealth implements Snapshot<Long, Patient, String, Long, PatientEvent> {
+class PatientHealth implements Snapshot<Patient, String, Long, PatientEvent> {
 
     static mapWith = 'mongo'
 

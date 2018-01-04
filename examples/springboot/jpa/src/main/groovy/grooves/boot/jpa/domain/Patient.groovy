@@ -27,7 +27,7 @@ import javax.persistence.*
 // end::documented[]
 @EqualsAndHashCode(includes = ['uniqueId'])
 // tag::documented[]
-class Patient implements AggregateType<Long> { //<2>
+class Patient implements AggregateType { //<2>
     @GeneratedValue @Id Long id // <3>
     String uniqueId
 }

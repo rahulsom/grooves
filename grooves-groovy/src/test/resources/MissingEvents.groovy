@@ -8,7 +8,7 @@ import static rx.Observable.empty
 import static rx.RxReactiveStreams.toPublisher
 
 @CompileStatic @Query(aggregate = Account, snapshot = Balance)
-class MissingEventsQuery implements QuerySupport<Long, Account, Long, Transaction, String, Balance,
+class MissingEventsQuery implements QuerySupport<Account, Long, Transaction, String, Balance,
         MissingEventsQuery> {
     @Override Balance createEmptySnapshot() { null }
     @Override Publisher<Balance> getSnapshot(long maxPosition, Account aggregate) {

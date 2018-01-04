@@ -9,19 +9,18 @@ import io.reactivex.Flowable;
 import static io.reactivex.Flowable.fromPublisher;
 
 public class SimpleExecutor<
-        AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT extends AggregateType,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         ApplicableEventT extends EventT,
         SnapshotIdT,
         SnapshotT extends
-                BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
+                BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
         QueryT extends
-                SimpleQuery<AggregateIdT, AggregateT, EventIdT, EventT, ApplicableEventT,
+                SimpleQuery<AggregateT, EventIdT, EventT, ApplicableEventT,
                         SnapshotIdT, SnapshotT, QueryT>
         > extends
-        QueryExecutor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
+        QueryExecutor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
 
     @Override
     protected Flowable<EventApplyOutcome> callMethod(

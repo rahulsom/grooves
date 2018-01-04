@@ -18,7 +18,6 @@ import java.util.function.Supplier;
 /**
  * Util class to build Temporal Queries in a Functional Style.
  *
- * @param <AggregateIdT> The type of {@link AggregateT}'s id
  * @param <AggregateT>   The aggregate over which the query executes
  * @param <EventIdT>     The type of the {@link EventT}'s id field
  * @param <EventT>       The type of the Event
@@ -29,18 +28,17 @@ import java.util.function.Supplier;
  * @author Rahul Somasunderam
  */
 public class FunctionalTemporalQuery<
-        AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT extends AggregateType,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends TemporalSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
-        QueryT extends FunctionalTemporalQuery<AggregateIdT, AggregateT, EventIdT, EventT,
+        SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
+        QueryT extends FunctionalTemporalQuery<AggregateT, EventIdT, EventT,
                 SnapshotIdT, SnapshotT, QueryT>
         > implements
-        TemporalQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+        TemporalQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT>,
-        SimpleQuery<AggregateIdT, AggregateT, EventIdT, EventT, EventT, SnapshotIdT, SnapshotT,
+        SimpleQuery<AggregateT, EventIdT, EventT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> {
 
     private BiFunction<Date, AggregateT, Publisher<SnapshotT>> snapshot;
@@ -105,7 +103,6 @@ public class FunctionalTemporalQuery<
     /**
      * Builder for {@link FunctionalTemporalQuery}.
      *
-     * @param <AggregateIdT> The type of {@link AggregateT}'s id
      * @param <AggregateT>   The aggregate over which the query executes
      * @param <EventIdT>     The type of the {@link EventT}'s id field
      * @param <EventT>       The type of the Event
@@ -114,14 +111,12 @@ public class FunctionalTemporalQuery<
      * @param <QueryT>       A reference to the query type. Typically a self reference.
      */
     public static final class Builder<
-            AggregateIdT,
-            AggregateT extends AggregateType<AggregateIdT>,
+            AggregateT extends AggregateType,
             EventIdT,
-            EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
             SnapshotIdT,
-            SnapshotT extends TemporalSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
-                    EventT>,
-            QueryT extends FunctionalTemporalQuery<AggregateIdT, AggregateT, EventIdT, EventT,
+            SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
+            QueryT extends FunctionalTemporalQuery<AggregateT, EventIdT, EventT,
                     SnapshotIdT, SnapshotT, QueryT>
             > {
         private BiFunction<Date, AggregateT, Publisher<SnapshotT>> snapshot;
@@ -137,53 +132,52 @@ public class FunctionalTemporalQuery<
         }
 
         public static <
-                AggregateIdT,
-                AggregateT extends AggregateType<AggregateIdT>,
+                AggregateT extends AggregateType,
                 EventIdT,
-                EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+                EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
                 SnapshotIdT,
-                SnapshotT extends TemporalSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
+                SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT,
                         EventT>,
-                QueryT extends FunctionalTemporalQuery<AggregateIdT, AggregateT, EventIdT, EventT,
+                QueryT extends FunctionalTemporalQuery<AggregateT, EventIdT, EventT,
                         SnapshotIdT, SnapshotT, QueryT>
-                > Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+                > Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> newBuilder() {
             return new Builder<>();
         }
 
-        public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+        public Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> withSnapshot(BiFunction<Date, AggregateT,
                 @NotNull Publisher<@NotNull SnapshotT>> snapshot) {
             this.snapshot = snapshot;
             return this;
         }
 
-        public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+        public Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> withEmptySnapshot(@NotNull Supplier<@NotNull SnapshotT> emptySnapshot) {
             this.emptySnapshot = emptySnapshot;
             return this;
         }
 
-        public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+        public Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> withEvents(TriFunction<AggregateT, SnapshotT, Date,
                 @NotNull Publisher<@NotNull EventT>> events) {
             this.events = events;
             return this;
         }
 
-        public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+        public Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> withApplyEvents(Predicate<SnapshotT> applyEvents) {
             this.applyEvents = applyEvents;
             return this;
         }
 
-        public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+        public Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> withDeprecator(BiConsumer<SnapshotT, AggregateT> deprecator) {
             this.deprecator = deprecator;
             return this;
         }
 
-        public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+        public Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> withExceptionHandler(
                 TriFunction<Exception, SnapshotT, EventT,
                         @NotNull Publisher<@NotNull EventApplyOutcome>> exceptionHandler) {
@@ -191,7 +185,7 @@ public class FunctionalTemporalQuery<
             return this;
         }
 
-        public Builder<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+        public Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> withEventHandler(
                 BiFunction<EventT, SnapshotT,
                         @NotNull Publisher<@NotNull EventApplyOutcome>> eventHandler) {
@@ -204,10 +198,9 @@ public class FunctionalTemporalQuery<
          *
          * @return A Temporal Query
          */
-        public TemporalQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT> build() {
-            FunctionalTemporalQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                    SnapshotT, QueryT> functionalTemporalQuery = new FunctionalTemporalQuery<>();
+        public TemporalQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> build() {
+            FunctionalTemporalQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+                    QueryT> functionalTemporalQuery = new FunctionalTemporalQuery<>();
             functionalTemporalQuery.deprecator = this.deprecator;
             functionalTemporalQuery.events = this.events;
             functionalTemporalQuery.exceptionHandler = this.exceptionHandler;

@@ -25,7 +25,7 @@ import static io.reactivex.Flowable.*
 //tag::documented[]
 @Query(aggregate = Patient, snapshot = PatientAccount) // <1>
 class PatientAccountQuery implements
-        QuerySupport<Long, Patient, Long, PatientEvent, Long, PatientAccount,
+        QuerySupport<Patient, Long, PatientEvent, Long, PatientAccount,
                 PatientAccountQuery> { // <2>
 
     //end::documented[]

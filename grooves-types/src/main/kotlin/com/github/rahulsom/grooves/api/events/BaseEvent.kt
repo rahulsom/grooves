@@ -7,7 +7,6 @@ import java.util.Date
 /**
  * Base class for Events corresponding to [AggregateT].
  *
- * @param [AggregateIdT] The type for [AggregateType.id]
  * @param [AggregateT] Aggregate this event applies to
  * @param [EventIdT] The type for [BaseEvent.id]
  * @param [EventT] The base class for all events in the hierarchy for [AggregateT]. In
@@ -15,7 +14,7 @@ import java.util.Date
  *
  * @author Rahul Somasunderam
  */
-interface BaseEvent<AggregateIdT, AggregateT : AggregateType<AggregateIdT>, EventIdT, EventT> {
+interface BaseEvent<AggregateT : AggregateType, EventIdT, EventT> {
 
     /**
      * Returns the aggregate as an Observable.
@@ -42,7 +41,7 @@ interface BaseEvent<AggregateIdT, AggregateT : AggregateType<AggregateIdT>, Even
      * When a [RevertEvent] occurs such that it reverts this event, it will set itself to this field.
      * This is useful when building auditing solutions.
      */
-    var revertedBy: RevertEvent<AggregateIdT, AggregateT, EventIdT, EventT>?
+    var revertedBy: RevertEvent<AggregateT, EventIdT, EventT>?
 
     /**
      * A unique identifier for the Event.

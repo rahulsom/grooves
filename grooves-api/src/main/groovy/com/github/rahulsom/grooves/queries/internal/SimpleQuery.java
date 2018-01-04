@@ -8,17 +8,16 @@ import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
 public interface SimpleQuery<
-        AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT extends AggregateType,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         ApplicableEventT extends EventT,
         SnapshotIdT,
-        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
-        QueryT extends SimpleQuery<AggregateIdT, AggregateT, EventIdT, EventT, ApplicableEventT,
+        SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
+        QueryT extends SimpleQuery<AggregateT, EventIdT, EventT, ApplicableEventT,
                 SnapshotIdT, SnapshotT, QueryT>
         > extends
-        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     Publisher<EventApplyOutcome> applyEvent(ApplicableEventT event, SnapshotT snapshot);
 

@@ -13,7 +13,6 @@ import java.util.function.Supplier;
 /**
  * DSL to simplify writing code with Events.
  *
- * @param <AggregateIdT> The type of {@link AggregateT}'s id
  * @param <AggregateT>   The Aggregate on which this operates
  * @param <EventIdT>     The type of {@link EventT}'s id
  * @param <EventT>       The type of event on which this operates
@@ -21,10 +20,9 @@ import java.util.function.Supplier;
  * @author Rahul Somasunderam
  */
 public class EventsDsl<
-        AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT extends AggregateType,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>> {
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>> {
 
     private static AtomicLong defaultPositionSupplier = new AtomicLong();
 
@@ -49,16 +47,16 @@ public class EventsDsl<
      */
     @NotNull
     public <SnapshotIdT,
-            SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
+            SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
             > AggregateT on(
             @NotNull AggregateT aggregate,
             @NotNull Consumer entityConsumer,
             @NotNull Supplier<Long> positionSupplier,
             @NotNull Supplier<Date> timestampSupplier,
-            @NotNull Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            @NotNull Consumer<OnSpec<AggregateT, EventIdT, EventT, SnapshotIdT,
                                 SnapshotT>> closure) {
 
-        OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> spec =
+        OnSpec<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> spec =
                 new OnSpec<>();
         spec.setAggregate(aggregate);
         spec.setEntityConsumer(entityConsumer);
@@ -70,12 +68,12 @@ public class EventsDsl<
 
     @NotNull
     public <SnapshotIdT,
-            SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
+            SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT,
                     EventT>> AggregateT on(
             @NotNull AggregateT aggregate,
             @NotNull Consumer entityConsumer,
             @NotNull Supplier<Long> positionSupplier,
-            @NotNull Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            @NotNull Consumer<OnSpec<AggregateT, EventIdT, EventT, SnapshotIdT,
                     SnapshotT>> closure) {
         return on(aggregate, entityConsumer, positionSupplier, Date::new,
                 closure);
@@ -83,11 +81,11 @@ public class EventsDsl<
 
     @NotNull
     public <SnapshotIdT,
-            SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
+            SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT,
                     EventT>> AggregateT on(
             @NotNull AggregateT aggregate,
             @NotNull Consumer entityConsumer,
-            @NotNull Consumer<OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            @NotNull Consumer<OnSpec<AggregateT, EventIdT, EventT, SnapshotIdT,
                     SnapshotT>> closure) {
         return on(aggregate, entityConsumer, () -> defaultPositionSupplier.incrementAndGet(),
                 Date::new, closure);

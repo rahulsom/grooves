@@ -8,13 +8,11 @@ import org.reactivestreams.Publisher;
 import java.util.Date;
 
 public interface TemporalQuery<
-        AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT extends AggregateType,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends TemporalSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
-                EventT>> {
+        SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>> {
     /**
      * Computes a snapshot for specified version of an aggregate.
      *

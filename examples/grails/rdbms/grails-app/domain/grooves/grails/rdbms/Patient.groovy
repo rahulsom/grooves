@@ -1,6 +1,6 @@
 package grooves.grails.rdbms
 
-import com.github.rahulsom.grooves.api.AggregateType
+import com.github.rahulsom.grooves.grails.GormAggregate
 import com.github.rahulsom.grooves.groovy.transformations.Aggregate
 import groovy.transform.EqualsAndHashCode
 
@@ -9,7 +9,7 @@ import groovy.transform.EqualsAndHashCode
  */
 @Aggregate
 @EqualsAndHashCode(includes = ['uniqueId'])
-class Patient implements AggregateType<Long> {
+class Patient implements GormAggregate<Long> {
     String uniqueId
     static constraints = {
     }

@@ -162,11 +162,11 @@ class BootStrap {
         }
     }
 
-    private fun <SnapshotT : Snapshot<String, Patient, String, String, PatientEvent>,
-            QueryT : QuerySupport<String, Patient, String, PatientEvent, String, SnapshotT,
+    private fun <SnapshotT : Snapshot<Patient, String, String, PatientEvent>,
+            QueryT : QuerySupport<Patient, String, PatientEvent, String, SnapshotT,
                     QueryT>> snapshotWith(
-            it: com.github.rahulsom.grooves.test.OnSpec<String, Patient, String, PatientEvent, String,
-                    out Snapshot<String, Patient, String, String, PatientEvent>>,
+            it: com.github.rahulsom.grooves.test.OnSpec<Patient, String, PatientEvent, String,
+                    out Snapshot<Patient, String, String, PatientEvent>>,
             query: QueryT, repository: ReactiveCrudRepository<SnapshotT, String>
     ) =
             null
@@ -207,8 +207,8 @@ class BootStrap {
                         .parse("2016-01-01T00:00:00.000Z")
             }
 
-    fun on(patient: Patient, closure: (com.github.rahulsom.grooves.test.OnSpec<String, Patient, String, PatientEvent, String,
-            out Snapshot<String, Patient, String, String, PatientEvent>>) -> Unit): Patient {
+    fun on(patient: Patient, closure: (com.github.rahulsom.grooves.test.OnSpec<Patient, String, PatientEvent, String,
+            out Snapshot<Patient, String, String, PatientEvent>>) -> Unit): Patient {
         val eventSaver: (Any) -> Unit = {
             when (it) {
                 is PatientEvent -> patientEventRepository.save(it)
@@ -219,8 +219,8 @@ class BootStrap {
             currDate.add(Calendar.DATE, 1)
             currDate.time
         }
-        return com.github.rahulsom.grooves.test.EventsDsl<String, Patient, String, PatientEvent>()
-                .on<String, Snapshot<String, Patient, String, String, PatientEvent>>(
+        return com.github.rahulsom.grooves.test.EventsDsl<Patient, String, PatientEvent>()
+                .on<String, Snapshot<Patient, String, String, PatientEvent>>(
                         patient, eventSaver, positionSupplier, timestampSupplier,
                         closure)
     }

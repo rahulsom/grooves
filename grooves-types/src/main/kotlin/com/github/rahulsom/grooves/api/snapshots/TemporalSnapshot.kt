@@ -8,7 +8,6 @@ import java.util.Date
 /**
  * Marks a class as a temporal snapshot.
  *
- * @param [AggregateIdT] The type of [AggregateType.id]
  * @param [AggregateT] The Aggregate this snapshot works over
  * @param [SnapshotIdT] The type for [BaseSnapshot.id]
  * @param [EventIdT] The type for [BaseEvent.id]
@@ -17,12 +16,11 @@ import java.util.Date
  * @author Rahul Somasunderam
  */
 interface TemporalSnapshot<
-        AggregateIdT,
-        AggregateT : AggregateType<AggregateIdT>,
+        AggregateT : AggregateType,
         SnapshotIdT,
         EventIdT,
-        in EventT : BaseEvent<AggregateIdT, AggregateT, EventIdT, in EventT>> :
-        BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT> {
+        in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
+        BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT> {
 
     /**
      * The timestamp of the last event that this snapshot represents.

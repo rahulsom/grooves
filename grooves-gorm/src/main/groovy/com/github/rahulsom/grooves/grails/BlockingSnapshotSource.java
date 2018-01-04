@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.grails;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
@@ -30,15 +29,14 @@ import static rx.RxReactiveStreams.toPublisher;
  */
 public interface BlockingSnapshotSource<
         AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT extends GormAggregate<AggregateIdT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT> &
+        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> &
                 GormEntity<SnapshotT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT>
-        > extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+        QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
+        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
         QueryT> {
 
     SnapshotT detachSnapshot(SnapshotT snapshot);

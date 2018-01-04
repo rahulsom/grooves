@@ -13,7 +13,7 @@ import static rx.RxReactiveStreams.toPublisher
  * @author Rahul Somasunderam
  */
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition',])
-class ZipcodePatients implements Join<Long, Zipcode, String, Long, Long, ZipcodeEvent> {
+class ZipcodePatients implements Join<Zipcode, String, Patient, Long, ZipcodeEvent> {
 
     static mapWith = 'mongo'
 
@@ -72,8 +72,10 @@ class ZipcodePatients implements Join<Long, Zipcode, String, Long, Long, Zipcode
                 "aggregateId=$aggregateId}"
     }
 
-    @Override
-    void setJoinedIds(List<? extends Long> list) {
-        this.joinedIds = list
+    void addJoinedAggregate(Patient patient) {
+        joinedIds.add(patient.id)
+    }
+    void removeJoinedAggregate(Patient patient) {
+        joinedIds.remove(patient.id)
     }
 }

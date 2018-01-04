@@ -17,7 +17,7 @@ import static rx.Observable.just;
 import static rx.RxReactiveStreams.toPublisher;
 
 @Query(aggregate = Account.class, snapshot = Balance.class)
-class MethodMissing implements QuerySupport<Long, Account, Long, Transaction, String, Balance,
+class MethodMissing implements QuerySupport<Account, Long, Transaction, String, Balance,
         IncorrectReturnType> {
     @Override
     public Balance createEmptySnapshot() {

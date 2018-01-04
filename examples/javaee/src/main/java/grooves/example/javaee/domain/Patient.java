@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.io.Serializable;
 
 @Aggregate // <1>
-public class Patient implements AggregateType<Long>, // <2>
+public class Patient implements AggregateType, // <2>
         Serializable {
     @Getter @Setter private Long id; // <3>
     @Getter @Setter private String uniqueId;

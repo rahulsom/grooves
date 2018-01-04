@@ -10,9 +10,9 @@ import static rx.Observable.empty;
 import static rx.Observable.just;
 import static rx.RxReactiveStreams.toPublisher;
 
-public abstract class Transaction implements BaseEvent<Long, Account, Long, Transaction> {
+public abstract class Transaction implements BaseEvent<Account, Long, Transaction> {
     private Account aggregate;
-    private RevertEvent<Long, Account, Long, Transaction> revertedBy;
+    private RevertEvent<Account, Long, Transaction> revertedBy;
     private Long id;
     private long position;
     private Date timestamp;
@@ -33,12 +33,12 @@ public abstract class Transaction implements BaseEvent<Long, Account, Long, Tran
     }
 
     @Override
-    public void setRevertedBy(RevertEvent<Long, Account, Long, Transaction> revertedBy) {
+    public void setRevertedBy(RevertEvent<Account, Long, Transaction> revertedBy) {
         this.revertedBy = revertedBy;
     }
 
     @Override
-    public RevertEvent<Long, Account, Long, Transaction> getRevertedBy() {
+    public RevertEvent<Account, Long, Transaction> getRevertedBy() {
         return revertedBy;
     }
 

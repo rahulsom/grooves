@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono.just
 import java.util.*
 
 @Configurable
-class PatientHealth : Snapshot<String, Patient, String, String, PatientEvent> {
+class PatientHealth : Snapshot<Patient, String, String, PatientEvent> {
 
     override var id: String? = null
     override var lastEventPosition: Long = 0

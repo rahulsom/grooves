@@ -15,12 +15,11 @@ import java.util.function.Supplier;
 import static io.reactivex.Flowable.fromPublisher;
 
 public class OnSpec<
-        AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT extends AggregateType,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>> {
+        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>> {
     private AggregateT aggregate;
     private Consumer entityConsumer;
     private Supplier<Date> timestampSupplier;
@@ -63,7 +62,7 @@ public class OnSpec<
      * @return The snapshot after persisting
      */
     @NotNull
-    public <QueryT extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+    public <QueryT extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT,
             SnapshotT, QueryT>> SnapshotT snapshotWith(
                     @NotNull QueryT query,
                     @NotNull Consumer<SnapshotT> beforePersist) {
@@ -89,7 +88,7 @@ public class OnSpec<
      * @return The snapshot after persisting
      */
     @NotNull
-    public <QueryT extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+    public <QueryT extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT,
             SnapshotT, QueryT>> SnapshotT snapshotWith(@NotNull QueryT query) {
         return snapshotWith(query, snapshotT -> {
         });

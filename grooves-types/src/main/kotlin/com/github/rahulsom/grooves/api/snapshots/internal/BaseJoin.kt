@@ -6,29 +6,22 @@ import com.github.rahulsom.grooves.api.events.BaseEvent
 /**
  * A special kind of [BaseSnapshot] that stores information about joined entities.
  *
- * @param [AggregateIdT] The type of [AggregateType.id]
  * @param [AggregateT] The Aggregate this snapshot works over
  * @param [JoinIdT] The type for [BaseJoin.id]
- * @param [JoinedAggregateIdT] The type for the id of the aggregate that [AggregateT] to
  * @param [EventIdT] The type for [BaseEvent.id]
  * @param [EventT] The base type for events that apply to [AggregateT]
  *
  * @author Rahul Somasunderam
  */
 interface BaseJoin<
-        AggregateIdT,
-        AggregateT : AggregateType<AggregateIdT>,
+        AggregateT : AggregateType,
         JoinIdT,
-        JoinedAggregateIdT,
+        JoinedAggregateT : AggregateType,
         EventIdT,
-        in EventT : BaseEvent<AggregateIdT, AggregateT, EventIdT, in EventT>> :
-        BaseSnapshot<AggregateIdT, AggregateT, JoinIdT, EventIdT, EventT> {
+        in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
+        BaseSnapshot<AggregateT, JoinIdT, EventIdT, EventT> {
 
-    /**
-     * The list of [JoinedAggregateIdT] that are joined to [BaseSnapshot]'s aggregate.
-     *
-     * TODO Turn to SortedSet
-     */
-    var joinedIds: List<JoinedAggregateIdT>
+    fun addJoinedAggregate(joinedAggregateT: JoinedAggregateT)
+    fun removeJoinedAggregate(joinedAggregateT: JoinedAggregateT)
 
 }

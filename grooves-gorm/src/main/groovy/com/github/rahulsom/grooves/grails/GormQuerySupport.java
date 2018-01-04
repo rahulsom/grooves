@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.grails;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
@@ -28,18 +27,18 @@ import java.util.Date;
 // tag::documented[]
 public interface GormQuerySupport<
         AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT> & GormEntity<AggregateT>,
+        AggregateT extends GormAggregate<AggregateIdT> & GormEntity<AggregateT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT> &
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT> &
                 GormEntity<EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT> &
+        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT> &
                 GormEntity<SnapshotT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+        QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT,
                 SnapshotT>
-        > extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT,
         SnapshotT, QueryT>, //<1>
-        BlockingEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+        BlockingEventSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT>,
         BlockingSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
                 SnapshotT, QueryT> {

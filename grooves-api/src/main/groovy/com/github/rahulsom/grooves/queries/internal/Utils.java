@@ -39,7 +39,6 @@ public class Utils {
      * @param events             The sequence of events
      * @param it                 The snapshot
      * @param redirectedSnapshot A computation for the redirected snapshot
-     * @param <AggregateIdT>     The type of {@link AggregateT}'s id
      * @param <AggregateT>       The type of Aggregate
      * @param <EventIdT>         The type of {@link EventT}'s id
      * @param <EventT>           The type of the event
@@ -49,12 +48,11 @@ public class Utils {
      * @return An observable of a snapshot.
      */
     @NotNull public static <
-            AggregateIdT,
-            AggregateT extends AggregateType<AggregateIdT>,
+            AggregateT extends AggregateType,
             EventIdT,
-            EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
             SnapshotIdT,
-            SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
+            SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
             > Flowable<SnapshotT> returnOrRedirect(
             boolean redirect,
             @NotNull List<EventT> events,
@@ -81,7 +79,6 @@ public class Utils {
      * @param events                    The sequence of events
      * @param executor                  The executor to use for processing events
      * @param fallbackSnapshotAndEvents The fallback supplier
-     * @param <AggregateIdT>            The type of {@link AggregateT}'s id
      * @param <AggregateT>              The type of Aggregate
      * @param <EventIdT>                The type of {@link EventT}'s id
      * @param <EventT>                  The type of Event
@@ -93,16 +90,13 @@ public class Utils {
      * @return an observable of forward only events
      */
     @NotNull public static <
-            AggregateIdT,
-            AggregateT extends AggregateType<AggregateIdT>,
+            AggregateT extends AggregateType,
             EventIdT,
-            EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
             SnapshotIdT,
-            SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
-            QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                    SnapshotT>,
-            ExecutorT extends Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                    SnapshotT>
+            SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
+            QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+            ExecutorT extends Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
             > Flowable<EventT> getForwardOnlyEvents(
             @NotNull List<EventT> events,
             @NotNull ExecutorT executor,

@@ -10,15 +10,14 @@ import org.reactivestreams.Publisher
  * The converse is [DeprecatedBy] which needs to be applied to the other aggregate which
  * loses the merge.
  *
- * @param [AggregateIdT] The type for [AggregateType.id]
  * @param [AggregateT] Aggregate this event applies to
  * @param [EventIdT] The type for [BaseEvent.id]
  * @param [EventT] The base class for all events in the hierarchy for [AggregateT].
  *
  * @author Rahul Somasunderam
  */
-interface Deprecates<AggregateIdT, AggregateT : AggregateType<AggregateIdT>, EventIdT, EventT> :
-        BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT> {
+interface Deprecates<AggregateT : AggregateType, EventIdT, EventT> :
+        BaseEvent<AggregateT, EventIdT, EventT> {
 
     /**
      * An Observable of the converse of this event.
@@ -26,7 +25,7 @@ interface Deprecates<AggregateIdT, AggregateT : AggregateType<AggregateIdT>, Eve
      * It tells you that the aggregate on which you apply the [DeprecatedBy] has been deprecated by this event's aggregate.
      * That gives Grooves an opportunity to redirect if asked to this event's aggregate.
      */
-    fun getConverseObservable(): Publisher<out DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT>>
+    fun getConverseObservable(): Publisher<out DeprecatedBy<AggregateT, EventIdT, EventT>>
 
     /**
      * An Observable of the aggregate that was deprecated by this event's aggregate.

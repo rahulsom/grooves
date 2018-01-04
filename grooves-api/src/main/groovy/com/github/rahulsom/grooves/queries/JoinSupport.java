@@ -18,8 +18,6 @@ import org.reactivestreams.Publisher;
  * @param <EventIdT>           The type for the {@link EventT}'s id field
  * @param <EventT>             The base type for events that apply to {@link AggregateT}
  * @param <SnapshotIdT>        The type for the join's id field
- * @param <JoinedAggregateIdT> The type for the other id of aggregate that {@link AggregateT} joins
- *                             to
  * @param <JoinedAggregateT>   The type for the other aggregate that {@link AggregateT} joins to
  * @param <SnapshotT>          The type of Snapshot that is computed
  * @param <JoinEventT>         The type of the Join Event
@@ -28,25 +26,22 @@ import org.reactivestreams.Publisher;
  * @author Rahul Somasunderam
  */
 public interface JoinSupport<
-        AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT extends AggregateType,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
-        JoinedAggregateIdT,
-        JoinedAggregateT extends AggregateType<JoinedAggregateIdT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        JoinedAggregateT extends AggregateType,
         SnapshotIdT,
-        SnapshotT extends Join<AggregateIdT, AggregateT, SnapshotIdT, JoinedAggregateIdT, EventIdT,
-                EventT>,
-        JoinEventT extends JoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
-                JoinedAggregateIdT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
-                JoinedAggregateIdT, JoinedAggregateT>,
+        SnapshotT extends Join<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT, EventT>,
+        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT,
+                JoinedAggregateT>,
+        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT,
+                JoinedAggregateT>,
         QueryT extends
-                BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>>
+                BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>>
         extends
-        VersionedJoinSupport<AggregateIdT, AggregateT, EventIdT, EventT, JoinedAggregateIdT,
+        VersionedJoinSupport<AggregateT, EventIdT, EventT,
                 JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT, QueryT>,
-        TemporalJoinSupport<AggregateIdT, AggregateT, EventIdT, EventT, JoinedAggregateIdT,
+        TemporalJoinSupport<AggregateT, EventIdT, EventT,
                 JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT, QueryT> {
 
     @NotNull

@@ -7,7 +7,6 @@ import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot
 /**
  * Marks a class as a versioned snapshot.
  *
- * @param [AggregateIdT] The type of [AggregateType.id]
  * @param [AggregateT] The Aggregate this snapshot works over
  * @param [SnapshotIdT] The type for [BaseSnapshot.id]
  * @param [EventIdT] The type for [BaseEvent.id]
@@ -16,12 +15,11 @@ import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot
  * @author Rahul Somasunderam
  */
 interface VersionedSnapshot<
-        AggregateIdT,
-        AggregateT : AggregateType<AggregateIdT>,
+        AggregateT : AggregateType,
         SnapshotIdT,
         EventIdT,
-        in EventT : BaseEvent<AggregateIdT, AggregateT, EventIdT, in EventT>> :
-        BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT> {
+        in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
+        BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT> {
 
     /**
      * The position of the last event that this snapshot represents.

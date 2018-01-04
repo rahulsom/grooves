@@ -10,7 +10,7 @@ import static rx.Observable.just
 import static rx.RxReactiveStreams.toPublisher
 
 @CompileStatic @Query(aggregate = Account, snapshot = Balance)
-class ValidESQuery implements QuerySupport<Long, Account, Long, Transaction, String, Balance,
+class ValidESQuery implements QuerySupport<Account, Long, Transaction, String, Balance,
         ValidESQuery> {
     @Override Balance createEmptySnapshot() { new Balance() }
     @Override Publisher<Balance> getSnapshot(long maxPosition, Account aggregate) {

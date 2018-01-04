@@ -6,23 +6,19 @@ import org.reactivestreams.Publisher
 /**
  * Breaks a join from [AggregateT] to [JoinedAggregateT] that had existed earlier.
  *
- * @param [AggregateIdT] The type for [AggregateType.id]
  * @param [AggregateT] Aggregate this event applies to
  * @param [EventIdT] The type for [BaseEvent.id]
  * @param [EventT] The base class for all events in the hierarchy for [AggregateT].
- * @param [JoinedAggregateIdT] The type of the joined [AggregateType.id]
  * @param [JoinedAggregateT] The target aggregate
  *
  * @author Rahul Somasunderam
  */
 interface DisjoinEvent<
-        AggregateIdT,
-        AggregateT : AggregateType<AggregateIdT>,
+        AggregateT : AggregateType,
         EventIdT,
         EventT,
-        JoinedAggregateIdT,
-        JoinedAggregateT : AggregateType<JoinedAggregateIdT>> :
-        BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT> {
+        JoinedAggregateT : AggregateType> :
+        BaseEvent<AggregateT, EventIdT, EventT> {
 
     /**
      * An observable that points to the aggregate to which a join is being performed.

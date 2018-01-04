@@ -17,7 +17,7 @@ import static rx.Observable.*;
 import static rx.RxReactiveStreams.toPublisher;
 
 public class PatientHealth
-        implements Snapshot<Long, Patient, Long, Long, PatientEvent>, Serializable {
+        implements Snapshot<Patient, Long, Long, PatientEvent>, Serializable {
     @Getter @Setter private List<Procedure> procedures = new ArrayList<>();
     @Getter @Setter private Long id;
     @Getter @Setter private Patient aggregate;

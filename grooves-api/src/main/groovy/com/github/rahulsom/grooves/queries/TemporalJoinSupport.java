@@ -13,12 +13,9 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Default interface that makes temporal joins easier to write.
  *
- * @param <AggregateIdT>       The type of {@link AggregateT}'s id
  * @param <AggregateT>         The Aggregate this join represents
  * @param <EventIdT>           The type for the {@link EventT}'s id field
  * @param <EventT>             The base type for events that apply to {@link AggregateT}
- * @param <JoinedAggregateIdT> The type for the other id of aggregate that {@link AggregateT} joins
- *                             to
  * @param <JoinedAggregateT>   The type for the other aggregate that {@link AggregateT} joins to
  * @param <SnapshotIdT>        The type for the join's id field
  * @param <SnapshotT>          The type of Snapshot that is computed
@@ -29,23 +26,17 @@ import org.jetbrains.annotations.NotNull;
  * @author Rahul Somasunderam
  */
 public interface TemporalJoinSupport<
-        AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT extends AggregateType,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
-        JoinedAggregateIdT,
-        JoinedAggregateT extends AggregateType<JoinedAggregateIdT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+        JoinedAggregateT extends AggregateType,
         SnapshotIdT,
-        SnapshotT extends TemporalJoin<AggregateIdT, AggregateT, SnapshotIdT, JoinedAggregateIdT,
-                EventIdT, EventT>,
-        JoinEventT extends JoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
-                JoinedAggregateIdT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
-                JoinedAggregateIdT, JoinedAggregateT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
+        SnapshotT extends TemporalJoin<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT, EventT>,
+        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
+        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
+        QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
         > extends
-        TemporalQuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT> {
+        TemporalQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
 
     Class<JoinEventT> getJoinEventClass();
 

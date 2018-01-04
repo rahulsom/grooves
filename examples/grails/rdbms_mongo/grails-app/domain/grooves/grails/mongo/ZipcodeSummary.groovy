@@ -16,7 +16,7 @@ import static rx.RxReactiveStreams.toPublisher
 @SuppressWarnings(['DuplicateStringLiteral'])
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition',])
 @ToString(includes = ['id', 'aggregateId', 'lastEventPosition', 'name',])
-class ZipcodeSummary implements Snapshot<Long, Zipcode, String, Long, ZipcodeEvent> {
+class ZipcodeSummary implements Snapshot<Zipcode, String, Long, ZipcodeEvent> {
 
     static mapWith = 'mongo'
 

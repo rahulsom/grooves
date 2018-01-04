@@ -14,7 +14,7 @@ import static rx.Observable.just;
 import static rx.RxReactiveStreams.toPublisher;
 
 @Query(aggregate = Account.class, snapshot = Balance.class)
-class ValidESQuery implements QuerySupport<Long, Account, Long, Transaction, String, Balance,
+class ValidESQuery implements QuerySupport<Account, Long, Transaction, String, Balance,
         ValidESQuery> {
     @Override
     public Balance createEmptySnapshot() {

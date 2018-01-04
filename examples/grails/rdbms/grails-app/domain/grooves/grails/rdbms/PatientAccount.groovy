@@ -14,7 +14,7 @@ import static rx.RxReactiveStreams.toPublisher
  */
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition'])
 @SuppressWarnings(['DuplicateNumberLiteral'])
-class PatientAccount implements Snapshot<Long, Patient, Long, Long, PatientEvent> {
+class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
 
     long lastEventPosition
     Date lastEventTimestamp

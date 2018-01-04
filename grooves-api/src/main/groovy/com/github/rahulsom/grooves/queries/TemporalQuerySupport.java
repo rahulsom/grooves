@@ -27,7 +27,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Default interface to help in building temporal snapshots.
  *
- * @param <AggregateIdT> The type of {@link AggregateT}'s id
  * @param <AggregateT>   The aggregate over which the query executes
  * @param <EventIdT>     The type of the {@link EventT}'s id field
  * @param <EventT>       The type of the Event
@@ -38,18 +37,15 @@ import static java.util.stream.Collectors.toList;
  * @author Rahul Somasunderam
  */
 public interface TemporalQuerySupport<
-        AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT extends AggregateType,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends TemporalSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
-                EventT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT>>
+        SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
+        QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>>
         extends
-        BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        TemporalQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        TemporalQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     /**
      * Finds the last usable snapshot. For a given maxTimestamp, finds a snapshot whose last event
