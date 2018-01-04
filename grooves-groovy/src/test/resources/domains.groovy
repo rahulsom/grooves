@@ -1,4 +1,3 @@
-import com.github.rahulsom.grooves.api.AggregateType
 import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
@@ -11,7 +10,7 @@ import rx.Observable
 import static rx.Observable.*
 import static rx.RxReactiveStreams.toPublisher
 
-@CompileStatic @Aggregate class Account implements AggregateType {
+@CompileStatic @Aggregate class Account {
     Long id
 }
 

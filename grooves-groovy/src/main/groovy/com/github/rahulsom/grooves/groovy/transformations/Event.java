@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.groovy.transformations;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.groovy.transformations.internal.EventASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformationClass;
 
@@ -23,5 +22,5 @@ public @interface Event {
      *
      * @return The type of the Aggregate
      */
-    Class<? extends AggregateType> value();
+    Class<?> value();
 }

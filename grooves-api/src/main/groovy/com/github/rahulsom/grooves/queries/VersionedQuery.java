@@ -1,14 +1,11 @@
 package com.github.rahulsom.grooves.queries;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
 import org.reactivestreams.Publisher;
 
-import java.util.Date;
-
 public interface VersionedQuery<
-        AggregateT extends AggregateType,
+        AggregateT,
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,

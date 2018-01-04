@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.queries.internal;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
@@ -21,7 +20,7 @@ import java.util.List;
  * @author Rahul Somasunderam
  */
 public interface Executor<
-        AggregateT extends AggregateType,
+        AggregateT,
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,

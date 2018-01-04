@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.queries.internal;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
@@ -8,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
 public interface SimpleQuery<
-        AggregateT extends AggregateType,
+        AggregateT,
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         ApplicableEventT extends EventT,

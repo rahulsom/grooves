@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.queries;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
@@ -27,7 +26,7 @@ import java.util.function.Supplier;
  * @author Rahul Somasunderam
  */
 public class FunctionalVersionedQuery<
-        AggregateT extends AggregateType,
+        AggregateT,
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
@@ -111,7 +110,7 @@ public class FunctionalVersionedQuery<
      * @param <QueryT>       A reference to the query type. Typically a self reference.
      */
     public static final class Builder<
-            AggregateT extends AggregateType,
+            AggregateT,
             EventIdT,
             EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
             SnapshotIdT,
@@ -132,7 +131,7 @@ public class FunctionalVersionedQuery<
         }
 
         public static <
-                AggregateT extends AggregateType,
+                AggregateT,
                 EventIdT,
                 EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
                 SnapshotIdT,

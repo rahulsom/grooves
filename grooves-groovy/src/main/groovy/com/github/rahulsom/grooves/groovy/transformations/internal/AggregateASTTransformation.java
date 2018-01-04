@@ -14,9 +14,9 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * Registers an {@link com.github.rahulsom.grooves.api.AggregateType} as something that could later
- * be used for computing one or more {@link com.github.rahulsom.grooves.api.snapshots.Snapshot}s in
- * a class annotated as a {@link com.github.rahulsom.grooves.groovy.transformations.Query}.
+ * Registers an aggregate as something that could later be used for computing one or more
+ * {@link com.github.rahulsom.grooves.api.snapshots.Snapshot}s in a class annotated as a
+ * {@link com.github.rahulsom.grooves.groovy.transformations.Query}.
  *
  * @author Rahul Somasunderam
  */

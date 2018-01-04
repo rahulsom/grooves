@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.api.snapshots.internal
 
-import com.github.rahulsom.grooves.api.AggregateType
 import com.github.rahulsom.grooves.api.events.BaseEvent
 import org.reactivestreams.Publisher
 
@@ -15,7 +14,7 @@ import org.reactivestreams.Publisher
  * @author Rahul Somasunderam
  */
 interface BaseSnapshot<
-        AggregateT : AggregateType,
+        AggregateT,
         SnapshotIdT,
         EventIdT,
         in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> {

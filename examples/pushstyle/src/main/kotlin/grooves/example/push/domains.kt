@@ -1,6 +1,5 @@
 package grooves.example.push
 
-import com.github.rahulsom.grooves.api.AggregateType
 import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
@@ -11,7 +10,7 @@ import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class Account(val id: String) : AggregateType
+data class Account(val id: String)
 
 sealed class Transaction(
         override val id: String,

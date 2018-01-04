@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.queries.internal;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.*;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseJoin;
 import io.reactivex.Flowable;
@@ -26,10 +25,10 @@ import static io.reactivex.Flowable.just;
  * @author Rahul Somasunderam
  */
 public class JoinExecutor<
-        AggregateT extends AggregateType,
+        AggregateT,
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-        JoinedAggregateT extends AggregateType,
+        JoinedAggregateT,
         SnapshotIdT,
         SnapshotT extends BaseJoin<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT, EventT>,
         JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,

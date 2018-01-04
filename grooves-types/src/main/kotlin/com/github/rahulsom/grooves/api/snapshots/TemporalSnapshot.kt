@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.api.snapshots
 
-import com.github.rahulsom.grooves.api.AggregateType
 import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot
 import java.util.Date
@@ -16,7 +15,7 @@ import java.util.Date
  * @author Rahul Somasunderam
  */
 interface TemporalSnapshot<
-        AggregateT : AggregateType,
+        AggregateT,
         SnapshotIdT,
         EventIdT,
         in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :

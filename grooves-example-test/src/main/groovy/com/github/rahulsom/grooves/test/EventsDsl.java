@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.test;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +19,7 @@ import java.util.function.Supplier;
  * @author Rahul Somasunderam
  */
 public class EventsDsl<
-        AggregateT extends AggregateType,
+        AggregateT,
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>> {
 

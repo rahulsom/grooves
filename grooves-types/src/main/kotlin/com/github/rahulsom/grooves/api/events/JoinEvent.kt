@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.api.events
 
-import com.github.rahulsom.grooves.api.AggregateType
 import org.reactivestreams.Publisher
 
 /**
@@ -14,10 +13,10 @@ import org.reactivestreams.Publisher
  * @author Rahul Somasunderam
  */
 interface JoinEvent<
-        AggregateT : AggregateType,
+        AggregateT,
         EventIdT,
         EventT,
-        JoinedAggregateT : AggregateType> :
+        JoinedAggregateT> :
         BaseEvent<AggregateT, EventIdT, EventT> {
 
     /**

@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.api.events
 
-import com.github.rahulsom.grooves.api.AggregateType
 import org.reactivestreams.Publisher
 
 /**
@@ -16,7 +15,7 @@ import org.reactivestreams.Publisher
  *
  * @author Rahul Somasunderam
  */
-interface Deprecates<AggregateT : AggregateType, EventIdT, EventT> :
+interface Deprecates<AggregateT, EventIdT, EventT> :
         BaseEvent<AggregateT, EventIdT, EventT> {
 
     /**

@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.api.events
 
-import com.github.rahulsom.grooves.api.AggregateType
 import org.reactivestreams.Publisher
 import java.util.Date
 
@@ -14,7 +13,7 @@ import java.util.Date
  *
  * @author Rahul Somasunderam
  */
-interface BaseEvent<AggregateT : AggregateType, EventIdT, EventT> {
+interface BaseEvent<AggregateT, EventIdT, EventT> {
 
     /**
      * Returns the aggregate as an Observable.

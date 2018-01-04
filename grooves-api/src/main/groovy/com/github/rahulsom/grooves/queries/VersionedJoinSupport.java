@@ -1,14 +1,11 @@
 package com.github.rahulsom.grooves.queries;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.DisjoinEvent;
 import com.github.rahulsom.grooves.api.events.JoinEvent;
 import com.github.rahulsom.grooves.api.snapshots.VersionedJoin;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
-import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
-import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,10 +24,10 @@ import org.jetbrains.annotations.NotNull;
  * @author Rahul Somasunderam
  */
 public interface VersionedJoinSupport<
-        AggregateT extends AggregateType,
+        AggregateT,
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-        JoinedAggregateT extends AggregateType,
+        JoinedAggregateT,
         SnapshotIdT,
         SnapshotT extends VersionedJoin<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT,
                 EventT>,

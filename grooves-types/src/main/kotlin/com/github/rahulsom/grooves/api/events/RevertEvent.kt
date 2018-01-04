@@ -1,7 +1,5 @@
 package com.github.rahulsom.grooves.api.events
 
-import com.github.rahulsom.grooves.api.AggregateType
-
 /**
  * Revert a prior event. A reverted event's effects are not applied when computing a snapshot.
  *
@@ -11,10 +9,7 @@ import com.github.rahulsom.grooves.api.AggregateType
  *
  * @author Rahul Somasunderam
  */
-interface RevertEvent<
-        AggregateT : AggregateType,
-        EventIdT,
-        EventT> :
+interface RevertEvent<AggregateT, EventIdT, EventT> :
         BaseEvent<AggregateT, EventIdT, EventT> {
 
     /**

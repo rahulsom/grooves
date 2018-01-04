@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.api.events
 
-import com.github.rahulsom.grooves.api.AggregateType
 import org.reactivestreams.Publisher
 
 /**
@@ -13,11 +12,7 @@ import org.reactivestreams.Publisher
  *
  * @author Rahul Somasunderam
  */
-interface DisjoinEvent<
-        AggregateT : AggregateType,
-        EventIdT,
-        EventT,
-        JoinedAggregateT : AggregateType> :
+interface DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT> :
         BaseEvent<AggregateT, EventIdT, EventT> {
 
     /**

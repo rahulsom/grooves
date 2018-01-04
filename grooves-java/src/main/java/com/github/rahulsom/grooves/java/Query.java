@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.java;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 
 import java.lang.annotation.ElementType;
@@ -23,7 +22,7 @@ public @interface Query {
      *
      * @return The aggregate for which this query needs to be performed
      */
-    Class<? extends AggregateType> aggregate();
+    Class<?> aggregate();
 
     /**
      * The snapshot that the query will return

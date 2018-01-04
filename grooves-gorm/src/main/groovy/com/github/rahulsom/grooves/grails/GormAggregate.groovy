@@ -1,7 +1,5 @@
 package com.github.rahulsom.grooves.grails
 
-import com.github.rahulsom.grooves.api.AggregateType
-
-interface GormAggregate<T> extends AggregateType {
+interface GormAggregate<T> {
     T getId()
 }

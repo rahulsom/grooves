@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.api.snapshots.internal
 
-import com.github.rahulsom.grooves.api.AggregateType
 import com.github.rahulsom.grooves.api.events.BaseEvent
 
 /**
@@ -14,9 +13,9 @@ import com.github.rahulsom.grooves.api.events.BaseEvent
  * @author Rahul Somasunderam
  */
 interface BaseJoin<
-        AggregateT : AggregateType,
+        AggregateT,
         JoinIdT,
-        JoinedAggregateT : AggregateType,
+        JoinedAggregateT,
         EventIdT,
         in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
         BaseSnapshot<AggregateT, JoinIdT, EventIdT, EventT> {

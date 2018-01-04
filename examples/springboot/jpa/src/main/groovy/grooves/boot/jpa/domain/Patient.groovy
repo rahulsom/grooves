@@ -1,9 +1,9 @@
 package grooves.boot.jpa.domain
 
-// tag::documented[]
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.github.rahulsom.grooves.api.AggregateType
 import com.github.rahulsom.grooves.groovy.transformations.Aggregate
+
+// tag::documented[]
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
@@ -27,7 +27,7 @@ import javax.persistence.*
 // end::documented[]
 @EqualsAndHashCode(includes = ['uniqueId'])
 // tag::documented[]
-class Patient implements AggregateType { //<2>
+class Patient { //<2>
     @GeneratedValue @Id Long id // <3>
     String uniqueId
 }
