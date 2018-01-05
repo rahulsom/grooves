@@ -23,9 +23,9 @@ include::{sourcedir}/examples/grails/rdbms_mongo/src/main/groovy/grooves/grails/
 ----
 <1> `JoinSupport` is similar to `QuerySupport`.
   It does not require implementing methods for each event.
-<2> This says that the aggregate for which this computes joins is `Doctor` whose id is `Long`.
+<2> This says that the aggregate for which this computes joins is `Doctor`.
 <3> This says that the base class for events for which this computes joins is `DoctorEvent` whose id is `Long`.
-<4> This says that the joined aggregate for which this computes joins is `Patient` whose id is `Long`.
+<4> This says that the joined aggregate for which this computes joins is `Patient`.
 <5> This says that the join computed is `DoctorPatients` whose id is `String`.
 <6> The events that represent a join and a disjoin are `DoctorGotPatient`, `DoctorLostPatient` respectively.
 <7> This says that the class of the query is `DoctorPatientsQuery`.

@@ -8,9 +8,8 @@ import lombok.Setter;
 import java.io.Serializable;
 
 @Aggregate // <1>
-public class Patient implements // <2>
-        Serializable {
-    @Getter @Setter private Long id; // <3>
+public class Patient implements Serializable {
+    @Getter @Setter private Long id; // <2>
     @Getter @Setter private String uniqueId;
     // end::documented[]
 

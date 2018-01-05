@@ -1,5 +1,13 @@
 = Changelog
 
+== 0.5.0
+* Remove `AggregateType`. Now anything can be an aggregate.
+  In GORM, there's a replacement called `GormAggregate`.
+  Also remove `QueryT` from most queries.
+  Consequently, a lot of interfaces will have to be updated in user code.
+* Use PrismJS for docs.
+  This allows syntax highlighting for Kotlin code.
+
 == 0.4.0
 * Make position and timestamp non nullable in Events
 * Remove examples for RxGorm REST. It doesn't appear to be well supported.

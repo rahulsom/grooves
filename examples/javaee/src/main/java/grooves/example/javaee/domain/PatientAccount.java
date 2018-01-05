@@ -17,8 +17,7 @@ import static rx.Observable.*;
 import static rx.RxReactiveStreams.toPublisher;
 
 // tag::documented[]
-public class PatientAccount
-        implements Snapshot<Patient, Long, Long, PatientEvent>, // <1>
+public class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent>, // <1>
         Serializable {
     @Getter @Setter private Long id;
     @Getter @Setter private Patient aggregate;

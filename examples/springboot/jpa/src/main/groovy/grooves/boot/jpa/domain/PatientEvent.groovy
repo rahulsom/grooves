@@ -30,9 +30,9 @@ abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> { 
     @Column(nullable = false) long position //<4>
     @OneToOne Patient aggregate
 
-    Publisher<Patient> getAggregateObservable() {
+    Publisher<Patient> getAggregateObservable() { // <5>
         aggregate ? just(aggregate) : empty()
-    } // <5>
+    }
 
 }
 // end::abstract[]
@@ -70,8 +70,7 @@ class PaymentMade extends PatientEvent {
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
 //tag::reverted[]
 @Entity
-class PatientEventReverted
-        extends PatientEvent // <1>
+class PatientEventReverted extends PatientEvent // <1>
         implements RevertEvent<Patient, Long, PatientEvent> { // <2>
     Long revertedEventId // <3>
 

@@ -97,8 +97,7 @@ class PaymentMade extends PatientEvent {
 
 //tag::reverted[]
 @EqualsAndHashCode
-class PatientEventReverted
-        extends PatientEvent // <1>
+class PatientEventReverted extends PatientEvent // <1>
         implements RevertEvent<Patient, Long, PatientEvent> { // <2>
     Long revertedEventId // <3>
 
