@@ -23,7 +23,7 @@ public class EventsDsl<
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>> {
 
-    private static AtomicLong defaultPositionSupplier = new AtomicLong();
+    private static final AtomicLong defaultPositionSupplier = new AtomicLong();
 
     protected static AtomicLong getDefaultPositionSupplier() {
         return defaultPositionSupplier;

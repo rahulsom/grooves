@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
 /**
- * Jpa backed repository for the PatientEvent event hierarechy
+ * Jpa backed repository for the PatientEvent event hierarchy
  *
  * @author Rahul Somasunderam
  */

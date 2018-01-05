@@ -11,7 +11,7 @@ import spock.lang.Unroll
  *
  * @author Rahul Somasunderam
  */
-@SuppressWarnings(['UnnecessaryGetter'])
+@SuppressWarnings(['UnnecessaryGetter', 'GroovyAssignabilityCheck'])
 abstract class AbstractPatientSpec extends Specification {
 
     /**

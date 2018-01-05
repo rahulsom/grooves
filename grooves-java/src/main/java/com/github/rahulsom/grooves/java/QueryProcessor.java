@@ -2,7 +2,6 @@ package com.github.rahulsom.grooves.java;
 
 import com.google.auto.service.AutoService;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -97,26 +96,26 @@ public class QueryProcessor extends AbstractProcessor {
     private List<String> getExpectedMethods(
             Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues,
             Map<String, List<String>> eventsByAggregate) {
-        String aggregateClass = getAttributeClass(elementValues, "aggregate()");
-        String snapshotClass = getAttributeClass(elementValues, "snapshot()");
         ArrayList<String> expectedMethods = new ArrayList<>();
-        List<String> eventClasses = eventsByAggregate.get(aggregateClass);
-
-        if (eventClasses != null) {
-            for (String event : eventClasses) {
-                String[] parts = event.split("\\.");
-                String simpleClassName = parts[parts.length - 1];
-                String methodDescription =
-                        String.format("apply%s(%s,%s)", simpleClassName, event, snapshotClass);
-                expectedMethods.add(methodDescription);
-            }
-        }
+        getAttributeClass(elementValues, "aggregate()")
+                .map(eventsByAggregate::get)
+                .ifPresent(eventClasses -> getAttributeClass(elementValues, "snapshot()")
+                        .ifPresent(snapshotClass -> {
+                            for (String event : eventClasses) {
+                                String[] parts = event.split("\\.");
+                                String simpleClassName = parts[parts.length - 1];
+                                String methodDescription =
+                                        String.format("apply%s(%s,%s)",
+                                                simpleClassName, event, snapshotClass);
+                                expectedMethods.add(methodDescription);
+                            }
+                        }));
 
         return expectedMethods;
     }
 
-    @Nullable
-    private String getAttributeClass(
+    @NotNull
+    private Optional<String> getAttributeClass(
             Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues,
             String attributeName) {
         return elementValues
@@ -124,8 +123,7 @@ public class QueryProcessor extends AbstractProcessor {
                 .stream()
                 .filter(it -> it.getKey().toString().equals(attributeName))
                 .map(it -> it.getValue().getValue().toString())
-                .findFirst()
-                .orElseGet(null);
+                .findFirst();
     }
 
     private void loadEvents(
@@ -136,8 +134,9 @@ public class QueryProcessor extends AbstractProcessor {
                 if (annotationClassName.equals(EVENT_ANNOTATION)) {
                     Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues =
                             annotationMirror.getElementValues();
-                    String valueClass = getAttributeClass(elementValues, "value()");
-                    eventsByAggregate.get(valueClass).add(eventType.toString());
+                    getAttributeClass(elementValues, "value()")
+                            .map(eventsByAggregate::get)
+                            .ifPresent(map -> map.add(eventType.toString()));
                 }
             }
         }

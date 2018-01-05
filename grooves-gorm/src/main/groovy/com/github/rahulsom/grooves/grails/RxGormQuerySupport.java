@@ -3,7 +3,6 @@ package com.github.rahulsom.grooves.grails;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
-import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import grails.gorm.rx.RxEntity;
 import org.reactivestreams.Publisher;
 

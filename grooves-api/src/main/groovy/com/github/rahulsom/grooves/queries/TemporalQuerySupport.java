@@ -17,17 +17,17 @@ import java.util.Date;
 import java.util.List;
 
 import static com.github.rahulsom.grooves.queries.internal.Utils.*;
-import static io.reactivex.Flowable.*;
-import static java.util.stream.Collectors.toList;
+import static io.reactivex.Flowable.empty;
+import static io.reactivex.Flowable.fromPublisher;
 
 /**
  * Default interface to help in building temporal snapshots.
  *
- * @param <AggregateT>   The aggregate over which the query executes
- * @param <EventIdT>     The type of the {@link EventT}'s id field
- * @param <EventT>       The type of the Event
- * @param <SnapshotIdT>  The type of the {@link SnapshotT}'s id field
- * @param <SnapshotT>    The type of the Snapshot
+ * @param <AggregateT>  The aggregate over which the query executes
+ * @param <EventIdT>    The type of the {@link EventT}'s id field
+ * @param <EventT>      The type of the Event
+ * @param <SnapshotIdT> The type of the {@link SnapshotT}'s id field
+ * @param <SnapshotT>   The type of the Snapshot
  *
  * @author Rahul Somasunderam
  */
@@ -90,40 +90,13 @@ public interface TemporalQuerySupport<
      */
     default Flowable<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
             AggregateT aggregate, Date moment, boolean reuseEarlierSnapshot) {
-        if (reuseEarlierSnapshot) {
-            return getLastUsableSnapshot(aggregate, moment).flatMap(lastSnapshot ->
-                    fromPublisher(getUncomputedEvents(aggregate, lastSnapshot, moment))
-                            .toList()
-                            .toFlowable()
-                            .flatMap(events -> {
-                                if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
-                                    List<EventT> reverts = events.stream()
-                                            .filter(it -> it instanceof RevertEvent)
-                                            .collect(toList());
-                                    getLog().info("     Uncomputed reverts exist: {}",
-                                            stringify(reverts));
-                                    return getSnapshotAndEventsSince(
-                                            aggregate, moment, false);
-                                } else {
-                                    getLog().debug("     Events since last snapshot: {}",
-                                            stringify(events));
-                                    return just(new Pair<>(lastSnapshot, events));
-                                }
-                            }));
-
-        } else {
-            SnapshotT lastSnapshot = createEmptySnapshot();
-
-            final Flowable<List<EventT>> uncomputedEvents =
-                    fromPublisher(getUncomputedEvents(aggregate, lastSnapshot, moment))
-                            .toList()
-                            .toFlowable();
-
-            return uncomputedEvents
-                    .doOnNext(ue ->
-                            getLog().debug("     Events since origin: {}", stringify(ue)))
-                    .map(ue -> new Pair<>(lastSnapshot, ue));
-        }
+        return Utils.getSnapshotsWithReuse(
+                reuseEarlierSnapshot,
+                () -> getLastUsableSnapshot(aggregate, moment),
+                lastSnapshot -> getUncomputedEvents(aggregate, lastSnapshot, moment),
+                () -> getSnapshotAndEventsSince(aggregate, moment, false),
+                this::createEmptySnapshot
+        );
 
     }
 

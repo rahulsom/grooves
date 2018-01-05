@@ -17,7 +17,7 @@ class EventService {
     @Inject lateinit var database: Database
     @Inject lateinit var dslContext: DSLContext
 
-    val log = LoggerFactory.getLogger(this.javaClass)
+    private val log = LoggerFactory.getLogger(this.javaClass)
 
     // tag::documented[]
     val query =

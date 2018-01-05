@@ -4,18 +4,24 @@ import com.github.rahulsom.grooves.api.GroovesException;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.DeprecatedBy;
 import com.github.rahulsom.grooves.api.events.Deprecates;
+import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
+import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static io.reactivex.Flowable.*;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Utility objects and methods to help with Queries.
@@ -201,5 +207,73 @@ public class Utils {
                                         error(new GroovesException(
                                                 "Couldn't apply deprecates events")))
                         ));
+    }
+
+    private static final Logger logger = LoggerFactory.getLogger(Utils.class);
+
+    /**
+     * Computes a Flowable of a Pair of Snapshot and List of Events.
+     *
+     * @param reuseEarlierSnapshot         Whether earlier snapshots can be reused for this
+     *                                     computation. It is generally a good idea to set this to
+     *                                     true unless there are known reverts that demand this be
+     *                                     set to false.
+     * @param lastUsableSnapshot           Supplies the last usable snapshot
+     * @param uncomputedEvents             Gets the list of uncomputed events for a snapshot
+     * @param nonReusableSnapshotAndEvents Supplies a snapshot without reuse
+     * @param emptySnapshot                Supplies an empty snapshot
+     * @param <AggregateT>                 The aggregate over which the query executes
+     * @param <EventIdT>                   The type of the {@link EventT}'s id field
+     * @param <EventT>                     The type of the Event
+     * @param <SnapshotIdT>                The type of the {@link SnapshotT}'s id field
+     * @param <SnapshotT>                  The type of the Snapshot
+     *
+     * @return A flowable with one pair of snapshot and list of events.
+     */
+    public static <
+            AggregateT,
+            EventIdT,
+            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+            SnapshotIdT,
+            SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
+            > Flowable<Pair<SnapshotT, List<EventT>>> getSnapshotsWithReuse(
+            boolean reuseEarlierSnapshot,
+            Supplier<Flowable<SnapshotT>> lastUsableSnapshot,
+            Function<SnapshotT, Publisher<EventT>> uncomputedEvents,
+            Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> nonReusableSnapshotAndEvents,
+            Supplier<SnapshotT> emptySnapshot
+    ) {
+        if (reuseEarlierSnapshot) {
+            return lastUsableSnapshot.get().flatMap(lastSnapshot ->
+                    fromPublisher(uncomputedEvents.apply(lastSnapshot))
+                            .toList()
+                            .toFlowable()
+                            .flatMap(events -> {
+                                if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
+                                    List<EventT> reverts = events.stream()
+                                            .filter(it -> it instanceof RevertEvent)
+                                            .collect(toList());
+                                    logger.info("     Uncomputed reverts exist: {}",
+                                            stringify(reverts));
+                                    return nonReusableSnapshotAndEvents.get();
+                                } else {
+                                    logger.debug("     Events since last snapshot: {}",
+                                            stringify(events));
+                                    return just(new Pair<>(lastSnapshot, events));
+                                }
+                            }));
+        } else {
+            SnapshotT lastSnapshot = emptySnapshot.get();
+
+            final Flowable<List<EventT>> uncomputedEventsF =
+                    fromPublisher(uncomputedEvents.apply(lastSnapshot))
+                            .toList()
+                            .toFlowable();
+
+            return uncomputedEventsF
+                    .doOnNext(ue -> logger.debug("     Events since origin: {}", stringify(ue)))
+                    .map(ue -> new Pair<>(lastSnapshot, ue));
+        }
+
     }
 }

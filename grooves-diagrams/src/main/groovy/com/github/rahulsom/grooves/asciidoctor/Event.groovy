@@ -40,7 +40,7 @@ class Event {
                 x += 10
             }
             this.x = x
-            this.y = y
+            this.y = (int) y
 
             if (type == EventType.Revert) {
                 def revertedId = description.split(' ')[-1]

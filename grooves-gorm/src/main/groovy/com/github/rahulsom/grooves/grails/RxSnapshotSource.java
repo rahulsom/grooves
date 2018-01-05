@@ -3,7 +3,6 @@ package com.github.rahulsom.grooves.grails;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
-import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import grails.gorm.rx.RxEntity;
 import org.reactivestreams.Publisher;
 import rx.Observable;
@@ -57,7 +56,7 @@ public interface RxSnapshotSource<
                         SNAPSHOTS_BY_AGGREGATE,
                         new Object[]{aggregate.getId(), LATEST_BY_POSITION}) :
                 invokeStaticMethod(getSnapshotClass(),
-                        SNAPSHOTS_BY_TIMETTAMP,
+                        SNAPSHOTS_BY_TIMESTAMP,
                         new Object[]{aggregate.getId(), maxTimestamp, LATEST_BY_POSITION})));
     }
 

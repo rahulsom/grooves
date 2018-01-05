@@ -17,7 +17,7 @@ import com.github.rahulsom.grooves.api.snapshots.internal.BaseJoin
 interface Join<
         AggregateT,
         JoinIdT,
-        JoinedAggregateT,
+        in JoinedAggregateT,
         EventIdT,
         in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
         TemporalJoin<AggregateT, JoinIdT, JoinedAggregateT, EventIdT, EventT>,

@@ -8,7 +8,7 @@ import static java.util.Collections.unmodifiableMap;
 class QueryUtil {
     protected static final String SNAPSHOTS_BY_POSITION =
             "findAllByAggregateIdAndLastEventPositionLessThan";
-    protected static final String SNAPSHOTS_BY_TIMETTAMP =
+    protected static final String SNAPSHOTS_BY_TIMESTAMP =
             "findAllByAggregateIdAndLastEventTimestampLessThan";
     protected static final String SNAPSHOTS_BY_AGGREGATE =
             "findAllByAggregateId";

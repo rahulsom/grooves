@@ -14,6 +14,7 @@ import static groovyx.net.http.ContentType.JSON
  * @author Rahul Somasunderam
  */
 @Integration
+@SuppressWarnings("GroovyAssignabilityCheck")
 class PatientSpec extends AbstractPatientSpec {
 
     @Value('${local.server.port}')

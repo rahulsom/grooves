@@ -2,7 +2,6 @@ package com.github.rahulsom.grooves.queries;
 
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
-import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;

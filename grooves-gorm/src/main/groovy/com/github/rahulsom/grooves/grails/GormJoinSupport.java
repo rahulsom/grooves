@@ -5,7 +5,6 @@ import com.github.rahulsom.grooves.api.events.DisjoinEvent;
 import com.github.rahulsom.grooves.api.events.JoinEvent;
 import com.github.rahulsom.grooves.api.snapshots.Join;
 import com.github.rahulsom.grooves.queries.JoinSupport;
-import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
 import org.grails.datastore.gorm.GormEntity;
 import org.reactivestreams.Publisher;

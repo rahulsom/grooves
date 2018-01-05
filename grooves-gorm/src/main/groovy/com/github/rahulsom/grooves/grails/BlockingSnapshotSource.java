@@ -3,7 +3,6 @@ package com.github.rahulsom.grooves.grails;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
-import com.github.rahulsom.grooves.queries.internal.BaseQuery;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.grails.datastore.gorm.GormEntity;
 import org.reactivestreams.Publisher;
@@ -70,7 +69,7 @@ public interface BlockingSnapshotSource<
                             new Object[]{aggregate.getId(), LATEST_BY_TIMESTAMP}) :
                     invokeStaticMethod(
                             getSnapshotClass(),
-                            SNAPSHOTS_BY_TIMETTAMP,
+                            SNAPSHOTS_BY_TIMESTAMP,
                             new Object[]{aggregate.getId(), maxTimestamp, LATEST_BY_TIMESTAMP}));
             return DefaultGroovyMethods.asBoolean(snapshots) ?
                     just(detachSnapshot(snapshots.get(0))) :

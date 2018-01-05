@@ -14,9 +14,9 @@ import java.util.stream.Stream;
 @Singleton
 public class Database {
 
-    private List<PatientEvent> eventList = new ArrayList<>();
-    private List<Patient> patientList = new ArrayList<>();
-    private List snapshotList = new ArrayList();
+    private final List<PatientEvent> eventList = new ArrayList<>();
+    private final List<Patient> patientList = new ArrayList<>();
+    private final List snapshotList = new ArrayList();
 
     public Stream<PatientEvent> events() {
         return eventList.stream();

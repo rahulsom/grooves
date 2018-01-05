@@ -27,12 +27,12 @@ import static rx.RxReactiveStreams.toObservable;
 @Startup
 public class BootStrap {
 
-    private static final String ANNUALPHYSICAL_NAME = "ANNUALPHYSICAL";
-    private static final String ANNUALPHYSICAL_COST = "170.00";
-    private static final String FLUSHOT_NAME = "FLUSHOT";
-    private static final String FLUSHOT_COST = "32.40";
-    private static final String GLUCOSETEST_NAME = "GLUCOSETEST";
-    private static final String GLUCOSETEST_COST = "78.93";
+    private static final String ANNUAL_PHYSICAL_NAME = "ANNUALPHYSICAL";
+    private static final String ANNUAL_PHYSICAL_COST = "170.00";
+    private static final String FLU_SHOT_NAME = "FLUSHOT";
+    private static final String FLU_SHOT_COST = "32.40";
+    private static final String GLUCOSE_TEST_NAME = "GLUCOSETEST";
+    private static final String GLUCOSE_TEST_COST = "78.93";
 
     private static long idGenerator = 1;
 
@@ -80,16 +80,16 @@ public class BootStrap {
 
         return on(patient, it -> {
             it.apply(new PatientCreated("John Lennon"));
-            it.apply(new ProcedurePerformed(FLUSHOT_NAME, new BigDecimal(FLUSHOT_COST)));
-            it.apply(new ProcedurePerformed(GLUCOSETEST_NAME, new BigDecimal(GLUCOSETEST_COST)));
+            it.apply(new ProcedurePerformed(FLU_SHOT_NAME, new BigDecimal(FLU_SHOT_COST)));
+            it.apply(new ProcedurePerformed(GLUCOSE_TEST_NAME, new BigDecimal(GLUCOSE_TEST_COST)));
             it.apply(
                     new PaymentMade(new BigDecimal("100.25")));
 
             it.snapshotWith(patientAccountQuery);
             it.snapshotWith(patientHealthQuery);
 
-            it.apply(new ProcedurePerformed(ANNUALPHYSICAL_NAME,
-                    new BigDecimal(ANNUALPHYSICAL_COST)));
+            it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME,
+                    new BigDecimal(ANNUAL_PHYSICAL_COST)));
             it.apply(new PaymentMade(new BigDecimal("180.00")));
 
             it.snapshotWith(patientAccountQuery);
@@ -102,15 +102,15 @@ public class BootStrap {
 
         return on(patient, it -> {
             it.apply(new PatientCreated("Ringo Starr"));
-            it.apply(new ProcedurePerformed(ANNUALPHYSICAL_NAME,
-                    new BigDecimal(ANNUALPHYSICAL_COST)));
-            it.apply(new ProcedurePerformed(GLUCOSETEST_NAME, new BigDecimal(GLUCOSETEST_COST)));
+            it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME,
+                    new BigDecimal(ANNUAL_PHYSICAL_COST)));
+            it.apply(new ProcedurePerformed(GLUCOSE_TEST_NAME, new BigDecimal(GLUCOSE_TEST_COST)));
             it.apply(new PaymentMade(new BigDecimal("100.25")));
 
             it.snapshotWith(patientAccountQuery);
             it.snapshotWith(patientHealthQuery);
 
-            it.apply(new ProcedurePerformed(FLUSHOT_NAME, new BigDecimal(FLUSHOT_COST)));
+            it.apply(new ProcedurePerformed(FLU_SHOT_NAME, new BigDecimal(FLU_SHOT_COST)));
             it.apply(new PaymentMade(new BigDecimal("180.00")));
 
             it.snapshotWith(patientAccountQuery);
@@ -123,10 +123,10 @@ public class BootStrap {
 
         return on(patient, it -> {
             it.apply(new PatientCreated("Paul McCartney"));
-            it.apply(new ProcedurePerformed(ANNUALPHYSICAL_NAME,
-                    new BigDecimal(ANNUALPHYSICAL_COST)));
+            it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME,
+                    new BigDecimal(ANNUAL_PHYSICAL_COST)));
             ProcedurePerformed gluc = (ProcedurePerformed) it.apply(
-                    new ProcedurePerformed(GLUCOSETEST_NAME, new BigDecimal(GLUCOSETEST_COST)));
+                    new ProcedurePerformed(GLUCOSE_TEST_NAME, new BigDecimal(GLUCOSE_TEST_COST)));
             it.apply(new PaymentMade(new BigDecimal("100.25")));
             it.apply(new PatientEventReverted(gluc.getId()));
             PaymentMade pmt = (PaymentMade) it.apply(new PaymentMade(new BigDecimal("30.00")));
@@ -154,9 +154,9 @@ public class BootStrap {
 
         on(patient, it -> {
             it.apply(new PatientCreated("Farrokh Bulsara"));
-            it.apply(new ProcedurePerformed(ANNUALPHYSICAL_NAME,
-                    new BigDecimal(ANNUALPHYSICAL_COST)));
-            it.apply(new ProcedurePerformed(GLUCOSETEST_NAME, new BigDecimal(GLUCOSETEST_COST)));
+            it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME,
+                    new BigDecimal(ANNUAL_PHYSICAL_COST)));
+            it.apply(new ProcedurePerformed(GLUCOSE_TEST_NAME, new BigDecimal(GLUCOSE_TEST_COST)));
 
             it.snapshotWith(patientAccountQuery);
             it.snapshotWith(patientHealthQuery);
@@ -185,9 +185,9 @@ public class BootStrap {
 
         on(patient, it -> {
             it.apply(new PatientCreated("Tina Fey"));
-            it.apply(new ProcedurePerformed(ANNUALPHYSICAL_NAME,
-                    new BigDecimal(ANNUALPHYSICAL_COST)));
-            it.apply(new ProcedurePerformed(GLUCOSETEST_NAME, new BigDecimal(GLUCOSETEST_COST)));
+            it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME,
+                    new BigDecimal(ANNUAL_PHYSICAL_COST)));
+            it.apply(new ProcedurePerformed(GLUCOSE_TEST_NAME, new BigDecimal(GLUCOSE_TEST_COST)));
 
             it.snapshotWith(patientAccountQuery);
             it.snapshotWith(patientHealthQuery);

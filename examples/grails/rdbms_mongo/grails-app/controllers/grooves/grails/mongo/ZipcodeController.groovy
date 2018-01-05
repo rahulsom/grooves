@@ -29,7 +29,7 @@ class ZipcodeController implements RxController {
                 new ZipcodeSummaryQuery().computeSnapshot(zipcode, params.date('date')) :
                 new ZipcodeSummaryQuery().computeSnapshot(zipcode, new Date())
 
-        toObservable(snapshot).map { s ->
+        snapshot.map { s ->
             JSON.use('deep') {
                 rx.render(s as JSON)
             }
