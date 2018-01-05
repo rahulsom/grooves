@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.queries;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
@@ -27,7 +26,6 @@ public class Grooves {
      *          .build();
      * }</pre>
      *
-     * @param <AggregateIdT> The type of {@link AggregateT}'s id
      * @param <AggregateT>   The aggregate over which the query executes
      * @param <EventIdT>     The type of the {@link EventT}'s id field
      * @param <EventT>       The type of the Event
@@ -37,14 +35,12 @@ public class Grooves {
      */
     @NotNull
     public static <
-            AggregateIdT,
-            AggregateT extends AggregateType<AggregateIdT>,
+            AggregateT,
             EventIdT,
-            EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
             SnapshotIdT,
-            SnapshotT extends VersionedSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
-                    EventT>
-            > FunctionalVersionedQuery.Builder<AggregateIdT, AggregateT, EventIdT, EventT,
+            SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
+            > FunctionalVersionedQuery.Builder<AggregateT, EventIdT, EventT,
             SnapshotIdT, SnapshotT, ?> versioned() {
         return FunctionalVersionedQuery.Builder.newBuilder();
     }
@@ -63,7 +59,6 @@ public class Grooves {
      *          .build();
      * }</pre>
      *
-     * @param <AggregateIdT> The type of {@link AggregateT}'s id
      * @param <AggregateT>   The aggregate over which the query executes
      * @param <EventIdT>     The type of the {@link EventT}'s id field
      * @param <EventT>       The type of the Event
@@ -73,14 +68,12 @@ public class Grooves {
      */
     @NotNull
     public static <
-            AggregateIdT,
-            AggregateT extends AggregateType<AggregateIdT>,
+            AggregateT,
             EventIdT,
-            EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
             SnapshotIdT,
-            SnapshotT extends TemporalSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
-                    EventT>
-            > FunctionalTemporalQuery.Builder<AggregateIdT, AggregateT, EventIdT, EventT,
+            SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
+            > FunctionalTemporalQuery.Builder<AggregateT, EventIdT, EventT,
             SnapshotIdT, SnapshotT, ?> temporal() {
         return FunctionalTemporalQuery.Builder.newBuilder();
     }

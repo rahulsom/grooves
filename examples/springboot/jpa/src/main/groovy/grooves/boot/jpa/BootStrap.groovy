@@ -194,7 +194,7 @@ class BootStrap implements InitializingBean {
             patientEventRepository.countByAggregateId(patient.id) + 1
         } as Supplier<Long>
         def dateSupplier = { currDate += 1; currDate }
-        new GroovyEventsDsl<Long, Patient, Long, PatientEvent>().on(
+        new GroovyEventsDsl<Patient, Long, PatientEvent>().on(
                 patient, eventSaver, positionSupplier, dateSupplier,
                 closure)
     }

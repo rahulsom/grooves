@@ -17,8 +17,7 @@ import static rx.RxReactiveStreams.toPublisher
 @GrailsCompileStatic
 @SuppressWarnings(['DuplicateStringLiteral'])
 class PatientHealthQuery implements
-        GormQuerySupport<Long, Patient, Long, PatientEvent, String, PatientHealth,
-                PatientHealthQuery> {
+        GormQuerySupport<Long, Patient, Long, PatientEvent, String, PatientHealth> {
 
     final Class<PatientHealth> snapshotClass = PatientHealth
     final Class<PatientEvent> eventClass = PatientEvent

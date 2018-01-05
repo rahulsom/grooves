@@ -22,17 +22,17 @@ import static io.reactivex.Flowable.*
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = 'eventType')
 @SuppressWarnings(['AbstractClassWithoutAbstractMethod'])
-abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEvent> { // <1>
+abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> { // <1>
 
     @GeneratedValue @Id Long id
-    @Transient RevertEvent<Long, Patient, Long, PatientEvent> revertedBy // <2>
+    @Transient RevertEvent<Patient, Long, PatientEvent> revertedBy // <2>
     @Column(nullable = false) Date timestamp // <3>
     @Column(nullable = false) long position //<4>
     @OneToOne Patient aggregate
 
-    Publisher<Patient> getAggregateObservable() {
+    Publisher<Patient> getAggregateObservable() { // <5>
         aggregate ? just(aggregate) : empty()
-    } // <5>
+    }
 
 }
 // end::abstract[]
@@ -70,9 +70,8 @@ class PaymentMade extends PatientEvent {
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
 //tag::reverted[]
 @Entity
-class PatientEventReverted
-        extends PatientEvent // <1>
-        implements RevertEvent<Long, Patient, Long, PatientEvent> { // <2>
+class PatientEventReverted extends PatientEvent // <1>
+        implements RevertEvent<Patient, Long, PatientEvent> { // <2>
     Long revertedEventId // <3>
 
     @Override String toString() { "PatientEventReverted(revertedEventId=$revertedEventId)" }
@@ -81,7 +80,7 @@ class PatientEventReverted
 
 @Entity
 class PatientDeprecatedBy extends PatientEvent implements
-        DeprecatedBy<Long, Patient, Long, PatientEvent> {
+        DeprecatedBy<Patient, Long, PatientEvent> {
     @OneToOne PatientDeprecates converse
     @OneToOne Patient deprecator
 
@@ -93,7 +92,7 @@ class PatientDeprecatedBy extends PatientEvent implements
 
 @Entity
 class PatientDeprecates extends PatientEvent
-        implements Deprecates<Long, Patient, Long, PatientEvent> {
+        implements Deprecates<Patient, Long, PatientEvent> {
     @OneToOne PatientDeprecatedBy converse
     @OneToOne Patient deprecated
 

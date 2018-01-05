@@ -1,28 +1,23 @@
 package com.github.rahulsom.grooves.api.events
 
-import com.github.rahulsom.grooves.api.AggregateType
 import org.reactivestreams.Publisher
 
 /**
  * Creates a join from [AggregateT] to [JoinedAggregateT] that had not existed earlier.
  *
- * @param [AggregateIdT] The type for [AggregateType.id]
  * @param [AggregateT] Aggregate this event applies to
  * @param [EventIdT] The type for [BaseEvent.id]
  * @param [EventT] The base class for all events in the hierarchy for [AggregateT].
- * @param [JoinedAggregateIdT] The type of the joined [AggregateType.id]
  * @param [JoinedAggregateT] The target aggregate
  *
  * @author Rahul Somasunderam
  */
 interface JoinEvent<
-        AggregateIdT,
-        AggregateT : AggregateType<AggregateIdT>,
+        AggregateT,
         EventIdT,
         EventT,
-        JoinedAggregateIdT,
-        JoinedAggregateT : AggregateType<JoinedAggregateIdT>> :
-        BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT> {
+        JoinedAggregateT> :
+        BaseEvent<AggregateT, EventIdT, EventT> {
 
     /**
      * An observable that points to the aggregate to which a join is being performed.

@@ -297,14 +297,14 @@ class BootStrap {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { PatientEvent.countByAggregate(patient) + 1 }
         def dateSupplier = { currDate += 1; currDate }
-        new GroovyEventsDsl<Long, Patient, Long, PatientEvent>().on(
+        new GroovyEventsDsl<Patient, Long, PatientEvent>().on(
                 patient, eventSaver, positionSupplier, dateSupplier, closure)
     }
 
     Zipcode on(Zipcode zipcode, @DelegatesTo(OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { ZipcodeEvent.countByAggregate(zipcode) + 1 }
-        new GroovyEventsDsl<Long, Zipcode, Long, ZipcodeEvent>().on(
+        new GroovyEventsDsl<Zipcode, Long, ZipcodeEvent>().on(
                 zipcode, eventSaver, positionSupplier, closure)
     }
 

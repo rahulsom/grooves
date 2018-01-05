@@ -17,7 +17,7 @@ import static rx.RxReactiveStreams.toPublisher
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition'])
 @SuppressWarnings(['DuplicateNumberLiteral'])
 class PatientAccount implements RxMongoEntity<PatientAccount>,
-        Snapshot<String, Patient, String, String, PatientEvent> {
+        Snapshot<Patient, String, String, PatientEvent> {
 
     String id
     long lastEventPosition

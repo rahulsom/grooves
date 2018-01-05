@@ -1,7 +1,5 @@
 package grooves.example.push
 
-import org.slf4j.LoggerFactory
-
 /**
  * Wraps [ThreadLocal] such that it works with [ContextAwareScheduler].
  * This along with [ContextAwareScheduler] is based on
@@ -10,7 +8,6 @@ import org.slf4j.LoggerFactory
  */
 object ContextManager {
 
-    private val log = LoggerFactory.getLogger(this.javaClass)
     private val ctx = ThreadLocal<Map<String, Any>>()
 
     fun get() = ctx.get()

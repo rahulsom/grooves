@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.queries;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import org.reactivestreams.Publisher;
@@ -8,13 +7,11 @@ import org.reactivestreams.Publisher;
 import java.util.Date;
 
 public interface TemporalQuery<
-        AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends TemporalSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT,
-                EventT>> {
+        SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>> {
     /**
      * Computes a snapshot for specified version of an aggregate.
      *

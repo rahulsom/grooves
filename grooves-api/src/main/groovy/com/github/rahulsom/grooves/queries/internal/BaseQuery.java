@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.queries.internal;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
@@ -9,12 +8,9 @@ import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Date;
-
 /**
  * Aggregate trait that simplifies computing snapshots from events.
  *
- * @param <AggregateIdT> The type of {@link AggregateT}'s id
  * @param <AggregateT>   The aggregate over which the query executes
  * @param <EventIdT>     The type of the {@link EventT}'s id field
  * @param <EventT>       The type of the Event
@@ -24,12 +20,11 @@ import java.util.Date;
  * @author Rahul Somasunderam
  */
 public interface BaseQuery<
-        AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
+        SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
         > {
 
     default Logger getLog() {
@@ -88,6 +83,5 @@ public interface BaseQuery<
      *
      * @return An executor that applies events.
      */
-    @NotNull Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-            SnapshotT> getExecutor();
+    @NotNull Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> getExecutor();
 }

@@ -15,7 +15,7 @@ import java.util.*
 
 // tag::documented[]
 @Configurable
-class PatientAccount : Snapshot<String, Patient, String, String, PatientEvent> { // <1>
+class PatientAccount : Snapshot<Patient, String, String, PatientEvent> { // <1>
 
     override var id: String? = null
     override var lastEventPosition: Long = 0 // <2>

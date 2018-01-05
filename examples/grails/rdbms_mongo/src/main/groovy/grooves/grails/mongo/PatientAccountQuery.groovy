@@ -18,7 +18,7 @@ import static rx.RxReactiveStreams.toPublisher
 @Query(aggregate = Patient, snapshot = PatientAccount) // <5>
 class PatientAccountQuery
         implements GormQuerySupport<Long, Patient, Long, PatientEvent,
-                String, PatientAccount, PatientAccountQuery> { // <6>
+                String, PatientAccount> { // <6>
 
     final Class<PatientEvent> eventClass = PatientEvent // <7>
     final Class<PatientAccount> snapshotClass = PatientAccount // <8>

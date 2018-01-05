@@ -20,9 +20,9 @@ import static rx.RxReactiveStreams.toPublisher
 @SuppressWarnings(['DuplicateStringLiteral', 'AbstractClassWithoutAbstractMethod',
         'GrailsDomainReservedSqlKeywordName', ])
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
-abstract class ZipcodeEvent implements BaseEvent<Long, Zipcode, Long, ZipcodeEvent> {
+abstract class ZipcodeEvent implements BaseEvent<Zipcode, Long, ZipcodeEvent> {
 
-    RevertEvent<Long, Zipcode, Long, ZipcodeEvent> revertedBy
+    RevertEvent<Zipcode, Long, ZipcodeEvent> revertedBy
     Date timestamp
     long position
     Zipcode aggregate
@@ -49,7 +49,7 @@ class ZipcodeCreated extends ZipcodeEvent {
 @Event(Zipcode)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeGotPatient extends ZipcodeEvent implements
-        JoinEvent<Long, Zipcode, Long, ZipcodeEvent, Long, Patient> {
+        JoinEvent<Zipcode, Long, ZipcodeEvent, Patient> {
     Patient patient
 
     @Override Publisher<Patient> getJoinAggregateObservable() { toPublisher(just(patient)) }
@@ -62,7 +62,7 @@ class ZipcodeGotPatient extends ZipcodeEvent implements
 @Event(Zipcode)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeLostPatient extends ZipcodeEvent implements
-        DisjoinEvent<Long, Zipcode, Long, ZipcodeEvent, Long, Patient> {
+        DisjoinEvent<Zipcode, Long, ZipcodeEvent, Patient> {
     Patient patient
 
     @Override Publisher<Patient> getJoinAggregateObservable() { toPublisher(just(patient)) }
@@ -75,7 +75,7 @@ class ZipcodeLostPatient extends ZipcodeEvent implements
 @Event(Zipcode)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeGotDoctor extends ZipcodeEvent implements
-        JoinEvent<Long, Zipcode, Long, ZipcodeEvent, Long, Doctor> {
+        JoinEvent<Zipcode, Long, ZipcodeEvent, Doctor> {
     Doctor doctor
 
     @Override Publisher<Doctor> getJoinAggregateObservable() { toPublisher(just(doctor)) }
@@ -88,7 +88,7 @@ class ZipcodeGotDoctor extends ZipcodeEvent implements
 @Event(Zipcode)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeLostDoctor extends ZipcodeEvent implements
-        DisjoinEvent<Long, Zipcode, Long, ZipcodeEvent, Long, Doctor> {
+        DisjoinEvent<Zipcode, Long, ZipcodeEvent, Doctor> {
     Doctor doctor
 
     @Override Publisher<Doctor> getJoinAggregateObservable() { toPublisher(just(doctor)) }

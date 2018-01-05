@@ -14,7 +14,7 @@ import static rx.Observable.just;
 import static rx.RxReactiveStreams.toPublisher;
 
 @Query(aggregate = Patient.class, snapshot = PatientHealth.class)
-public class PatientHealthQuery implements CustomQuerySupport<PatientHealth, PatientHealthQuery> {
+public class PatientHealthQuery implements CustomQuerySupport<PatientHealth> {
 
     @Inject @Getter
     private Database database;

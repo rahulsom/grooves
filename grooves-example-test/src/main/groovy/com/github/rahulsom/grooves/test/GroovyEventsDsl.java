@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.test;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
@@ -19,11 +18,10 @@ import java.util.function.Supplier;
  * @author Rahul Somasunderam
  */
 public class GroovyEventsDsl<
-        AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>> extends
-        EventsDsl<AggregateIdT, AggregateT, EventIdT, EventT> {
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>> extends
+        EventsDsl<AggregateT, EventIdT, EventT> {
 
     /**
      * Allows executing a consumer with some context to setup events.
@@ -42,7 +40,7 @@ public class GroovyEventsDsl<
             AggregateT aggregate, Consumer entityConsumer, Supplier<Long> positionSupplier,
             Supplier<Date> timestampSupplier, @DelegatesTo(OnSpec.class) Closure closure) {
 
-        OnSpec<AggregateIdT, AggregateT, EventIdT, EventT, ?, ?> spec = new OnSpec<>();
+        OnSpec<AggregateT, EventIdT, EventT, ?, ?> spec = new OnSpec<>();
         spec.setAggregate(aggregate);
         spec.setEntityConsumer(entityConsumer);
         spec.setTimestampSupplier(timestampSupplier);

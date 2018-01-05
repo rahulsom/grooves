@@ -1,7 +1,5 @@
 package com.github.rahulsom.grooves.java;
 
-import com.github.rahulsom.grooves.api.AggregateType;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -15,5 +13,5 @@ public @interface Event {
      *
      * @return The type of the Aggregate
      */
-    Class<? extends AggregateType> value();
+    Class<?> value();
 }

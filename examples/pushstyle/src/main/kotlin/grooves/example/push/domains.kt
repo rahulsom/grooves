@@ -1,6 +1,5 @@
 package grooves.example.push
 
-import com.github.rahulsom.grooves.api.AggregateType
 import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
@@ -11,7 +10,7 @@ import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class Account(override val id: String) : AggregateType<String>
+data class Account(val id: String)
 
 sealed class Transaction(
         override val id: String,
@@ -19,13 +18,13 @@ sealed class Transaction(
         override var timestamp: Date,
         override var position: Long)
     :
-        BaseEvent<String, Account, String, Transaction> {
+        BaseEvent<Account, String, Transaction> {
 
     override fun getAggregateObservable(): Publisher<Account> =
             Flowable.fromIterable(listOf(aggregate).filter { it != null })
 
 
-    override var revertedBy: RevertEvent<String, Account, String, Transaction>?
+    override var revertedBy: RevertEvent<Account, String, Transaction>?
         get() = null
         set(value) {}
 
@@ -49,7 +48,7 @@ sealed class Transaction(
             Transaction(id, aggregate, timestamp, position)
 }
 
-class Balance() : Snapshot<String, Account, String, String, Transaction> {
+class Balance() : Snapshot<Account, String, String, Transaction> {
     override var id: String? = UUID.randomUUID().toString()
     internal var aggregate: Account? = null
     override var lastEventTimestamp: Date? = Date()

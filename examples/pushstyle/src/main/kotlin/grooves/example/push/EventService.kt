@@ -21,7 +21,7 @@ class EventService {
 
     // tag::documented[]
     val query =
-            Grooves.versioned<String, Account, String, Transaction, String, Balance>() // <1>
+            Grooves.versioned<Account, String, Transaction, String, Balance>() // <1>
                     .withSnapshot { version, account -> // <2>
                         log.info("getBalance($account, $version)")
                         Maybe.fromCallable { database.getBalance(account, version) }

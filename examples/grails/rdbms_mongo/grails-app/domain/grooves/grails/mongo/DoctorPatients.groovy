@@ -13,7 +13,7 @@ import static rx.RxReactiveStreams.toPublisher
  * @author Rahul Somasunderam
  */
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition',])
-class DoctorPatients implements Join<Long, Doctor, String, Long, Long, DoctorEvent> {
+class DoctorPatients implements Join<Doctor, String, Patient, Long, DoctorEvent> {
 
     static mapWith = 'mongo'
 
@@ -68,9 +68,10 @@ class DoctorPatients implements Join<Long, Doctor, String, Long, Long, DoctorEve
 
     @Override String toString() { "DoctorPatients($id, $aggregateId, $lastEventPosition)" }
 
-    @Override
-    void setJoinedIds(List<? extends Long> list) {
-        this.joinedIds = list
+    void addJoinedAggregate(Patient patient) {
+        joinedIds.add(patient.id)
     }
-
+    void removeJoinedAggregate(Patient patient) {
+        joinedIds.remove(patient.id)
+    }
 }

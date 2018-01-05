@@ -20,14 +20,14 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 // tag::patientEvent[]
-sealed class PatientEvent : BaseEvent<String, Patient, String, PatientEvent> { // <1><2>
+sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
 
     @Id override val id: String? = null
 
     var aggregateId: String? = null
 
     @Transient
-    override var revertedBy: RevertEvent<String, Patient, String, PatientEvent>? = null // <3>
+    override var revertedBy: RevertEvent<Patient, String, PatientEvent>? = null // <3>
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     lateinit override var timestamp: Date // <4>
@@ -54,7 +54,7 @@ sealed class PatientEvent : BaseEvent<String, Patient, String, PatientEvent> { /
     // tag::reverted[]
     data class Reverted(override val revertedEventId: String) : // <1>
             PatientEvent(), // <2>
-            RevertEvent<String, Patient, String, PatientEvent> { // <3>
+            RevertEvent<Patient, String, PatientEvent> { // <3>
         fun getAudit(): String = "$id - Revert $revertedEventId"
         // end::reverted[]
         override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
@@ -63,7 +63,7 @@ sealed class PatientEvent : BaseEvent<String, Patient, String, PatientEvent> { /
     // end::reverted[]
 
     data class PatientDeprecates(val deprecated: Patient) :
-            PatientEvent(), Deprecates<String, Patient, String, PatientEvent> {
+            PatientEvent(), Deprecates<Patient, String, PatientEvent> {
         var converseId: String? = null
 
         @JsonIgnore
@@ -85,7 +85,7 @@ sealed class PatientEvent : BaseEvent<String, Patient, String, PatientEvent> { /
 
     data class PatientDeprecatedBy(
             val deprecator: Patient, val converseId: String) : PatientEvent(),
-            DeprecatedBy<String, Patient, String, PatientEvent> {
+            DeprecatedBy<Patient, String, PatientEvent> {
 
         @JsonIgnore
         override fun getConverseObservable(): Publisher<PatientDeprecates> {

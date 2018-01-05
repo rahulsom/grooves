@@ -1,13 +1,11 @@
 package com.github.rahulsom.grooves.grails;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.DisjoinEvent;
 import com.github.rahulsom.grooves.api.events.JoinEvent;
 import com.github.rahulsom.grooves.api.snapshots.Join;
 import com.github.rahulsom.grooves.queries.JoinSupport;
 import com.github.rahulsom.grooves.queries.internal.BaseQuery;
-import com.github.rahulsom.grooves.queries.internal.Executor;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
 import grails.gorm.rx.RxEntity;
 import org.reactivestreams.Publisher;
@@ -34,26 +32,21 @@ import java.util.Date;
 @Deprecated
 public interface RxGormJoinSupport<
         AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT> & RxEntity<AggregateT>,
+        AggregateT extends GormAggregate<AggregateIdT> & RxEntity<AggregateT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT> & RxEntity<EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT> & RxEntity<EventT>,
         JoinedAggregateIdT,
-        JoinedAggregateT extends AggregateType<JoinedAggregateIdT> & RxEntity<JoinedAggregateT>,
+        JoinedAggregateT extends GormAggregate<JoinedAggregateIdT> & RxEntity<JoinedAggregateT>,
         SnapshotIdT,
-        SnapshotT extends Join<AggregateIdT, AggregateT, SnapshotIdT, JoinedAggregateIdT,
-                EventIdT, EventT> & RxEntity<SnapshotT>,
-        JoinEventT extends JoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
-                JoinedAggregateIdT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateIdT, AggregateT, EventIdT, EventT,
-                JoinedAggregateIdT, JoinedAggregateT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT>
+        SnapshotT extends Join<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT, EventT> &
+                RxEntity<SnapshotT>,
+        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
+        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>
         > extends
-        JoinSupport<AggregateIdT, AggregateT, EventIdT, EventT, JoinedAggregateIdT,
-                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT, QueryT>,
-        RxEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT>,
-        RxSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT, QueryT> {
+        JoinSupport<AggregateT, EventIdT, EventT,
+                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT>,
+        RxEventSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+        RxSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     @Override
     default JoinExecutor getExecutor() {

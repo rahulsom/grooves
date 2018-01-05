@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.queries.internal;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
@@ -12,7 +11,6 @@ import java.util.List;
 /**
  * Executes a query by controlling how events are applied.
  *
- * @param <AggregateIdT> The type of {@link AggregateT}'s id
  * @param <AggregateT>   The type of Aggregate
  * @param <EventIdT>     The type of {@link EventT}'s id
  * @param <EventT>       The type of Event
@@ -22,12 +20,11 @@ import java.util.List;
  * @author Rahul Somasunderam
  */
 public interface Executor<
-        AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>
+        SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
         > {
     /**
      * Applies reverts to a list of events and then returns forward events.
@@ -50,10 +47,10 @@ public interface Executor<
      * @return The Snapshot that has been mutated
      */
     @NotNull Flowable<SnapshotT> applyEvents(
-            @NotNull BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
+            @NotNull BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
                     query,
             @NotNull SnapshotT initialSnapshot,
             @NotNull Flowable<EventT> events,
-            @NotNull List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
+            @NotNull List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesList,
             @NotNull AggregateT aggregate);
 }

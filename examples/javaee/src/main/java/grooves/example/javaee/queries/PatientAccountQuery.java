@@ -17,7 +17,7 @@ import static rx.RxReactiveStreams.toPublisher;
 // tag::documented[]
 @Query(aggregate = Patient.class, snapshot = PatientAccount.class) // <10>
 public class PatientAccountQuery
-        implements CustomQuerySupport<PatientAccount, PatientAccountQuery> { // <11>
+        implements CustomQuerySupport<PatientAccount> { // <11>
 
     // end::documented[]
     @Inject @Getter

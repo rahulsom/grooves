@@ -1,13 +1,11 @@
 package com.github.rahulsom.grooves.api.snapshots.internal
 
-import com.github.rahulsom.grooves.api.AggregateType
 import com.github.rahulsom.grooves.api.events.BaseEvent
 import org.reactivestreams.Publisher
 
 /**
  * Marks a class as a snapshot. This makes no assumption about the type of snapshot.
  *
- * @param [AggregateIdT] The type of [AggregateType.id]
  * @param [AggregateT] The Aggregate this snapshot works over
  * @param [SnapshotIdT] The type for [id]
  * @param [EventIdT] The type for [BaseEvent.id]
@@ -16,11 +14,10 @@ import org.reactivestreams.Publisher
  * @author Rahul Somasunderam
  */
 interface BaseSnapshot<
-        AggregateIdT,
-        AggregateT : AggregateType<AggregateIdT>,
+        AggregateT,
         SnapshotIdT,
         EventIdT,
-        in EventT : BaseEvent<AggregateIdT, AggregateT, EventIdT, in EventT>> {
+        in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> {
 
     /**
      * A unique identifier for the Snapshot.

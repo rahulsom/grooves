@@ -21,10 +21,10 @@ import static rx.RxReactiveStreams.toPublisher
 @EqualsAndHashCode
 @SuppressWarnings(['AbstractClassWithoutAbstractMethod', 'GrailsDomainReservedSqlKeywordName'])
 class PatientEvent implements RxMongoEntity<PatientEvent>,
-        BaseEvent<String, Patient, String, PatientEvent> {
+        BaseEvent<Patient, String, PatientEvent> {
 
     String id
-    RevertEvent<String, Patient, String, PatientEvent> revertedBy
+    RevertEvent<Patient, String, PatientEvent> revertedBy
     Date timestamp
     long position
     Patient aggregate
@@ -67,7 +67,7 @@ class PaymentMade extends PatientEvent {
 
 @EqualsAndHashCode
 class PatientEventReverted extends PatientEvent
-        implements RevertEvent<String, Patient, String, PatientEvent> {
+        implements RevertEvent<Patient, String, PatientEvent> {
     String revertedEventId
 
     @Override String toString() { "<$id> reverted $revertedEventId" }
@@ -75,7 +75,7 @@ class PatientEventReverted extends PatientEvent
 
 @EqualsAndHashCode
 class PatientDeprecatedBy extends PatientEvent
-        implements DeprecatedBy<String, Patient, String, PatientEvent> {
+        implements DeprecatedBy<Patient, String, PatientEvent> {
     PatientDeprecates converse
     Patient deprecator
 
@@ -87,7 +87,7 @@ class PatientDeprecatedBy extends PatientEvent
 
 @EqualsAndHashCode
 class PatientDeprecates extends PatientEvent
-        implements Deprecates<String, Patient, String, PatientEvent> {
+        implements Deprecates<Patient, String, PatientEvent> {
     PatientDeprecatedBy converse
     Patient deprecated
 

@@ -19,7 +19,7 @@ import static io.reactivex.Flowable.*
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
 @SuppressWarnings(['DuplicateNumberLiteral'])
 // tag::documented[]
-class PatientAccount implements Snapshot<Long, Patient, Long, Long, PatientEvent> { // <1>
+class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> { // <1>
 
     @GeneratedValue @Id Long id
 

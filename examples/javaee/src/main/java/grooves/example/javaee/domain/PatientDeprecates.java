@@ -11,7 +11,7 @@ import static rx.Observable.just;
 import static rx.RxReactiveStreams.toPublisher;
 
 public class PatientDeprecates extends PatientEvent
-        implements Deprecates<Long, Patient, Long, PatientEvent> {
+        implements Deprecates<Patient, Long, PatientEvent> {
     private PatientDeprecatedBy converse;
     @Getter private Patient deprecated;
 

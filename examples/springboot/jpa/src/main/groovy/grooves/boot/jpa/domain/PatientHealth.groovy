@@ -17,7 +17,7 @@ import static io.reactivex.Flowable.*
  */
 @Entity
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
-class PatientHealth implements Snapshot<Long, Patient, Long, Long, PatientEvent> {
+class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
 
     @GeneratedValue @Id Long id
 

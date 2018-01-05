@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.grails;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
@@ -28,16 +27,13 @@ import static rx.RxReactiveStreams.toPublisher;
  */
 public interface RxEventSource<
         AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT extends GormAggregate<AggregateIdT>,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT> &
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT> &
                 RxEntity<EventT>,
         SnapshotIdT,
-        SnapshotT extends Snapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT>
-        > extends QuerySupport<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
-        SnapshotT, QueryT> {
+        SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
+        > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     Class<EventT> getEventClass();
 

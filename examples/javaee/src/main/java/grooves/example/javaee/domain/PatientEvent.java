@@ -16,11 +16,11 @@ import static rx.RxReactiveStreams.toPublisher;
 
 // tag::documented[]
 
-public abstract class PatientEvent implements BaseEvent<Long, Patient, Long, PatientEvent> { // <1>
+public abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> { // <1>
     @Getter @Setter private Patient aggregate;
     @Getter @Setter private Long id;
     @Getter @Setter
-    private RevertEvent<Long, Patient, Long, PatientEvent> revertedBy;  // <2>
+    private RevertEvent<Patient, Long, PatientEvent> revertedBy;  // <2>
     @Getter @Setter private Date timestamp; // <3>
     @Getter @Setter private long position; // <4>
 

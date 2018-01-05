@@ -10,7 +10,7 @@ import java.util.Set;
 import static rx.Observable.*;
 import static rx.RxReactiveStreams.toPublisher;
 
-public class Balance implements Snapshot<Long, Account, String, Long, Transaction> {
+public class Balance implements Snapshot<Account, String, Long, Transaction> {
     private String id;
     private long lastEventPosition;
     private Date lastEventTimestamp;

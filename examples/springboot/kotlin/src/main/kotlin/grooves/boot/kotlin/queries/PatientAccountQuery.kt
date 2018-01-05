@@ -18,12 +18,11 @@ import java.util.*
 @Component
 //tag::documented[]
 class PatientAccountQuery :
-        QuerySupport<String, Patient, String, PatientEvent, String, PatientAccount,
-                PatientAccountQuery>, // <1>
-        SimpleQuery<String, Patient, String, PatientEvent, PatientEvent.Applicable, String,
-                PatientAccount, PatientAccountQuery> { // <2>
+        QuerySupport<Patient, String, PatientEvent, String, PatientAccount>, // <1>
+        SimpleQuery<Patient, String, PatientEvent, PatientEvent.Applicable, String,
+                PatientAccount> { // <2>
 
-    override fun getExecutor() = SimpleExecutor<String, Patient, String, PatientEvent,
+    override fun getExecutor() = SimpleExecutor<Patient, String, PatientEvent,
             PatientEvent.Applicable, String, PatientAccount, PatientAccountQuery>() // <3>
 
     @Autowired lateinit var patientEventRepository: PatientEventRepository

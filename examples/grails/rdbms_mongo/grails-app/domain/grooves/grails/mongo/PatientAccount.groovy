@@ -15,7 +15,7 @@ import static rx.RxReactiveStreams.toPublisher
 @SuppressWarnings(['DuplicateNumberLiteral', 'DuplicateStringLiteral',])
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition'])
 // tag::documented[]
-class PatientAccount implements Snapshot<Long, Patient, String, Long, PatientEvent> { // <1>
+class PatientAccount implements Snapshot<Patient, String, Long, PatientEvent> { // <1>
 
     static mapWith = 'mongo'
 

@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.queries.internal;
 
-import com.github.rahulsom.grooves.api.AggregateType;
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.api.GroovesException;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
@@ -27,7 +26,6 @@ import static io.reactivex.Flowable.*;
  * Executes a query. This makes a query more flexible by allowing the use of different query
  * executors.
  *
- * @param <AggregateIdT> The type of {@link AggregateT}'s id
  * @param <AggregateT>   The aggregate over which the query executes
  * @param <EventIdT>     The type of the {@link EventT}'s id field
  * @param <EventT>       The type of the Event
@@ -38,20 +36,18 @@ import static io.reactivex.Flowable.*;
  * @author Rahul Somasunderam
  */
 public class QueryExecutor<
-        AggregateIdT,
-        AggregateT extends AggregateType<AggregateIdT>,
+        AggregateT,
         EventIdT,
-        EventT extends BaseEvent<AggregateIdT, AggregateT, EventIdT, EventT>,
+        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends BaseSnapshot<AggregateIdT, AggregateT, SnapshotIdT, EventIdT, EventT>,
-        QueryT extends BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
-        > implements Executor<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+        SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
+        QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
+        > implements Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     private static <T> List<T> plus(List<T> list, T element) {
-        List<T> retval = new ArrayList<>();
-        retval.addAll(list);
+        List<T> retval = new ArrayList<>(list);
         retval.add(element);
         return retval;
     }
@@ -103,11 +99,11 @@ public class QueryExecutor<
     @NotNull
     @Override
     public Flowable<SnapshotT> applyEvents(
-            @NotNull BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            @NotNull BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT,
                     SnapshotT> query,
             @NotNull SnapshotT initialSnapshot,
             @NotNull Flowable<EventT> events,
-            @NotNull List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesList,
+            @NotNull List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesList,
             @NotNull AggregateT aggregate) {
 
         final AtomicBoolean stopApplyingEvents = new AtomicBoolean(false);
@@ -120,13 +116,13 @@ public class QueryExecutor<
                 log.debug("     -> Applying Event: {}", event);
 
                 if (event instanceof Deprecates) {
-                    Deprecates<AggregateIdT, AggregateT, EventIdT, EventT> deprecatesEvent =
-                            (Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>) event;
+                    Deprecates<AggregateT, EventIdT, EventT> deprecatesEvent =
+                            (Deprecates<AggregateT, EventIdT, EventT>) event;
                     return applyDeprecates(
                             deprecatesEvent, query, events, deprecatesList, aggregate);
                 } else if (event instanceof DeprecatedBy) {
-                    DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT> deprecatedByEvent =
-                            (DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT>) event;
+                    DeprecatedBy<AggregateT, EventIdT, EventT> deprecatedByEvent =
+                            (DeprecatedBy<AggregateT, EventIdT, EventT>) event;
                     return applyDeprecatedBy(deprecatedByEvent, snapshot);
                 } else {
                     String methodName = "apply" + event.getClass().getSimpleName();
@@ -176,7 +172,7 @@ public class QueryExecutor<
      */
     @SuppressWarnings("GrMethodMayBeStatic")
     Flowable<SnapshotT> applyDeprecatedBy(
-            final DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT> event,
+            final DeprecatedBy<AggregateT, EventIdT, EventT> event,
             SnapshotT snapshot) {
         return fromPublisher(event.getDeprecatorObservable())
                 .reduce(snapshot, (snapshotT, aggregate) -> {
@@ -199,11 +195,11 @@ public class QueryExecutor<
      * @return The snapshot after applying the {@link Deprecates} event
      */
     Flowable<SnapshotT> applyDeprecates(
-            final Deprecates<AggregateIdT, AggregateT, EventIdT, EventT> event,
-            final BaseQuery<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT,
+            final Deprecates<AggregateT, EventIdT, EventT> event,
+            final BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT,
                     SnapshotT> query,
             final Flowable<EventT> events,
-            final List<Deprecates<AggregateIdT, AggregateT, EventIdT, EventT>> deprecatesEvents,
+            final List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesEvents,
             AggregateT aggregate) {
 
         log.info("        -> {} will cause recomputation", event);
@@ -236,8 +232,8 @@ public class QueryExecutor<
     }
 
     private boolean isDeprecatesOrConverse(
-            Deprecates<AggregateIdT, AggregateT, EventIdT, EventT> event,
-            DeprecatedBy<AggregateIdT, AggregateT, EventIdT, EventT> converse,
+            Deprecates<AggregateT, EventIdT, EventT> event,
+            DeprecatedBy<AggregateT, EventIdT, EventT> converse,
             EventT it) {
         EventIdT id = it.getId();
         return Objects.equals(id, event.getId()) || Objects.equals(id, converse.getId());
