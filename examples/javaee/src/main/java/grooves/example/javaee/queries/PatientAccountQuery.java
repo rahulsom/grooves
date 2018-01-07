@@ -15,9 +15,9 @@ import static rx.Observable.just;
 import static rx.RxReactiveStreams.toPublisher;
 
 // tag::documented[]
-@Query(aggregate = Patient.class, snapshot = PatientAccount.class) // <10>
+@Query(aggregate = Patient.class, snapshot = PatientAccount.class) // <9>
 public class PatientAccountQuery
-        implements CustomQuerySupport<PatientAccount> { // <11>
+        implements CustomQuerySupport<PatientAccount> { // <10>
 
     // end::documented[]
     @Inject @Getter
@@ -30,7 +30,7 @@ public class PatientAccountQuery
 
     // tag::documented[]
     @Override
-    public PatientAccount createEmptySnapshot() { // <12>
+    public PatientAccount createEmptySnapshot() { // <11>
         return new PatientAccount();
     }
     // end::documented[]
@@ -48,11 +48,11 @@ public class PatientAccountQuery
      */
     // tag::documented[]
     public Publisher<EventApplyOutcome> applyPatientCreated(
-            PatientCreated event, PatientAccount snapshot) { // <13>
+            PatientCreated event, PatientAccount snapshot) { // <12>
         if (snapshot.getAggregate() == event.getAggregate()) {
             snapshot.setName(event.getName());
         }
-        return toPublisher(just(CONTINUE)); // <14>
+        return toPublisher(just(CONTINUE)); // <13>
     }
 
     // end::documented[]

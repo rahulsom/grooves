@@ -28,7 +28,7 @@ import static rx.RxReactiveStreams.toPublisher;
 // tag::documented[]
 public interface CustomQuerySupport<
         SnapshotT extends Snapshot<Patient, Long, Long, PatientEvent> & Serializable // <1>
-        > extends QuerySupport<Patient, Long, PatientEvent, Long, SnapshotT> { // <3>
+        > extends QuerySupport<Patient, Long, PatientEvent, Long, SnapshotT> { // <2>
 
     // end::documented[]
     Database getDatabase();
@@ -38,7 +38,7 @@ public interface CustomQuerySupport<
     // tag::documented[]
     @Override
     default Publisher<SnapshotT> getSnapshot(long maxPosition, Patient aggregate) {
-        // <4>
+        // <3>
         // end::documented[]
         final Stream<SnapshotT> stream = getDatabase().snapshots(getSnapshotClass());
         return toPublisher(from(stream::iterator)
@@ -56,7 +56,7 @@ public interface CustomQuerySupport<
 
     @Override
     default Publisher<SnapshotT> getSnapshot(Date maxTimestamp, Patient aggregate) {
-        // <5>
+        // <4>
         // end::documented[]
         final Stream<SnapshotT> stream = getDatabase().snapshots(getSnapshotClass());
         return toPublisher(from(stream::iterator)
@@ -79,13 +79,13 @@ public interface CustomQuerySupport<
 
     // tag::documented[]
     @Override
-    default boolean shouldEventsBeApplied(SnapshotT snapshot) { // <6>
+    default boolean shouldEventsBeApplied(SnapshotT snapshot) { // <5>
         return true;
     }
 
     @Override
     default Publisher<EventApplyOutcome> onException(
-            Exception e, SnapshotT snapshot, PatientEvent event) { // <7>
+            Exception e, SnapshotT snapshot, PatientEvent event) { // <6>
         getLog().error("Error computing snapshot", e);
         return toPublisher(just(CONTINUE));
         // tag::documented[]
@@ -94,7 +94,7 @@ public interface CustomQuerySupport<
     @Override
     default Publisher<PatientEvent> getUncomputedEvents(
             Patient aggregate, SnapshotT lastSnapshot, long version) {
-        // <8>
+        // <7>
         // end::documented[]
         Predicate<PatientEvent> patientEventPredicate = x -> {
             Long eventPosition = x.getPosition();
@@ -116,7 +116,7 @@ public interface CustomQuerySupport<
     @Override
     default Publisher<PatientEvent> getUncomputedEvents(
             Patient aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
-        // <9>
+        // <8>
         // end::documented[]
         Predicate<PatientEvent> patientEventPredicate = it -> aggregate.equals(it.getAggregate())
                 && isTimestampInRange(

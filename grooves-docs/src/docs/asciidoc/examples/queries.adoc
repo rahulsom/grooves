@@ -9,25 +9,24 @@ include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/querie
 include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/queries/PatientAccountQuery.java[tags=documented]
 ----
 <1> This is a placeholder for the snapshot we'll compute.
-<2> This is a self reference.
-<3> `QuerySupport` allows computing both temporal and versioned snapshots.
-<4> The implementation of this method will return a snapshot that's older than the `maxPosition`.
-<5> The implementation of this method will return a snapshot that's older than the `maxTimestamp`.
-<6> This allows the query to have some control over when to stop applying events on a snapshot.
-<7> This is an exception handler.
+<2> `QuerySupport` allows computing both temporal and versioned snapshots.
+<3> The implementation of this method will return a snapshot that's older than the `maxPosition`.
+<4> The implementation of this method will return a snapshot that's older than the `maxTimestamp`.
+<5> This allows the query to have some control over when to stop applying events on a snapshot.
+<6> This is an exception handler.
   You can decide to `CONTINUE` or `RETURN`.
-<8> The implementation of this method must return all events for an aggregate that are more recent than the last event of `lastSnapshot`, but lead up to `version`.
+<7> The implementation of this method must return all events for an aggregate that are more recent than the last event of `lastSnapshot`, but lead up to `version`.
   Think of the range as exclusive of `lastSnapshot`, but inclusive of `version`.
-<9> The implementation of this method must return all events for an aggregate that are more recent than the last event of `lastSnapshot`, but lead up to `snapshotTime`.
+<8> The implementation of this method must return all events for an aggregate that are more recent than the last event of `lastSnapshot`, but lead up to `snapshotTime`.
   Think of the range as exclusive of `lastSnapshot`, but inclusive of `snapshotTime`.
-<10> This annotation is the final step in verification of completeness.
+<9> This annotation is the final step in verification of completeness.
   The AST Transformation checks that all `@Event` s associated with the `@Aggregate` are accounted for in the `@Query`.
-<11> Here we implement our default interface
-<12> This method gets called if no prior snapshot that is usable is found.
-<13> We name our methods `apply<EventType>`.
+<10> Here we implement our default interface
+<11> This method gets called if no prior snapshot that is usable is found.
+<12> We name our methods `apply<EventType>`.
   This is required.
   It is not enforced though.
-<14> Each of these methods takes the event and the snapshot as inputs and returns an `Publisher<EventApplyOutcome>` as output.
+<13> Each of these methods takes the event and the snapshot as inputs and returns an `Publisher<EventApplyOutcome>` as output.
   It can `CONTINUE` or `RETURN`.
 
 [source,groovy,indent=0,role="secondary"]
