@@ -1,14 +1,23 @@
 package com.github.rahulsom.grooves.asciidoctor
 
-import groovy.xml.StreamingMarkupBuilder
-import groovy.xml.XmlUtil
+import com.github.rahulsom.svg.*
 import com.github.sommeri.less4j.core.ThreadUnsafeLessCompiler
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
+
+import javax.xml.bind.JAXBContext
+
+import static com.github.rahulsom.grooves.asciidoctor.Constants.*
+import static java.lang.Boolean.TRUE
+import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT
 
 /**
  * Builds an SVG from a text representation of an event sourced aggregate.
  *
  * @author Rahul Somasunderam
  */
+@NewifySvg
+@CompileStatic
 class SvgBuilder {
 
     private List<Aggregate> aggregates = []
@@ -19,22 +28,14 @@ class SvgBuilder {
     SvgBuilder(String input) {
         Aggregate lastAggregate = null
 
-        input.split('\n').each {
+        input.split('\n').each { String it ->
             if (it.startsWith('|')) {
-                def parts = it.replaceFirst('\\|', '').split(',')
-                lastAggregate = new Aggregate(*parts)
+                lastAggregate = toAggregate(it)
                 lastAggregate.index = aggregates.size()
                 aggregates << lastAggregate
             }
             if (it.startsWith('  - ') || it.startsWith('  + ')) {
-                def m = it =~ / +([-+]) ([^ ]+) ([^ ]+) (.+)/
-                def parts = m[0] as List<String>
-                def (_, sign, id, date, description) = m[0]
-                EventType type = computeEventType(description)
-                def event = new Event(id, Date.parse('yyyy-MM-dd', date), description, type)
-                if (sign == '-') {
-                    event.reverted = true
-                }
+                Event event = toEvent(it)
                 lastAggregate.events << event
                 allEvents << event
             }
@@ -57,54 +58,75 @@ class SvgBuilder {
         }
     }
 
-    private EventType computeEventType(String description) {
-        EventType type = EventType.Normal
-        switch (description) {
-            case ~/.*revert.*/: type = EventType.Revert; break
-            case ~/.*deprecates.*/: type = EventType.Deprecates; break
-            case ~/.*deprecated.*/: type = EventType.DeprecatedBy; break
-            case ~/.*disjoin.*/: type = EventType.Disjoin; break
-            case ~/.*join.*/: type = EventType.Join; break
+    @CompileDynamic
+    private Event toEvent(String it) {
+        def m = it =~ / +([-+]) ([^ ]+) ([^ ]+) (.+)/
+        def (_, sign, id, date, description) = m[0]
+        EventType type = computeEventType(description)
+        def event = new Event(id, Date.parse('yyyy-MM-dd', date), description, type)
+        if (sign == '-') {
+            event.reverted = true
         }
-        type
+        event
+    }
+
+    @CompileDynamic
+    private Aggregate toAggregate(String it) {
+        Aggregate lastAggregate
+        def parts = it.replaceFirst('\\|', '').split(',')
+        lastAggregate = new Aggregate(*parts)
+        lastAggregate
+    }
+
+    @CompileStatic
+    private EventType computeEventType(String description) {
+        switch (description) {
+            case ~/.*revert.*/: return EventType.Revert
+            case ~/.*deprecates.*/: return EventType.Deprecates
+            case ~/.*deprecated.*/: return EventType.DeprecatedBy
+            case ~/.*disjoin.*/: return EventType.Disjoin
+            case ~/.*join.*/: return EventType.Join
+            default: return EventType.Normal
+        }
     }
 
     void write(File file) {
-        def m = new StreamingMarkupBuilder().bind { builder ->
-            builder.svg(xmlns: "http://www.w3.org/2000/svg",
-                    height: aggregates.size() * Constants.eventLineHeight,
-                    width: dates.values().max() * Constants.eventSpace + 4 * Constants.aggregateWidth) {
-                mkp.comment "Generated on ${new Date()} from\n${aggregates.join('\n')}\n"
 
-                buildStyle(builder, new ThreadUnsafeLessCompiler().compile(Constants.LESS).css)
+        def svg = new Svg(height: "${aggregates.size() * eventLineHeight}",
+                width: "${dates.values().max() * eventSpace + 4 * aggregateWidth}").
+                content { Context svgBody ->
 
-                builder.rect x: 0, y: 0,
-                        width: dates.values().max() * Constants.eventSpace + 4 * Constants.aggregateWidth ,
-                        height: aggregates.size() * Constants.eventLineHeight ,
-                        class: 'background'
-                defs {
-                    marker(id: 'triangle', viewBox: '0 0 10 10', refX: 0, refY: 5,
-                            markerWidth: 10, markerHeight: 10, orient: 'auto',
-                            markerUnits: "userSpaceOnUse") {
-                        path d: 'M 0 0 L 10 5 L 0 10 z'
+                    def css = new ThreadUnsafeLessCompiler().compile(LESS).css
+
+                    svgBody << new ObjectFactory().createStyle(new SVGStyleClass(
+                            content: '/* <![CDATA[ */' + css + '/* ]]> */'))
+
+                    svgBody << new Rect(x: '0', y: '0',
+                            height: "${aggregates.size() * eventLineHeight}",
+                            width: "${dates.values().max() * eventSpace + 4 * aggregateWidth}",
+                            clazz: 'background')
+
+                    svgBody << new Defs().content {
+                        it << new SVGMarkerClass(id: 'triangle', viewBox: '0 0 10 10',
+                                refX: '0', refY: '5', markerWidth: '10', markerHeight: '10',
+                                orient: 'auto', markerUnits: 'userSpaceOnUse').content {
+                            it << new Path(d: 'M 0 0 L 10 5 L 0 10 z')
+                        }
+                    }
+
+                    aggregates.each { Aggregate aggregate ->
+                        svgBody << aggregate.buildSvg(dates)
+                        aggregate.events.each { Event event ->
+                            svgBody << event.buildSvg(aggregate.index, this)
+                        }
                     }
                 }
-                aggregates.each { Aggregate aggregate ->
-                    mkp.comment ' '
-                    mkp.comment "|${aggregate.type},${aggregate.id},${aggregate.description}"
-                    mkp.comment ' '
-                    aggregate.buildSvg(builder, dates)
-                    aggregate.events.each { Event event ->
-                        event.buildSvg(builder, aggregate.index, this)
-                    }
-                }
-            }
-        }
 
-        XmlUtil.serialize(m, file.newPrintWriter())
+        def jaxbContext = JAXBContext.newInstance(Svg)
+        def marshaller = jaxbContext.createMarshaller()
+        marshaller.setProperty JAXB_FORMATTED_OUTPUT, TRUE
+        marshaller.marshal svg, file.newPrintWriter()
+
     }
 
-    private void buildStyle(builder, String css) {
-        builder.style { mkp.yieldUnescaped '/* <![CDATA[ */' + css + '/* ]]> */' }
-    }
 }

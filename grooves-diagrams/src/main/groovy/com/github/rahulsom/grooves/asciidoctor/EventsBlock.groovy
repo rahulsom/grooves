@@ -1,5 +1,6 @@
 package com.github.rahulsom.grooves.asciidoctor
 
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.asciidoctor.ast.AbstractBlock
 import org.asciidoctor.extension.BlockProcessor
@@ -13,6 +14,7 @@ import java.security.MessageDigest
  * @author Rahul Somasunderam
  */
 @Slf4j
+@CompileStatic
 class EventsBlock extends BlockProcessor {
 
     EventsBlock(String name, Map<String, Object> config) {
@@ -36,13 +38,13 @@ class EventsBlock extends BlockProcessor {
 
         new SvgBuilder(input).write(new File(outDir, filename))
 
-        final Map options = [
+        final def options = [
                 type  : ':image',
                 target: filename,
                 format: 'svg',
-        ]
+        ] as Map<String, Object>
 
-        def inlineTwitterLink = createBlock(parent, 'image', input, options, attributes)
+        def inlineTwitterLink = createBlock(parent, 'image', input, options, attributes as Map<Object, Object>)
 
         inlineTwitterLink
     }

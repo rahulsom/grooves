@@ -1,4 +1,6 @@
 package com.github.rahulsom.grooves.asciidoctor
+
+import groovy.transform.CompileStatic
 import org.asciidoctor.Asciidoctor
 import org.asciidoctor.extension.spi.ExtensionRegistry
 import org.kordamp.jipsy.ServiceProviderFor
@@ -8,6 +10,7 @@ import org.kordamp.jipsy.ServiceProviderFor
  *
  * @author Rahul Somasunderam
  */
+@CompileStatic
 @ServiceProviderFor(ExtensionRegistry)
 class GroovesExtensionRegistry implements ExtensionRegistry {
     void register(Asciidoctor asciidoctor) {

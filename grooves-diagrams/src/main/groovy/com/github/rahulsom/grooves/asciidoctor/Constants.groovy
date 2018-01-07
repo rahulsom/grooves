@@ -1,10 +1,13 @@
 package com.github.rahulsom.grooves.asciidoctor
 
+import groovy.transform.CompileStatic
+
 /**
  * Constants used in computing dimensions while rendering Event Sourcing diagrams.
  *
  * @author Rahul Somasunderam
  */
+@CompileStatic
 class Constants {
     static final int eventLineHeight = 100
     static final int aggregateHeight = 40

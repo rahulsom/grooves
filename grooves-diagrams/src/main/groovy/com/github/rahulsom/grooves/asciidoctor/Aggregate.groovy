@@ -1,7 +1,13 @@
 package com.github.rahulsom.grooves.asciidoctor
 
+import com.github.rahulsom.svg.G
+import com.github.rahulsom.svg.Line
+import com.github.rahulsom.svg.Rect
+import com.github.rahulsom.svg.Text
+import groovy.transform.CompileStatic
 import groovy.transform.TupleConstructor
 
+import static com.github.rahulsom.grooves.asciidoctor.Constants.*
 import static java.lang.System.identityHashCode
 
 /**
@@ -10,6 +16,7 @@ import static java.lang.System.identityHashCode
  * @author Rahul Somasunderam
  */
 @TupleConstructor
+@CompileStatic
 class Aggregate {
     String type
     String id
@@ -20,22 +27,23 @@ class Aggregate {
 
     @Override String toString() { "|$type,$id,$description\n${events.join('\n')}" }
 
-    void buildSvg(builder, Map<Date, Double> dates) {
-        builder.mkp.comment "   aggregate"
-        builder.g(id: "aggregate${identityHashCode(this)}", class: 'aggregate') {
-            def y = index * Constants.eventLineHeight + Constants.offset
+    G buildSvg(Map<Date, Double> dates) {
 
-            builder.rect x: 10, y: y, width: Constants.aggregateWidth, height: Constants.aggregateHeight
-            builder.text type.toString(), x: 15, y: y + Constants.textLineHeight, class: 'type'
-            builder.text id, x: 15, y: y + Constants.textLineHeight * 2, class: 'id'
-            builder.text description, x: 10, y: y - 5, class: 'description'
+        return new G(id: "aggregate${identityHashCode(this)}", clazz: 'aggregate').content {
+            def y = index * eventLineHeight + offset
 
-            def yMid = index * Constants.eventLineHeight + Constants.offset + Constants.aggregateHeight / 2
+            it << new Rect(x: '10', y: y.toString(),
+                    width: "${aggregateWidth}", height: "${aggregateHeight}")
 
-            builder.line x1: 10 + Constants.aggregateWidth, y1: yMid,
-                    x2: dates.values().max() * Constants.eventSpace + 3 * Constants.aggregateWidth, y2: yMid,
-                    class: 'eventLine', 'marker-end': "url(#triangle)"
+            it << new Text(x: '15', y: "${y + textLineHeight}", clazz: 'type').withContent(type)
+            it << new Text(x: '15', y: "${y + textLineHeight * 2}", clazz: 'id').withContent(id)
+            it << new Text(x: '10', y: "${y - 5}", clazz: 'description').withContent(description)
 
+            def yMid = index * eventLineHeight + offset + aggregateHeight / 2
+
+            it << new Line(x1: "${10 + aggregateWidth}", y1: "${yMid}",
+                    x2: "${dates.values().max() * eventSpace + 3 * aggregateWidth}", y2: "${yMid}",
+                    clazz: 'eventLine', markerEnd: "url(#triangle)")
         }
     }
 }

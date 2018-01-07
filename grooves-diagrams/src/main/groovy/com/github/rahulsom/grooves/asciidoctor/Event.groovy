@@ -1,7 +1,13 @@
 package com.github.rahulsom.grooves.asciidoctor
 
+import com.github.rahulsom.svg.Circle
+import com.github.rahulsom.svg.G
+import com.github.rahulsom.svg.Path
+import com.github.rahulsom.svg.Text
+import groovy.transform.CompileStatic
 import groovy.transform.TupleConstructor
 
+import static com.github.rahulsom.grooves.asciidoctor.Constants.*
 import static java.lang.System.identityHashCode
 
 /**
@@ -10,6 +16,7 @@ import static java.lang.System.identityHashCode
  * @author Rahul Somasunderam
  */
 @TupleConstructor
+@CompileStatic
 class Event {
     String id
     Date date
@@ -23,17 +30,18 @@ class Event {
     boolean reverted = false
     int x, y
 
-    void buildSvg(builder, int index, SvgBuilder svgBuilder) {
+    G buildSvg(int index, SvgBuilder svgBuilder) {
         if (description == '.') {
-            return
+            return new G()
         }
 
         def xOffset = svgBuilder.dates[date]
-        builder.mkp.comment(toString())
+        // builder.mkp.comment(toString())
         def revertedClass = this.reverted ? 'reverted' : ''
-        builder.g(id: "event${identityHashCode(this)}", class: "event ${this.type.name()} ${revertedClass}") {
-            def x = 10 + Constants.aggregateWidth * 2 + xOffset * Constants.eventSpace as int
-            def y = index * Constants.eventLineHeight + Constants.offset + Constants.aggregateHeight / 2 as int
+        return new G(id: "event${identityHashCode(this)}",
+                clazz: "event ${this.type.name()} ${revertedClass}").content {
+            def x = 10 + aggregateWidth * 2 + xOffset * eventSpace as int
+            def y = index * eventLineHeight + offset + aggregateHeight / 2 as int
 
             while (svgBuilder.allEvents.find { it.x == x && it.y == y }) {
                 y -= 20 * Math.sqrt(3) / 2
@@ -46,9 +54,9 @@ class Event {
                 def revertedId = description.split(' ')[-1]
                 def reverted = svgBuilder.allEvents.find { it.id == revertedId }
 
-                def x1 = reverted.x + (x - reverted.x) / 2
-                def y1 = y - ((x - reverted.x) / 3)
-                builder.path d: "M${x} ${y} Q $x1 $y1, ${reverted.x + 15} ${reverted.y - 15}"
+                def x1 = reverted.x  + (this.x - reverted.x) / 2
+                def y1 = y  - ((this.x - reverted.x) / 3)
+                it << new Path(d: "M${x} ${y} Q $x1 $y1, ${reverted.x + 15} ${reverted.y - 15}")
             }
 
             if (type == EventType.DeprecatedBy || type == EventType.Join || type == EventType.Disjoin) {
@@ -57,7 +65,7 @@ class Event {
 
                 if (other.x && other.y) {
 
-                    def x1 = (type == EventType.Disjoin ? -30 : 30) * Math.abs(other.y - y) / Constants.eventLineHeight
+                    def x1 = (type == EventType.Disjoin ? -30 : 30) * Math.abs(other.y - y) / eventLineHeight
                     def xContactOffset = type == EventType.Disjoin ? -10 : 10
                     def y1 = (y + other.y) / 2
 
@@ -66,17 +74,18 @@ class Event {
                         yOffset *= 2
                     }
 
-                    builder.path d: "M${x} ${y} Q ${x1 + x} $y1, ${other.x + xContactOffset} ${other.y + yOffset}"
+                    it << new Path(d: "M${this.x} ${y} Q ${x1 + this.x} $y1, ${other.x + xContactOffset} ${other.y + yOffset}")
                 }
             }
 
             if (description.contains('created')) {
-                builder.circle cx: x, cy: y, r: 14, 'stroke-dasharray': '2, 5',
-                        class: "eventCreated ${this.type.name()}"
+                it << new Circle(cx: "${this.x}", cy: "${y}", r: "14", strokeDasharray: '2, 5',
+                        clazz: "eventCreated ${this.type.name()}")
             }
 
-            builder.circle cx: x, cy: y, r: 10, class: "event ${this.type.name()} ${revertedClass}"
-            builder.text this.id, x: x, y: y, class: "eventId"
+            it << new Circle(cx: "${this.x}", cy: "${this.y}",
+                    r: '10', clazz: "event ${this.type.name()} ${revertedClass}")
+            it << new Text(x: "${this.x}", y: "${this.y}", clazz: "eventId").withContent(this.id)
         }
     }
 

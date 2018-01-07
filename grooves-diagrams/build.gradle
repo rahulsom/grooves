@@ -18,6 +18,7 @@ dependencies {
     }
     compile 'commons-beanutils:commons-beanutils:1.9.3'
     compile "org.slf4j:slf4j-api:$slf4jVersion"
+    compile 'com.github.rahulsom:svg-builder:0.2.3'
 
     compileOnly 'org.kordamp.gipsy:gipsy:0.4.1'
 }
