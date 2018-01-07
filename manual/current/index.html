@@ -1515,25 +1515,25 @@ It is empty when the aggregate is not deprecated.</td>
 <pre class="highlight"><code class="language-java" data-lang="java">// You don't need to have an intermediate type to manage your queries, but it does make code reuse better.
 public interface CustomQuerySupport&lt;
         SnapshotT extends Snapshot&lt;Patient, Long, Long, PatientEvent&gt; &amp; Serializable <i class="conum" data-value="1"></i><b>(1)</b>
-        &gt; extends QuerySupport&lt;Patient, Long, PatientEvent, Long, SnapshotT&gt; { <i class="conum" data-value="3"></i><b>(3)</b>
+        &gt; extends QuerySupport&lt;Patient, Long, PatientEvent, Long, SnapshotT&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
 
     @Override
     default Publisher&lt;SnapshotT&gt; getSnapshot(long maxPosition, Patient aggregate) {
-        <i class="conum" data-value="4"></i><b>(4)</b>
+        <i class="conum" data-value="3"></i><b>(3)</b>
     }
 
     @Override
     default Publisher&lt;SnapshotT&gt; getSnapshot(Date maxTimestamp, Patient aggregate) {
-        <i class="conum" data-value="5"></i><b>(5)</b>
+        <i class="conum" data-value="4"></i><b>(4)</b>
     }
     @Override
-    default boolean shouldEventsBeApplied(SnapshotT snapshot) { <i class="conum" data-value="6"></i><b>(6)</b>
+    default boolean shouldEventsBeApplied(SnapshotT snapshot) { <i class="conum" data-value="5"></i><b>(5)</b>
         return true;
     }
 
     @Override
     default Publisher&lt;EventApplyOutcome&gt; onException(
-            Exception e, SnapshotT snapshot, PatientEvent event) { <i class="conum" data-value="7"></i><b>(7)</b>
+            Exception e, SnapshotT snapshot, PatientEvent event) { <i class="conum" data-value="6"></i><b>(6)</b>
         getLog().error("Error computing snapshot", e);
         return toPublisher(just(CONTINUE));
     }
@@ -1541,31 +1541,31 @@ public interface CustomQuerySupport&lt;
     @Override
     default Publisher&lt;PatientEvent&gt; getUncomputedEvents(
             Patient aggregate, SnapshotT lastSnapshot, long version) {
-        <i class="conum" data-value="8"></i><b>(8)</b>
+        <i class="conum" data-value="7"></i><b>(7)</b>
     }
 
     @Override
     default Publisher&lt;PatientEvent&gt; getUncomputedEvents(
             Patient aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
-        <i class="conum" data-value="9"></i><b>(9)</b>
+        <i class="conum" data-value="8"></i><b>(8)</b>
     }
 
 }
 // This is the implementation we need
-@Query(aggregate = Patient.class, snapshot = PatientAccount.class) <i class="conum" data-value="10"></i><b>(10)</b>
+@Query(aggregate = Patient.class, snapshot = PatientAccount.class) <i class="conum" data-value="9"></i><b>(9)</b>
 public class PatientAccountQuery
-        implements CustomQuerySupport&lt;PatientAccount&gt; { <i class="conum" data-value="11"></i><b>(11)</b>
+        implements CustomQuerySupport&lt;PatientAccount&gt; { <i class="conum" data-value="10"></i><b>(10)</b>
 
     @Override
-    public PatientAccount createEmptySnapshot() { <i class="conum" data-value="12"></i><b>(12)</b>
+    public PatientAccount createEmptySnapshot() { <i class="conum" data-value="11"></i><b>(11)</b>
         return new PatientAccount();
     }
     public Publisher&lt;EventApplyOutcome&gt; applyPatientCreated(
-            PatientCreated event, PatientAccount snapshot) { <i class="conum" data-value="13"></i><b>(13)</b>
+            PatientCreated event, PatientAccount snapshot) { <i class="conum" data-value="12"></i><b>(12)</b>
         if (snapshot.getAggregate() == event.getAggregate()) {
             snapshot.setName(event.getName());
         }
-        return toPublisher(just(CONTINUE)); <i class="conum" data-value="14"></i><b>(14)</b>
+        return toPublisher(just(CONTINUE)); <i class="conum" data-value="13"></i><b>(13)</b>
     }
 
     public Publisher&lt;EventApplyOutcome&gt; applyProcedurePerformed(
@@ -1602,60 +1602,56 @@ public class PatientAccountQuery
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>This is a self reference.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
 <td><code>QuerySupport</code> allows computing both temporal and versioned snapshots.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>The implementation of this method will return a snapshot that&#8217;s older than the <code>maxPosition</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>The implementation of this method will return a snapshot that&#8217;s older than the <code>maxTimestamp</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
 <td>This allows the query to have some control over when to stop applying events on a snapshot.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
 <td>This is an exception handler.
 You can decide to <code>CONTINUE</code> or <code>RETURN</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
 <td>The implementation of this method must return all events for an aggregate that are more recent than the last event of <code>lastSnapshot</code>, but lead up to <code>version</code>.
 Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <code>version</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
 <td>The implementation of this method must return all events for an aggregate that are more recent than the last event of <code>lastSnapshot</code>, but lead up to <code>snapshotTime</code>.
 Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <code>snapshotTime</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
 <td>This annotation is the final step in verification of completeness.
 The AST Transformation checks that all <code>@Event</code> s associated with the <code>@Aggregate</code> are accounted for in the <code>@Query</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
 <td>Here we implement our default interface</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
 <td>This method gets called if no prior snapshot that is usable is found.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
 <td>We name our methods <code>apply&lt;EventType&gt;</code>.
 This is required.
 It is not enforced though.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="14"></i><b>14</b></td>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
 <td>Each of these methods takes the event and the snapshot as inputs and returns an <code>Publisher&lt;EventApplyOutcome&gt;</code> as output.
 It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
 </tr>

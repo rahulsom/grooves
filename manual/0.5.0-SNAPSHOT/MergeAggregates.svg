@@ -1,17 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" height="200" width="800.0">
-  <!--Generated on Fri Jan 05 06:44:06 UTC 2018 from
-|Patient,4,Farrokh Bulsara
-  - 1 2016-01-02 created as Farrokh Bulsara (Normal)
-  - 2 2016-01-03 performed FLUSHOT for $ 32.40 (Normal)
-  - 3 2016-01-04 performed GLUCOSETEST for $ 78.93 (Normal)
-  - 7 2016-01-09 deprecates 5 converse 6 (Deprecates)
-  - 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93 (Normal)
-|Patient,5,Freddie Mercury
-  - 4 2016-01-05 created as Freddie Mercury (Normal)
-  - 5 2016-01-05 paid $ 100.25 (Normal)
-  - 6 2016-01-09 deprecated by 4 converse 7 (DeprecatedBy)
--->
-  <style>/* <![CDATA[ */.background {
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<svg width="800.0" height="200" xmlns="http://www.w3.org/2000/svg" xmlns:ns2="http://www.w3.org/1999/xlink">
+    <style>/* &lt;![CDATA[ */.background {
   fill: #FCFCFC;
   stroke-width: 0.2;
   stroke: grey;
@@ -106,76 +95,60 @@
   stroke: gray;
   stroke-dasharray: 2, 5;
 }
-/* ]]> */</style>
-  <rect x="0" y="0" width="800.0" height="200" class="background"/>
-  <defs>
-    <marker id="triangle" viewBox="0 0 10 10" refX="0" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0 0 L 10 5 L 0 10 z"/>
-    </marker>
-  </defs>
-  <!-- -->
-  <!--|Patient,4,Farrokh Bulsara-->
-  <!-- -->
-  <!--   aggregate-->
-  <g id="aggregate1351310496" class="aggregate">
-    <rect x="10" y="45" width="100" height="40"/>
-    <text x="15" y="63" class="type">Patient</text>
-    <text x="15" y="81" class="id">4</text>
-    <text x="10" y="40" class="description">Farrokh Bulsara</text>
-    <line x1="110" y1="65" x2="700.0" y2="65" class="eventLine" marker-end="url(#triangle)"/>
-  </g>
-  <!--  - 1 2016-01-02 created as Farrokh Bulsara (Normal)-->
-  <g id="event925439544" class="event Normal ">
-    <circle cx="210" cy="65" r="14" stroke-dasharray="2, 5" class="eventCreated Normal"/>
-    <circle cx="210" cy="65" r="10" class="event Normal "/>
-    <text x="210" y="65" class="eventId">1</text>
-  </g>
-  <!--  - 2 2016-01-03 performed FLUSHOT for $ 32.40 (Normal)-->
-  <g id="event625249166" class="event Normal ">
-    <circle cx="260" cy="65" r="10" class="event Normal "/>
-    <text x="260" y="65" class="eventId">2</text>
-  </g>
-  <!--  - 3 2016-01-04 performed GLUCOSETEST for $ 78.93 (Normal)-->
-  <g id="event1175100886" class="event Normal ">
-    <circle cx="310" cy="65" r="10" class="event Normal "/>
-    <text x="310" y="65" class="eventId">3</text>
-  </g>
-  <!--  - 7 2016-01-09 deprecates 5 converse 6 (Deprecates)-->
-  <g id="event1290713067" class="event Deprecates ">
-    <circle cx="510" cy="65" r="10" class="event Deprecates "/>
-    <text x="510" y="65" class="eventId">7</text>
-  </g>
-  <!--  - 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93 (Normal)-->
-  <g id="event856289432" class="event Normal ">
-    <circle cx="610" cy="65" r="10" class="event Normal "/>
-    <text x="610" y="65" class="eventId">8</text>
-  </g>
-  <!-- -->
-  <!--|Patient,5,Freddie Mercury-->
-  <!-- -->
-  <!--   aggregate-->
-  <g id="aggregate839914892" class="aggregate">
-    <rect x="10" y="145" width="100" height="40"/>
-    <text x="15" y="163" class="type">Patient</text>
-    <text x="15" y="181" class="id">5</text>
-    <text x="10" y="140" class="description">Freddie Mercury</text>
-    <line x1="110" y1="165" x2="700.0" y2="165" class="eventLine" marker-end="url(#triangle)"/>
-  </g>
-  <!--  - 4 2016-01-05 created as Freddie Mercury (Normal)-->
-  <g id="event543611445" class="event Normal ">
-    <circle cx="360" cy="165" r="14" stroke-dasharray="2, 5" class="eventCreated Normal"/>
-    <circle cx="360" cy="165" r="10" class="event Normal "/>
-    <text x="360" y="165" class="eventId">4</text>
-  </g>
-  <!--  - 5 2016-01-05 paid $ 100.25 (Normal)-->
-  <g id="event420376637" class="event Normal ">
-    <circle cx="370" cy="147.67949192431124" r="10" class="event Normal "/>
-    <text x="370" y="147.67949192431124" class="eventId">5</text>
-  </g>
-  <!--  - 6 2016-01-09 deprecated by 4 converse 7 (DeprecatedBy)-->
-  <g id="event1711267508" class="event DeprecatedBy ">
-    <path d="M510 165 Q 540 115, 520 85"/>
-    <circle cx="510" cy="165" r="10" class="event DeprecatedBy "/>
-    <text x="510" y="165" class="eventId">6</text>
-  </g>
+/* ]]&gt; */</style>
+    <rect x="0" y="0" width="800.0" height="200" class="background"/>
+    <defs>
+        <marker refX="0" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto" viewBox="0 0 10 10" id="triangle">
+            <path d="M 0 0 L 10 5 L 0 10 z"/>
+        </marker>
+    </defs>
+    <g class="aggregate" id="aggregate772506326">
+        <rect x="10" y="45" width="100" height="40"/>
+        <text x="15" y="63" class="type">Patient</text>
+        <text x="15" y="81" class="id">4</text>
+        <text x="10" y="40" class="description">Farrokh Bulsara</text>
+        <line x1="110" y1="65" x2="700.0" y2="65" class="eventLine" marker-end="url(#triangle)"/>
+    </g>
+    <g class="event Normal " id="event1755377717">
+        <circle cx="210" cy="65.0" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
+        <circle cx="210" cy="65" r="10" class="event Normal "/>
+        <text x="210" y="65" class="eventId">1</text>
+    </g>
+    <g class="event Normal " id="event836010597">
+        <circle cx="260" cy="65" r="10" class="event Normal "/>
+        <text x="260" y="65" class="eventId">2</text>
+    </g>
+    <g class="event Normal " id="event1956250831">
+        <circle cx="310" cy="65" r="10" class="event Normal "/>
+        <text x="310" y="65" class="eventId">3</text>
+    </g>
+    <g class="event Deprecates " id="event108344760">
+        <circle cx="510" cy="65" r="10" class="event Deprecates "/>
+        <text x="510" y="65" class="eventId">7</text>
+    </g>
+    <g class="event Normal " id="event1773882395">
+        <circle cx="610" cy="65" r="10" class="event Normal "/>
+        <text x="610" y="65" class="eventId">8</text>
+    </g>
+    <g class="aggregate" id="aggregate2087271651">
+        <rect x="10" y="145" width="100" height="40"/>
+        <text x="15" y="163" class="type">Patient</text>
+        <text x="15" y="181" class="id">5</text>
+        <text x="10" y="140" class="description">Freddie Mercury</text>
+        <line x1="110" y1="165" x2="700.0" y2="165" class="eventLine" marker-end="url(#triangle)"/>
+    </g>
+    <g class="event Normal " id="event1492247517">
+        <circle cx="360" cy="165.0" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
+        <circle cx="360" cy="165" r="10" class="event Normal "/>
+        <text x="360" y="165" class="eventId">4</text>
+    </g>
+    <g class="event Normal " id="event2005325198">
+        <circle cx="370" cy="147" r="10" class="event Normal "/>
+        <text x="370" y="147" class="eventId">5</text>
+    </g>
+    <g class="event DeprecatedBy " id="event1148097777">
+        <path d="M510 165.0 Q 540.0 115, 520 85"/>
+        <circle cx="510" cy="165" r="10" class="event DeprecatedBy "/>
+        <text x="510" y="165" class="eventId">6</text>
+    </g>
 </svg>
