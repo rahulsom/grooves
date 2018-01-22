@@ -18,5 +18,5 @@ object BankingModule : AbstractModule() {
 
     @Provides
     fun dslContext() =
-            DSL.using(getConnection("jdbc:h2:mem:app", "sa", ""), H2)
+        DSL.using(getConnection("jdbc:h2:mem:app", "sa", ""), H2)
 }

@@ -2,6 +2,7 @@ package com.github.rahulsom.grooves.queries;
 
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
+import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
 import java.util.Date;
@@ -20,7 +21,8 @@ public interface TemporalQuery<
      *
      * @return An Flowable that returns at most one Snapshot
      */
-    Publisher<SnapshotT> computeSnapshot(AggregateT aggregate, Date moment);
+    @NotNull Publisher<SnapshotT> computeSnapshot(
+            @NotNull AggregateT aggregate, @NotNull Date moment);
 
     /**
      * Computes a snapshot for specified version of an aggregate.
@@ -32,6 +34,7 @@ public interface TemporalQuery<
      *
      * @return An Optional SnapshotType. Empty if cannot be computed.
      */
-    Publisher<SnapshotT> computeSnapshot(AggregateT aggregate, Date moment, boolean redirect);
+    @NotNull Publisher<SnapshotT> computeSnapshot(
+            @NotNull AggregateT aggregate, @NotNull Date moment, boolean redirect);
 
 }

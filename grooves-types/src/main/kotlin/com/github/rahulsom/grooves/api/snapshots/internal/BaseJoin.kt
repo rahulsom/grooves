@@ -18,7 +18,7 @@ interface BaseJoin<
         in JoinedAggregateT,
         EventIdT,
         in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
-        BaseSnapshot<AggregateT, JoinIdT, EventIdT, EventT> {
+    BaseSnapshot<AggregateT, JoinIdT, EventIdT, EventT> {
 
     fun addJoinedAggregate(joinedAggregateT: JoinedAggregateT)
     fun removeJoinedAggregate(joinedAggregateT: JoinedAggregateT)

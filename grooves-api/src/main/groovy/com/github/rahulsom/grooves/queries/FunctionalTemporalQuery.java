@@ -193,8 +193,8 @@ public class FunctionalTemporalQuery<
          * @return A Temporal Query
          */
         public TemporalQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> build() {
-            FunctionalTemporalQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT
-                    > functionalTemporalQuery = new FunctionalTemporalQuery<>();
+            FunctionalTemporalQuery<AggregateT, EventIdT, EventT, SnapshotIdT,
+                    SnapshotT> functionalTemporalQuery = new FunctionalTemporalQuery<>();
             functionalTemporalQuery.deprecator = this.deprecator;
             functionalTemporalQuery.events = this.events;
             functionalTemporalQuery.exceptionHandler = this.exceptionHandler;

@@ -194,8 +194,9 @@ public class Utils {
             SnapshotIdT,
             SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
             > Flowable<EventT> getApplicableEvents(
-            Flowable<EventT> forwardOnlyEvents, Executor executor,
-            Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> snapshotAndEventsSince) {
+            @NotNull Flowable<EventT> forwardOnlyEvents,
+            @NotNull Executor executor,
+            @NotNull Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> snapshotAndEventsSince) {
         return forwardOnlyEvents
                 .filter(e -> e instanceof Deprecates)
                 .toList()
@@ -230,7 +231,7 @@ public class Utils {
      *
      * @return A flowable with one pair of snapshot and list of events.
      */
-    public static <
+    @NotNull public static <
             AggregateT,
             EventIdT,
             EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
@@ -238,10 +239,10 @@ public class Utils {
             SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
             > Flowable<Pair<SnapshotT, List<EventT>>> getSnapshotsWithReuse(
             boolean reuseEarlierSnapshot,
-            Supplier<Flowable<SnapshotT>> lastUsableSnapshot,
-            Function<SnapshotT, Publisher<EventT>> uncomputedEvents,
-            Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> nonReusableSnapshotAndEvents,
-            Supplier<SnapshotT> emptySnapshot
+            @NotNull Supplier<Flowable<SnapshotT>> lastUsableSnapshot,
+            @NotNull Function<SnapshotT, Publisher<EventT>> uncomputedEvents,
+            @NotNull Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> nonReusableSnapshotAndEvents,
+            @NotNull Supplier<SnapshotT> emptySnapshot
     ) {
         if (reuseEarlierSnapshot) {
             return lastUsableSnapshot.get().flatMap(lastSnapshot ->

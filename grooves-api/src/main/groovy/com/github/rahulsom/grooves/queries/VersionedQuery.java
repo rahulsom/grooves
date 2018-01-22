@@ -2,6 +2,7 @@ package com.github.rahulsom.grooves.queries;
 
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
+import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
 public interface VersionedQuery<
@@ -18,7 +19,8 @@ public interface VersionedQuery<
      *
      * @return An Flowable that returns at most one Snapshot
      */
-    Publisher<SnapshotT> computeSnapshot(AggregateT aggregate, long version);
+    @NotNull Publisher<SnapshotT> computeSnapshot(
+            @NotNull AggregateT aggregate, long version);
 
     /**
      * Computes a snapshot for specified version of an aggregate.
@@ -30,6 +32,7 @@ public interface VersionedQuery<
      *
      * @return An Flowable that returns at most one Snapshot
      */
-    Publisher<SnapshotT> computeSnapshot(AggregateT aggregate, long version, boolean redirect);
+    @NotNull Publisher<SnapshotT> computeSnapshot(
+            @NotNull AggregateT aggregate, long version, boolean redirect);
 
 }

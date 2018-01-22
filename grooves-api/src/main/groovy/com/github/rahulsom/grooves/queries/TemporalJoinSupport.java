@@ -39,7 +39,8 @@ public interface TemporalJoinSupport<
 
     @NotNull
     @Override
-    default JoinExecutor getExecutor() {
-        return new JoinExecutor(getJoinEventClass(), getDisjoinEventClass());
+    default JoinExecutor<AggregateT, EventIdT, EventT, JoinedAggregateT, SnapshotIdT,
+            SnapshotT, JoinEventT, DisjoinEventT, ?> getExecutor() {
+        return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
     }
 }

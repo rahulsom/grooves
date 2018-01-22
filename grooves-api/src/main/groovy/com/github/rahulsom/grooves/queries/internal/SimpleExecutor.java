@@ -4,6 +4,7 @@ import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
 import io.reactivex.Flowable;
+import org.jetbrains.annotations.NotNull;
 
 import static io.reactivex.Flowable.fromPublisher;
 
@@ -19,9 +20,13 @@ public class SimpleExecutor<
         > extends
         QueryExecutor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
 
+    @NotNull
     @Override
     protected Flowable<EventApplyOutcome> callMethod(
-            QueryT query, String methodName, SnapshotT snapshot, EventT event) {
+            @NotNull QueryT query,
+            @NotNull String methodName,
+            @NotNull SnapshotT snapshot,
+            @NotNull EventT event) {
         return fromPublisher(query.applyEvent((ApplicableEventT) event, snapshot));
     }
 }

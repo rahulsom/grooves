@@ -193,11 +193,9 @@ public class FunctionalVersionedQuery<
          *
          * @return A Versioned Query
          */
-        public VersionedQuery<AggregateT, EventIdT, EventT, SnapshotIdT,
-                SnapshotT> build() {
+        public VersionedQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> build() {
             FunctionalVersionedQuery<AggregateT, EventIdT, EventT, SnapshotIdT,
-                    SnapshotT> functionalVersionedQuery =
-                    new FunctionalVersionedQuery<>();
+                    SnapshotT> functionalVersionedQuery = new FunctionalVersionedQuery<>();
             functionalVersionedQuery.deprecator = this.deprecator;
             functionalVersionedQuery.events = this.events;
             functionalVersionedQuery.exceptionHandler = this.exceptionHandler;

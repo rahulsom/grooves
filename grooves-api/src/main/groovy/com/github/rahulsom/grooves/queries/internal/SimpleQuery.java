@@ -16,7 +16,8 @@ public interface SimpleQuery<
         > extends
         BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
-    Publisher<EventApplyOutcome> applyEvent(ApplicableEventT event, SnapshotT snapshot);
+    @NotNull Publisher<EventApplyOutcome> applyEvent(
+            @NotNull ApplicableEventT event, @NotNull SnapshotT snapshot);
 
     @NotNull
     @Override

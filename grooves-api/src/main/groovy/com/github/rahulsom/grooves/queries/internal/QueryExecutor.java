@@ -99,8 +99,7 @@ public class QueryExecutor<
     @NotNull
     @Override
     public Flowable<SnapshotT> applyEvents(
-            @NotNull BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT,
-                    SnapshotT> query,
+            @NotNull BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> query,
             @NotNull SnapshotT initialSnapshot,
             @NotNull Flowable<EventT> events,
             @NotNull List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesList,

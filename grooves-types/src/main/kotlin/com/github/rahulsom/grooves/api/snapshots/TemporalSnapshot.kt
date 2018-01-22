@@ -19,7 +19,7 @@ interface TemporalSnapshot<
         SnapshotIdT,
         EventIdT,
         in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
-        BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT> {
+    BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT> {
 
     /**
      * The timestamp of the last event that this snapshot represents.

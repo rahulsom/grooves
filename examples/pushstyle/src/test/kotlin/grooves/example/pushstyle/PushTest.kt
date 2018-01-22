@@ -7,7 +7,6 @@ import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import java.util.concurrent.TimeUnit.SECONDS
 
@@ -39,17 +38,17 @@ class PushTest {
 
         application.deposit(accountId, 1, "MAINST", 100)
         await()
-                .atLeast(1, SECONDS)
-                .atMost(10, SECONDS)
-                .pollDelay(1, SECONDS)
-                .until { application.getBalance(accountId) == 100L }
+            .atLeast(1, SECONDS)
+            .atMost(10, SECONDS)
+            .pollDelay(1, SECONDS)
+            .until { application.getBalance(accountId) == 100L }
 
         application.withdraw(accountId, 2, "MAINST", 50)
         await()
-                .atLeast(1, SECONDS)
-                .atMost(10, SECONDS)
-                .pollDelay(1, SECONDS)
-                .until { application.getBalance(accountId) == 50L }
+            .atLeast(1, SECONDS)
+            .atMost(10, SECONDS)
+            .pollDelay(1, SECONDS)
+            .until { application.getBalance(accountId) == 50L }
     }
 
     @Test
@@ -61,10 +60,10 @@ class PushTest {
         application.withdraw(firstAccount, 2, "MAINST", 50)
 
         await()
-                .atLeast(1, SECONDS)
-                .atMost(10, SECONDS)
-                .pollDelay(1, SECONDS)
-                .until { application.getBalance(firstAccount) == 50L }
+            .atLeast(1, SECONDS)
+            .atMost(10, SECONDS)
+            .pollDelay(1, SECONDS)
+            .until { application.getBalance(firstAccount) == 50L }
 
         Assert.assertEquals(null, application.getBalance(secondAccount))
     }

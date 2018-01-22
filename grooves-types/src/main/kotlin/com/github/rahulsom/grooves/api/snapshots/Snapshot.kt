@@ -18,5 +18,5 @@ interface Snapshot<
         SnapshotIdT,
         EventIdT,
         in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
-        VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
-        TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
+    VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
+    TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>

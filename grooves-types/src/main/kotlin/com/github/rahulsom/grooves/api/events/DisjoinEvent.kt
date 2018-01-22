@@ -13,7 +13,7 @@ import org.reactivestreams.Publisher
  * @author Rahul Somasunderam
  */
 interface DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT> :
-        BaseEvent<AggregateT, EventIdT, EventT> {
+    BaseEvent<AggregateT, EventIdT, EventT> {
 
     /**
      * An observable that points to the aggregate to which a join is being performed.

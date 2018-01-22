@@ -19,5 +19,5 @@ interface VersionedJoin<
         in JoinedAggregateT,
         EventIdT,
         in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
-        VersionedSnapshot<AggregateT, JoinIdT, EventIdT, EventT>,
-        BaseJoin<AggregateT, JoinIdT, JoinedAggregateT, EventIdT, EventT>
+    VersionedSnapshot<AggregateT, JoinIdT, EventIdT, EventT>,
+    BaseJoin<AggregateT, JoinIdT, JoinedAggregateT, EventIdT, EventT>

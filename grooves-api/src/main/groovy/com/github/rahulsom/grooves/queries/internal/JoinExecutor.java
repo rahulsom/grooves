@@ -41,7 +41,8 @@ public class JoinExecutor<
     private final Class<JoinEventT> classJoinE;
     private final Class<DisjoinEventT> classDisjoinE;
 
-    public JoinExecutor(Class<JoinEventT> classJoinE, Class<DisjoinEventT> classDisjoinE) {
+    public JoinExecutor(
+            @NotNull Class<JoinEventT> classJoinE, @NotNull Class<DisjoinEventT> classDisjoinE) {
         this.classJoinE = classJoinE;
         this.classDisjoinE = classDisjoinE;
     }
@@ -49,8 +50,7 @@ public class JoinExecutor<
     @NotNull
     @Override
     public Flowable<SnapshotT> applyEvents(
-            @NotNull BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT,
-                    SnapshotT> query,
+            @NotNull BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> query,
             @NotNull SnapshotT initialSnapshot,
             @NotNull Flowable<EventT> events,
             @NotNull List<Deprecates<AggregateT, EventIdT, EventT>> deprecatesList,

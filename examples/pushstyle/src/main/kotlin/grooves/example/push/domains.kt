@@ -13,15 +13,15 @@ import java.util.*
 data class Account(val id: String)
 
 sealed class Transaction(
-        override val id: String,
-        override var aggregate: Account?,
-        override var timestamp: Date,
-        override var position: Long)
-    :
-        BaseEvent<Account, String, Transaction> {
+    override val id: String,
+    override var aggregate: Account?,
+    override var timestamp: Date,
+    override var position: Long
+) :
+    BaseEvent<Account, String, Transaction> {
 
     override fun getAggregateObservable(): Publisher<Account> =
-            Flowable.fromIterable(listOf(aggregate).filter { it != null })
+        Flowable.fromIterable(listOf(aggregate).filter { it != null })
 
 
     override var revertedBy: RevertEvent<Account, String, Transaction>?
@@ -30,22 +30,22 @@ sealed class Transaction(
 
 
     data class Deposit(
-            override val id: String,
-            override var aggregate: Account?,
-            override var timestamp: Date,
-            override var position: Long,
-            val atmId: String, val amount: Long)
-        :
-            Transaction(id, aggregate, timestamp, position)
+        override val id: String,
+        override var aggregate: Account?,
+        override var timestamp: Date,
+        override var position: Long,
+        val atmId: String, val amount: Long
+    ) :
+        Transaction(id, aggregate, timestamp, position)
 
     data class Withdraw(
-            override val id: String,
-            override var aggregate: Account?,
-            override var timestamp: Date,
-            override var position: Long,
-            val atmId: String, val amount: Long)
-        :
-            Transaction(id, aggregate, timestamp, position)
+        override val id: String,
+        override var aggregate: Account?,
+        override var timestamp: Date,
+        override var position: Long,
+        val atmId: String, val amount: Long
+    ) :
+        Transaction(id, aggregate, timestamp, position)
 }
 
 class Balance() : Snapshot<Account, String, String, Transaction> {
@@ -58,8 +58,10 @@ class Balance() : Snapshot<Account, String, String, Transaction> {
 
     var balance: Long = 0
 
-    constructor(id: String?, aggregate: Account?, balance: Long, lastEventPosition: Long,
-                lastEventTimestamp: Date) : this() {
+    constructor(
+        id: String?, aggregate: Account?, balance: Long, lastEventPosition: Long,
+        lastEventTimestamp: Date
+    ) : this() {
         this.id = id
         this.aggregate = aggregate
         this.balance = balance
@@ -67,23 +69,27 @@ class Balance() : Snapshot<Account, String, String, Transaction> {
         this.lastEventTimestamp = lastEventTimestamp
     }
 
-    constructor(balance: BalanceRecord):
-            this(balance.bId, Account(balance.bAccount), balance.balance,
-                    balance.bVersion, balance.bTime)
+    constructor(balance: BalanceRecord) :
+            this(
+                balance.bId, Account(balance.bAccount), balance.balance,
+                balance.bVersion, balance.bTime
+            )
 
     fun toBalanceRecord(): BalanceRecord {
-        return BalanceRecord(id, lastEventPosition, Timestamp.from(lastEventTimestamp?.toInstant()),
-                aggregate?.id, balance)
+        return BalanceRecord(
+            id, lastEventPosition, Timestamp.from(lastEventTimestamp?.toInstant()),
+            aggregate?.id, balance
+        )
     }
 
     override fun getAggregateObservable(): Publisher<Account> =
-            Flowable.fromIterable(listOf(aggregate).filter { it != null })
+        Flowable.fromIterable(listOf(aggregate).filter { it != null })
 
     override fun getDeprecatesObservable() =
-            Flowable.fromIterable(deprecates)
+        Flowable.fromIterable(deprecates)
 
     override fun getDeprecatedByObservable(): Publisher<Account> =
-            Flowable.fromIterable(listOf(deprecatedBy).filter { it != null })
+        Flowable.fromIterable(listOf(deprecatedBy).filter { it != null })
 
     override fun setAggregate(aggregate: Account) {
         this.aggregate = aggregate

@@ -53,8 +53,8 @@ class PatientHealthQuery :
                             aggregate.id!!, lastSnapshot?.lastEventPosition ?: 0, version)
 
     override fun getUncomputedEvents(
-            aggregate: Patient, lastSnapshot: PatientHealth?, snapshotTime: Date) =
-            lastSnapshot?.lastEventTimestamp?.
+            aggregate: Patient, lastSnapshot: PatientHealth, snapshotTime: Date) =
+            lastSnapshot.lastEventTimestamp?.
                     let {
                         patientEventRepository.
                                 findAllByTimestampRange(

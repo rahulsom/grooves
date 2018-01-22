@@ -39,7 +39,8 @@ public interface VersionedJoinSupport<
 
     @NotNull
     @Override
-    default JoinExecutor getExecutor() {
+    default JoinExecutor<AggregateT, EventIdT, EventT, JoinedAggregateT, SnapshotIdT,
+            SnapshotT, JoinEventT, DisjoinEventT, ?> getExecutor() {
         return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
     }
 

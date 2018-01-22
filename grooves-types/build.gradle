@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:2.2.1"
+        classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:3.0.0"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:+"
     }
 }
