@@ -1978,8 +1978,8 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
                             lastSnapshot?.lastEventPosition ?: 0, version)
 
     override fun getUncomputedEvents(<i class="conum" data-value="10"></i><b>(10)</b>
-            aggregate: Patient, lastSnapshot: PatientAccount?, snapshotTime: Date) =
-            lastSnapshot?.lastEventTimestamp?.
+            aggregate: Patient, lastSnapshot: PatientAccount, snapshotTime: Date) =
+            lastSnapshot.lastEventTimestamp?.
                     let {
                         patientEventRepository.findAllByTimestampRange(
                                 aggregate.id!!, it, snapshotTime)
@@ -2186,42 +2186,45 @@ Since 0.4.0, grooves has experimental support for doing this in a somewhat <em>F
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">val query =
-        Grooves.versioned&lt;Account, String, Transaction, String, Balance&gt;() <i class="conum" data-value="1"></i><b>(1)</b>
-                .withSnapshot { version, account -&gt; <i class="conum" data-value="2"></i><b>(2)</b>
-                    log.info("getBalance($account, $version)")
-                    Maybe.fromCallable { database.getBalance(account, version) }
-                            .map { dbBalance -&gt; Balance(dbBalance) }
-                            .toFlowable()
-                }
-                .withEmptySnapshot { Balance() } <i class="conum" data-value="3"></i><b>(3)</b>
-                .withEvents { account, balance, version -&gt; <i class="conum" data-value="4"></i><b>(4)</b>
-                    val transaction =
-                            ContextManager.get()?.get("transaction") as Transaction?
-                    if (transaction != null)
-                        just(transaction)
-                    else
-                        empty()
-                }
-                .withApplyEvents { balance -&gt; true } <i class="conum" data-value="5"></i><b>(5)</b>
-                .withDeprecator { balance, deprecatingAccount -&gt; /* No op */ } <i class="conum" data-value="6"></i><b>(6)</b>
-                .withExceptionHandler { exception, balance, transaction -&gt; <i class="conum" data-value="7"></i><b>(7)</b>
-                    log.warn("$exception occurred")
-                    just(CONTINUE)
-                }
-                .withEventHandler(this::updateBalance) <i class="conum" data-value="8"></i><b>(8)</b>
-                .build() <i class="conum" data-value="9"></i><b>(9)</b>
+    Grooves.versioned&lt;Account, String, Transaction, String, Balance&gt;() <i class="conum" data-value="1"></i><b>(1)</b>
+        .withSnapshot { version, account -&gt;
+            <i class="conum" data-value="2"></i><b>(2)</b>
+            log.info("getBalance($account, $version)")
+            Maybe.fromCallable { database.getBalance(account, version) }
+                .map { dbBalance -&gt; Balance(dbBalance) }
+                .toFlowable()
+        }
+        .withEmptySnapshot { Balance() } <i class="conum" data-value="3"></i><b>(3)</b>
+        .withEvents { account, balance, version -&gt;
+            <i class="conum" data-value="4"></i><b>(4)</b>
+            val transaction =
+                ContextManager.get()?.get("transaction") as Transaction?
+            if (transaction != null)
+                just(transaction)
+            else
+                empty()
+        }
+        .withApplyEvents { balance -&gt; true } <i class="conum" data-value="5"></i><b>(5)</b>
+        .withDeprecator { balance, deprecatingAccount -&gt; /* No op */ } <i class="conum" data-value="6"></i><b>(6)</b>
+        .withExceptionHandler { exception, balance, transaction -&gt;
+            <i class="conum" data-value="7"></i><b>(7)</b>
+            log.warn("$exception occurred")
+            just(CONTINUE)
+        }
+        .withEventHandler(this::updateBalance) <i class="conum" data-value="8"></i><b>(8)</b>
+        .build() <i class="conum" data-value="9"></i><b>(9)</b>
 
 private fun updateBalance(transaction: Transaction, balance: Balance) =
-        when (transaction) {
-            is Transaction.Deposit -&gt; {
-                balance.balance += transaction.amount
-                just(CONTINUE)
-            }
-            is Transaction.Withdraw -&gt; {
-                balance.balance -= transaction.amount
-                just(CONTINUE)
-            }
-        }</code></pre>
+    when (transaction) {
+        is Transaction.Deposit -&gt; {
+            balance.balance += transaction.amount
+            just(CONTINUE)
+        }
+        is Transaction.Withdraw -&gt; {
+            balance.balance -= transaction.amount
+            just(CONTINUE)
+        }
+    }</code></pre>
 </div>
 </div>
 <div class="colist arabic">
