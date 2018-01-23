@@ -102,7 +102,6 @@ class BootStrap implements InitializingBean {
             snapshotWith patientAccountQuery
             snapshotWith patientHealthQuery
         }
-
     }
 
     private Patient setupFreddieMercury() {

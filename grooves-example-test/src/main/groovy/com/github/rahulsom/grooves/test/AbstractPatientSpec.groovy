@@ -358,7 +358,7 @@ abstract class AbstractPatientSpec extends Specification {
         7  | '2016-02-05' || 'Sarah Palin' | -100.25
     }
 
-    @SuppressWarnings(['Instanceof',])
+    @SuppressWarnings(['Instanceof', 'MethodParameterTypeRequired', ])
     static Date getDate(def ts) {
         if (ts instanceof String) {
             Date.parse('yyyy-MM-dd', ts[0..10])

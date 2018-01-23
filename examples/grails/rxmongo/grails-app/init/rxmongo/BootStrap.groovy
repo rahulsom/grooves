@@ -92,7 +92,6 @@ class BootStrap {
             snapshotWith patientAccountQuery
             snapshotWith patientHealthQuery
         }
-
     }
 
     private Patient setupFreddieMercury() {

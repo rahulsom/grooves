@@ -56,7 +56,6 @@ class PatientController {
             throw new RuntimeException('Could not compute account snapshot')
         }
         ResponseEntity.ok(resp)
-
     }
 
     @GetMapping('/patient/health/{id}')
