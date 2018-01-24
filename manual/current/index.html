@@ -894,10 +894,10 @@ sealed class PatientEvent : BaseEvent&lt;Patient, String, PatientEvent&gt; { <i 
     override var revertedBy: RevertEvent&lt;Patient, String, PatientEvent&gt;? = null <i class="conum" data-value="3"></i><b>(3)</b>
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    lateinit override var timestamp: Date <i class="conum" data-value="4"></i><b>(4)</b>
+    override lateinit var timestamp: Date <i class="conum" data-value="4"></i><b>(4)</b>
     override var position: Long = 0 <i class="conum" data-value="5"></i><b>(5)</b>
 
-    fun getType() = this.javaClass.simpleName
+    fun getType(): String = this.javaClass.simpleName
 
     @JsonIgnore
     override fun getAggregateObservable(): Publisher&lt;Patient&gt; = <i class="conum" data-value="6"></i><b>(6)</b>
@@ -956,7 +956,7 @@ In our case, it doesn&#8217;t matter much since we&#8217;re using Hibernate, whi
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Event(Patient.class) <i class="conum" data-value="1"></i><b>(1)</b>
 public class PatientCreated extends PatientEvent { <i class="conum" data-value="2"></i><b>(2)</b>
-    @Getter private String name;
+    @Getter private final String name;
 
     public PatientCreated(String name) {
         this.name = name;
@@ -1086,7 +1086,7 @@ import lombok.Getter;
 
 public class PatientEventReverted extends PatientEvent <i class="conum" data-value="1"></i><b>(1)</b>
         implements RevertEvent&lt;Patient, Long, PatientEvent&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
-    @Getter private Long revertedEventId; <i class="conum" data-value="3"></i><b>(3)</b>
+    @Getter private final Long revertedEventId; <i class="conum" data-value="3"></i><b>(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -1518,35 +1518,41 @@ public interface CustomQuerySupport&lt;
         &gt; extends QuerySupport&lt;Patient, Long, PatientEvent, Long, SnapshotT&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
 
     @Override
-    default Publisher&lt;SnapshotT&gt; getSnapshot(long maxPosition, Patient aggregate) {
+    default Publisher&lt;SnapshotT&gt; getSnapshot(long maxPosition, @NotNull Patient aggregate) {
         <i class="conum" data-value="3"></i><b>(3)</b>
     }
 
+    @NotNull
     @Override
-    default Publisher&lt;SnapshotT&gt; getSnapshot(Date maxTimestamp, Patient aggregate) {
+    default Publisher&lt;SnapshotT&gt; getSnapshot(
+            @Nullable Date maxTimestamp, @NotNull Patient aggregate) {
         <i class="conum" data-value="4"></i><b>(4)</b>
     }
     @Override
-    default boolean shouldEventsBeApplied(SnapshotT snapshot) { <i class="conum" data-value="5"></i><b>(5)</b>
+    default boolean shouldEventsBeApplied(@NotNull SnapshotT snapshot) { <i class="conum" data-value="5"></i><b>(5)</b>
         return true;
     }
 
+    @NotNull
     @Override
     default Publisher&lt;EventApplyOutcome&gt; onException(
-            Exception e, SnapshotT snapshot, PatientEvent event) { <i class="conum" data-value="6"></i><b>(6)</b>
+            @NotNull Exception e, @NotNull SnapshotT snapshot, @NotNull PatientEvent event) { <i class="conum" data-value="6"></i><b>(6)</b>
         getLog().error("Error computing snapshot", e);
         return toPublisher(just(CONTINUE));
     }
 
+    @NotNull
     @Override
     default Publisher&lt;PatientEvent&gt; getUncomputedEvents(
-            Patient aggregate, SnapshotT lastSnapshot, long version) {
+            @NotNull Patient aggregate, @Nullable SnapshotT lastSnapshot, long version) {
         <i class="conum" data-value="7"></i><b>(7)</b>
     }
 
+    @NotNull
     @Override
     default Publisher&lt;PatientEvent&gt; getUncomputedEvents(
-            Patient aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
+            @NotNull Patient aggregate, @Nullable SnapshotT lastSnapshot,
+            @NotNull Date snapshotTime) {
         <i class="conum" data-value="8"></i><b>(8)</b>
     }
 
@@ -1556,6 +1562,7 @@ public interface CustomQuerySupport&lt;
 public class PatientAccountQuery
         implements CustomQuerySupport&lt;PatientAccount&gt; { <i class="conum" data-value="10"></i><b>(10)</b>
 
+    @NotNull
     @Override
     public PatientAccount createEmptySnapshot() { <i class="conum" data-value="11"></i><b>(11)</b>
         return new PatientAccount();
@@ -1689,18 +1696,18 @@ class PatientAccountQuery implements
             Patient patient, PatientAccount lastSnapshot, long version) { <i class="conum" data-value="7"></i><b>(7)</b>
     }
 
-    @Override
-    Publisher&lt;PatientEvent&gt; getUncomputedEvents(
+    @NotNull
+    @Override Publisher&lt;PatientEvent&gt; getUncomputedEvents(
             Patient aggregate, PatientAccount lastSnapshot, Date snapshotTime) { <i class="conum" data-value="8"></i><b>(8)</b>
     }
 
-    @Override
-    PatientAccount createEmptySnapshot() { <i class="conum" data-value="9"></i><b>(9)</b>
+    @NotNull
+    @Override PatientAccount createEmptySnapshot() { <i class="conum" data-value="9"></i><b>(9)</b>
         new PatientAccount(deprecates: [])
     }
 
     @Override
-    void addToDeprecates(PatientAccount snapshot, Patient deprecatedAggregate) {
+    void addToDeprecates(@NotNull PatientAccount snapshot, Patient deprecatedAggregate) {
         snapshot.deprecates &lt;&lt; deprecatedAggregate
     }
 
@@ -1804,28 +1811,33 @@ public interface GormQuerySupport&lt;
 
     Class&lt;SnapshotT&gt; getSnapshotClass(); <i class="conum" data-value="3"></i><b>(3)</b>
 
+    @NotNull
     @Override
-    default Publisher&lt;SnapshotT&gt; getSnapshot(long maxPosition, AggregateT aggregate) {
+    default Publisher&lt;SnapshotT&gt; getSnapshot(long maxPosition, @NotNull AggregateT aggregate) {
         return BlockingSnapshotSource.super
                 .getSnapshot(maxPosition, aggregate); <i class="conum" data-value="4"></i><b>(4)</b>
     }
 
+    @NotNull
     @Override
-    default Publisher&lt;SnapshotT&gt; getSnapshot(Date maxTimestamp, AggregateT aggregate) {
+    default Publisher&lt;SnapshotT&gt; getSnapshot(Date maxTimestamp, @NotNull AggregateT aggregate) {
         return BlockingSnapshotSource.super
                 .getSnapshot(maxTimestamp, aggregate);
     }
 
+    @NotNull
     @Override
     default Publisher&lt;EventT&gt; getUncomputedEvents(
-            AggregateT aggregate, SnapshotT lastSnapshot, long version) {
+            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot, long version) {
         return BlockingEventSource.super
                 .getUncomputedEvents(aggregate, lastSnapshot, version);
     }
 
+    @NotNull
     @Override
     default Publisher&lt;EventT&gt; getUncomputedEvents(
-            AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
+            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot,
+            @NotNull Date snapshotTime) {
         return BlockingEventSource.super
                 .getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
     }
@@ -1956,9 +1968,9 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
                     aggregate.id!!, maxPosition)
 
     override fun getSnapshot(<i class="conum" data-value="6"></i><b>(6)</b>
-            maxTimestamp: Date, aggregate: Patient) =
+            maxTimestamp: Date?, aggregate: Patient) =
             patientAccountRepository.findByAggregateIdAndLastEventTimestampLessThan(
-                    aggregate.id!!, maxTimestamp)
+                    aggregate.id!!, maxTimestamp!!)
 
     override fun shouldEventsBeApplied(snapshot: PatientAccount) = true <i class="conum" data-value="7"></i><b>(7)</b>
 
@@ -1975,11 +1987,11 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
             aggregate: Patient, lastSnapshot: PatientAccount?, version: Long) =
             patientEventRepository.
                     findAllByPositionRange(aggregate.id!!,
-                            lastSnapshot?.lastEventPosition ?: 0, version)
+                        lastSnapshot?.lastEventPosition ?: 0, version)
 
     override fun getUncomputedEvents(<i class="conum" data-value="10"></i><b>(10)</b>
-            aggregate: Patient, lastSnapshot: PatientAccount, snapshotTime: Date) =
-            lastSnapshot.lastEventTimestamp?.
+            aggregate: Patient, lastSnapshot: PatientAccount?, snapshotTime: Date) =
+            lastSnapshot?.lastEventTimestamp?.
                     let {
                         patientEventRepository.findAllByTimestampRange(
                                 aggregate.id!!, it, snapshotTime)
