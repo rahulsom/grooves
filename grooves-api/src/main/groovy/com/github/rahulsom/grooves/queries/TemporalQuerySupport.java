@@ -9,6 +9,7 @@ import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
 import com.github.rahulsom.grooves.queries.internal.Utils;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
 
 import java.text.SimpleDateFormat;
@@ -217,7 +218,7 @@ public interface TemporalQuerySupport<
     }
 
     @NotNull Publisher<EventT> getUncomputedEvents(
-            @NotNull AggregateT aggregate, @NotNull SnapshotT lastSnapshot,
+            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot,
             @NotNull Date snapshotTime);
 
     /**
@@ -229,6 +230,6 @@ public interface TemporalQuerySupport<
      * @return An observable that returns at most one Snapshot
      */
     @NotNull Publisher<SnapshotT> getSnapshot(
-            @NotNull Date maxTimestamp, @NotNull AggregateT aggregate);
+            @Nullable Date maxTimestamp, @NotNull AggregateT aggregate);
 
 }

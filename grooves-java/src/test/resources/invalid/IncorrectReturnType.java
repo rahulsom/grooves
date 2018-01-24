@@ -5,6 +5,7 @@ import com.github.rahulsom.grooves.java.Query;
 import com.github.rahulsom.grooves.queries.QuerySupport;
 import domains.*;
 import org.reactivestreams.Publisher;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 
@@ -15,45 +16,53 @@ import static rx.RxReactiveStreams.toPublisher;
 
 @Query(aggregate = Account.class, snapshot = Balance.class)
 class IncorrectReturnType implements QuerySupport<Account, Long, Transaction, String, Balance> {
+    @NotNull
     @Override
     public Balance createEmptySnapshot() {
         return new Balance();
     }
 
+    @NotNull
     @Override
-    public Publisher<Balance> getSnapshot(long maxPosition, Account aggregate) {
+    public Publisher<Balance> getSnapshot(long maxPosition, @NotNull Account aggregate) {
         return toPublisher(empty());
     }
 
+    @NotNull
     @Override
-    public Publisher<Balance> getSnapshot(Date maxTimestamp, Account aggregate) {
+    public Publisher<Balance> getSnapshot(Date maxTimestamp, @NotNull Account aggregate) {
         return toPublisher(empty());
     }
 
+    @NotNull
     @Override
     public Publisher<Transaction> getUncomputedEvents(
-            Account aggregate, Balance lastSnapshot, long version) {
+            @NotNull Account aggregate, Balance lastSnapshot, long version) {
         return empty();
     }
 
+    @NotNull
     @Override
     public Publisher<Transaction> getUncomputedEvents(
-            Account aggregate, Balance lastSnapshot, Date snapshotTime) {
+            @NotNull Account aggregate, Balance lastSnapshot, @NotNull Date snapshotTime) {
         return empty();
     }
 
+    @NotNull
     @Override
-    public boolean shouldEventsBeApplied(Balance snapshot) {
+    public boolean shouldEventsBeApplied(@NotNull Balance snapshot) {
         return true;
     }
 
+    @NotNull
     @Override
-    public void addToDeprecates(Balance snapshot, Account deprecatedAggregate) {
+    public void addToDeprecates(@NotNull Balance snapshot, @NotNull Account deprecatedAggregate) {
     }
 
+    @NotNull
     @Override
     public Publisher<EventApplyOutcome> onException(
-            Exception e, Balance snapshot, Transaction event) {
+            @NotNull Exception e, @NotNull Balance snapshot, @NotNull Transaction event) {
         return toPublisher(just(CONTINUE));
     }
 

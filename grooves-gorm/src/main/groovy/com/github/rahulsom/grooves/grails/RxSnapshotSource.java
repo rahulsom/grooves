@@ -4,6 +4,8 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
 import grails.gorm.rx.RxEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
 import rx.Observable;
 
@@ -35,8 +37,9 @@ public interface RxSnapshotSource<
 
     Class<SnapshotT> getSnapshotClass();
 
+    @NotNull
     @Override
-    default Publisher<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
+    default Publisher<SnapshotT> getSnapshot(long maxPosition, @NotNull AggregateT aggregate) {
         //noinspection unchecked
         return toPublisher((Observable<SnapshotT>) (maxPosition == Long.MAX_VALUE ?
                 invokeStaticMethod(getSnapshotClass(),
@@ -48,8 +51,10 @@ public interface RxSnapshotSource<
                         new Object[]{aggregate.getId(), maxPosition, LATEST_BY_POSITION})));
     }
 
+    @NotNull
     @Override
-    default Publisher<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
+    default Publisher<SnapshotT> getSnapshot(
+            @Nullable Date maxTimestamp, @NotNull AggregateT aggregate) {
         //noinspection unchecked
         return toPublisher((Observable<SnapshotT>) (maxTimestamp == null ?
                 invokeStaticMethod(getSnapshotClass(),

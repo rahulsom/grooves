@@ -5,6 +5,7 @@ import com.github.rahulsom.grooves.java.Query;
 import grooves.example.javaee.Database;
 import grooves.example.javaee.domain.*;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
 import javax.inject.Inject;
@@ -24,13 +25,15 @@ public class PatientHealthQuery implements CustomQuerySupport<PatientHealth> {
         return PatientHealth.class;
     }
 
+    @NotNull
     @Override
     public PatientHealth createEmptySnapshot() {
         return new PatientHealth();
     }
 
     @Override
-    public void addToDeprecates(PatientHealth snapshot, Patient deprecatedAggregate) {
+    public void addToDeprecates(
+            @NotNull PatientHealth snapshot, @NotNull Patient deprecatedAggregate) {
         snapshot.getDeprecates().add(deprecatedAggregate);
     }
 

@@ -4,6 +4,8 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
 import org.grails.datastore.gorm.GormEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
 
 import java.util.Date;
@@ -40,28 +42,33 @@ public interface GormQuerySupport<
 
     Class<SnapshotT> getSnapshotClass(); // <3>
 
+    @NotNull
     @Override
-    default Publisher<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
+    default Publisher<SnapshotT> getSnapshot(long maxPosition, @NotNull AggregateT aggregate) {
         return BlockingSnapshotSource.super
                 .getSnapshot(maxPosition, aggregate); // <4>
     }
 
+    @NotNull
     @Override
-    default Publisher<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
+    default Publisher<SnapshotT> getSnapshot(Date maxTimestamp, @NotNull AggregateT aggregate) {
         return BlockingSnapshotSource.super
                 .getSnapshot(maxTimestamp, aggregate);
     }
 
+    @NotNull
     @Override
     default Publisher<EventT> getUncomputedEvents(
-            AggregateT aggregate, SnapshotT lastSnapshot, long version) {
+            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot, long version) {
         return BlockingEventSource.super
                 .getUncomputedEvents(aggregate, lastSnapshot, version);
     }
 
+    @NotNull
     @Override
     default Publisher<EventT> getUncomputedEvents(
-            AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
+            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot,
+            @NotNull Date snapshotTime) {
         return BlockingEventSource.super
                 .getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
     }

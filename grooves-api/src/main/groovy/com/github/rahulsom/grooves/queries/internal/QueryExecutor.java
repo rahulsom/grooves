@@ -44,6 +44,7 @@ public class QueryExecutor<
         QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
         > implements Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
+    @SuppressWarnings("WeakerAccess")
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     private static <T> List<T> plus(List<T> list, T element) {
@@ -249,6 +250,7 @@ public class QueryExecutor<
      * @return An observable returned by the method, or the result of calling onException on the
      *         Util instance, or an Observable that asks to RETURN if that fails.
      */
+    @SuppressWarnings("WeakerAccess")
     protected Flowable<EventApplyOutcome> callMethod(
             QueryT query, String methodName, final SnapshotT snapshot, final EventT event) {
         try {

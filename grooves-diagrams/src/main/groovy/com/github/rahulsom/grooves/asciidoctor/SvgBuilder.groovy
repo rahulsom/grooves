@@ -79,7 +79,7 @@ class SvgBuilder {
     }
 
     @CompileStatic
-    private EventType computeEventType(String description) {
+    private static EventType computeEventType(String description) {
         switch (description) {
             case ~/.*revert.*/: return EventType.Revert
             case ~/.*deprecates.*/: return EventType.Deprecates

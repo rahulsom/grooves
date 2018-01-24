@@ -30,7 +30,7 @@ public interface QuerySupport<
 
     @NotNull
     @Override
-    default QueryExecutor getExecutor() {
+    default QueryExecutor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, ?> getExecutor() {
         return new QueryExecutor<>();
     }
 

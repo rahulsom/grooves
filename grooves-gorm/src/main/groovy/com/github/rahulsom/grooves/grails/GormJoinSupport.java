@@ -7,6 +7,8 @@ import com.github.rahulsom.grooves.api.snapshots.Join;
 import com.github.rahulsom.grooves.queries.JoinSupport;
 import com.github.rahulsom.grooves.queries.internal.JoinExecutor;
 import org.grails.datastore.gorm.GormEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
 
 import java.util.Date;
@@ -47,36 +49,44 @@ public interface GormJoinSupport<
         BlockingEventSource<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
         BlockingSnapshotSource<AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
+    @NotNull
     @Override
-    default JoinExecutor getExecutor() {
+    default JoinExecutor<AggregateT, EventIdT, EventT, JoinedAggregateT, SnapshotIdT,
+            SnapshotT, JoinEventT, DisjoinEventT, ?> getExecutor() {
         //noinspection unchecked
         return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
     }
 
+    @NotNull
     @Override
-    default Publisher<EventT> findEventsBefore(EventT event) {
+    default Publisher<EventT> findEventsBefore(@NotNull EventT event) {
         return JoinSupport.super.findEventsBefore(event);
     }
 
+    @NotNull
     @Override
-    default Publisher<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
+    default Publisher<SnapshotT> getSnapshot(long maxPosition, @NotNull AggregateT aggregate) {
         return BlockingSnapshotSource.super.getSnapshot(maxPosition, aggregate);
     }
 
+    @NotNull
     @Override
-    default Publisher<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
+    default Publisher<SnapshotT> getSnapshot(
+            @Nullable Date maxTimestamp, @NotNull AggregateT aggregate) {
         return BlockingSnapshotSource.super.getSnapshot(maxTimestamp, aggregate);
     }
 
+    @NotNull
     @Override
     default Publisher<EventT> getUncomputedEvents(
-            AggregateT aggregate, SnapshotT lastSnapshot, long version) {
+            @NotNull AggregateT aggregate, SnapshotT lastSnapshot, long version) {
         return BlockingEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, version);
     }
 
+    @NotNull
     @Override
     default Publisher<EventT> getUncomputedEvents(
-            AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
+            @NotNull AggregateT aggregate, SnapshotT lastSnapshot, @NotNull Date snapshotTime) {
         return BlockingEventSource.super.getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
     }
 

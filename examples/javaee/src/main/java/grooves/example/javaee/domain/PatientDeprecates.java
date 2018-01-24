@@ -13,7 +13,7 @@ import static rx.RxReactiveStreams.toPublisher;
 public class PatientDeprecates extends PatientEvent
         implements Deprecates<Patient, Long, PatientEvent> {
     private final PatientDeprecatedBy converse;
-    @Getter private Patient deprecated;
+    @Getter private final Patient deprecated;
 
     @NotNull
     @Override

@@ -33,9 +33,9 @@ class PatientHealthQuery :
             patientHealthRepository.findByAggregateIdAndLastEventPositionLessThan(
                     aggregate.id!!, maxPosition)
 
-    override fun getSnapshot(maxTimestamp: Date, aggregate: Patient) =
+    override fun getSnapshot(maxTimestamp: Date?, aggregate: Patient) =
             patientHealthRepository.findByAggregateIdAndLastEventTimestampLessThan(
-                    aggregate.id!!, maxTimestamp)
+                    aggregate.id!!, maxTimestamp!!)
 
     override fun shouldEventsBeApplied(snapshot: PatientHealth) = true
 
@@ -49,12 +49,12 @@ class PatientHealthQuery :
     override fun getUncomputedEvents(
             aggregate: Patient, lastSnapshot: PatientHealth?, version: Long) =
             patientEventRepository.
-                    findAllByPositionRange(
-                            aggregate.id!!, lastSnapshot?.lastEventPosition ?: 0, version)
+                    findAllByPositionRange(aggregate.id!!,
+                        lastSnapshot?.lastEventPosition ?: 0, version)
 
     override fun getUncomputedEvents(
-            aggregate: Patient, lastSnapshot: PatientHealth, snapshotTime: Date) =
-            lastSnapshot.lastEventTimestamp?.
+            aggregate: Patient, lastSnapshot: PatientHealth?, snapshotTime: Date) =
+            lastSnapshot?.lastEventTimestamp?.
                     let {
                         patientEventRepository.
                                 findAllByTimestampRange(

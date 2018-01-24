@@ -53,6 +53,7 @@ dependencies {
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails.plugins:geb"
     testCompile "org.grails:grails-datastore-rest-client"
+    compileOnly "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
 
     compile "org.grails.plugins:rxjava"
 

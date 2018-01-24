@@ -6,6 +6,7 @@ import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.queries.internal.SimpleExecutor;
 import com.github.rahulsom.grooves.queries.internal.SimpleQuery;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
 
 import java.util.Date;
@@ -44,18 +45,20 @@ public class FunctionalTemporalQuery<
             Publisher<EventApplyOutcome>> exceptionHandler;
     private BiFunction<EventT, SnapshotT, Publisher<EventApplyOutcome>> eventHandler;
 
-    FunctionalTemporalQuery() {
+    private FunctionalTemporalQuery() {
     }
 
     @NotNull
     @Override
-    public SimpleExecutor getExecutor() {
-        return new SimpleExecutor();
+    public SimpleExecutor<AggregateT, EventIdT, EventT, ?, SnapshotIdT, SnapshotT,
+            ?> getExecutor() {
+        return new SimpleExecutor<>();
     }
 
     @NotNull
     @Override
-    public Publisher<SnapshotT> getSnapshot(Date maxTimestamp, @NotNull AggregateT aggregate) {
+    public Publisher<SnapshotT> getSnapshot(
+            @Nullable Date maxTimestamp, @NotNull AggregateT aggregate) {
         return snapshot.apply(maxTimestamp, aggregate);
     }
 
@@ -65,9 +68,11 @@ public class FunctionalTemporalQuery<
         return emptySnapshot.get();
     }
 
+    @NotNull
     @Override
     public Publisher<EventT> getUncomputedEvents(
-            AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
+            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot,
+            @NotNull Date snapshotTime) {
         return events.apply(aggregate, lastSnapshot, snapshotTime);
     }
 
@@ -89,8 +94,10 @@ public class FunctionalTemporalQuery<
         return exceptionHandler.apply(e, snapshot, event);
     }
 
+    @NotNull
     @Override
-    public Publisher<EventApplyOutcome> applyEvent(EventT event, SnapshotT snapshot) {
+    public Publisher<EventApplyOutcome> applyEvent(
+            @NotNull EventT event, @NotNull SnapshotT snapshot) {
         return eventHandler.apply(event, snapshot);
     }
 

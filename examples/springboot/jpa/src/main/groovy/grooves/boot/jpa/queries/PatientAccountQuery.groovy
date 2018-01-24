@@ -5,6 +5,7 @@ import com.github.rahulsom.grooves.groovy.transformations.Query
 import com.github.rahulsom.grooves.queries.QuerySupport
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientAccountRepository
+import org.jetbrains.annotations.NotNull
 import org.reactivestreams.Publisher
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -91,8 +92,8 @@ class PatientAccountQuery implements
         //tag::documented[]
     }
 
-    @Override
-    Publisher<PatientEvent> getUncomputedEvents(
+    @NotNull
+    @Override Publisher<PatientEvent> getUncomputedEvents(
             Patient aggregate, PatientAccount lastSnapshot, Date snapshotTime) { // <8>
         //end::documented[]
         def cb = entityManager.criteriaBuilder
@@ -119,13 +120,13 @@ class PatientAccountQuery implements
         //tag::documented[]
     }
 
-    @Override
-    PatientAccount createEmptySnapshot() { // <9>
+    @NotNull
+    @Override PatientAccount createEmptySnapshot() { // <9>
         new PatientAccount(deprecates: [])
     }
 
     @Override
-    void addToDeprecates(PatientAccount snapshot, Patient deprecatedAggregate) {
+    void addToDeprecates(@NotNull PatientAccount snapshot, Patient deprecatedAggregate) {
         snapshot.deprecates << deprecatedAggregate
     }
 

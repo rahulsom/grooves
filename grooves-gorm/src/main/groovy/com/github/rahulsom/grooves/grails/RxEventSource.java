@@ -4,6 +4,8 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
 import grails.gorm.rx.RxEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
 import rx.Observable;
 
@@ -36,9 +38,10 @@ public interface RxEventSource<
 
     Class<EventT> getEventClass();
 
+    @NotNull
     @Override
     default Publisher<EventT> getUncomputedEvents(
-            AggregateT aggregate, SnapshotT lastSnapshot, long version) {
+            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot, long version) {
         boolean missingOrEmptySnapshot =
                 lastSnapshot == null || lastSnapshot.getLastEventPosition() == 0;
 
@@ -51,10 +54,13 @@ public interface RxEventSource<
                 new Object[]{aggregate, position, version, INCREMENTAL_BY_POSITION}));
     }
 
+    @NotNull
     @Override
     default Publisher<EventT> getUncomputedEvents(
-            AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
-        final Date lastEventTimestamp = lastSnapshot.getLastEventTimestamp();
+            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot,
+            @NotNull Date snapshotTime) {
+        final Date lastEventTimestamp =
+                lastSnapshot == null ? null : lastSnapshot.getLastEventTimestamp();
         final String method = lastEventTimestamp == null ?
                 UNCOMPUTED_EVENTS_BEFORE_DATE :
                 UNCOMPUTED_EVENTS_BY_DATE_RANGE;

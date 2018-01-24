@@ -8,6 +8,7 @@
 * Use PrismJS for docs.
   This allows syntax highlighting for Kotlin code.
 * Use `svg-builder` and static type diagramming.
+* Vastly improved Null checking using jetbrains annotations.
 
 == 0.4.0
 * Make position and timestamp non nullable in Events

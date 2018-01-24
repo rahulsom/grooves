@@ -21,7 +21,8 @@ public interface SimpleQuery<
 
     @NotNull
     @Override
-    default SimpleExecutor getExecutor() {
+    default SimpleExecutor<AggregateT, EventIdT, EventT, ?, SnapshotIdT, SnapshotT,
+            ?> getExecutor() {
         return new SimpleExecutor<>();
     }
 }

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Event(Patient.class)
 public class PaymentMade extends PatientEvent {
-    @Getter private BigDecimal amount;
+    @Getter private final BigDecimal amount;
 
     @Override
     public String toString() {

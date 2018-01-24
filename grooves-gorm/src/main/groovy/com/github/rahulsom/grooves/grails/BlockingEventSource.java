@@ -4,6 +4,8 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
 import org.grails.datastore.gorm.GormEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
 
 import java.util.Date;
@@ -34,9 +36,10 @@ public interface BlockingEventSource<
         SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
         > extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
+    @NotNull
     @Override
     default Publisher<EventT> getUncomputedEvents(
-            AggregateT aggregate, SnapshotT lastSnapshot, long version) {
+            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot, long version) {
         boolean missingOrEmptySnapshot =
                 lastSnapshot == null || lastSnapshot.getLastEventPosition() == 0;
         final long position = missingOrEmptySnapshot ? 0 : lastSnapshot.getLastEventPosition();
@@ -48,10 +51,13 @@ public interface BlockingEventSource<
         ))));
     }
 
+    @NotNull
     @Override
     default Publisher<EventT> getUncomputedEvents(
-            AggregateT aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
-        final Date lastEventTimestamp = lastSnapshot.getLastEventTimestamp();
+            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot,
+            @NotNull Date snapshotTime) {
+        final Date lastEventTimestamp =
+                lastSnapshot == null ? null : lastSnapshot.getLastEventTimestamp();
         final String method = lastEventTimestamp == null ?
                 UNCOMPUTED_EVENTS_BEFORE_DATE :
                 UNCOMPUTED_EVENTS_BY_DATE_RANGE;

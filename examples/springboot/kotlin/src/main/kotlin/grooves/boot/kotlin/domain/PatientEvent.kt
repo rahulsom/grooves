@@ -30,10 +30,10 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
     override var revertedBy: RevertEvent<Patient, String, PatientEvent>? = null // <3>
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    lateinit override var timestamp: Date // <4>
+    override lateinit var timestamp: Date // <4>
     override var position: Long = 0 // <5>
 
-    fun getType() = this.javaClass.simpleName
+    fun getType(): String = this.javaClass.simpleName
 
     @JsonIgnore
     override fun getAggregateObservable(): Publisher<Patient> = // <6>

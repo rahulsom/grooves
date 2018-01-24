@@ -6,7 +6,7 @@ import lombok.Getter;
 //tag::documented[]
 @Event(Patient.class) // <1>
 public class PatientCreated extends PatientEvent { // <2>
-    @Getter private String name;
+    @Getter private final String name;
     //end::documented[]
 
     @Override

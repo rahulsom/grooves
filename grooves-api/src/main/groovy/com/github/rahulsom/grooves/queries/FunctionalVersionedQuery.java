@@ -46,13 +46,14 @@ public class FunctionalVersionedQuery<
             Publisher<EventApplyOutcome>> exceptionHandler;
     private BiFunction<EventT, SnapshotT, Publisher<EventApplyOutcome>> eventHandler;
 
-    FunctionalVersionedQuery() {
+    private FunctionalVersionedQuery() {
     }
 
     @NotNull
     @Override
-    public SimpleExecutor getExecutor() {
-        return new SimpleExecutor();
+    public SimpleExecutor<AggregateT, EventIdT, EventT, ?, SnapshotIdT, SnapshotT,
+            ?> getExecutor() {
+        return new SimpleExecutor<>();
     }
 
     @NotNull
@@ -67,9 +68,10 @@ public class FunctionalVersionedQuery<
         return emptySnapshot.get();
     }
 
+    @NotNull
     @Override
     public Publisher<EventT> getUncomputedEvents(
-            AggregateT aggregate, SnapshotT lastSnapshot, long version) {
+            @NotNull AggregateT aggregate, SnapshotT lastSnapshot, long version) {
         return events.apply(aggregate, lastSnapshot, version);
     }
 
@@ -91,8 +93,10 @@ public class FunctionalVersionedQuery<
         return exceptionHandler.apply(e, snapshot, event);
     }
 
+    @NotNull
     @Override
-    public Publisher<EventApplyOutcome> applyEvent(EventT event, SnapshotT snapshot) {
+    public Publisher<EventApplyOutcome> applyEvent(
+            @NotNull EventT event, @NotNull SnapshotT snapshot) {
         return eventHandler.apply(event, snapshot);
     }
 

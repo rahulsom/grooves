@@ -6,6 +6,7 @@ import com.github.rahulsom.grooves.queries.QuerySupport
 import grooves.boot.jpa.domain.*
 import grooves.boot.jpa.repositories.PatientEventRepository
 import grooves.boot.jpa.repositories.PatientHealthRepository
+import org.jetbrains.annotations.NotNull
 import org.reactivestreams.Publisher
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -31,8 +32,8 @@ class PatientHealthQuery implements
     @Autowired PatientHealthRepository patientHealthRepository
     @Autowired PatientEventRepository patientEventRepository
 
-    @Override
-    PatientHealth createEmptySnapshot() {
+    @NotNull
+    @Override PatientHealth createEmptySnapshot() {
         new PatientHealth(deprecates: [], procedures: [])
     }
 
@@ -61,8 +62,8 @@ class PatientHealthQuery implements
                 patient, lastSnapshot?.lastEventPosition ?: 0L, version))
     }
 
-    @Override
-    Publisher<PatientEvent> getUncomputedEvents(
+    @NotNull
+    @Override Publisher<PatientEvent> getUncomputedEvents(
             Patient patient, PatientHealth lastSnapshot, Date snapshotTime) {
         fromIterable(lastSnapshot?.lastEventTimestamp ?
                 patientEventRepository.getUncomputedEventsByDateRange(
@@ -77,7 +78,7 @@ class PatientHealthQuery implements
     }
 
     @Override
-    void addToDeprecates(PatientHealth snapshot, Patient deprecatedAggregate) {
+    void addToDeprecates(@NotNull PatientHealth snapshot, Patient deprecatedAggregate) {
         snapshot.deprecates << deprecatedAggregate
     }
 

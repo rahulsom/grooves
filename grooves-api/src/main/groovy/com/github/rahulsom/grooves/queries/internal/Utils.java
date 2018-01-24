@@ -195,7 +195,7 @@ public class Utils {
             SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
             > Flowable<EventT> getApplicableEvents(
             @NotNull Flowable<EventT> forwardOnlyEvents,
-            @NotNull Executor executor,
+            @NotNull Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> executor,
             @NotNull Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> snapshotAndEventsSince) {
         return forwardOnlyEvents
                 .filter(e -> e instanceof Deprecates)

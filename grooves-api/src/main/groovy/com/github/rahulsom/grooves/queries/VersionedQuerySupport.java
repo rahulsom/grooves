@@ -12,6 +12,7 @@ import com.github.rahulsom.grooves.queries.internal.Utils;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
 
 import java.util.ArrayList;
@@ -109,8 +110,8 @@ public interface VersionedQuerySupport<
         return new QueryExecutor<>();
     }
 
-    Publisher<EventT> getUncomputedEvents(
-            AggregateT aggregate, SnapshotT lastSnapshot, long version);
+    @NotNull Publisher<EventT> getUncomputedEvents(
+            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot, long version);
 
     /**
      * Computes a snapshot for specified version of an aggregate.
@@ -120,7 +121,8 @@ public interface VersionedQuerySupport<
      *
      * @return An Flowable that returns at most one Snapshot
      */
-    default Publisher<SnapshotT> computeSnapshot(AggregateT aggregate, long version) {
+    @NotNull
+    default Publisher<SnapshotT> computeSnapshot(@NotNull AggregateT aggregate, long version) {
         return computeSnapshot(aggregate, version, true);
     }
 
@@ -134,8 +136,9 @@ public interface VersionedQuerySupport<
      *
      * @return An Flowable that returns at most one Snapshot
      */
+    @NotNull
     default Publisher<SnapshotT> computeSnapshot(
-            AggregateT aggregate, long version, boolean redirect) {
+            @NotNull AggregateT aggregate, long version, boolean redirect) {
 
         getLog().info("Computing snapshot for {} version {}",
                 aggregate, version == Long.MAX_VALUE ? "<LATEST>" : version);
@@ -198,12 +201,13 @@ public interface VersionedQuerySupport<
         Function<AggregateT, Publisher<SnapshotT>> deprecatorToSnapshot =
                 x -> {
                     DeprecatedBy deprecatedBy = (DeprecatedBy) lastEvent;
-                    return fromPublisher(
-                            fromPublisher(
-                                    (Publisher<Deprecates>) deprecatedBy.getConverseObservable())
-                                    .flatMap(deprecates ->
-                                            computeSnapshot(x, deprecates.getPosition()))
-                    );
+                    Flowable<Deprecates> deprecatesFlowable =
+                            deprecatedBy == null ? Flowable.empty() :
+                                    fromPublisher((Publisher<Deprecates>) deprecatedBy
+                                            .getConverseObservable());
+                    return deprecatesFlowable
+                            .flatMap(deprecates ->
+                                    computeSnapshot(x, deprecates.getPosition()));
                 };
 
         return snapshotObservable

@@ -5,6 +5,8 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.grails.datastore.gorm.GormEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
 
 import java.util.Date;
@@ -38,8 +40,9 @@ public interface BlockingSnapshotSource<
 
     SnapshotT detachSnapshot(SnapshotT snapshot);
 
+    @NotNull
     @Override
-    default Publisher<SnapshotT> getSnapshot(long maxPosition, AggregateT aggregate) {
+    default Publisher<SnapshotT> getSnapshot(long maxPosition, @NotNull AggregateT aggregate) {
         return toPublisher(defer(() -> {
             //noinspection unchecked
             List<SnapshotT> snapshots = (List<SnapshotT>) (maxPosition == Long.MAX_VALUE ?
@@ -58,8 +61,10 @@ public interface BlockingSnapshotSource<
         }));
     }
 
+    @NotNull
     @Override
-    default Publisher<SnapshotT> getSnapshot(Date maxTimestamp, AggregateT aggregate) {
+    default Publisher<SnapshotT> getSnapshot(
+            @Nullable Date maxTimestamp, @NotNull AggregateT aggregate) {
         return toPublisher(defer(() -> {
             //noinspection unchecked
             List<SnapshotT> snapshots = (List<SnapshotT>) (maxTimestamp == null ?

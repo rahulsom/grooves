@@ -5,6 +5,7 @@ import com.github.rahulsom.grooves.java.Query;
 import grooves.example.javaee.Database;
 import grooves.example.javaee.domain.*;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
 import javax.inject.Inject;
@@ -29,6 +30,7 @@ public class PatientAccountQuery
     }
 
     // tag::documented[]
+    @NotNull
     @Override
     public PatientAccount createEmptySnapshot() { // <11>
         return new PatientAccount();
@@ -36,7 +38,8 @@ public class PatientAccountQuery
     // end::documented[]
 
     @Override
-    public void addToDeprecates(PatientAccount snapshot, Patient deprecatedAggregate) {
+    public void addToDeprecates(
+            @NotNull PatientAccount snapshot, @NotNull Patient deprecatedAggregate) {
         snapshot.getDeprecates().add(deprecatedAggregate);
     }
 

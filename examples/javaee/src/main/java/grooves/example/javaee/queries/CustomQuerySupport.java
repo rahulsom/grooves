@@ -8,6 +8,8 @@ import grooves.example.javaee.Database;
 import grooves.example.javaee.domain.Patient;
 import grooves.example.javaee.domain.PatientEvent;
 import org.apache.commons.lang3.SerializationUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
 
 import java.io.Serializable;
@@ -35,9 +37,10 @@ public interface CustomQuerySupport<
 
     Class<SnapshotT> getSnapshotClass();
 
+    @NotNull
     // tag::documented[]
     @Override
-    default Publisher<SnapshotT> getSnapshot(long maxPosition, Patient aggregate) {
+    default Publisher<SnapshotT> getSnapshot(long maxPosition, @NotNull Patient aggregate) {
         // <3>
         // end::documented[]
         final Stream<SnapshotT> stream = getDatabase().snapshots(getSnapshotClass());
@@ -49,13 +52,14 @@ public interface CustomQuerySupport<
                 .map(Pair::getFirst)
                 .sorted((x, y) -> (int) (x.getLastEventPosition() - y.getLastEventPosition()))
                 .takeFirst(it -> true)
-                .filter(Objects::nonNull)
                 .map(this::copy));
         // tag::documented[]
     }
 
+    @NotNull
     @Override
-    default Publisher<SnapshotT> getSnapshot(Date maxTimestamp, Patient aggregate) {
+    default Publisher<SnapshotT> getSnapshot(
+            @Nullable Date maxTimestamp, @NotNull Patient aggregate) {
         // <4>
         // end::documented[]
         final Stream<SnapshotT> stream = getDatabase().snapshots(getSnapshotClass());
@@ -67,7 +71,6 @@ public interface CustomQuerySupport<
                 .map(Pair::getFirst)
                 .sorted((x, y) -> (int) (x.getLastEventPosition() - y.getLastEventPosition()))
                 .takeFirst(it -> true)
-                .filter(Objects::nonNull)
                 .map(this::copy));
         // tag::documented[]
     }
@@ -79,21 +82,23 @@ public interface CustomQuerySupport<
 
     // tag::documented[]
     @Override
-    default boolean shouldEventsBeApplied(SnapshotT snapshot) { // <5>
+    default boolean shouldEventsBeApplied(@NotNull SnapshotT snapshot) { // <5>
         return true;
     }
 
+    @NotNull
     @Override
     default Publisher<EventApplyOutcome> onException(
-            Exception e, SnapshotT snapshot, PatientEvent event) { // <6>
+            @NotNull Exception e, @NotNull SnapshotT snapshot, @NotNull PatientEvent event) { // <6>
         getLog().error("Error computing snapshot", e);
         return toPublisher(just(CONTINUE));
         // tag::documented[]
     }
 
+    @NotNull
     @Override
     default Publisher<PatientEvent> getUncomputedEvents(
-            Patient aggregate, SnapshotT lastSnapshot, long version) {
+            @NotNull Patient aggregate, @Nullable SnapshotT lastSnapshot, long version) {
         // <7>
         // end::documented[]
         Predicate<PatientEvent> patientEventPredicate = x -> {
@@ -113,9 +118,11 @@ public interface CustomQuerySupport<
         // tag::documented[]
     }
 
+    @NotNull
     @Override
     default Publisher<PatientEvent> getUncomputedEvents(
-            Patient aggregate, SnapshotT lastSnapshot, Date snapshotTime) {
+            @NotNull Patient aggregate, @Nullable SnapshotT lastSnapshot,
+            @NotNull Date snapshotTime) {
         // <8>
         // end::documented[]
         Predicate<PatientEvent> patientEventPredicate = it -> aggregate.equals(it.getAggregate())

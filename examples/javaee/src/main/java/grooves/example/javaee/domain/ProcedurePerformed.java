@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 @Event(Patient.class)
 public class ProcedurePerformed extends PatientEvent {
 
-    @Getter private String code;
-    @Getter private BigDecimal cost;
+    @Getter private final String code;
+    @Getter private final BigDecimal cost;
 
     @Override
     public String toString() {

@@ -11,6 +11,8 @@ dependencies {
     testCompile 'io.reactivex:rxjava:1.2.9'
 
     testCompile "org.spockframework:spock-core:$spockVersion"
+    testRuntime "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
+
 }
 
 groovydoc {
