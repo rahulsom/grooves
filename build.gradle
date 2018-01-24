@@ -3,20 +3,15 @@ buildscript {
         jcenter()
         maven { url 'https://plugins.gradle.org/m2/' }
     }
-    dependencies {
-        classpath 'com.gradle:build-scan-plugin:1.10.1'
-        classpath 'me.champeau.gradle:buildscan-recipes-plugin:0.2.3'
-        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
-        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:+'
-        classpath 'com.netflix.nebula:nebula-release-plugin:4.2.0'
-    }
 }
 
-apply plugin: 'com.gradle.build-scan'
-apply plugin: 'me.champeau.buildscan-recipes'
-apply plugin: 'io.codearte.nexus-staging'
-apply plugin: 'org.sonarqube'
-apply plugin: 'nebula.nebula-release'
+plugins {
+    id "com.gradle.build-scan" version "1.11"
+    id "me.champeau.buildscan-recipes" version "0.2.3"
+    id "io.codearte.nexus-staging" version "0.11.0"
+    id "org.sonarqube" version "2.6.1"
+    id "nebula.release" version "6.2.0"
+}
 
 allprojects {
     group = 'com.github.rahulsom'
