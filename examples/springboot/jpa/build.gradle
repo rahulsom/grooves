@@ -1,18 +1,14 @@
 buildscript {
-    ext {
-        springBootVersion = '1.5.8.RELEASE'
-    }
     repositories {
         mavenCentral()
     }
-    dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-    }
 }
 
-apply plugin: 'groovy'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
+plugins {
+    id "groovy"
+    id "org.springframework.boot" version "1.5.9.RELEASE"
+}
+
 apply from: "$rootDir/gradle/codenarc/codenarc.gradle"
 apply from: "$rootDir/gradle/jacoco.gradle"
 
