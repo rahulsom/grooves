@@ -17,12 +17,13 @@ import reactor.core.publisher.Mono.empty
 import reactor.core.publisher.Mono.just
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 // tag::patientEvent[]
 sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
 
-    @Id override val id: String? = null
+    @Id
+    override val id: String? = null
 
     var aggregateId: String? = null
 
@@ -37,9 +38,9 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
 
     @JsonIgnore
     override fun getAggregateObservable(): Publisher<Patient> = // <6>
-            aggregateId?.let {
-                BeansHolder.context?.getBean(PatientRepository::class.java)?.findById(it)
-            } ?: empty()
+        aggregateId?.let {
+            BeansHolder.context?.getBean(PatientRepository::class.java)?.findById(it)
+        } ?: empty()
 
     override var aggregate: Patient?
         @JsonIgnore
@@ -53,8 +54,8 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
 
     // tag::reverted[]
     data class Reverted(override val revertedEventId: String) : // <1>
-            PatientEvent(), // <2>
-            RevertEvent<Patient, String, PatientEvent> { // <3>
+        PatientEvent(), // <2>
+        RevertEvent<Patient, String, PatientEvent> { // <3>
         fun getAudit(): String = "$id - Revert $revertedEventId"
         // end::reverted[]
         override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
@@ -63,18 +64,18 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
     // end::reverted[]
 
     data class PatientDeprecates(val deprecated: Patient) :
-            PatientEvent(), Deprecates<Patient, String, PatientEvent> {
+        PatientEvent(), Deprecates<Patient, String, PatientEvent> {
         var converseId: String? = null
 
         @JsonIgnore
         override fun getConverseObservable(): Publisher<PatientDeprecatedBy> =
-                converseId?.let {
-                    val patientEventRepository =
-                            BeansHolder.context?.getBean("patientEventRepository") as PatientEventRepository?
-                    patientEventRepository
-                            ?.findById(it)
-                            ?.map { it as PatientDeprecatedBy } ?: empty()
-                } ?: empty()
+            converseId?.let {
+                val patientEventRepository =
+                    BeansHolder.context?.getBean("patientEventRepository") as PatientEventRepository?
+                patientEventRepository
+                    ?.findById(it)
+                    ?.map { it as PatientDeprecatedBy } ?: empty()
+            } ?: empty()
 
         @JsonIgnore
         override fun getDeprecatedObservable(): Publisher<Patient> = just(deprecated)
@@ -84,16 +85,17 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
     }
 
     data class PatientDeprecatedBy(
-            val deprecator: Patient, val converseId: String) : PatientEvent(),
-            DeprecatedBy<Patient, String, PatientEvent> {
+        val deprecator: Patient, val converseId: String
+    ) : PatientEvent(),
+        DeprecatedBy<Patient, String, PatientEvent> {
 
         @JsonIgnore
         override fun getConverseObservable(): Publisher<PatientDeprecates> {
             val patientEventRepository =
-                    BeansHolder.context?.getBean("patientEventRepository") as PatientEventRepository?
+                BeansHolder.context?.getBean("patientEventRepository") as PatientEventRepository?
             return patientEventRepository
-                    ?.findById(converseId)
-                    ?.map { it as PatientDeprecates } ?: empty()
+                ?.findById(converseId)
+                ?.map { it as PatientDeprecates } ?: empty()
         }
 
         @JsonIgnore

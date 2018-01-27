@@ -13,78 +13,86 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono.just
 import java.lang.Exception
-import java.util.*
+import java.util.Date
 
 @Component
 //tag::documented[]
-class PatientAccountQuery :
-        QuerySupport<Patient, String, PatientEvent, String, PatientAccount>, // <1>
-        SimpleQuery<Patient, String, PatientEvent, PatientEvent.Applicable, String,
-                PatientAccount> { // <2>
+class PatientAccountQuery constructor(
+    @Autowired val patientEventRepository: PatientEventRepository,
+    @Autowired val patientAccountRepository: PatientAccountRepository
+) :
+    QuerySupport<Patient, String, PatientEvent, String, PatientAccount>, // <1>
+    SimpleQuery<Patient, String, PatientEvent, PatientEvent.Applicable, String,
+            PatientAccount> { // <2>
 
     override fun getExecutor() = SimpleExecutor<Patient, String, PatientEvent,
             PatientEvent.Applicable, String, PatientAccount, PatientAccountQuery>() // <3>
 
-    @Autowired lateinit var patientEventRepository: PatientEventRepository
-    @Autowired lateinit var patientAccountRepository: PatientAccountRepository
-
     override fun createEmptySnapshot() = PatientAccount() // <4>
 
     override fun getSnapshot(// <5>
-            maxPosition: Long, aggregate: Patient) =
-            patientAccountRepository.findByAggregateIdAndLastEventPositionLessThan(
-                    aggregate.id!!, maxPosition)
+        maxPosition: Long, aggregate: Patient
+    ) =
+        patientAccountRepository.findByAggregateIdAndLastEventPositionLessThan(
+            aggregate.id!!, maxPosition
+        )
 
     override fun getSnapshot(// <6>
-            maxTimestamp: Date?, aggregate: Patient) =
-            patientAccountRepository.findByAggregateIdAndLastEventTimestampLessThan(
-                    aggregate.id!!, maxTimestamp!!)
+        maxTimestamp: Date?, aggregate: Patient
+    ) =
+        patientAccountRepository.findByAggregateIdAndLastEventTimestampLessThan(
+            aggregate.id!!, maxTimestamp!!
+        )
 
     override fun shouldEventsBeApplied(snapshot: PatientAccount) = true // <7>
 
     override fun addToDeprecates(
-            snapshot: PatientAccount, deprecatedAggregate: Patient) {
+        snapshot: PatientAccount, deprecatedAggregate: Patient
+    ) {
         snapshot.deprecatesIds.add(deprecatedAggregate.id!!)
     }
 
     override fun onException(// <8>
-            e: Exception, snapshot: PatientAccount, event: PatientEvent) =
-            just(CONTINUE)
+        e: Exception, snapshot: PatientAccount, event: PatientEvent
+    ) =
+        just(CONTINUE)
 
     override fun getUncomputedEvents(// <9>
-            aggregate: Patient, lastSnapshot: PatientAccount?, version: Long) =
-            patientEventRepository.
-                    findAllByPositionRange(aggregate.id!!,
-                        lastSnapshot?.lastEventPosition ?: 0, version)
+        aggregate: Patient, lastSnapshot: PatientAccount?, version: Long
+    ) =
+        patientEventRepository.findAllByPositionRange(
+            aggregate.id!!,
+            lastSnapshot?.lastEventPosition ?: 0, version
+        )
 
     override fun getUncomputedEvents(// <10>
-            aggregate: Patient, lastSnapshot: PatientAccount?, snapshotTime: Date) =
-            lastSnapshot?.lastEventTimestamp?.
-                    let {
-                        patientEventRepository.findAllByTimestampRange(
-                                aggregate.id!!, it, snapshotTime)
-                    } ?:
-                    patientEventRepository.
-                            findAllByAggregateIdAndTimestampLessThan(
-                                    aggregate.id!!, snapshotTime)
+        aggregate: Patient, lastSnapshot: PatientAccount?, snapshotTime: Date
+    ) =
+        lastSnapshot?.lastEventTimestamp?.let {
+            patientEventRepository.findAllByTimestampRange(
+                aggregate.id!!, it, snapshotTime
+            )
+        } ?: patientEventRepository.findAllByAggregateIdAndTimestampLessThan(
+            aggregate.id!!, snapshotTime
+        )
 
     override fun applyEvent(event: PatientEvent.Applicable, snapshot: PatientAccount) =
-            when (event) { // <11>
-                is PatientEvent.Applicable.Created -> {
-                    if (event.aggregateId == snapshot.aggregateId) {
-                        snapshot.name = event.name
-                    }
-                    just(CONTINUE)
+        when (event) { // <11>
+            is PatientEvent.Applicable.Created -> {
+                if (event.aggregateId == snapshot.aggregateId) {
+                    snapshot.name = event.name
                 }
-                is PatientEvent.Applicable.ProcedurePerformed -> {
-                    snapshot.balance = snapshot.balance.add(event.cost)
-                    just(CONTINUE)
-                }
-                is PatientEvent.Applicable.PaymentMade -> {
-                    snapshot.balance = snapshot.balance.subtract(event.amount)
-                    snapshot.moneyMade = snapshot.moneyMade.add(event.amount)
-                    just(CONTINUE)
-                }
+                just(CONTINUE)
             }
+            is PatientEvent.Applicable.ProcedurePerformed -> {
+                snapshot.balance = snapshot.balance.add(event.cost)
+                just(CONTINUE)
+            }
+            is PatientEvent.Applicable.PaymentMade -> {
+                snapshot.balance = snapshot.balance.subtract(event.amount)
+                snapshot.moneyMade = snapshot.moneyMade.add(event.amount)
+                just(CONTINUE)
+            }
+        }
 }
 //end::documented[]

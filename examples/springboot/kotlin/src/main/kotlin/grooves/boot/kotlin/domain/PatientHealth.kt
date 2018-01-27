@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Configurable
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
-import java.util.*
+import java.util.Date
 
 @Configurable
 class PatientHealth : Snapshot<Patient, String, String, PatientEvent> {
@@ -30,7 +30,7 @@ class PatientHealth : Snapshot<Patient, String, String, PatientEvent> {
 
     @JsonIgnore
     override fun getAggregateObservable() =
-            aggregateId?.let { patientRepository.findAllById(just(it)) } ?: Flux.empty()
+        aggregateId?.let { patientRepository.findAllById(just(it)) } ?: Flux.empty()
 
     override fun setAggregate(aggregate: Patient) {
         this.aggregateId = aggregate.id
@@ -42,7 +42,7 @@ class PatientHealth : Snapshot<Patient, String, String, PatientEvent> {
 
     @JsonIgnore
     override fun getDeprecatedByObservable() =
-            deprecator?.let { just(it) } ?: Mono.empty()
+        deprecator?.let { just(it) } ?: Mono.empty()
 
     override fun setDeprecatedBy(deprecatingAggregate: Patient) {
         deprecator = deprecatingAggregate
@@ -50,7 +50,7 @@ class PatientHealth : Snapshot<Patient, String, String, PatientEvent> {
 
     @JsonIgnore
     override fun getDeprecatesObservable() =
-            patientRepository.findAllById(deprecatesIds)
+        patientRepository.findAllById(deprecatesIds)
 
     override fun toString() = "PatientAccount(id=$id, aggregate=$aggregateId, " +
             "lastEventPosition=$lastEventPosition, lastEventTimestamp=$lastEventTimestamp)"
@@ -58,7 +58,7 @@ class PatientHealth : Snapshot<Patient, String, String, PatientEvent> {
 }
 
 class Procedure(
-        var code: String? = null,
-        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-        var date: Date? = null
+    var code: String? = null,
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    var date: Date? = null
 )

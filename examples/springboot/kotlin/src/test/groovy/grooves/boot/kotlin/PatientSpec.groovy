@@ -1,12 +1,10 @@
 package grooves.boot.kotlin
 
 import com.github.rahulsom.grooves.test.AbstractPatientSpec
-import groovyx.net.http.ContentType
 import groovyx.net.http.RESTClient
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.ContextConfiguration
-import spock.lang.Shared
 
 import static groovyx.net.http.ContentType.JSON
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT

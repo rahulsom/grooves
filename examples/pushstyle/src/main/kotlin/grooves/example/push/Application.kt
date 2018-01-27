@@ -7,8 +7,8 @@ import grooves.example.pushstyle.Public
 import grooves.example.pushstyle.Tables.BALANCE
 import org.jooq.DSLContext
 import org.slf4j.LoggerFactory.getLogger
-import java.util.*
-import grooves.example.pushstyle.tables.Balance as BalanceTable
+import java.util.Date
+import java.util.UUID
 
 class Application @Inject constructor(
     val eventBus: EventBus, val eventService: EventService, val database: Database,

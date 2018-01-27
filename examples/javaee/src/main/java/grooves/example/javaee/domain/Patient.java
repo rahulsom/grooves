@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Aggregate // <1>
 public class Patient implements Serializable {
-    @Getter @Setter private Long id; // <2>
+    @Getter @Setter private Long id;
     @Getter @Setter private String uniqueId;
     // end::documented[]
 

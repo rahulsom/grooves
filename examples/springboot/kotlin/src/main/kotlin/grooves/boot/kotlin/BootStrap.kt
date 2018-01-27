@@ -4,7 +4,9 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import com.github.rahulsom.grooves.queries.QuerySupport
 import grooves.boot.kotlin.domain.Patient
 import grooves.boot.kotlin.domain.PatientEvent
-import grooves.boot.kotlin.domain.PatientEvent.Applicable.*
+import grooves.boot.kotlin.domain.PatientEvent.Applicable.Created
+import grooves.boot.kotlin.domain.PatientEvent.Applicable.ProcedurePerformed
+import grooves.boot.kotlin.domain.PatientEvent.Applicable.PaymentMade
 import grooves.boot.kotlin.queries.PatientAccountQuery
 import grooves.boot.kotlin.queries.PatientHealthQuery
 import grooves.boot.kotlin.repositories.PatientAccountRepository
@@ -16,18 +18,19 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.TimeZone
 import javax.annotation.PostConstruct
 
 @Component
-class BootStrap {
-
-    @Autowired lateinit var patientRepository: PatientBlockingRepository
-    @Autowired lateinit var patientEventRepository: PatientEventBlockingRepository
-    @Autowired lateinit var patientAccountQuery: PatientAccountQuery
-    @Autowired lateinit var patientHealthQuery: PatientHealthQuery
-    @Autowired lateinit var patientAccountRepository: PatientAccountRepository
-    @Autowired lateinit var patientHealthRepository: PatientHealthRepository
+class BootStrap constructor(
+    @Autowired val patientRepository: PatientBlockingRepository,
+    @Autowired val patientEventRepository: PatientEventBlockingRepository,
+    @Autowired val patientAccountQuery: PatientAccountQuery,
+    @Autowired val patientHealthQuery: PatientHealthQuery,
+    @Autowired val patientAccountRepository: PatientAccountRepository,
+    @Autowired val patientHealthRepository: PatientHealthRepository
+) {
 
     @PostConstruct
     fun init() {
@@ -153,20 +156,20 @@ class BootStrap {
         val mergeEvent = merge(patient, patient2)
 
         on(patient) {
-            it.apply (PatientEvent.Reverted(mergeEvent.id!!))
+            it.apply(PatientEvent.Reverted(mergeEvent.id!!))
         }
         on(patient2) {
-            it.apply (PatientEvent.Reverted(mergeEvent.converseId))
+            it.apply(PatientEvent.Reverted(mergeEvent.converseId))
         }
     }
 
     private fun <SnapshotT : Snapshot<Patient, String, String, PatientEvent>,
             QueryT : QuerySupport<Patient, String, PatientEvent, String, SnapshotT>> snapshotWith(
-            it: com.github.rahulsom.grooves.test.OnSpec<Patient, String, PatientEvent, String,
-                    out Snapshot<Patient, String, String, PatientEvent>>,
-            query: QueryT, repository: ReactiveCrudRepository<SnapshotT, String>
+        it: com.github.rahulsom.grooves.test.OnSpec<Patient, String, PatientEvent, String,
+                out Snapshot<Patient, String, String, PatientEvent>>,
+        query: QueryT, repository: ReactiveCrudRepository<SnapshotT, String>
     ) =
-            null
+        null
 //            query.computeSnapshot(it.aggregate, Long.MAX_VALUE)
 //                    .flatMap { repository.save(it).toObservable() }
 //                    .toBlocking()
@@ -199,13 +202,17 @@ class BootStrap {
     }
 
     val currDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-            .also {
-                it.time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX")
-                        .parse("2016-01-01T00:00:00.000Z")
-            }
+        .also {
+            it.time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX")
+                .parse("2016-01-01T00:00:00.000Z")
+        }
 
-    fun on(patient: Patient, closure: (com.github.rahulsom.grooves.test.OnSpec<Patient, String, PatientEvent, String,
-            out Snapshot<Patient, String, String, PatientEvent>>) -> Unit): Patient {
+    fun on(
+        patient: Patient, closure: (
+            com.github.rahulsom.grooves.test.OnSpec<Patient, String, PatientEvent, String,
+                    out Snapshot<Patient, String, String, PatientEvent>>
+        ) -> Unit
+    ): Patient {
         val eventSaver: (Any) -> Unit = {
             when (it) {
                 is PatientEvent -> patientEventRepository.save(it)
@@ -217,12 +224,13 @@ class BootStrap {
             currDate.time
         }
         return com.github.rahulsom.grooves.test.EventsDsl<Patient, String, PatientEvent>()
-                .on<String, Snapshot<Patient, String, String, PatientEvent>>(
-                        patient, eventSaver, positionSupplier, timestampSupplier,
-                        closure)
+            .on<String, Snapshot<Patient, String, String, PatientEvent>>(
+                patient, eventSaver, positionSupplier, timestampSupplier,
+                closure
+            )
     }
 
     private fun countEvents(patient: Patient) = patientEventRepository
-            .findAllByAggregateIdIn(listOf(patient.id!!))
-            .count() + 1L
+        .findAllByAggregateIdIn(listOf(patient.id!!))
+        .count() + 1L
 }

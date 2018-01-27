@@ -11,7 +11,7 @@ import reactor.core.publisher.Flux.empty
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
 import java.math.BigDecimal
-import java.util.*
+import java.util.Date
 
 // tag::documented[]
 @Configurable
@@ -34,7 +34,7 @@ class PatientAccount : Snapshot<Patient, String, String, PatientEvent> { // <1>
 
     @JsonIgnore
     override fun getAggregateObservable() = // <4>
-            aggregateId?.let { patientRepository!!.findAllById(just(it)) } ?: Flux.empty()
+        aggregateId?.let { patientRepository!!.findAllById(just(it)) } ?: Flux.empty()
 
     override fun setAggregate(aggregate: Patient) {
         this.aggregateId = aggregate.id
@@ -46,7 +46,7 @@ class PatientAccount : Snapshot<Patient, String, String, PatientEvent> { // <1>
 
     @JsonIgnore
     override fun getDeprecatedByObservable() = // <5>
-            deprecator?.let { just(it) } ?: Mono.empty()
+        deprecator?.let { just(it) } ?: Mono.empty()
 
     override fun setDeprecatedBy(deprecatingAggregate: Patient) {
         deprecator = deprecatingAggregate
@@ -54,10 +54,10 @@ class PatientAccount : Snapshot<Patient, String, String, PatientEvent> { // <1>
 
     @JsonIgnore
     override fun getDeprecatesObservable() = // <6>
-            if (deprecatesIds.size > 0)
-                patientRepository!!.findAllById(deprecatesIds)
-            else
-                empty()
+        if (deprecatesIds.size > 0)
+            patientRepository!!.findAllById(deprecatesIds)
+        else
+            empty()
 
     // end::documented[]
     override fun toString(): String {

@@ -15,6 +15,7 @@ buildscript {
 plugins {
     id "groovy"
     id "org.jetbrains.kotlin.jvm" version "1.2.21"
+    id "org.jlleitschuh.gradle.ktlint" version "3.0.0"
     id "org.jetbrains.kotlin.plugin.spring" version "1.2.21"
     id "org.jetbrains.kotlin.plugin.allopen" version "1.2.21"
     id "com.sourcemuse.mongo" version "1.0.0"

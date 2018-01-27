@@ -8,7 +8,8 @@ import io.reactivex.Flowable
 import org.reactivestreams.Publisher
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.UUID
 
 data class Account(val id: String)
 
@@ -23,11 +24,9 @@ sealed class Transaction(
     override fun getAggregateObservable(): Publisher<Account> =
         Flowable.fromIterable(listOf(aggregate).filter { it != null })
 
-
     override var revertedBy: RevertEvent<Account, String, Transaction>?
         get() = null
         set(value) {}
-
 
     data class Deposit(
         override val id: String,
@@ -108,6 +107,5 @@ class Balance() : Snapshot<Account, String, String, Transaction> {
         return "Balance(id=$idPart, aggregate=$aggPart, lastEventTimestamp=$ts, " +
                 "version=$lastEventPosition, balance=$balance)"
     }
-
 
 }
