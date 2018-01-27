@@ -621,7 +621,7 @@ import java.io.Serializable;
 
 @Aggregate <i class="conum" data-value="1"></i><b>(1)</b>
 public class Patient implements Serializable {
-    @Getter @Setter private Long id; <i class="conum" data-value="2"></i><b>(2)</b>
+    @Getter @Setter private Long id;
     @Getter @Setter private String uniqueId;
 }</code></pre>
 </div>
@@ -886,7 +886,8 @@ In our case, it doesn&#8217;t matter much since we&#8217;re using Hibernate, whi
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">// All imports omitted
 sealed class PatientEvent : BaseEvent&lt;Patient, String, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b><i class="conum" data-value="2"></i><b>(2)</b>
 
-    @Id override val id: String? = null
+    @Id
+    override val id: String? = null
 
     var aggregateId: String? = null
 
@@ -901,9 +902,9 @@ sealed class PatientEvent : BaseEvent&lt;Patient, String, PatientEvent&gt; { <i 
 
     @JsonIgnore
     override fun getAggregateObservable(): Publisher&lt;Patient&gt; = <i class="conum" data-value="6"></i><b>(6)</b>
-            aggregateId?.let {
-                BeansHolder.context?.getBean(PatientRepository::class.java)?.findById(it)
-            } ?: empty()
+        aggregateId?.let {
+            BeansHolder.context?.getBean(PatientRepository::class.java)?.findById(it)
+        } ?: empty()
 
     override var aggregate: Patient?
         @JsonIgnore
@@ -1171,8 +1172,8 @@ Even if you do, you cannot process this event.</td>
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">sealed class PatientEvent : BaseEvent&lt;...&gt; {
     // ... skipping stuff already there ...
     data class Reverted(override val revertedEventId: String) : <i class="conum" data-value="1"></i><b>(1)</b>
-            PatientEvent(), <i class="conum" data-value="2"></i><b>(2)</b>
-            RevertEvent&lt;Patient, String, PatientEvent&gt; { <i class="conum" data-value="3"></i><b>(3)</b>
+        PatientEvent(), <i class="conum" data-value="2"></i><b>(2)</b>
+        RevertEvent&lt;Patient, String, PatientEvent&gt; { <i class="conum" data-value="3"></i><b>(3)</b>
         fun getAudit(): String = "$id - Revert $revertedEventId"
     }
 }</code></pre>
@@ -1443,7 +1444,7 @@ class PatientAccount : Snapshot&lt;Patient, String, String, PatientEvent&gt; { <
 
     @JsonIgnore
     override fun getAggregateObservable() = <i class="conum" data-value="4"></i><b>(4)</b>
-            aggregateId?.let { patientRepository!!.findAllById(just(it)) } ?: Flux.empty()
+        aggregateId?.let { patientRepository!!.findAllById(just(it)) } ?: Flux.empty()
 
     override fun setAggregate(aggregate: Patient) {
         this.aggregateId = aggregate.id
@@ -1455,7 +1456,7 @@ class PatientAccount : Snapshot&lt;Patient, String, String, PatientEvent&gt; { <
 
     @JsonIgnore
     override fun getDeprecatedByObservable() = <i class="conum" data-value="5"></i><b>(5)</b>
-            deprecator?.let { just(it) } ?: Mono.empty()
+        deprecator?.let { just(it) } ?: Mono.empty()
 
     override fun setDeprecatedBy(deprecatingAggregate: Patient) {
         deprecator = deprecatingAggregate
@@ -1463,10 +1464,10 @@ class PatientAccount : Snapshot&lt;Patient, String, String, PatientEvent&gt; { <
 
     @JsonIgnore
     override fun getDeprecatesObservable() = <i class="conum" data-value="6"></i><b>(6)</b>
-            if (deprecatesIds.size &gt; 0)
-                patientRepository!!.findAllById(deprecatesIds)
-            else
-                empty()
+        if (deprecatesIds.size &gt; 0)
+            patientRepository!!.findAllById(deprecatesIds)
+        else
+            empty()
 
 }</code></pre>
 </div>
@@ -1949,75 +1950,83 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
 <div class="listingblock secondary">
 <div class="title">Kotlin</div>
 <div class="content">
-<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">class PatientAccountQuery :
-        QuerySupport&lt;Patient, String, PatientEvent, String, PatientAccount&gt;, <i class="conum" data-value="1"></i><b>(1)</b>
-        SimpleQuery&lt;Patient, String, PatientEvent, PatientEvent.Applicable, String,
-                PatientAccount&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">class PatientAccountQuery constructor(
+    @Autowired val patientEventRepository: PatientEventRepository,
+    @Autowired val patientAccountRepository: PatientAccountRepository
+) :
+    QuerySupport&lt;Patient, String, PatientEvent, String, PatientAccount&gt;, <i class="conum" data-value="1"></i><b>(1)</b>
+    SimpleQuery&lt;Patient, String, PatientEvent, PatientEvent.Applicable, String,
+            PatientAccount&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
 
     override fun getExecutor() = SimpleExecutor&lt;Patient, String, PatientEvent,
             PatientEvent.Applicable, String, PatientAccount, PatientAccountQuery&gt;() <i class="conum" data-value="3"></i><b>(3)</b>
 
-    @Autowired lateinit var patientEventRepository: PatientEventRepository
-    @Autowired lateinit var patientAccountRepository: PatientAccountRepository
-
     override fun createEmptySnapshot() = PatientAccount() <i class="conum" data-value="4"></i><b>(4)</b>
 
     override fun getSnapshot(<i class="conum" data-value="5"></i><b>(5)</b>
-            maxPosition: Long, aggregate: Patient) =
-            patientAccountRepository.findByAggregateIdAndLastEventPositionLessThan(
-                    aggregate.id!!, maxPosition)
+        maxPosition: Long, aggregate: Patient
+    ) =
+        patientAccountRepository.findByAggregateIdAndLastEventPositionLessThan(
+            aggregate.id!!, maxPosition
+        )
 
     override fun getSnapshot(<i class="conum" data-value="6"></i><b>(6)</b>
-            maxTimestamp: Date?, aggregate: Patient) =
-            patientAccountRepository.findByAggregateIdAndLastEventTimestampLessThan(
-                    aggregate.id!!, maxTimestamp!!)
+        maxTimestamp: Date?, aggregate: Patient
+    ) =
+        patientAccountRepository.findByAggregateIdAndLastEventTimestampLessThan(
+            aggregate.id!!, maxTimestamp!!
+        )
 
     override fun shouldEventsBeApplied(snapshot: PatientAccount) = true <i class="conum" data-value="7"></i><b>(7)</b>
 
     override fun addToDeprecates(
-            snapshot: PatientAccount, deprecatedAggregate: Patient) {
+        snapshot: PatientAccount, deprecatedAggregate: Patient
+    ) {
         snapshot.deprecatesIds.add(deprecatedAggregate.id!!)
     }
 
     override fun onException(<i class="conum" data-value="8"></i><b>(8)</b>
-            e: Exception, snapshot: PatientAccount, event: PatientEvent) =
-            just(CONTINUE)
+        e: Exception, snapshot: PatientAccount, event: PatientEvent
+    ) =
+        just(CONTINUE)
 
     override fun getUncomputedEvents(<i class="conum" data-value="9"></i><b>(9)</b>
-            aggregate: Patient, lastSnapshot: PatientAccount?, version: Long) =
-            patientEventRepository.
-                    findAllByPositionRange(aggregate.id!!,
-                        lastSnapshot?.lastEventPosition ?: 0, version)
+        aggregate: Patient, lastSnapshot: PatientAccount?, version: Long
+    ) =
+        patientEventRepository.findAllByPositionRange(
+            aggregate.id!!,
+            lastSnapshot?.lastEventPosition ?: 0, version
+        )
 
     override fun getUncomputedEvents(<i class="conum" data-value="10"></i><b>(10)</b>
-            aggregate: Patient, lastSnapshot: PatientAccount?, snapshotTime: Date) =
-            lastSnapshot?.lastEventTimestamp?.
-                    let {
-                        patientEventRepository.findAllByTimestampRange(
-                                aggregate.id!!, it, snapshotTime)
-                    } ?:
-                    patientEventRepository.
-                            findAllByAggregateIdAndTimestampLessThan(
-                                    aggregate.id!!, snapshotTime)
+        aggregate: Patient, lastSnapshot: PatientAccount?, snapshotTime: Date
+    ) =
+        lastSnapshot?.lastEventTimestamp?.let {
+            patientEventRepository.findAllByTimestampRange(
+                aggregate.id!!, it, snapshotTime
+            )
+        } ?: patientEventRepository.findAllByAggregateIdAndTimestampLessThan(
+            aggregate.id!!, snapshotTime
+        )
 
     override fun applyEvent(event: PatientEvent.Applicable, snapshot: PatientAccount) =
-            when (event) { <i class="conum" data-value="11"></i><b>(11)</b>
-                is PatientEvent.Applicable.Created -&gt; {
-                    if (event.aggregateId == snapshot.aggregateId) {
-                        snapshot.name = event.name
-                    }
-                    just(CONTINUE)
+        when (event) { <i class="conum" data-value="11"></i><b>(11)</b>
+            is PatientEvent.Applicable.Created -&gt; {
+                if (event.aggregateId == snapshot.aggregateId) {
+                    snapshot.name = event.name
                 }
-                is PatientEvent.Applicable.ProcedurePerformed -&gt; {
-                    snapshot.balance = snapshot.balance.add(event.cost)
-                    just(CONTINUE)
-                }
-                is PatientEvent.Applicable.PaymentMade -&gt; {
-                    snapshot.balance = snapshot.balance.subtract(event.amount)
-                    snapshot.moneyMade = snapshot.moneyMade.add(event.amount)
-                    just(CONTINUE)
-                }
+                just(CONTINUE)
             }
+            is PatientEvent.Applicable.ProcedurePerformed -&gt; {
+                snapshot.balance = snapshot.balance.add(event.cost)
+                just(CONTINUE)
+            }
+            is PatientEvent.Applicable.PaymentMade -&gt; {
+                snapshot.balance = snapshot.balance.subtract(event.amount)
+                snapshot.moneyMade = snapshot.moneyMade.add(event.amount)
+                just(CONTINUE)
+            }
+        }
 }</code></pre>
 </div>
 </div>
