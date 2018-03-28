@@ -70,7 +70,7 @@ class PatientEventReverted extends PatientEvent
     @Override String toString() { "${super.toString()} reverted $revertedEventId" }
 }
 
-@EqualsAndHashCode
+@EqualsAndHashCode(excludes = ['converse'])
 class PatientDeprecatedBy extends PatientEvent
         implements DeprecatedBy<Patient, Long, PatientEvent> {
     PatientDeprecates converse
@@ -82,7 +82,7 @@ class PatientDeprecatedBy extends PatientEvent
     @Override String toString() { "${super.toString()} deprecated by #${deprecator.id}" }
 }
 
-@EqualsAndHashCode
+@EqualsAndHashCode(excludes = ['converse'])
 class PatientDeprecates extends PatientEvent
         implements Deprecates<Patient, Long, PatientEvent> {
     PatientDeprecatedBy converse

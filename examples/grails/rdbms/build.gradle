@@ -5,18 +5,18 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
+        classpath "org.grails.plugins:hibernate5:${gormVersion - ".RELEASE"}"
         classpath "org.grails.plugins:views-gradle:$grailsViewsVersion"
     }
 }
 
 version = '0.1'
 
-apply plugin:"eclipse"
-apply plugin:"idea"
-apply plugin:"war"
-apply plugin:"org.grails.grails-web"
-apply plugin:"org.grails.plugins.views-json"
+apply plugin: "eclipse"
+apply plugin: "idea"
+apply plugin: "war"
+apply plugin: "org.grails.grails-web"
+apply plugin: "org.grails.plugins.views-json"
 apply from: "$rootDir/gradle/codenarc/codenarc.gradle"
 apply from: "$rootDir/gradle/jacoco.gradle"
 
