@@ -126,8 +126,8 @@ public interface CustomQuerySupport<
         // <8>
         // end::documented[]
         Predicate<PatientEvent> patientEventPredicate = it -> aggregate.equals(it.getAggregate())
-                && isTimestampInRange(
-                lastSnapshot.getLastEventTimestamp(), it.getTimestamp(), snapshotTime);
+                && (lastSnapshot == null || isTimestampInRange(
+                lastSnapshot.getLastEventTimestamp(), it.getTimestamp(), snapshotTime));
         final List<PatientEvent> patientEvents = getDatabase().events()
                 .filter(patientEventPredicate)
                 .collect(toList());
