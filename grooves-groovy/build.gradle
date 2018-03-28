@@ -9,13 +9,14 @@ description = "Support for completeness of queries in Groovy code"
 
 dependencies {
     compile project(':grooves-api')
+
     compile "org.codehaus.groovy:groovy:$groovyVersion"
-    testCompile 'io.reactivex:rxjava-reactive-streams:1.2.1'
+
     testCompile 'io.reactivex:rxjava:1.2.9'
-
+    testCompile 'io.reactivex:rxjava-reactive-streams:1.2.1'
     testCompile "org.spockframework:spock-core:$spockVersion"
-    testRuntime "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
 
+    testRuntime "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
 }
 
 groovydoc {
