@@ -18,8 +18,8 @@ repositories {
 }
 
 dependencies {
-    asciidoctor 'com.github.spring-io:spring-asciidoctor-extensions:05bca0c665'
     asciidoctor project(':grooves-diagrams')
+    asciidoctor 'com.github.spring-io:spring-asciidoctor-extensions:05bca0c665'
 }
 
 asciidoctor {
