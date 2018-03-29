@@ -20,12 +20,6 @@ def examples = [
         /* Grails + RDBMS */
         'grails:rdbms',
 
-        /* Grails + RDBMS for events + Mongo for snapshots */
-        'grails:rdbms_mongo',
-
-        /* Grails + RxMongo */
-        'grails:rxmongo',
-
         /* Guava EventBus for events + Kotlin + jOOQ for snapshots  */
         'pushstyle',
 ]
