@@ -22,6 +22,7 @@ import static rx.RxReactiveStreams.toPublisher
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 abstract class ZipcodeEvent implements BaseEvent<Zipcode, Long, ZipcodeEvent> {
 
+    Long id
     RevertEvent<Zipcode, Long, ZipcodeEvent> revertedBy
     Date timestamp
     long position

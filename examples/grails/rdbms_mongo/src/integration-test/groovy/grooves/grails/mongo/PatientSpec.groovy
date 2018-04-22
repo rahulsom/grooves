@@ -2,6 +2,7 @@ package grooves.grails.mongo
 
 import com.github.rahulsom.grooves.test.AbstractPatientSpec
 import grails.test.mixin.integration.Integration
+import grails.transaction.Transactional
 import groovyx.net.http.RESTClient
 import org.springframework.beans.factory.annotation.Value
 import spock.lang.Unroll
@@ -95,4 +96,10 @@ class PatientSpec extends AbstractPatientSpec {
         2  | 'Santana Row' | 13      || [4, 9,]
     }
 
+    @Transactional
+    void 'deprecations are correctly stored'() {
+        expect:
+        PatientDeprecatedBy.findAll().every { it.converse != null }
+        PatientDeprecates.findAll().every { it.converse != null }
+    }
 }

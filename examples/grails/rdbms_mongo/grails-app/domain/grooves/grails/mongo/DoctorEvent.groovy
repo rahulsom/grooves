@@ -23,6 +23,7 @@ import static rx.RxReactiveStreams.toPublisher
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 abstract class DoctorEvent implements BaseEvent<Doctor, Long, DoctorEvent> {
 
+    Long id
     RevertEvent<Doctor, Long, DoctorEvent> revertedBy
     Date timestamp
     long position
