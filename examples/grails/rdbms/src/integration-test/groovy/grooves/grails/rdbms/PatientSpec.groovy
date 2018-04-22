@@ -2,6 +2,7 @@ package grooves.grails.rdbms
 
 import com.github.rahulsom.grooves.test.AbstractPatientSpec
 import grails.test.mixin.integration.Integration
+import grails.transaction.Transactional
 import groovyx.net.http.RESTClient
 import org.springframework.beans.factory.annotation.Value
 
@@ -21,5 +22,12 @@ class PatientSpec extends AbstractPatientSpec {
     @Override
     RESTClient getRest() {
         new RESTClient("http://localhost:${serverPort ?: 8080}/", JSON)
+    }
+
+    @Transactional
+    void 'deprecations are correctly stored'() {
+        expect:
+        PatientDeprecatedBy.findAll().every { it.converse != null }
+        PatientDeprecates.findAll().every { it.converse != null }
     }
 }

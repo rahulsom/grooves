@@ -20,6 +20,7 @@ import static rx.RxReactiveStreams.toPublisher
 @SuppressWarnings(['AbstractClassWithoutAbstractMethod', 'GrailsDomainReservedSqlKeywordName'])
 abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> {
 
+    Long id
     RevertEvent<Patient, Long, PatientEvent> revertedBy
     Date timestamp
     long position
@@ -92,4 +93,8 @@ class PatientDeprecates extends PatientEvent
     Publisher<Patient> getDeprecatedObservable() { toPublisher(just(deprecated)) }
 
     @Override String toString() { "${super.toString()} deprecates #${deprecated.id}" }
+
+    static constraints = {
+        converse nullable: true
+    }
 }

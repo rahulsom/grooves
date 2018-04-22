@@ -19,6 +19,7 @@ import static rx.RxReactiveStreams.toPublisher
 // tag::abstract[]
 abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> { // <1>
 
+    Long id
     RevertEvent<Patient, Long, PatientEvent> revertedBy  // <2>
     Date timestamp  // <3>
     long position  // <4>
