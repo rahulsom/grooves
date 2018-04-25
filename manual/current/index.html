@@ -840,6 +840,7 @@ In our case, it doesn&#8217;t matter much since we&#8217;re using JPA, which is 
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">// All imports omitted
 abstract class PatientEvent implements BaseEvent&lt;Patient, Long, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
 
+    Long id
     RevertEvent&lt;Patient, Long, PatientEvent&gt; revertedBy  <i class="conum" data-value="2"></i><b>(2)</b>
     Date timestamp  <i class="conum" data-value="3"></i><b>(3)</b>
     long position  <i class="conum" data-value="4"></i><b>(4)</b>
