@@ -1876,7 +1876,7 @@ class PatientAccountQuery
 
     Publisher&lt;EventApplyOutcome&gt; applyPatientCreated( <i class="conum" data-value="12"></i><b>(12)</b>
             PatientCreated event, PatientAccount snapshot) {
-        if (snapshot.aggregateId == event.aggregateId) {
+        if (snapshot.aggregateId == event.aggregate.id) {
             snapshot.name = event.name
         }
         toPublisher(just(CONTINUE)) <i class="conum" data-value="13"></i><b>(13)</b>
