@@ -6,7 +6,7 @@ buildscript {
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "org.grails.plugins:views-gradle:$grailsViewsVersion"
-        classpath "gradle.plugin.com.sourcemuse.gradle.plugin:gradle-mongo-plugin:1.0.0"
+        classpath "gradle.plugin.com.sourcemuse.gradle.plugin:GradleMongoPlugin:1.0.6"
     }
 }
 
@@ -66,6 +66,8 @@ dependencies {
 bootRun {
     jvmArgs('-Dspring.output.ansi.enabled=always')
     addResources = true
+    String springProfilesActive = 'spring.profiles.active'
+    systemProperty springProfilesActive, System.getProperty(springProfilesActive)
 }
 
 tasks.findByName('bootRun').with {

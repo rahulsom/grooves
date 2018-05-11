@@ -29,7 +29,7 @@ class DoctorPatientsQuery implements JoinSupport< // <1>
 //end::joins[]
     @Override
     DoctorPatients createEmptySnapshot() {
-        new DoctorPatients(deprecatesIds: [], procedureCounts: [], joinedIds: [])
+        new DoctorPatients(deprecatesIds: [], joinedIds: [])
     }
 
     @Override
