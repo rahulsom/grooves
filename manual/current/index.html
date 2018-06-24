@@ -2392,6 +2392,23 @@ If you feel that the design can be enhanced, please open a ticket and start a di
 </div>
 </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+<script>
+$(function(){
+    var $h1 = $('#header > h1');
+    $h1.remove();
+    $('#toc .toc-header').remove();
+    $('#toc').prepend(
+        '<div class="toc-header">'
+        + '<div class="grooves-title">'
+        + '<a href="#"><h1>' + $h1.text() +'</h1></a>'
+        + '</div>'
+        + '</div>'
+    );
+});
+</script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.3/prism.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.9.0/plugins/keep-markup/prism-keep-markup.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.3/components/prism-clike.min.js"></script>
