@@ -6,7 +6,7 @@ This is a good example for [join events] in a GORM based project.
 
 [source,groovy]
 ----
-include::{sourcedir}/examples/grails/rdbms_mongo/grails-app/domain/grooves/grails/mongo/DoctorEvent.groovy[tags=joins]
+include::{sourcedir}/examples/grails/rdbms/grails-app/domain/grooves/grails/rdbms/DoctorEvent.groovy[tags=joins]
 ----
 <1> This extends a base class corresponding to its aggregate
 <2> This implements `JoinEvent` to mark the beginning of a join
@@ -15,11 +15,11 @@ include::{sourcedir}/examples/grails/rdbms_mongo/grails-app/domain/grooves/grail
 
 The query used to compute a Join is slightly different.
 It only concerns itself with two forward events - the `JoinEvent` and the `DisjoinEvent`.
-This is a good example for such a https://github.com/rahulsom/grooves/blob/master/examples/grails/rdbms_mongo/src/main/groovy/grooves/grails/mongo/DoctorPatientsQuery.groovy[query].
+This is a good example for such a https://github.com/rahulsom/grooves/blob/master/examples/grails/rdbms/src/main/groovy/grooves/grails/rdbms/DoctorPatientsQuery.groovy[query].
 
 [source,groovy]
 ----
-include::{sourcedir}/examples/grails/rdbms_mongo/src/main/groovy/grooves/grails/mongo/DoctorPatientsQuery.groovy[tags=joins]
+include::{sourcedir}/examples/grails/rdbms/src/main/groovy/grooves/grails/rdbms/DoctorPatientsQuery.groovy[tags=joins]
 ----
 <1> `JoinSupport` is similar to `QuerySupport`.
   It does not require implementing methods for each event.

@@ -14,17 +14,18 @@ import static rx.RxReactiveStreams.toPublisher
  */
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition'])
 @SuppressWarnings(['DuplicateNumberLiteral'])
-class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
+// tag::documented[]
+class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> { // <1>
 
-    long lastEventPosition
-    Date lastEventTimestamp
+    long lastEventPosition // <2>
+    Date lastEventTimestamp // <3>
     Patient deprecatedBy
     Set<Patient> deprecates
 
     Long aggregateId
 
     @Override
-    Publisher<Patient> getAggregateObservable() {
+    Publisher<Patient> getAggregateObservable() { // <4>
         toPublisher(aggregateId ? defer { just(Patient.get(aggregateId)) } : empty())
     }
 
@@ -47,11 +48,12 @@ class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
 
     @Override String toString() { "PatientAccount($id, $aggregateId, $lastEventPosition)" }
 
-    @Override Publisher<Patient> getDeprecatedByObservable() {
+    @Override Publisher<Patient> getDeprecatedByObservable() { // <5>
         toPublisher(deprecatedBy ? just(deprecatedBy) : empty())
     }
 
-    @Override Publisher<Patient> getDeprecatesObservable() {
+    @Override Publisher<Patient> getDeprecatesObservable() { // <6>
         toPublisher(deprecates ? from(deprecates) : empty())
     }
 }
+// end::documented[]

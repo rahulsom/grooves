@@ -3,6 +3,8 @@ package grooves.grails.rdbms
 import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.events.DeprecatedBy
 import com.github.rahulsom.grooves.api.events.Deprecates
+import com.github.rahulsom.grooves.api.events.DisjoinEvent
+import com.github.rahulsom.grooves.api.events.JoinEvent
 import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.groovy.transformations.Event
 import groovy.transform.EqualsAndHashCode
@@ -18,32 +20,64 @@ import static rx.RxReactiveStreams.toPublisher
  */
 @EqualsAndHashCode
 @SuppressWarnings(['AbstractClassWithoutAbstractMethod', 'GrailsDomainReservedSqlKeywordName'])
-abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> {
+// tag::abstract[]
+abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> { // <1>
 
     Long id
-    RevertEvent<Patient, Long, PatientEvent> revertedBy
-    Date timestamp
-    long position
+    RevertEvent<Patient, Long, PatientEvent> revertedBy  // <2>
+    Date timestamp  // <3>
+    long position  // <4>
     Patient aggregate
     Publisher<Patient> getAggregateObservable() {
         toPublisher just(aggregate)
-    }
+    }  // <5>
 
-    static transients = ['revertedBy']
+    static transients = ['revertedBy'] // <6>
 
     static constraints = {
     }
+    // end::abstract[]
     @Override String toString() {
         "${timestamp.format('yyyyMMdd')} <$id, ${aggregate.id}, $position>"
     }
+// tag::abstract[]
 }
+// end::abstract[]
 
-@Event(Patient)
 @EqualsAndHashCode
-class PatientCreated extends PatientEvent {
+//tag::created[]
+@Event(Patient) // <1>
+class PatientCreated extends PatientEvent { // <2>
     String name
 
+    //end::created[]
     @Override String toString() { "${super.toString()} created as $name" }
+//tag::created[]
+}
+//end::created[]
+
+@EqualsAndHashCode
+class PatientAddedToZipcode extends PatientEvent implements
+        JoinEvent<Patient, Long, PatientEvent, Zipcode> {
+    Zipcode zipcode
+    @Override Publisher<Zipcode> getJoinAggregateObservable() { toPublisher(just(zipcode)) }
+
+    @Override String toString() {
+        "<${aggregateId}.$id> $ts sent to zipcode ${zipcode.uniqueId}" }
+
+    static transients = ['joinAggregate']
+}
+
+@EqualsAndHashCode
+class PatientRemovedFromZipcode extends PatientEvent implements
+        DisjoinEvent<Patient, Long, PatientEvent, Zipcode> {
+    Zipcode zipcode
+    @Override Publisher<Zipcode> getJoinAggregateObservable() { toPublisher(just(zipcode)) }
+
+    @Override String toString() {
+        "<${aggregateId}.$id> $ts removed from zipcode ${zipcode.uniqueId}" }
+
+    static transients = ['joinAggregate']
 }
 
 @Event(Patient)
@@ -63,13 +97,17 @@ class PaymentMade extends PatientEvent {
     @Override String toString() { "${super.toString()} paid $amount" }
 }
 
+//tag::reverted[]
 @EqualsAndHashCode
-class PatientEventReverted extends PatientEvent
-        implements RevertEvent<Patient, Long, PatientEvent> {
-    Long revertedEventId
+class PatientEventReverted extends PatientEvent // <1>
+        implements RevertEvent<Patient, Long, PatientEvent> { // <2>
+    Long revertedEventId // <3>
 
+    //end::reverted[]
     @Override String toString() { "${super.toString()} reverted $revertedEventId" }
+    //tag::reverted[]
 }
+//end::reverted[]
 
 @EqualsAndHashCode(excludes = ['converse'])
 class PatientDeprecatedBy extends PatientEvent

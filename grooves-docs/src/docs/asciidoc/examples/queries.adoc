@@ -60,7 +60,7 @@ include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/qu
 // Also this is written in java.
 include::{sourcedir}/grooves-gorm/src/main/groovy/com/github/rahulsom/grooves/grails/GormQuerySupport.java[tags=documented]
 // This is the implementation we need here
-include::{sourcedir}/examples/grails/rdbms_mongo/src/main/groovy/grooves/grails/mongo/PatientAccountQuery.groovy[tags=documented]
+include::{sourcedir}/examples/grails/rdbms/src/main/groovy/grooves/grails/rdbms/PatientAccountQuery.groovy[tags=documented]
 ----
 <1> `QuerySupport` allows computing both temporal and versioned snapshots.
 <2> `BlockingEventSource` needs an `eventClass`.
