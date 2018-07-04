@@ -32,7 +32,7 @@ include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/do
 .Gorm
 ----
 // All imports omitted
-include::{sourcedir}/examples/grails/rdbms_mongo/grails-app/domain/grooves/grails/mongo/PatientEvent.groovy[tags=abstract]
+include::{sourcedir}/examples/grails/rdbms/grails-app/domain/grooves/grails/rdbms/PatientEvent.groovy[tags=abstract]
 ----
 <1> You'll have to extend `BaseEvent`.
 <2> This is transient from a persistence perspective. Look at <6>

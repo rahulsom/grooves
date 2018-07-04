@@ -17,16 +17,20 @@ import static rx.RxReactiveStreams.toPublisher
  *
  * @author Rahul Somasunderam
  */
-@Query(aggregate = Patient, snapshot = PatientAccount)
 @GrailsCompileStatic
+//tag::documented[]
+@Query(aggregate = Patient, snapshot = PatientAccount) // <5>
 class PatientAccountQuery implements
-        GormQuerySupport<Long, Patient, Long, PatientEvent, Long, PatientAccount> {
+        GormQuerySupport<Long, Patient, Long, PatientEvent, Long, PatientAccount> { // <6>
+
+    final Class<PatientEvent> eventClass = PatientEvent // <7>
+    final Class<PatientAccount> snapshotClass = PatientAccount // <8>
 
     @Override
-    PatientAccount createEmptySnapshot() { new PatientAccount(deprecates: []) }
+    PatientAccount createEmptySnapshot() { new PatientAccount(deprecates: []) } // <9>
 
     @Override
-    boolean shouldEventsBeApplied(PatientAccount snapshot) {
+    boolean shouldEventsBeApplied(PatientAccount snapshot) { // <10>
         true
     }
 
@@ -36,21 +40,21 @@ class PatientAccountQuery implements
     }
 
     @Override
-    Publisher<EventApplyOutcome> onException(
+    Publisher<EventApplyOutcome> onException( // <11>
             Exception e, PatientAccount snapshot, PatientEvent event) {
-        // ignore exceptions. Look at the mongo equivalent to see one possible way to handle
-        // exceptions
+        // ignore for now
         toPublisher(just(CONTINUE))
     }
 
-    Publisher<EventApplyOutcome> applyPatientCreated(
+    Publisher<EventApplyOutcome> applyPatientCreated( // <12>
             PatientCreated event, PatientAccount snapshot) {
         if (snapshot.aggregateId == event.aggregate.id) {
             snapshot.name = event.name
         }
-        toPublisher(just(CONTINUE))
+        toPublisher(just(CONTINUE)) // <13>
     }
 
+    //end::documented[]
     Publisher<EventApplyOutcome> applyProcedurePerformed(
             ProcedurePerformed event, PatientAccount snapshot) {
         snapshot.balance += event.cost
@@ -64,10 +68,9 @@ class PatientAccountQuery implements
         toPublisher(just(CONTINUE))
     }
 
-    final Class<PatientAccount> snapshotClass = PatientAccount
-    final Class<PatientEvent> eventClass = PatientEvent
-
     @Override PatientAccount detachSnapshot(PatientAccount snapshot) {
         new JsonSlurper().parseText((snapshot as JSON).toString()) as PatientAccount
     }
+    //tag::documented[]
 }
+//end::documented[]

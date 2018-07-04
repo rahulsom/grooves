@@ -31,7 +31,7 @@ include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/do
 [source,groovy,indent=0,role="secondary"]
 .Gorm
 ----
-include::{sourcedir}/examples/grails/rdbms_mongo/grails-app/domain/grooves/grails/mongo/PatientAccount.groovy[tags=documented]
+include::{sourcedir}/examples/grails/rdbms/grails-app/domain/grooves/grails/rdbms/PatientAccount.groovy[tags=documented]
 ----
 <1> For most snapshots, you may implement `Snapshot`.
 <2> The `lastEventPosition` is useful when locating snapshots by version.

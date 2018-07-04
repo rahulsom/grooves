@@ -21,7 +21,7 @@ include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/do
 [source,groovy,indent=0,role="secondary"]
 .Gorm
 ----
-include::{sourcedir}/examples/grails/rdbms_mongo/grails-app/domain/grooves/grails/mongo/PatientEvent.groovy[tags=created]
+include::{sourcedir}/examples/grails/rdbms/grails-app/domain/grooves/grails/rdbms/PatientEvent.groovy[tags=created]
 ----
 <1> The `@Event` annotation is the second step to achieving completeness of events.
   It accepts as a param, the Aggregate over which it applies.

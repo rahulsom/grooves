@@ -31,7 +31,7 @@ include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/do
 [source,groovy,indent=0,role="secondary"]
 .Gorm
 ----
-include::{sourcedir}/examples/grails/rdbms_mongo/grails-app/domain/grooves/grails/mongo/Patient.groovy[tags=documented]
+include::{sourcedir}/examples/grails/rdbms/grails-app/domain/grooves/grails/rdbms/Patient.groovy[tags=documented]
 ----
 <1> This annotation will assist in checking for completeness of queries.
   There are two other annotations we'll see - `@Event` and `@Query`.
