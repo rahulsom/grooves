@@ -464,8 +464,7 @@ For the code to actually work, those would be required.</p>
 It&#8217;s written using Groovy. This uses RxJava2 as the Reactive Streams Framework.</p>
 </li>
 <li>
-<p>Gorm - It&#8217;s a grails project that uses Hibernate for persisting events and aggregates.
-It uses Mongo for persisting snapshots.
+<p>Gorm - It&#8217;s a grails project that uses Hibernate for persistence.
 This is the most thorough example in our codebase.
 It is the only one that demonstrates joins.</p>
 </li>
@@ -677,14 +676,12 @@ This is optional, but highly recommended.</td>
 @Aggregate <i class="conum" data-value="1"></i><b>(1)</b>
 @EqualsAndHashCode(includes = ['uniqueId'])
 class Patient implements GormAggregate&lt;Long&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
-
     // Long id <i class="conum" data-value="3"></i><b>(3)</b>
     String uniqueId
     static constraints = {
     }
 
     @Override String toString() { "Patient($id, $uniqueId)" }
-
 }</code></pre>
 </div>
 </div>
@@ -846,7 +843,7 @@ abstract class PatientEvent implements BaseEvent&lt;Patient, Long, PatientEvent&
     long position  <i class="conum" data-value="4"></i><b>(4)</b>
     Patient aggregate
     Publisher&lt;Patient&gt; getAggregateObservable() {
-        toPublisher(aggregate ? just(aggregate) : empty())
+        toPublisher just(aggregate)
     }  <i class="conum" data-value="5"></i><b>(5)</b>
 
     static transients = ['revertedBy'] <i class="conum" data-value="6"></i><b>(6)</b>
@@ -1330,45 +1327,21 @@ It is empty when the aggregate is not deprecated.</td>
 <div class="listingblock secondary">
 <div class="title">Gorm</div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">class PatientAccount implements Snapshot&lt;Patient, String, Long, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">class PatientAccount implements Snapshot&lt;Patient, Long, Long, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
 
-    static mapWith = 'mongo'
-
-    String id
     long lastEventPosition <i class="conum" data-value="2"></i><b>(2)</b>
     Date lastEventTimestamp <i class="conum" data-value="3"></i><b>(3)</b>
-    Set&lt;String&gt; processingErrors = []
+    Patient deprecatedBy
+    Set&lt;Patient&gt; deprecates
 
     Long aggregateId
 
-    Patient getAggregate() { Patient.get(aggregateId) }
-
     @Override
     Publisher&lt;Patient&gt; getAggregateObservable() { <i class="conum" data-value="4"></i><b>(4)</b>
-        toPublisher(aggregateId ? defer { just aggregate } : empty())
+        toPublisher(aggregateId ? defer { just(Patient.get(aggregateId)) } : empty())
     }
 
-    void setAggregate(Patient aggregate) { this.aggregateId = aggregate.id }
-
-    @Override
-    Publisher&lt;Patient&gt; getDeprecatedByObservable() { <i class="conum" data-value="5"></i><b>(5)</b>
-        toPublisher(deprecatedBy ? just(deprecatedBy) : empty())
-    }
-    Long deprecatedById
-
-    Patient getDeprecatedBy() { Patient.get(deprecatedById) }
-
-    void setDeprecatedBy(Patient aggregate) { deprecatedById = aggregate.id }
-
-    @Override
-    Publisher&lt;Patient&gt; getDeprecatesObservable() { <i class="conum" data-value="6"></i><b>(6)</b>
-        toPublisher(deprecatesIds ? from(deprecatesIds).flatMap { Patient.get it } : empty())
-    }
-    Set&lt;Long&gt; deprecatesIds
-
-    Set&lt;Patient&gt; getDeprecates() { deprecatesIds.collect { Patient.get(it) }.toSet() }
-
-    void setDeprecates(Set&lt;Patient&gt; deprecates) { deprecatesIds = deprecates*.id }
+    void setAggregate(Patient aggregate) { aggregateId = aggregate.id }
 
     BigDecimal balance = 0.0
     BigDecimal moneyMade = 0.0
@@ -1376,19 +1349,23 @@ It is empty when the aggregate is not deprecated.</td>
     String name
 
     static hasMany = [
-            deprecatesIds: Long,
+            deprecates: Patient,
     ]
 
-    static embedded = ['deprecates', 'processingErrors',]
-    static transients = ['aggregate', 'deprecatedBy', 'deprecates',]
+    static transients = ['aggregate',]
 
     static constraints = {
-        deprecatedById nullable: true
+        deprecatedBy nullable: true
     }
 
-    @Override String toString() {
-        "PatientAccount(id=$id, aggregateId=$aggregateId, lastEventPosition=$lastEventPosition, " +
-                "balance=$balance, moneyMade=$moneyMade)"
+    @Override String toString() { "PatientAccount($id, $aggregateId, $lastEventPosition)" }
+
+    @Override Publisher&lt;Patient&gt; getDeprecatedByObservable() { <i class="conum" data-value="5"></i><b>(5)</b>
+        toPublisher(deprecatedBy ? just(deprecatedBy) : empty())
+    }
+
+    @Override Publisher&lt;Patient&gt; getDeprecatesObservable() { <i class="conum" data-value="6"></i><b>(6)</b>
+        toPublisher(deprecates ? from(deprecates) : empty())
     }
 }</code></pre>
 </div>
@@ -1847,9 +1824,8 @@ public interface GormQuerySupport&lt;
 }
 // This is the implementation we need here
 @Query(aggregate = Patient, snapshot = PatientAccount) <i class="conum" data-value="5"></i><b>(5)</b>
-class PatientAccountQuery
-        implements GormQuerySupport&lt;Long, Patient, Long, PatientEvent,
-                String, PatientAccount&gt; { <i class="conum" data-value="6"></i><b>(6)</b>
+class PatientAccountQuery implements
+        GormQuerySupport&lt;Long, Patient, Long, PatientEvent, Long, PatientAccount&gt; { <i class="conum" data-value="6"></i><b>(6)</b>
 
     final Class&lt;PatientEvent&gt; eventClass = PatientEvent <i class="conum" data-value="7"></i><b>(7)</b>
     final Class&lt;PatientAccount&gt; snapshotClass = PatientAccount <i class="conum" data-value="8"></i><b>(8)</b>
@@ -1864,13 +1840,13 @@ class PatientAccountQuery
 
     @Override
     void addToDeprecates(PatientAccount snapshot, Patient deprecatedAggregate) {
-        snapshot.addToDeprecatesIds(deprecatedAggregate.id)
+        snapshot.addToDeprecates(deprecatedAggregate)
     }
 
     @Override
     Publisher&lt;EventApplyOutcome&gt; onException( <i class="conum" data-value="11"></i><b>(11)</b>
             Exception e, PatientAccount snapshot, PatientEvent event) {
-        snapshot.processingErrors &lt;&lt; e.message
+        // ignore for now
         toPublisher(just(CONTINUE))
     }
 
@@ -2130,7 +2106,7 @@ class DoctorLostPatient extends DoctorEvent
 <div class="paragraph">
 <p>The query used to compute a Join is slightly different.
 It only concerns itself with two forward events - the <code>JoinEvent</code> and the <code>DisjoinEvent</code>.
-This is a good example for such a <a href="https://github.com/rahulsom/grooves/blob/master/examples/grails/rdbms_mongo/src/main/groovy/grooves/grails/mongo/DoctorPatientsQuery.groovy">query</a>.</p>
+This is a good example for such a <a href="https://github.com/rahulsom/grooves/blob/master/examples/grails/rdbms/src/main/groovy/grooves/grails/rdbms/DoctorPatientsQuery.groovy">query</a>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
