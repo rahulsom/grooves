@@ -13,7 +13,7 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.2.51"
     id "org.jlleitschuh.gradle.ktlint" version "3.0.0"
     id "nu.studer.jooq" version "2.0.9"
-    id "org.flywaydb.flyway" version "4.2.0"
+    id "org.flywaydb.flyway" version "5.1.4"
 }
 
 version = '0.0.1-SNAPSHOT'
