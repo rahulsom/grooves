@@ -3,6 +3,7 @@ package grooves.grails.rdbms
 import com.github.rahulsom.grooves.test.AbstractPatientSpec
 import grails.gorm.transactions.Transactional
 import grails.test.mixin.integration.Integration
+import grooves.example.grails.rdbms.Application
 import groovyx.net.http.RESTClient
 import org.springframework.beans.factory.annotation.Value
 import spock.lang.Unroll
@@ -14,7 +15,7 @@ import static groovyx.net.http.ContentType.JSON
  *
  * @author Rahul Somasunderam
  */
-@Integration
+@Integration(applicationClass = Application)
 class PatientSpec extends AbstractPatientSpec {
 
     @Value('${local.server.port}')
