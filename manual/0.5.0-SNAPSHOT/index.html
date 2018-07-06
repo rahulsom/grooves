@@ -676,7 +676,7 @@ This is optional, but highly recommended.</td>
 @Aggregate <i class="conum" data-value="1"></i><b>(1)</b>
 @EqualsAndHashCode(includes = ['uniqueId'])
 class Patient implements GormAggregate&lt;Long&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
-    // Long id <i class="conum" data-value="3"></i><b>(3)</b>
+    Long id <i class="conum" data-value="3"></i><b>(3)</b>
     String uniqueId
     static constraints = {
     }
@@ -1329,6 +1329,7 @@ It is empty when the aggregate is not deprecated.</td>
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">class PatientAccount implements Snapshot&lt;Patient, Long, Long, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
 
+    Long id
     long lastEventPosition <i class="conum" data-value="2"></i><b>(2)</b>
     Date lastEventTimestamp <i class="conum" data-value="3"></i><b>(3)</b>
     Patient deprecatedBy
