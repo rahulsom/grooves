@@ -13,7 +13,7 @@ import groovy.transform.EqualsAndHashCode
 @Aggregate // <1>
 @EqualsAndHashCode(includes = ['uniqueId'])
 class Patient implements GormAggregate<Long> { //<2>
-    // Long id // <3>
+    Long id // <3>
     String uniqueId
     static constraints = {
     }

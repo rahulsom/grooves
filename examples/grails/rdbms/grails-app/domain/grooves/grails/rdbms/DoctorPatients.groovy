@@ -15,6 +15,7 @@ import static rx.RxReactiveStreams.toPublisher
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition',])
 class DoctorPatients implements Join<Doctor, Long, Patient, Long, DoctorEvent> {
 
+    Long id
     long lastEventPosition
     Date lastEventTimestamp
     Set<String> processingErrors = []

@@ -18,37 +18,37 @@ Documentation can be found https://rahulsom.github.io/grooves/[here].
 
 a|grooves-gorm
 
-image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-gorm/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-gorm", width="100%", style="width: 100%"]
+image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-gorm/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-gorm", width="300px"]
 a|This is for you if you're using GORM for persistence.
 It has interfaces that need to know the domain object used, and build flexible queries without forcing you to write the code to read domain objects from the database.
 
 a|grooves-groovy
 
-image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-groovy/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-groovy", width="100%", style="width: 100%"]
+image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-groovy/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-groovy", width="300px"]
 a|This is for you if you want to write your queries in groovy, but are not using GORM.
 You will have to implement your own data access, but will get support for checking completeness of queries based on groovy AST Transformations.
 
 a|grooves-java
 
-image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-java/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-java", width="100%", style="width: 100%"]
+image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-java/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-java", width="300px"]
 a|This is for you if you want to write your queries in java.
 You will have to implement your own data access, but will get support for checking completeness of queries based on Annotation Processors.
 
 a|grooves-api
 
-image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-api/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-api", width="100%", style="width: 100%"]
+image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-api/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-api", width="300px"]
 a|This is for you if you are not using groovy or java, or don't care about verifying completeness of queries.
 For example, you could use this for writing code with Kotlin.
 
 a|grooves-types
 
-image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-types/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-types", width="100%", style="width: 100%"]
+image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-types/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-types", width="300px"]
 a|This contains types that are used in `grooves-api`.
 It is very unlikely you'll be using this directly.
 
 a|grooves-diagrams
 
-image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-diagrams/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-diagrams", width="100%", style="width: 100%"]
+image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-diagrams/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-diagrams", width="300px"]
 a|This is an asciidoctor extension that allows you to generate diagrams like those in grooves' documentation.
 
 |===
@@ -60,14 +60,6 @@ a|This is an asciidoctor extension that allows you to generate diagrams like tho
 
 |link:examples/grails/rdbms[examples/grails/rdbms]
 |This uses grails (with groovy) backed by Hibernate (through GORM).
-
-|link:examples/grails/rdbms_mongo[examples/grails/rdbms_mongo]
-|This uses grails (with groovy) backed by Hibernate (through GORM) for events and aggregates and MongoDB (through GORM) for snapshots.
-
-|link:examples/grails/rxmongo[examples/grails/rxmongo]
-|This uses grails (with groovy) backed by MongoDB (through GORM).
-The API is entirely reactive.
-It is based on https://gorm.grails.org/6.0.x/rx/manual/[rx-gorm-mongo].
 
 |link:examples/springboot/jpa[examples/springboot/jpa]
 |This uses Springboot and JPA repositories for everything.
