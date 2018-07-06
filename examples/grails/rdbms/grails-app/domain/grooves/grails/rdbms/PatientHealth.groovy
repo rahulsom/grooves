@@ -18,6 +18,7 @@ import static rx.RxReactiveStreams.toPublisher
 @EqualsAndHashCode(includes = ['aggregate', 'lastEventPosition'])
 class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
 
+    Long id
     long lastEventPosition
     Date lastEventTimestamp
     Patient deprecatedBy

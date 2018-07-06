@@ -285,9 +285,12 @@ class BootStrap {
                 timestamp: currDate,
                 position: PatientEvent.countByAggregate(self) + 1,)
         def e2 = new PatientDeprecates(aggregate: into, deprecated: self,
-                timestamp: currDate, converse: e1,
+                timestamp: currDate, /*converse: e1,*/
                 position: PatientEvent.countByAggregate(into) + 1,)
+        e2.save(flush: true, failOnError: true)
         e1.converse = e2
+        e1.save(flush: true, failOnError: true)
+        e2.converse = e1
         e2.save(flush: true, failOnError: true)
         e2.converse
     }

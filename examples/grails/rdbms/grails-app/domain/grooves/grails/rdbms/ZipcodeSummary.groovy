@@ -18,6 +18,7 @@ import static rx.RxReactiveStreams.toPublisher
 @ToString(includes = ['id', 'aggregateId', 'lastEventPosition', 'name',])
 class ZipcodeSummary implements Snapshot<Zipcode, Long, Long, ZipcodeEvent> {
 
+    Long id
     long lastEventPosition
     Date lastEventTimestamp
     Set<String> processingErrors = []

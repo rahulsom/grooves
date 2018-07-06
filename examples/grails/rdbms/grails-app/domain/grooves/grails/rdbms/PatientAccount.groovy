@@ -17,6 +17,7 @@ import static rx.RxReactiveStreams.toPublisher
 // tag::documented[]
 class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> { // <1>
 
+    Long id
     long lastEventPosition // <2>
     Date lastEventTimestamp // <3>
     Patient deprecatedBy
