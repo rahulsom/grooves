@@ -21,6 +21,8 @@ class EventService {
 
     private val log = LoggerFactory.getLogger(this.javaClass)
 
+    // Suppress warnings since this is a documented fragment and having variable names is better
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     // tag::documented[]
     val query =
         Grooves.versioned<Account, String, Transaction, String, Balance>() // <1>
