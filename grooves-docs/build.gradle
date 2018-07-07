@@ -1,17 +1,7 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
-    }
-}
-
 plugins {
     id 'org.ajoberstar.git-publish' version '0.3.2'
+    id "org.asciidoctor.convert" version "1.5.3"
 }
-
-apply plugin: 'org.asciidoctor.convert'
 
 repositories {
     maven { url 'https://jitpack.io' }
