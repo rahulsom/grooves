@@ -64,12 +64,14 @@ nexus {
 dependencyCheck {
     suppressionFile = file("$rootDir/gradle/owasp-suppressions.xml")
     skipConfigurations = [
-            'ktlint',           // KtLint is a build dependency scope. Nothing gets shipped.
+            // KtLint is a build dependency scope. Nothing gets shipped.
+            'ktlint',
 
-            'compileOnly',      // Dependencies in compileOnly are never shipped. They are marked
-                                // optional in the pom
+            // Dependencies in compileOnly are never shipped. They are marked optional in the pom
+            'compileOnly',
 
-            'compileClasspath', // This is a computed scope.
+            // This is a computed scope.
+            'compileClasspath',
     ]
     format = 'ALL'
     failOnError = true
