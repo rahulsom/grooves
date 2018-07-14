@@ -51,7 +51,12 @@ function main() {
         if [ $(git status | wc -l) != 0 ]; then
             echo "New gradle found. Testing..."
             gw check && codecov
-            echo "gradlew upgrade works"
+            echo "gradlew upgrade works... Checking in changes"
+            git add .
+            git config --global user.email "grooves@semaphoreci.com"
+            git config --global user.name "SemaphoreCI"
+            git commit -m "Upgrade gradlew to $NEW_GRADLE"
+            git push
         else
             echo "No gradlew upgrade available"
         fi
