@@ -54,6 +54,7 @@ dependencies {
 sonarqube {
     properties {
         property 'sonar.moduleKey', 'com.github.rahulsom:grooves:examples-pushstyle'
+        property 'sonar.exclusions', '**/generated-src/**'
     }
 }
 
