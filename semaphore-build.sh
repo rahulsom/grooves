@@ -48,7 +48,13 @@ function main() {
         local NEW_GRADLE=$(getLatestRelease gradle/gradle)
         echo "Upgrading gradle to $NEW_GRADLE"
         gw wrapper --gradle-version ${NEW_GRADLE} --distribution-type all
-        gw check && codecov
+        if [ $(git status | wc -l) != 0 ]; then
+            echo "New gradle found. Testing..."
+            gw check && codecov
+            echo "gradlew upgrade works"
+        else
+            echo "No gradlew upgrade available"
+        fi
     else
         if [ "$PULL_REQUEST_NUMBER" != "" ]; then
             gw check &&  codecov
