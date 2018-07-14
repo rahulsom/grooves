@@ -43,23 +43,27 @@ function getLatestRelease() {
             | sed -e "s/^v//g"
 }
 
+function updateGradleWrapper() {
+    local NEW_GRADLE=$(getLatestRelease gradle/gradle)
+    echo "Upgrading gradle to $NEW_GRADLE"
+    gw wrapper --gradle-version ${NEW_GRADLE} --distribution-type all
+    if [ $(git status | wc -l) != 0 ]; then
+        echo "New gradle found. Testing..."
+        gw check && codecov
+        echo "gradlew upgrade works... Checking in changes"
+        git add .
+        git config --global user.email "grooves@semaphoreci.com"
+        git config --global user.name "SemaphoreCI"
+        git commit -m "Upgrade gradlew to $NEW_GRADLE"
+        git push
+    else
+        echo "No gradlew upgrade available"
+    fi
+}
+
 function main() {
     if [ "$SEMAPHORE_TRIGGER_SOURCE" = "scheduler" ]; then
-        local NEW_GRADLE=$(getLatestRelease gradle/gradle)
-        echo "Upgrading gradle to $NEW_GRADLE"
-        gw wrapper --gradle-version ${NEW_GRADLE} --distribution-type all
-        if [ $(git status | wc -l) != 0 ]; then
-            echo "New gradle found. Testing..."
-            gw check && codecov
-            echo "gradlew upgrade works... Checking in changes"
-            git add .
-            git config --global user.email "grooves@semaphoreci.com"
-            git config --global user.name "SemaphoreCI"
-            git commit -m "Upgrade gradlew to $NEW_GRADLE"
-            git push
-        else
-            echo "No gradlew upgrade available"
-        fi
+        updateGradleWrapper
     else
         if [ "$PULL_REQUEST_NUMBER" != "" ]; then
             gw check &&  codecov
