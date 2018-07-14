@@ -52,7 +52,7 @@ function updateGradleWrapper() {
         gw check && codecov
         echo "gradlew upgrade works... Checking in changes"
         git add .
-        git config --global user.email "grooves@semaphoreci.com"
+        git config --global user.email "semaphore.robot@gmail.com"
         git config --global user.name "SemaphoreCI"
         git commit -m "Upgrade gradlew to $NEW_GRADLE"
         git push
