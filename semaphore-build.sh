@@ -69,6 +69,7 @@ function setup() {
 }
 
 function recache() {
+    git status
     mkdir -p ${SEMAPHORE_CACHE_DIR}/gradle
     rsync -a ~/.gradle/cache ${SEMAPHORE_CACHE_DIR}/gradle
 }
