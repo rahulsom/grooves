@@ -43,12 +43,20 @@ function getLatestRelease() {
             | sed -e "s/^v//g"
 }
 
+CODE_COMMITTED=no
 function commitNewCode() {
     git add .
     git config --global user.email "semaphoreci@grooves.rahulsom.github.com"
     git config --global user.name "SemaphoreCI"
     git commit -m "$1"
     git push
+    CODE_COMMITTED=yes
+}
+
+function resetChanges () {
+    git reset --hard
+    CODE_COMMITTED=no
+    ERROR_IN="$ERROR_IN $1"
 }
 
 function updateGradleWrapper() {
@@ -57,11 +65,11 @@ function updateGradleWrapper() {
     gw wrapper --gradle-version ${NEW_GRADLE} --distribution-type all
     if [ $(git status --short| wc -l) != 0 ]; then
         echo "New gradle found. Testing..."
-        gw check && codecov
-        echo "gradlew upgrade works... Checking in changes"
-        commitNewCode "Upgrade gradlew to $NEW_GRADLE"
+        gw check \
+                && commitNewCode "Upgrade gradlew to $NEW_GRADLE" \
+                || resetChanges update-gradlew
     else
-        echo "No gradlew upgrade available"
+        echo "No gradlew update available"
     fi
 }
 
@@ -69,9 +77,9 @@ function updateDependencyLocks() {
     gw resolveAndLockAll --write-locks
     if [ $(git status --short| wc -l) != 0 ]; then
         echo "Dependency changes found..."
-        gw check && codecov
-        echo "New dependencies work. Checking in changes"
-        commitNewCode "Upgrade dependency locks"
+        gw check \
+                && commitNewCode "Update dependency locks" \
+                || resetChanges resolveAndLockAll
     else
         echo "No new dependencies found."
     fi
@@ -79,7 +87,8 @@ function updateDependencyLocks() {
 
 function main() {
     if [ "$SEMAPHORE_TRIGGER_SOURCE" = "scheduler" ]; then
-        updateGradleWrapper || updateDependencyLocks
+        updateGradleWrapper
+        updateDependencyLocks
     else
         if [ "$PULL_REQUEST_NUMBER" != "" ]; then
             gw check &&  codecov
