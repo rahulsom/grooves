@@ -1,6 +1,5 @@
 package com.github.rahulsom.grooves.java;
 
-import com.google.auto.service.AutoService;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.processing.*;
@@ -17,7 +16,6 @@ import static javax.tools.Diagnostic.Kind.ERROR;
         QueryProcessor.QUERY_ANNOTATION,
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-@AutoService(Processor.class)
 public class QueryProcessor extends AbstractProcessor {
 
     static final String QUERY_ANNOTATION = "com.github.rahulsom.grooves.java.Query";
