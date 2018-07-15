@@ -14,7 +14,7 @@ dependencies {
 
     testCompile 'io.reactivex:rxjava:latest.release'
     testCompile 'io.reactivex:rxjava-reactive-streams:latest.release'
-    testCompile "org.spockframework:spock-core:$spockVersion"
+    testCompile "org.spockframework:spock-core:latest.release"
 
     testRuntime "org.jetbrains:annotations:latest.release"
 }

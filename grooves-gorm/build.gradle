@@ -17,7 +17,7 @@ dependencies {
     compileOnly 'org.grails:grails-datastore-gorm-rx:6.0.7.RELEASE'
     compileOnly "org.jetbrains:annotations:latest.release"
 
-    testCompile "org.spockframework:spock-core:$spockVersion"
+    testCompile "org.spockframework:spock-core:latest.release"
 }
 
 groovydoc {

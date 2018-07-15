@@ -29,8 +29,8 @@ dependencies {
     runtime 'com.h2database:h2'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 
-    testCompile "org.spockframework:spock-core:$spockVersion"
-    testCompile "org.spockframework:spock-spring:$spockVersion"
+    testCompile "org.spockframework:spock-core:latest.release"
+    testCompile "org.spockframework:spock-spring:latest.release"
 
     compile project(':grooves-groovy')
     compile project(':grooves-example-test')
