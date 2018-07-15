@@ -1,7 +1,12 @@
 = Changelog
 
-== 0.5.0
-* Remove `AggregateType`. Now anything can be an aggregate.
+[cols="1,7", options="header"]
+|===
+
+| Version | Changes
+
+| 0.5.0
+a| * Remove `AggregateType`. Now anything can be an aggregate.
   In GORM, there's a replacement called `GormAggregate`.
   Also remove `QueryT` from most queries.
   Consequently, a lot of interfaces will have to be updated in user code.
@@ -9,9 +14,12 @@
   This allows syntax highlighting for Kotlin code.
 * Use `svg-builder` and static type diagramming.
 * Vastly improved Null checking using jetbrains annotations.
+* Upgrades: Gradle 4.8.1, Kotlin 1.2.51, Groovy 2.5.1, Grails 3.3.6
+* OWASP Dependency checking is now routine
+* Better syntax highlighting in docs from PrismJS
 
-== 0.4.0
-* Make position and timestamp non nullable in Events
+| 0.4.0
+a| * Make position and timestamp non nullable in Events
 * Remove examples for RxGorm REST. It doesn't appear to be well supported.
 * Reduce default method reliance for kotlin interfaces.
 * Make it easier to contribute to grooves-site.
@@ -19,8 +27,8 @@
   The `Join` and `Snapshot` types are sufficient.
 * Add support for FRP Style queries and push style event sourcing.
 
-== 0.3.0
-* Support completeness verification in java using annotations.
+| 0.3.0
+a| * Support completeness verification in java using annotations.
 * Remove `createdBy` and `getAudit`.
   They are too opinionated.
 * Use Lombok for Java Examples.
@@ -30,11 +38,11 @@
 * Java completeness checks are now supported
 * Null checking has been enhanced
 
-== 0.2.1
-* Allow subclasses in annotations.
+| 0.2.1
+a| * Allow subclasses in annotations.
 
-== 0.2.0
-* Joins are now reactive too.
+| 0.2.0
+a| * Joins are now reactive too.
   This removes the need for reattach methods.
 * Examples now contains `rx-mongo`.
 * Documentation now points to examples.
@@ -42,15 +50,15 @@
   Examples and tests for Kotlin have also been added.
 * Revert on Merge is now tested and supported.
 
-== 0.1.1
-* Improve RX support for `rx-gorm-rest`.
+| 0.1.1
+a| * Improve RX support for `rx-gorm-rest`.
   A lot of APIs were returning non observable types.
   Most meaningful calls now return Observables.
 * Reduce alignment of API with `gorm-hibernate`.
 * Documentation now includes diagrams that are generated from text representation of events.
 
-== 0.1.0
-* Versioning delegated to nebula.release plugin
+| 0.1.0
+a| * Versioning delegated to nebula.release plugin
 * Initial pass of documentation on gh-pages
 * RxJava introduced into API.
   This should allow using reactive sources.
@@ -59,10 +67,12 @@
   Also this opens up the possibility of using Java as a language for users.
 * Build system does a lot more static analysis of code.
 
-== 0.0.2
-* Temporal and Versioned Snapshots are now different.
+| 0.0.2
+a| * Temporal and Versioned Snapshots are now different.
 * Joins are now supported as a special kind of snapshot.
 
-== 0.0.1
-* Supports Groovy and GORM.
+| 0.0.1
+a| * Supports Groovy and GORM.
 * Contains examples for `rdbms`, `mongo`+`rdbms` and `springboot-jpa`.
+
+|===
