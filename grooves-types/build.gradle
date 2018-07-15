@@ -19,7 +19,7 @@ apply from: "$rootDir/gradle/jacoco.gradle"
 description = "Types that are used by Grooves to build an Event Sourcing system"
 
 dependencies {
-    compile 'org.reactivestreams:reactive-streams:1.0.1'
+    compile 'org.reactivestreams:reactive-streams:latest.release'
     compile "org.slf4j:slf4j-api:$slf4jVersion"
 
     compileOnly "org.codehaus.groovy:groovy:$groovyVersion"
