@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.rahulsom:svg-builder:latest.release'
+    compile 'com.github.rahulsom:svg-builder:0.2.+'
     compile('com.github.sommeri:less4j:latest.release') {
         exclude group: 'com.google.protobuf'
     }
