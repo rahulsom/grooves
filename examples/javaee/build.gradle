@@ -22,16 +22,15 @@ repositories {
 
 dependencies {
     providedCompile 'javax:javaee-api:7.0'
-    compileOnly "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
+    compileOnly "org.jetbrains:annotations:latest.release"
     compile project(':grooves-java')
-    compile 'org.apache.commons:commons-lang3:3.5'
-    compile 'org.projectlombok:lombok:1.16.18'
-    compile 'io.reactivex:rxjava-reactive-streams:1.2.1'
-    compile 'io.reactivex:rxjava:1.2.9'
+    compile 'org.apache.commons:commons-lang3:latest.release'
+    compile 'org.projectlombok:lombok:latest.release'
+    compile 'io.reactivex:rxjava-reactive-streams:latest.release'
+    compile 'io.reactivex:rxjava:latest.release'
 
-    def cargoVersion = '1.6.3'
-    cargo "org.codehaus.cargo:cargo-core-uberjar:$cargoVersion",
-            "org.codehaus.cargo:cargo-ant:$cargoVersion"
+    cargo "org.codehaus.cargo:cargo-core-uberjar:latest.release",
+            "org.codehaus.cargo:cargo-ant:latest.release"
 
     compile project(':grooves-example-test')
 }

@@ -12,11 +12,11 @@ dependencies {
 
     compile "org.codehaus.groovy:groovy:$groovyVersion"
 
-    testCompile 'io.reactivex:rxjava:1.2.9'
-    testCompile 'io.reactivex:rxjava-reactive-streams:1.2.1'
+    testCompile 'io.reactivex:rxjava:latest.release'
+    testCompile 'io.reactivex:rxjava-reactive-streams:latest.release'
     testCompile "org.spockframework:spock-core:$spockVersion"
 
-    testRuntime "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
+    testRuntime "org.jetbrains:annotations:latest.release"
 }
 
 groovydoc {

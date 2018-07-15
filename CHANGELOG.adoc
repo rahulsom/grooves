@@ -14,7 +14,6 @@ a| * Remove `AggregateType`. Now anything can be an aggregate.
   This allows syntax highlighting for Kotlin code.
 * Use `svg-builder` and static type diagramming.
 * Vastly improved Null checking using jetbrains annotations.
-* Upgrades: Gradle 4.8.1, Kotlin 1.2.51, Groovy 2.5.1, Grails 3.3.6
 * OWASP Dependency checking is now routine
 * Better syntax highlighting in docs from PrismJS
 * Use dependency locking
