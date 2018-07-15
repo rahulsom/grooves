@@ -23,8 +23,7 @@ dependencies {
     compile "org.slf4j:slf4j-api:$slf4jVersion"
 
     compileOnly "org.codehaus.groovy:groovy:$groovyVersion"
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion"
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
 
     testCompile "org.spockframework:spock-core:$spockVersion"
 }
