@@ -2,4 +2,4 @@
 # Manual edits can break the build and are not advised.
 # This file is expected to be part of source control.
 org.codehaus.groovy:groovy:2.5.1
-org.jetbrains:annotations:15.0
+org.jetbrains:annotations:16.0.2

@@ -17,7 +17,7 @@ org.grails:grails-datastore-gorm-validation:6.0.7.RELEASE
 org.grails:grails-datastore-gorm:6.0.7.RELEASE
 org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final
 org.javassist:javassist:3.17.1-GA
-org.jetbrains:annotations:15.0
+org.jetbrains:annotations:16.0.2
 org.slf4j:jcl-over-slf4j:1.7.21
 org.slf4j:slf4j-api:1.7.21
 org.springframework:spring-beans:4.1.9.RELEASE
