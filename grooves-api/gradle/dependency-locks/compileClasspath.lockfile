@@ -1,0 +1,8 @@
+# This is a Gradle generated file for dependency locking.
+# Manual edits can break the build and are not advised.
+# This file is expected to be part of source control.
+io.reactivex.rxjava2:rxjava:2.1.5
+org.codehaus.groovy:groovy:2.5.1
+org.jetbrains:annotations:15.0
+org.reactivestreams:reactive-streams:1.0.1
+org.slf4j:slf4j-api:1.7.25

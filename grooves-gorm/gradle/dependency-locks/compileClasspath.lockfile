@@ -1,0 +1,29 @@
+# This is a Gradle generated file for dependency locking.
+# Manual edits can break the build and are not advised.
+# This file is expected to be part of source control.
+com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4.2
+commons-collections:commons-collections:3.2.2
+commons-validator:commons-validator:1.5.1
+io.reactivex.rxjava2:rxjava:2.1.5
+io.reactivex:rxjava-reactive-streams:1.2.1
+io.reactivex:rxjava:1.2.9
+javax.transaction:jta:1.1
+org.codehaus.gpars:gpars:1.2.1
+org.codehaus.groovy:groovy:2.5.1
+org.codehaus.jsr166-mirror:jsr166y:1.7.0
+org.grails:grails-async:3.0.15
+org.grails:grails-datastore-async:6.0.7.RELEASE
+org.grails:grails-datastore-core:6.0.7.RELEASE
+org.grails:grails-datastore-gorm-rx:6.0.7.RELEASE
+org.grails:grails-datastore-gorm-validation:6.0.7.RELEASE
+org.grails:grails-datastore-gorm:6.0.7.RELEASE
+org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final
+org.javassist:javassist:3.17.1-GA
+org.jetbrains:annotations:15.0
+org.reactivestreams:reactive-streams:1.0.1
+org.slf4j:jcl-over-slf4j:1.7.21
+org.slf4j:slf4j-api:1.7.25
+org.springframework:spring-beans:4.1.9.RELEASE
+org.springframework:spring-context:4.1.9.RELEASE
+org.springframework:spring-core:4.1.9.RELEASE
+org.springframework:spring-tx:4.1.9.RELEASE
