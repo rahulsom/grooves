@@ -36,7 +36,7 @@ dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.+'
 
     compile 'com.google.inject:guice:latest.release'
-    compile 'com.google.guava:guava:23.4-jre'
+    compile 'com.google.guava:guava:latest.release'
 
     compile "com.h2database:h2:latest.release"
     compile 'org.jooq:jooq'
