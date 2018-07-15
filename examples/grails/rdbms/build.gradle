@@ -54,7 +54,7 @@ dependencies {
 
     compile 'com.github.rahulsom:genealogy:1.3'
 
-    compileOnly "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
+    compileOnly "org.jetbrains:annotations:latest.release"
 
     console "org.grails:grails-console"
 

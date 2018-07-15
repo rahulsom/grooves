@@ -9,20 +9,21 @@ description = "Asciidoctor Extension to generate Event Sourcing Diagrams like th
 
 repositories {
     jcenter()
+    mavenCentral()
     maven { url 'http://dl.bintray.com/aalmiray/kordamp' }
 }
 
 dependencies {
-    compile 'com.github.rahulsom:svg-builder:0.2.3'
-    compile('com.github.sommeri:less4j:1.17.2') {
+    compile 'com.github.rahulsom:svg-builder:latest.release'
+    compile('com.github.sommeri:less4j:latest.release') {
         exclude group: 'com.google.protobuf'
     }
-    compile 'commons-beanutils:commons-beanutils:1.9.3'
+    compile 'commons-beanutils:commons-beanutils:latest.release'
     compile 'org.asciidoctor:asciidoctorj:1.5.4.1'
     compile 'org.jruby:jruby-complete:9.1.14.0'
     compile "org.slf4j:slf4j-api:$slf4jVersion"
 
-    compileOnly 'org.kordamp.gipsy:gipsy:0.4.1'
+    compileOnly 'org.kordamp.gipsy:gipsy:latest.release'
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {

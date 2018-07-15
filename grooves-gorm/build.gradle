@@ -10,12 +10,12 @@ description = "Integration with Grails' GORM API"
 dependencies {
     compile project(':grooves-groovy')
 
-    compile 'io.reactivex:rxjava:1.2.9'
-    compile 'io.reactivex:rxjava-reactive-streams:1.2.1'
+    compile 'io.reactivex:rxjava:latest.release'
+    compile 'io.reactivex:rxjava-reactive-streams:latest.release'
 
     compileOnly 'org.grails:grails-datastore-gorm:6.0.7.RELEASE'
     compileOnly 'org.grails:grails-datastore-gorm-rx:6.0.7.RELEASE'
-    compileOnly "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
+    compileOnly "org.jetbrains:annotations:latest.release"
 
     testCompile "org.spockframework:spock-core:$spockVersion"
 }

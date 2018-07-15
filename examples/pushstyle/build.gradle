@@ -5,7 +5,7 @@ buildscript {
         maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.2" }
     }
     dependencies {
-        classpath "com.h2database:h2:${h2Version}"
+        classpath "com.h2database:h2:latest.release"
     }
 }
 
@@ -31,19 +31,19 @@ repositories {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
-    compile "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:latest.release"
+    compile "org.jetbrains.kotlin:kotlin-reflect:latest.release"
     compile 'org.codehaus.groovy:groovy-all:2.4.+'
 
-    compile 'com.google.inject:guice:4.1.0'
+    compile 'com.google.inject:guice:latest.release'
     compile 'com.google.guava:guava:23.4-jre'
 
-    compile "com.h2database:h2:${h2Version}"
+    compile "com.h2database:h2:latest.release"
     compile 'org.jooq:jooq'
 
     compile project(':grooves-api')
 
-    jooqRuntime "com.h2database:h2:${h2Version}"
+    jooqRuntime "com.h2database:h2:latest.release"
 
     runtime 'ch.qos.logback:logback-classic:1.+'
 

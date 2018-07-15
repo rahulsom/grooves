@@ -12,13 +12,13 @@ dependencies {
 
     compile 'com.google.auto.service:auto-service:1.0-rc3'
 
-    compileOnly "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
+    compileOnly "org.jetbrains:annotations:latest.release"
 
-    testCompile 'com.google.testing.compile:compile-testing:0.11'
-    testCompile 'io.reactivex:rxjava:1.2.9'
-    testCompile 'io.reactivex:rxjava-reactive-streams:1.2.1'
+    testCompile 'com.google.testing.compile:compile-testing:0.+'
+    testCompile 'io.reactivex:rxjava:latest.release'
+    testCompile 'io.reactivex:rxjava-reactive-streams:latest.release'
 
-    testRuntime "org.jetbrains:annotations:$jetbrainsAnnotationsVersion"
+    testRuntime "org.jetbrains:annotations:latest.release"
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
