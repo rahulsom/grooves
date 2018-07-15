@@ -15,6 +15,23 @@ apply plugin: com.bmuschko.gradle.nexus.NexusPlugin
 apply plugin: org.owasp.dependencycheck.gradle.DependencyCheckPlugin
 apply plugin: nebula.plugin.info.InfoPlugin
 
+dependencyLocking {
+    lockAllConfigurations()
+}
+
+task resolveAndLockAll {
+    doFirst {
+        assert gradle.startParameter.writeDependencyLocks
+    }
+    doLast {
+        configurations.each {
+            if (it.canBeResolved && !(it.name in ['jacocoAgent', 'jacocoAnt', 'checkstyle'])) {
+                it.resolve()
+            }
+        }
+    }
+}
+
 modifyPom {
     project {
         name project.name.split('-').collect { it.capitalize() }.join(' ')
