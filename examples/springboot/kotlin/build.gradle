@@ -1,13 +1,10 @@
 buildscript {
-    ext {
-        springBootVersion = '2.0.0.M1'
-    }
     repositories {
         mavenCentral()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.0.3.RELEASE"
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:latest.release'
         classpath 'org.jetbrains.kotlin:kotlin-allopen:latest.release'
     }
@@ -51,7 +48,7 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile "org.spockframework:spock-core:latest.release"
     testCompile "org.spockframework:spock-spring:latest.release"
-    testCompile 'io.projectreactor.addons:reactor-test'
+    testCompile 'io.projectreactor.addons:reactor-test:latest.release'
 
     compile project(':grooves-api')
     compile project(':grooves-example-test')
