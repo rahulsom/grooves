@@ -1941,35 +1941,29 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
 
     override fun createEmptySnapshot() = PatientAccount() <i class="conum" data-value="4"></i><b>(4)</b>
 
-    override fun getSnapshot(<i class="conum" data-value="5"></i><b>(5)</b>
-        maxPosition: Long, aggregate: Patient
-    ) =
+    override fun getSnapshot(maxPosition: Long, aggregate: Patient) = <i class="conum" data-value="5"></i><b>(5)</b>
         patientAccountRepository.findByAggregateIdAndLastEventPositionLessThan(
             aggregate.id!!, maxPosition
         )
 
-    override fun getSnapshot(<i class="conum" data-value="6"></i><b>(6)</b>
-        maxTimestamp: Date?, aggregate: Patient
-    ) =
+    override fun getSnapshot(maxTimestamp: Date?, aggregate: Patient) = <i class="conum" data-value="6"></i><b>(6)</b>
         patientAccountRepository.findByAggregateIdAndLastEventTimestampLessThan(
             aggregate.id!!, maxTimestamp!!
         )
 
     override fun shouldEventsBeApplied(snapshot: PatientAccount) = true <i class="conum" data-value="7"></i><b>(7)</b>
 
-    override fun addToDeprecates(
-        snapshot: PatientAccount, deprecatedAggregate: Patient
-    ) {
+    override fun addToDeprecates(snapshot: PatientAccount, deprecatedAggregate: Patient) {
         snapshot.deprecatesIds.add(deprecatedAggregate.id!!)
     }
 
-    override fun onException(<i class="conum" data-value="8"></i><b>(8)</b>
-        e: Exception, snapshot: PatientAccount, event: PatientEvent
-    ) =
+    override fun onException(e: Exception, snapshot: PatientAccount, event: PatientEvent) = <i class="conum" data-value="8"></i><b>(8)</b>
         just(CONTINUE)
 
     override fun getUncomputedEvents(<i class="conum" data-value="9"></i><b>(9)</b>
-        aggregate: Patient, lastSnapshot: PatientAccount?, version: Long
+        aggregate: Patient,
+        lastSnapshot: PatientAccount?,
+        version: Long
     ) =
         patientEventRepository.findAllByPositionRange(
             aggregate.id!!,
@@ -1977,7 +1971,9 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
         )
 
     override fun getUncomputedEvents(<i class="conum" data-value="10"></i><b>(10)</b>
-        aggregate: Patient, lastSnapshot: PatientAccount?, snapshotTime: Date
+        aggregate: Patient,
+        lastSnapshot: PatientAccount?,
+        snapshotTime: Date
     ) =
         lastSnapshot?.lastEventTimestamp?.let {
             patientEventRepository.findAllByTimestampRange(
