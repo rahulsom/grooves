@@ -23,7 +23,7 @@ dependencies {
     compile 'org.jruby:jruby-complete:9.1.14.0'
     compile "org.slf4j:slf4j-api:$slf4jVersion"
 
-    compile "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
+    compileOnly 'org.kordamp.gipsy:gipsy:latest.release'
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {

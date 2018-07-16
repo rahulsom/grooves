@@ -1,3 +1,6 @@
 # This is a Gradle generated file for dependency locking.
 # Manual edits can break the build and are not advised.
 # This file is expected to be part of source control.
+org.codehaus.groovy:groovy-all:2.4.11
+org.kordamp.gipsy:gipsy:0.4.1
+org.kordamp.jipsy:jipsy:0.4.1
