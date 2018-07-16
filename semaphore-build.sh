@@ -89,6 +89,9 @@ function main() {
     if [ "$SEMAPHORE_TRIGGER_SOURCE" = "scheduler" ]; then
         updateGradleWrapper
         updateDependencyLocks
+        if [ "$(echo ${ERROR_IN})" = "" ]; then
+            exit 1
+        fi
     else
         if [ "$PULL_REQUEST_NUMBER" != "" ]; then
             gw check &&  codecov
