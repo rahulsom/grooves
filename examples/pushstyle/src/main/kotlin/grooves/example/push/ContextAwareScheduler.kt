@@ -45,6 +45,4 @@ object ContextAwareScheduler : Scheduler() {
 
         override fun dispose() = tracking.dispose()
     }
-
 }
-

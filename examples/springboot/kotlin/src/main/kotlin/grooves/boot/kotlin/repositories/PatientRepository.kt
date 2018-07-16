@@ -39,31 +39,33 @@ interface PatientEventRepository : ReactiveCrudRepository<PatientEvent, String> 
     ): Flux<PatientEvent>
 
     fun findAllByAggregateIdAndTimestampLessThan(
-        aggregateId: String, snapshotTime: Date
+        aggregateId: String,
+        snapshotTime: Date
     ): Flux<PatientEvent>
-
 }
 
 interface PatientAccountRepository : ReactiveCrudRepository<PatientAccount, String> {
 
     fun findByAggregateIdAndLastEventPositionLessThan(
-        aggregateId: String, maxPosition: Long
+        aggregateId: String,
+        maxPosition: Long
     ): Mono<PatientAccount>
 
     fun findByAggregateIdAndLastEventTimestampLessThan(
-        aggregateId: String, maxTimestamp: Date
+        aggregateId: String,
+        maxTimestamp: Date
     ): Mono<PatientAccount>
-
 }
 
 interface PatientHealthRepository : ReactiveCrudRepository<PatientHealth, String> {
 
     fun findByAggregateIdAndLastEventPositionLessThan(
-        aggregateId: String, maxPosition: Long
+        aggregateId: String,
+        maxPosition: Long
     ): Mono<PatientHealth>
 
     fun findByAggregateIdAndLastEventTimestampLessThan(
-        aggregateId: String, maxTimestamp: Date
+        aggregateId: String,
+        maxTimestamp: Date
     ): Mono<PatientHealth>
-
 }

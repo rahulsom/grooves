@@ -30,35 +30,29 @@ class PatientAccountQuery constructor(
 
     override fun createEmptySnapshot() = PatientAccount() // <4>
 
-    override fun getSnapshot(// <5>
-        maxPosition: Long, aggregate: Patient
-    ) =
+    override fun getSnapshot(maxPosition: Long, aggregate: Patient) = // <5>
         patientAccountRepository.findByAggregateIdAndLastEventPositionLessThan(
             aggregate.id!!, maxPosition
         )
 
-    override fun getSnapshot(// <6>
-        maxTimestamp: Date?, aggregate: Patient
-    ) =
+    override fun getSnapshot(maxTimestamp: Date?, aggregate: Patient) = // <6>
         patientAccountRepository.findByAggregateIdAndLastEventTimestampLessThan(
             aggregate.id!!, maxTimestamp!!
         )
 
     override fun shouldEventsBeApplied(snapshot: PatientAccount) = true // <7>
 
-    override fun addToDeprecates(
-        snapshot: PatientAccount, deprecatedAggregate: Patient
-    ) {
+    override fun addToDeprecates(snapshot: PatientAccount, deprecatedAggregate: Patient) {
         snapshot.deprecatesIds.add(deprecatedAggregate.id!!)
     }
 
-    override fun onException(// <8>
-        e: Exception, snapshot: PatientAccount, event: PatientEvent
-    ) =
+    override fun onException(e: Exception, snapshot: PatientAccount, event: PatientEvent) = // <8>
         just(CONTINUE)
 
     override fun getUncomputedEvents(// <9>
-        aggregate: Patient, lastSnapshot: PatientAccount?, version: Long
+        aggregate: Patient,
+        lastSnapshot: PatientAccount?,
+        version: Long
     ) =
         patientEventRepository.findAllByPositionRange(
             aggregate.id!!,
@@ -66,7 +60,9 @@ class PatientAccountQuery constructor(
         )
 
     override fun getUncomputedEvents(// <10>
-        aggregate: Patient, lastSnapshot: PatientAccount?, snapshotTime: Date
+        aggregate: Patient,
+        lastSnapshot: PatientAccount?,
+        snapshotTime: Date
     ) =
         lastSnapshot?.lastEventTimestamp?.let {
             patientEventRepository.findAllByTimestampRange(

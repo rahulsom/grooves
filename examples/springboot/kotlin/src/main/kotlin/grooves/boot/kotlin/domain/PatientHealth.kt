@@ -54,7 +54,6 @@ class PatientHealth : Snapshot<Patient, String, String, PatientEvent> {
 
     override fun toString() = "PatientAccount(id=$id, aggregate=$aggregateId, " +
             "lastEventPosition=$lastEventPosition, lastEventTimestamp=$lastEventTimestamp)"
-
 }
 
 class Procedure(

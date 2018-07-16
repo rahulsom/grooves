@@ -22,5 +22,4 @@ interface BaseJoin<
 
     fun addJoinedAggregate(joinedAggregateT: JoinedAggregateT)
     fun removeJoinedAggregate(joinedAggregateT: JoinedAggregateT)
-
 }

@@ -84,5 +84,4 @@ class PatientController constructor(
                             )
                         } ?: patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE))
             }
-
 }

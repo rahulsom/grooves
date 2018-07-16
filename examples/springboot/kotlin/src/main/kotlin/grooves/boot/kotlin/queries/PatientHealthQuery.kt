@@ -49,7 +49,9 @@ class PatientHealthQuery constructor(
         just(CONTINUE)
 
     override fun getUncomputedEvents(
-        aggregate: Patient, lastSnapshot: PatientHealth?, version: Long
+        aggregate: Patient,
+        lastSnapshot: PatientHealth?,
+        version: Long
     ) =
         patientEventRepository.findAllByPositionRange(
             aggregate.id!!,
@@ -57,7 +59,9 @@ class PatientHealthQuery constructor(
         )
 
     override fun getUncomputedEvents(
-        aggregate: Patient, lastSnapshot: PatientHealth?, snapshotTime: Date
+        aggregate: Patient,
+        lastSnapshot: PatientHealth?,
+        snapshotTime: Date
     ) =
         lastSnapshot?.lastEventTimestamp?.let {
             patientEventRepository.findAllByTimestampRange(

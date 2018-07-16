@@ -12,5 +12,4 @@ object ContextManager {
 
     fun get() = ctx.get()
     fun set(context: Map<String, Any>) = ctx.set(context)
-
 }

@@ -26,5 +26,4 @@ class Database {
         log.info("<-- \n$balanceRecord")
         return balanceRecord
     }
-
 }

@@ -55,5 +55,4 @@ interface BaseSnapshot<
      * Grooves will use this to find events that are on the other aggregate and make them available for computation of this aggregate's snapshot.
      */
     fun getDeprecatesObservable(): Publisher<AggregateT>
-
 }

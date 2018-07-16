@@ -2,6 +2,7 @@ package grooves.boot.kotlin
 
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import com.github.rahulsom.grooves.queries.QuerySupport
+import com.github.rahulsom.grooves.test.OnSpec
 import grooves.boot.kotlin.domain.Patient
 import grooves.boot.kotlin.domain.PatientEvent
 import grooves.boot.kotlin.domain.PatientEvent.Applicable.Created
@@ -165,11 +166,11 @@ class BootStrap constructor(
 
     private fun <SnapshotT : Snapshot<Patient, String, String, PatientEvent>,
             QueryT : QuerySupport<Patient, String, PatientEvent, String, SnapshotT>> snapshotWith(
-        it: com.github.rahulsom.grooves.test.OnSpec<Patient, String, PatientEvent, String,
+                it: OnSpec<Patient, String, PatientEvent, String,
                 out Snapshot<Patient, String, String, PatientEvent>>,
-        query: QueryT, repository: ReactiveCrudRepository<SnapshotT, String>
-    ) =
-        null
+                query: QueryT,
+                repository: ReactiveCrudRepository<SnapshotT, String>
+            ) = null
 //            query.computeSnapshot(it.aggregate, Long.MAX_VALUE)
 //                    .flatMap { repository.save(it).toObservable() }
 //                    .toBlocking()
@@ -208,9 +209,9 @@ class BootStrap constructor(
         }
 
     fun on(
-        patient: Patient, closure: (
-            com.github.rahulsom.grooves.test.OnSpec<Patient, String, PatientEvent, String,
-                    out Snapshot<Patient, String, String, PatientEvent>>
+        patient: Patient,
+        closure: (
+            OnSpec<Patient, String, PatientEvent, String, out Snapshot<Patient, String, String, PatientEvent>>
         ) -> Unit
     ): Patient {
         val eventSaver: (Any) -> Unit = {

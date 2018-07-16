@@ -53,5 +53,4 @@ interface BaseEvent<AggregateT, EventIdT, EventT> {
      * Systems can choose between using global positions, i.e. a version number for the whole system, or, an aggregate specific position, i.e. a version number for the aggregate.
      */
     var position: Long
-
 }

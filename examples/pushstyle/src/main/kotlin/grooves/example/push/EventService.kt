@@ -81,5 +81,4 @@ class EventService {
             }
         log.info("End $transaction")
     }
-
 }

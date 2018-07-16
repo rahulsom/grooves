@@ -17,5 +17,4 @@ class BeansHolder {
     companion object {
         var context: ApplicationContext? = null
     }
-
 }

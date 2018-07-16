@@ -84,9 +84,8 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
         override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
     }
 
-    data class PatientDeprecatedBy(
-        val deprecator: Patient, val converseId: String
-    ) : PatientEvent(),
+    data class PatientDeprecatedBy(val deprecator: Patient, val converseId: String) :
+        PatientEvent(),
         DeprecatedBy<Patient, String, PatientEvent> {
 
         @JsonIgnore

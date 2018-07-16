@@ -27,5 +27,4 @@ interface JoinEvent<
      * Your directionality should match your plan in [DisjoinEvent]
      */
     val joinAggregateObservable: Publisher<JoinedAggregateT>
-
 }

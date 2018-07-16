@@ -11,7 +11,9 @@ import java.util.Date
 import java.util.UUID
 
 class Application @Inject constructor(
-    val eventBus: EventBus, val eventService: EventService, val database: Database,
+    val eventBus: EventBus,
+    val eventService: EventService,
+    val database: Database,
     val dslContext: DSLContext
 ) : AbstractService() {
 
@@ -56,5 +58,4 @@ class Application @Inject constructor(
 
     fun getBalance(accountId: String) =
         database.getBalance(Account(accountId), null)?.balance
-
 }

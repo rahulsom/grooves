@@ -33,7 +33,8 @@ sealed class Transaction(
         override var aggregate: Account?,
         override var timestamp: Date,
         override var position: Long,
-        val atmId: String, val amount: Long
+        val atmId: String,
+        val amount: Long
     ) :
         Transaction(id, aggregate, timestamp, position)
 
@@ -42,7 +43,8 @@ sealed class Transaction(
         override var aggregate: Account?,
         override var timestamp: Date,
         override var position: Long,
-        val atmId: String, val amount: Long
+        val atmId: String,
+        val amount: Long
     ) :
         Transaction(id, aggregate, timestamp, position)
 }
@@ -58,7 +60,10 @@ class Balance() : Snapshot<Account, String, String, Transaction> {
     var balance: Long = 0
 
     constructor(
-        id: String?, aggregate: Account?, balance: Long, lastEventPosition: Long,
+        id: String?,
+        aggregate: Account?,
+        balance: Long,
+        lastEventPosition: Long,
         lastEventTimestamp: Date
     ) : this() {
         this.id = id
@@ -107,5 +112,4 @@ class Balance() : Snapshot<Account, String, String, Transaction> {
         return "Balance(id=$idPart, aggregate=$aggPart, lastEventTimestamp=$ts, " +
                 "version=$lastEventPosition, balance=$balance)"
     }
-
 }
