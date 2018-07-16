@@ -65,7 +65,7 @@ function updateGradleWrapper() {
     gw wrapper --gradle-version ${NEW_GRADLE} --distribution-type all
     if [ $(git status --short| wc -l) != 0 ]; then
         echo "New gradle found. Testing..."
-        gw check \
+        gw check asciidoctor \
                 && commitNewCode "Upgrade gradlew to $NEW_GRADLE" \
                 || resetChanges update-gradlew
     else
@@ -77,7 +77,7 @@ function updateDependencyLocks() {
     gw resolveAndLockAll --write-locks
     if [ $(git status --short| wc -l) != 0 ]; then
         echo "Dependency changes found..."
-        gw check \
+        gw check asciidoctor \
                 && commitNewCode "Update dependency locks" \
                 || resetChanges resolveAndLockAll
     else
