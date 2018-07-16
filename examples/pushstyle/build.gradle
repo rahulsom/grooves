@@ -33,7 +33,7 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:latest.release"
     compile "org.jetbrains.kotlin:kotlin-reflect:latest.release"
-    compile 'org.codehaus.groovy:groovy-all:2.4.+'
+    compile 'org.codehaus.groovy:groovy-all:latest.release'
 
     compile 'com.google.inject:guice:latest.release'
     compile 'com.google.guava:guava:latest.release'
@@ -45,10 +45,10 @@ dependencies {
 
     jooqRuntime "com.h2database:h2:latest.release"
 
-    runtime 'ch.qos.logback:logback-classic:1.+'
+    runtime 'ch.qos.logback:logback-classic:latest.release'
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.awaitility:awaitility:3.0.0'
+    testCompile 'junit:junit:4.+'
+    testCompile 'org.awaitility:awaitility:latest.release'
 }
 
 sonarqube {
