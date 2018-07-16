@@ -1,14 +1,18 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.5.+"
     }
 }
 
 plugins {
     id "groovy"
-    id "org.springframework.boot" version "1.5.9.RELEASE"
 }
 
+apply plugin: "org.springframework.boot"
 apply from: "$rootDir/gradle/codenarc/codenarc.gradle"
 apply from: "$rootDir/gradle/jacoco.gradle"
 
@@ -23,7 +27,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.codehaus.groovy:groovy-all'
-    compile 'io.reactivex.rxjava2:rxjava:2.1.5'
+    compile 'io.reactivex.rxjava2:rxjava'
     compileOnly "org.jetbrains:annotations:latest.release"
 
     runtime 'com.h2database:h2'
