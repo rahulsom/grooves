@@ -676,11 +676,12 @@ This is optional, but highly recommended.</td>
 @Aggregate <i class="conum" data-value="1"></i><b>(1)</b>
 @EqualsAndHashCode(includes = ['uniqueId'])
 class Patient implements GormAggregate&lt;Long&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
-    Long id <i class="conum" data-value="3"></i><b>(3)</b>
-    String uniqueId
     static constraints = {
+        uniqueId maxSize: 100
     }
 
+    Long id <i class="conum" data-value="3"></i><b>(3)</b>
+    String uniqueId
     @Override String toString() { "Patient($id, $uniqueId)" }
 }</code></pre>
 </div>
@@ -837,6 +838,11 @@ In our case, it doesn&#8217;t matter much since we&#8217;re using JPA, which is 
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">// All imports omitted
 abstract class PatientEvent implements BaseEvent&lt;Patient, Long, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
 
+    static transients = ['revertedBy'] <i class="conum" data-value="6"></i><b>(6)</b>
+
+    static constraints = {
+    }
+
     Long id
     RevertEvent&lt;Patient, Long, PatientEvent&gt; revertedBy  <i class="conum" data-value="2"></i><b>(2)</b>
     Date timestamp  <i class="conum" data-value="3"></i><b>(3)</b>
@@ -846,10 +852,6 @@ abstract class PatientEvent implements BaseEvent&lt;Patient, Long, PatientEvent&
         toPublisher just(aggregate)
     }  <i class="conum" data-value="5"></i><b>(5)</b>
 
-    static transients = ['revertedBy'] <i class="conum" data-value="6"></i><b>(6)</b>
-
-    static constraints = {
-    }
 }</code></pre>
 </div>
 </div>
@@ -1006,6 +1008,10 @@ It accepts as a param, the Aggregate over which it applies.</td>
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">@Event(Patient) <i class="conum" data-value="1"></i><b>(1)</b>
 class PatientCreated extends PatientEvent { <i class="conum" data-value="2"></i><b>(2)</b>
+    static constraints = {
+        name maxSize: 100
+    }
+
     String name
 
 }</code></pre>
@@ -1329,6 +1335,17 @@ It is empty when the aggregate is not deprecated.</td>
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">class PatientAccount implements Snapshot&lt;Patient, Long, Long, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
 
+    static hasMany = [
+            deprecates: Patient,
+    ]
+
+    static transients = ['aggregate',]
+
+    static constraints = {
+        deprecatedBy nullable: true
+        name maxSize: 100
+    }
+
     Long id
     long lastEventPosition <i class="conum" data-value="2"></i><b>(2)</b>
     Date lastEventTimestamp <i class="conum" data-value="3"></i><b>(3)</b>
@@ -1348,16 +1365,6 @@ It is empty when the aggregate is not deprecated.</td>
     BigDecimal moneyMade = 0.0
 
     String name
-
-    static hasMany = [
-            deprecates: Patient,
-    ]
-
-    static transients = ['aggregate',]
-
-    static constraints = {
-        deprecatedBy nullable: true
-    }
 
     @Override String toString() { "PatientAccount($id, $aggregateId, $lastEventPosition)" }
 
