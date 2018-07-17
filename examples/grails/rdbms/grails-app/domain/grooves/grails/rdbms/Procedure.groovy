@@ -17,6 +17,11 @@ class Procedure {
     static mapping = {
         version false
     }
+
+    static constraints = {
+        code maxSize: 100
+    }
+
     String code
     Date date
 

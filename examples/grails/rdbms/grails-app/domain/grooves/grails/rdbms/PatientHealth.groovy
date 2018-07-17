@@ -18,6 +18,18 @@ import static rx.RxReactiveStreams.toPublisher
 @EqualsAndHashCode(includes = ['aggregate', 'lastEventPosition'])
 class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
 
+    static hasMany = [
+            deprecates: Patient,
+            procedures: Procedure,
+    ]
+
+    static transients = ['aggregate',]
+
+    static constraints = {
+        deprecatedBy nullable: true
+        name maxSize: 100
+    }
+
     Long id
     long lastEventPosition
     Date lastEventTimestamp
@@ -36,17 +48,6 @@ class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
     List<Procedure> procedures
 
     String name
-
-    static hasMany = [
-            deprecates: Patient,
-            procedures: Procedure,
-    ]
-
-    static transients = ['aggregate',]
-
-    static constraints = {
-        deprecatedBy nullable: true
-    }
 
     @Override Publisher<Patient> getDeprecatedByObservable() {
         toPublisher(deprecatedBy ? just(deprecatedBy) : empty())

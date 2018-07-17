@@ -12,11 +12,12 @@ import groovy.transform.EqualsAndHashCode
 @Aggregate
 @EqualsAndHashCode(includes = ['uniqueId'])
 class Zipcode implements GormAggregate<Long> {
+    static constraints = {
+        uniqueId maxSize: 100
+    }
 
     Long id
     String uniqueId
-    static constraints = {
-    }
 
     @Override String toString() { "Zipcode($id, $uniqueId)" }
 }

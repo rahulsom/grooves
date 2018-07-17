@@ -21,6 +21,10 @@ import static rx.RxReactiveStreams.toPublisher
         'GrailsDomainReservedSqlKeywordName', ])
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 abstract class ZipcodeEvent implements BaseEvent<Zipcode, Long, ZipcodeEvent> {
+    static transients = ['revertedBy']
+
+    static constraints = {
+    }
 
     Long id
     RevertEvent<Zipcode, Long, ZipcodeEvent> revertedBy
@@ -31,17 +35,16 @@ abstract class ZipcodeEvent implements BaseEvent<Zipcode, Long, ZipcodeEvent> {
         toPublisher(aggregate ? just(aggregate) : empty())
     }
 
-    static transients = ['revertedBy']
-
-    static constraints = {
-    }
-
     @Override String toString() { "ZipcodeEvent($id, $aggregateId)" }
 }
 
 @Event(Zipcode)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeCreated extends ZipcodeEvent {
+    static constraints = {
+        name maxSize: 100
+    }
+
     String name
 
     @Override String toString() { "${aggregate} was created" }
@@ -51,50 +54,50 @@ class ZipcodeCreated extends ZipcodeEvent {
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeGotPatient extends ZipcodeEvent implements
         JoinEvent<Zipcode, Long, ZipcodeEvent, Patient> {
+    static transients = ['joinAggregate']
+
     Patient patient
 
     @Override Publisher<Patient> getJoinAggregateObservable() { toPublisher(just(patient)) }
 
     @Override String toString() { "${aggregate} got ${patient}" }
-
-    static transients = ['joinAggregate']
 }
 
 @Event(Zipcode)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeLostPatient extends ZipcodeEvent implements
         DisjoinEvent<Zipcode, Long, ZipcodeEvent, Patient> {
+    static transients = ['joinAggregate']
+
     Patient patient
 
     @Override Publisher<Patient> getJoinAggregateObservable() { toPublisher(just(patient)) }
 
     @Override String toString() { "${aggregate} lost ${patient}" }
-
-    static transients = ['joinAggregate']
 }
 
 @Event(Zipcode)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeGotDoctor extends ZipcodeEvent implements
         JoinEvent<Zipcode, Long, ZipcodeEvent, Doctor> {
+    static transients = ['joinAggregate']
+
     Doctor doctor
 
     @Override Publisher<Doctor> getJoinAggregateObservable() { toPublisher(just(doctor)) }
 
     @Override String toString() { "${aggregate} got ${doctor}" }
-
-    static transients = ['joinAggregate']
 }
 
 @Event(Zipcode)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeLostDoctor extends ZipcodeEvent implements
         DisjoinEvent<Zipcode, Long, ZipcodeEvent, Doctor> {
+    static transients = ['joinAggregate']
+
     Doctor doctor
 
     @Override Publisher<Doctor> getJoinAggregateObservable() { toPublisher(just(doctor)) }
 
     @Override String toString() { "${aggregate} lost ${doctor}" }
-
-    static transients = ['joinAggregate']
 }

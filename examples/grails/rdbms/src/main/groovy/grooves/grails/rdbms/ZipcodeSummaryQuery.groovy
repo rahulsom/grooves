@@ -30,6 +30,11 @@ class ZipcodeSummaryQuery {
                 }
     }
 
+    @SuppressWarnings(['FactoryMethodName'])
+    ZipcodeSummary createEmptySnapshot() {
+        new ZipcodeSummary(deprecatesIds: [], procedureCounts: [])
+    }
+
     private static void addHealthToSnapshot(PatientHealth health, ZipcodeSummary snapshot) {
         health.procedures.each { patientProcedure ->
             def procedure = snapshot.procedureCounts.find {
@@ -41,11 +46,6 @@ class ZipcodeSummaryQuery {
             }
             procedure.count++
         }
-    }
-
-    @SuppressWarnings(['FactoryMethodName'])
-    ZipcodeSummary createEmptySnapshot() {
-        new ZipcodeSummary(deprecatesIds: [], procedureCounts: [])
     }
 
 }

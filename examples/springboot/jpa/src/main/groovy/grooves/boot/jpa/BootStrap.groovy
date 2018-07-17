@@ -29,12 +29,31 @@ class BootStrap implements InitializingBean {
     @Autowired PatientAccountQuery patientAccountQuery
     @Autowired PatientHealthQuery patientHealthQuery
 
+    @Transactional
+    @Override
+    void afterPropertiesSet() throws Exception {
+        init()
+    }
+
     void init() {
         setupJohnLennon()
         setupRingoStarr()
         setupPaulMcCartney()
         setupFreddieMercury()
         setupTinaFeyAndSarahPalin()
+    }
+
+    Date currDate = Date.parse('yyyy-MM-dd', '2016-01-01')
+
+    Patient on(Patient patient, @DelegatesTo(OnSpec) Closure closure) {
+        def eventSaver = { patientEventRepository.save(it) } as Consumer
+        def positionSupplier = {
+            patientEventRepository.countByAggregateId(patient.id) + 1
+        } as Supplier<Long>
+        def dateSupplier = { currDate += 1; currDate }
+        new GroovyEventsDsl<Patient, Long, PatientEvent>().on(
+                patient, eventSaver, positionSupplier, dateSupplier,
+                closure)
     }
 
     private Patient setupJohnLennon() {
@@ -183,24 +202,5 @@ class BootStrap implements InitializingBean {
         e1.converse = e2
         patientEventRepository.save([e1, e2,])
         e2.converse
-    }
-
-    Date currDate = Date.parse('yyyy-MM-dd', '2016-01-01')
-
-    Patient on(Patient patient, @DelegatesTo(OnSpec) Closure closure) {
-        def eventSaver = { patientEventRepository.save(it) } as Consumer
-        def positionSupplier = {
-            patientEventRepository.countByAggregateId(patient.id) + 1
-        } as Supplier<Long>
-        def dateSupplier = { currDate += 1; currDate }
-        new GroovyEventsDsl<Patient, Long, PatientEvent>().on(
-                patient, eventSaver, positionSupplier, dateSupplier,
-                closure)
-    }
-
-    @Transactional
-    @Override
-    void afterPropertiesSet() throws Exception {
-        init()
     }
 }

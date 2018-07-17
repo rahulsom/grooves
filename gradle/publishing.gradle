@@ -5,9 +5,9 @@ buildscript {
         }
     }
     dependencies {
-        classpath "com.bmuschko:gradle-nexus-plugin:2.3.1"
-        classpath 'org.owasp:dependency-check-gradle:3.0.2'
-        classpath 'com.netflix.nebula:gradle-info-plugin:3.+'
+        classpath "com.bmuschko:gradle-nexus-plugin:latest.release"
+        classpath 'org.owasp:dependency-check-gradle:latest.release'
+        classpath 'com.netflix.nebula:gradle-info-plugin:latest.release'
     }
 }
 

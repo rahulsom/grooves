@@ -15,6 +15,17 @@ import static rx.RxReactiveStreams.toPublisher
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition',])
 class ZipcodePatients implements Join<Zipcode, Long, Patient, Long, ZipcodeEvent> {
 
+    static hasMany = [
+            deprecatesIds: Long,
+    ]
+
+    static constraints = {
+        deprecatedById nullable: true
+    }
+
+    static embedded = ['procedures', 'processingErrors',]
+    static transients = ['aggregate', 'deprecatedBy', 'deprecates',]
+
     Long id
     long lastEventPosition
     Date lastEventTimestamp
@@ -52,17 +63,6 @@ class ZipcodePatients implements Join<Zipcode, Long, Patient, Long, ZipcodeEvent
     void setDeprecates(Set<Zipcode> deprecates) { deprecatesIds = deprecates*.id }
 
     List<Long> joinedIds
-
-    static hasMany = [
-            deprecatesIds: Long,
-    ]
-
-    static constraints = {
-        deprecatedById nullable: true
-    }
-
-    static embedded = ['procedures', 'processingErrors',]
-    static transients = ['aggregate', 'deprecatedBy', 'deprecates',]
 
     @Override
     String toString() {

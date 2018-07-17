@@ -17,6 +17,17 @@ import static rx.RxReactiveStreams.toPublisher
 // tag::documented[]
 class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> { // <1>
 
+    static hasMany = [
+            deprecates: Patient,
+    ]
+
+    static transients = ['aggregate',]
+
+    static constraints = {
+        deprecatedBy nullable: true
+        name maxSize: 100
+    }
+
     Long id
     long lastEventPosition // <2>
     Date lastEventTimestamp // <3>
@@ -36,16 +47,6 @@ class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> { //
     BigDecimal moneyMade = 0.0
 
     String name
-
-    static hasMany = [
-            deprecates: Patient,
-    ]
-
-    static transients = ['aggregate',]
-
-    static constraints = {
-        deprecatedBy nullable: true
-    }
 
     @Override String toString() { "PatientAccount($id, $aggregateId, $lastEventPosition)" }
 

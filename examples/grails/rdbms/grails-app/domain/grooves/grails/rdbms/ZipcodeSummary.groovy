@@ -18,6 +18,19 @@ import static rx.RxReactiveStreams.toPublisher
 @ToString(includes = ['id', 'aggregateId', 'lastEventPosition', 'name',])
 class ZipcodeSummary implements Snapshot<Zipcode, Long, Long, ZipcodeEvent> {
 
+    static hasMany = [
+            procedureCounts: ProcedureCount,
+            deprecatesIds  : Long,
+    ]
+
+    static constraints = {
+        deprecatedById nullable: true
+        name maxSize: 100
+    }
+
+    static embedded = ['procedures', 'processingErrors',]
+    static transients = ['aggregate', 'deprecatedBy', 'deprecates',]
+
     Long id
     long lastEventPosition
     Date lastEventTimestamp
@@ -49,18 +62,6 @@ class ZipcodeSummary implements Snapshot<Zipcode, Long, Long, ZipcodeEvent> {
 
     String name
 
-    static hasMany = [
-            procedureCounts: ProcedureCount,
-            deprecatesIds  : Long,
-    ]
-
-    static constraints = {
-        deprecatedById nullable: true
-    }
-
-    static embedded = ['procedures', 'processingErrors',]
-    static transients = ['aggregate', 'deprecatedBy', 'deprecates',]
-
 }
 
 /**
@@ -72,6 +73,11 @@ class ZipcodeSummary implements Snapshot<Zipcode, Long, Long, ZipcodeEvent> {
 @ToString(includes = ['id', 'code', 'count'])
 @SuppressWarnings(['GrailsDomainReservedSqlKeywordName', 'DuplicateStringLiteral',])
 class ProcedureCount {
+
+    static constraints = {
+        code maxSize: 100
+    }
+
     String code
     int count = 0
 }

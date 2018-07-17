@@ -21,6 +21,10 @@ class BootStrap {
     private final PatientAccountQuery patientAccountQuery = new PatientAccountQuery()
     private final PatientHealthQuery patientHealthQuery = new PatientHealthQuery()
 
+    private static Date date(String str) {
+        Date.parse('yyyy-MM-dd', str)
+    }
+
     def init = { servletContext ->
         def campbell = on(new Zipcode(uniqueId: '95008').save(flush: true, failOnError: true)) {
             apply new ZipcodeCreated(name: 'Campbell, California', timestamp: date(START_DATE))
@@ -38,6 +42,17 @@ class BootStrap {
         linkZipcodesAndPatients(campbell, santanaRow)
         linkZipcodesAndDoctors(campbell, santanaRow)
     }
+
+    def procedures = [
+            FLUSHOT       : 32.40,
+            ANNUALPHYSICAL: 170.00,
+            GLUCOSETEST   : 78.93,
+            LIPIDTEST     : 102.55,
+            XRAY_WRIST    : 70.42,
+            XRAY_BACK     : 104.40,
+    ]
+
+    Date currDate = Date.parse('yyyy-MM-dd', START_DATE)
 
     private void linkZipcodesAndDoctors(Zipcode campbell, Zipcode santanaRow) {
         def names = NameDbUsa.instance
@@ -134,19 +149,6 @@ class BootStrap {
             def key = procedures.keySet().toList()[p]
             sp.apply new ProcedurePerformed(code: key, cost: procedures[key])
         }
-    }
-
-    def procedures = [
-            FLUSHOT       : 32.40,
-            ANNUALPHYSICAL: 170.00,
-            GLUCOSETEST   : 78.93,
-            LIPIDTEST     : 102.55,
-            XRAY_WRIST    : 70.42,
-            XRAY_BACK     : 104.40,
-    ]
-
-    Date date(String str) {
-        Date.parse('yyyy-MM-dd', str)
     }
 
     private Patient setupJohnLennon() {
@@ -295,9 +297,7 @@ class BootStrap {
         e2.converse
     }
 
-    Date currDate = Date.parse('yyyy-MM-dd', START_DATE)
-
-    Patient on(Patient patient, @DelegatesTo(OnSpec) Closure closure) {
+    private Patient on(Patient patient, @DelegatesTo(OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { PatientEvent.countByAggregate(patient) + 1 }
         def dateSupplier = { currDate += 1; currDate }
@@ -305,20 +305,20 @@ class BootStrap {
                 patient, eventSaver, positionSupplier, dateSupplier, closure)
     }
 
-    Zipcode on(Zipcode zipcode, @DelegatesTo(OnSpec) Closure closure) {
+    private Zipcode on(Zipcode zipcode, @DelegatesTo(OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { ZipcodeEvent.countByAggregate(zipcode) + 1 }
         new GroovyEventsDsl<Zipcode, Long, ZipcodeEvent>().on(
                 zipcode, eventSaver, positionSupplier, closure)
     }
 
-    Doctor on(Doctor doctor, @DelegatesTo(OnSpec) Closure closure) {
+    private Doctor on(Doctor doctor, @DelegatesTo(OnSpec) Closure closure) {
         def eventSaver = { it.save(flush: true, failOnError: true) } as Consumer
         def positionSupplier = { DoctorEvent.countByAggregate(doctor) + 1 }
         new GroovyEventsDsl<Doctor, Long, DoctorEvent>().on(
                 doctor, eventSaver, positionSupplier, closure)
     }
 
-    def destroy = {
-    }
+//    def destroy = {
+//    }
 }

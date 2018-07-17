@@ -19,7 +19,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 class PatientSpec extends AbstractPatientSpec {
 
     @LocalServerPort
-    int serverPort
+    private int serverPort
 
     @Override
     RESTClient getRest() {

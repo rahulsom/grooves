@@ -23,6 +23,11 @@ import static rx.RxReactiveStreams.toPublisher
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 abstract class DoctorEvent implements BaseEvent<Doctor, Long, DoctorEvent> {
 
+    static transients = ['revertedBy']
+
+    static constraints = {
+    }
+
     Long id
     RevertEvent<Doctor, Long, DoctorEvent> revertedBy
     Date timestamp
@@ -32,16 +37,15 @@ abstract class DoctorEvent implements BaseEvent<Doctor, Long, DoctorEvent> {
     Publisher<Doctor> getAggregateObservable() {
         toPublisher(aggregate ? just(aggregate) : empty())
     }
-
-    static transients = ['revertedBy']
-
-    static constraints = {
-    }
 }
 
 @Event(Doctor)
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class DoctorCreated extends DoctorEvent {
+    static constraints = {
+        name maxSize: 100
+    }
+
     String name
 
     @Override String toString() { "Doctor $name created" }
@@ -76,21 +80,21 @@ class DoctorLostPatient extends DoctorEvent
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class DoctorAddedToZipcode extends DoctorEvent
         implements JoinEvent<Doctor, Long, DoctorEvent, Zipcode> {
+    static transients = ['joinAggregate']
+
     Zipcode zipcode
     @Override Publisher<Zipcode> getJoinAggregateObservable() { toPublisher(just(zipcode)) }
 
     @Override String toString() { "Doctor $aggregate added to $zipcode" }
-
-    static transients = ['joinAggregate']
 }
 
 @EqualsAndHashCode(includes = ['aggregate', 'position'])
 class DoctorRemovedFromZipcode extends DoctorEvent
         implements DisjoinEvent<Doctor, Long, DoctorEvent, Zipcode> {
+    static transients = ['joinAggregate']
+
     Zipcode zipcode
     @Override Publisher<Zipcode> getJoinAggregateObservable() { toPublisher(just(zipcode)) }
 
     @Override String toString() { "Doctor $aggregate removed from $zipcode" }
-
-    static transients = ['joinAggregate']
 }

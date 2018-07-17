@@ -23,6 +23,11 @@ import static rx.RxReactiveStreams.toPublisher
 // tag::abstract[]
 abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> { // <1>
 
+    static transients = ['revertedBy'] // <6>
+
+    static constraints = {
+    }
+
     Long id
     RevertEvent<Patient, Long, PatientEvent> revertedBy  // <2>
     Date timestamp  // <3>
@@ -32,10 +37,6 @@ abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> { 
         toPublisher just(aggregate)
     }  // <5>
 
-    static transients = ['revertedBy'] // <6>
-
-    static constraints = {
-    }
     // end::abstract[]
     @Override String toString() {
         "${timestamp.format('yyyyMMdd')} <$id, ${aggregate.id}, $position>"
@@ -48,6 +49,10 @@ abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> { 
 //tag::created[]
 @Event(Patient) // <1>
 class PatientCreated extends PatientEvent { // <2>
+    static constraints = {
+        name maxSize: 100
+    }
+
     String name
 
     //end::created[]
@@ -59,30 +64,35 @@ class PatientCreated extends PatientEvent { // <2>
 @EqualsAndHashCode
 class PatientAddedToZipcode extends PatientEvent implements
         JoinEvent<Patient, Long, PatientEvent, Zipcode> {
+    static transients = ['joinAggregate']
+
     Zipcode zipcode
     @Override Publisher<Zipcode> getJoinAggregateObservable() { toPublisher(just(zipcode)) }
 
     @Override String toString() {
         "<${aggregateId}.$id> $ts sent to zipcode ${zipcode.uniqueId}" }
-
-    static transients = ['joinAggregate']
 }
 
 @EqualsAndHashCode
 class PatientRemovedFromZipcode extends PatientEvent implements
         DisjoinEvent<Patient, Long, PatientEvent, Zipcode> {
+
+    static transients = ['joinAggregate']
+
     Zipcode zipcode
     @Override Publisher<Zipcode> getJoinAggregateObservable() { toPublisher(just(zipcode)) }
 
     @Override String toString() {
         "<${aggregateId}.$id> $ts removed from zipcode ${zipcode.uniqueId}" }
-
-    static transients = ['joinAggregate']
 }
 
 @Event(Patient)
 @EqualsAndHashCode
 class ProcedurePerformed extends PatientEvent {
+    static constraints = {
+        code maxSize: 100
+    }
+
     String code
     BigDecimal cost
 
@@ -124,6 +134,10 @@ class PatientDeprecatedBy extends PatientEvent
 @EqualsAndHashCode(excludes = ['converse'])
 class PatientDeprecates extends PatientEvent
         implements Deprecates<Patient, Long, PatientEvent> {
+    static constraints = {
+        converse nullable: true
+    }
+
     PatientDeprecatedBy converse
     Patient deprecated
 
@@ -131,8 +145,4 @@ class PatientDeprecates extends PatientEvent
     Publisher<Patient> getDeprecatedObservable() { toPublisher(just(deprecated)) }
 
     @Override String toString() { "${super.toString()} deprecates #${deprecated.id}" }
-
-    static constraints = {
-        converse nullable: true
-    }
 }

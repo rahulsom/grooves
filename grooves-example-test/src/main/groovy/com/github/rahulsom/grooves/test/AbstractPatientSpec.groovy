@@ -14,6 +14,17 @@ import spock.lang.Unroll
 @SuppressWarnings(['UnnecessaryGetter', 'GroovyAssignabilityCheck'])
 abstract class AbstractPatientSpec extends Specification {
 
+    @SuppressWarnings(['Instanceof', 'MethodParameterTypeRequired', 'AbstractPatientSpec',])
+    static Date getDate(def ts) {
+        if (ts instanceof String) {
+            Date.parse('yyyy-MM-dd', ts[0..10])
+        } else if (ts instanceof Long) {
+            new Date(ts)
+        } else {
+            null
+        }
+    }
+
     /**
      * Provides a preconfigured {@link RESTClient} that can be given a path to execute a HTTP query.
      *
@@ -21,7 +32,7 @@ abstract class AbstractPatientSpec extends Specification {
      */
     abstract RESTClient getRest()
 
-    @Shared List<String> ids
+    @Shared private List<String> ids
 
     void setup() {
         if (!ids) {
@@ -356,17 +367,6 @@ abstract class AbstractPatientSpec extends Specification {
         7  | '2016-02-02' || 'Sarah Palin' | -100.25
         7  | '2016-02-03' || 'Sarah Palin' | 148.68
         7  | '2016-02-05' || 'Sarah Palin' | -100.25
-    }
-
-    @SuppressWarnings(['Instanceof', 'MethodParameterTypeRequired', ])
-    static Date getDate(def ts) {
-        if (ts instanceof String) {
-            Date.parse('yyyy-MM-dd', ts[0..10])
-        } else if (ts instanceof Long) {
-            new Date(ts)
-        } else {
-            null
-        }
     }
 
 }

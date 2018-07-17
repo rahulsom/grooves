@@ -57,6 +57,7 @@ function resetChanges () {
     git reset --hard
     CODE_COMMITTED=no
     ERROR_IN="$ERROR_IN $1"
+    echo "ERROR_IN<<$ERROR_IN"
 }
 
 function updateGradleWrapper() {

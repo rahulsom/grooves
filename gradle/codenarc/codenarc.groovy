@@ -8,6 +8,7 @@ ruleset {
         NoDef(enabled: false)
         VariableTypeRequired(enabled: false)
         MethodReturnTypeRequired(enabled: false)
+        NoJavaUtilDate(enabled: false)
     }
     ruleset('rulesets/design.xml')
     // ruleset('rulesets/dry.xml')
@@ -31,7 +32,10 @@ ruleset {
         NoWildcardImports(enabled: false)
     }
     ruleset('rulesets/jdbc.xml')
-    ruleset('rulesets/junit.xml')
+    ruleset('rulesets/junit.xml') {
+        JUnitPublicNonTestMethod(enabled: false)
+        JUnitPublicProperty(enabled: false)
+    }
     ruleset('rulesets/logging.xml')
     ruleset('rulesets/naming.xml') {
         MethodName(enabled: false)

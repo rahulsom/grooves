@@ -22,6 +22,16 @@ class DoctorPatientsQuery implements JoinSupport< // <1>
         DoctorGotPatient, DoctorLostPatient // <6>
         > { // <7>
 
+//end::joins[]
+    static DoctorPatients detachSnapshot(DoctorPatients snapshot) {
+        if (snapshot.isAttached()) {
+            snapshot.discard()
+            snapshot.id = null
+        }
+        snapshot
+    }
+
+//tag::joins[]
     final Class disjoinEventClass = DoctorLostPatient // <8>
     final Class joinEventClass = DoctorGotPatient // <9>
 
@@ -46,14 +56,6 @@ class DoctorPatientsQuery implements JoinSupport< // <1>
     Publisher<EventApplyOutcome> onException(
             Exception e, DoctorPatients snapshot, DoctorEvent event) {
         toPublisher(just(CONTINUE))
-    }
-
-    static DoctorPatients detachSnapshot(DoctorPatients snapshot) {
-        if (snapshot.isAttached()) {
-            snapshot.discard()
-            snapshot.id = null
-        }
-        snapshot
     }
 
     @Override

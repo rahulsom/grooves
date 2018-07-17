@@ -15,6 +15,17 @@ import static rx.RxReactiveStreams.toPublisher
 @EqualsAndHashCode(includes = ['aggregateId', 'lastEventPosition',])
 class DoctorPatients implements Join<Doctor, Long, Patient, Long, DoctorEvent> {
 
+    static hasMany = [
+            deprecatesIds: Long,
+    ]
+
+    static constraints = {
+        deprecatedById nullable: true
+    }
+
+    static embedded = ['procedures', 'processingErrors',]
+    static transients = ['aggregate', 'deprecatedBy', 'deprecates',]
+
     Long id
     long lastEventPosition
     Date lastEventTimestamp
@@ -52,17 +63,6 @@ class DoctorPatients implements Join<Doctor, Long, Patient, Long, DoctorEvent> {
     void setDeprecates(Set<Doctor> deprecates) { deprecatesIds = deprecates*.id }
 
     List<Long> joinedIds
-
-    static hasMany = [
-            deprecatesIds: Long,
-    ]
-
-    static constraints = {
-        deprecatedById nullable: true
-    }
-
-    static embedded = ['procedures', 'processingErrors',]
-    static transients = ['aggregate', 'deprecatedBy', 'deprecates',]
 
     @Override
     String toString() { "DoctorPatients($id, $aggregateId, $lastEventPosition)" }
