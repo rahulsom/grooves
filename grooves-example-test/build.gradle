@@ -11,5 +11,5 @@ dependencies {
     compile "org.slf4j:slf4j-api:$slf4jVersion"
     compile "org.spockframework:spock-core:latest.release"
 
-    compileOnly "org.jetbrains:annotations:latest.release"
+    compileOnly "org.jetbrains:annotations:16.0.2"
 }
