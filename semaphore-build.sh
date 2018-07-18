@@ -90,7 +90,7 @@ function main() {
     if [ "$SEMAPHORE_TRIGGER_SOURCE" = "scheduler" ]; then
         updateGradleWrapper
         updateDependencyLocks
-        if [ "$(echo ${ERROR_IN})" = "" ]; then
+        if [ "$(echo ${ERROR_IN})" != "" ]; then
             exit 1
         fi
     else
