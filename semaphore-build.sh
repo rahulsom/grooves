@@ -40,7 +40,7 @@ function sonarqube() {
 function getLatestRelease() {
     curl -s "https://api.github.com/repos/$1/releases/latest" \
             | jq -r ".tag_name" \
-            | sed -e "s/^v//g"
+            | python extractVersion.py
 }
 
 CODE_COMMITTED=no
