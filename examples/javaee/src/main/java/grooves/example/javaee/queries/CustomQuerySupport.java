@@ -6,7 +6,10 @@ import com.github.rahulsom.grooves.queries.QuerySupport;
 import com.github.rahulsom.grooves.queries.internal.Pair;
 import grooves.example.javaee.Database;
 import grooves.example.javaee.domain.Patient;
+import grooves.example.javaee.domain.PatientCreated;
 import grooves.example.javaee.domain.PatientEvent;
+import grooves.example.javaee.domain.PaymentMade;
+import grooves.example.javaee.domain.ProcedurePerformed;
 import org.apache.commons.lang3.SerializationUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,13 +22,11 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
-import static grooves.example.javaee.Database.isTimestampInRange;
-import static java.util.stream.Collectors.toList;
-import static rx.Observable.from;
-import static rx.Observable.just;
-import static rx.RxReactiveStreams.toObservable;
-import static rx.RxReactiveStreams.toPublisher;
+import static com.github.rahulsom.grooves.api.EventApplyOutcome.*;
+import static grooves.example.javaee.Database.*;
+import static java.util.stream.Collectors.*;
+import static rx.Observable.*;
+import static rx.RxReactiveStreams.*;
 
 // tag::documented[]
 public interface CustomQuerySupport<
@@ -135,5 +136,37 @@ public interface CustomQuerySupport<
         // tag::documented[]
     }
 
+    /**
+     * Applies patient created.
+     * @param event the event.
+     * @param snapshot The snapshot.
+     * @return the result of apply, ignored by default
+     */
+    default Publisher<EventApplyOutcome> applyPatientCreated(
+            PatientCreated event, SnapshotT snapshot) {
+        return toPublisher(just(CONTINUE));
+    }
+
+    /**
+     * Applies procedure performed.
+     * @param event the event.
+     * @param snapshot The snapshot.
+     * @return the result of apply, ignored by default
+     */
+    default Publisher<EventApplyOutcome> applyProcedurePerformed(
+            ProcedurePerformed event, SnapshotT snapshot) {
+        return toPublisher(just(CONTINUE));
+    }
+
+    /**
+     * Applies Payment made.
+     * @param event the event.
+     * @param snapshot The snapshot.
+     * @return the result of apply, ignored by default
+     */
+    default Publisher<EventApplyOutcome> applyPaymentMade(
+            PaymentMade event, SnapshotT snapshot) {
+        return toPublisher(just(CONTINUE));
+    }
 }
 // end::documented[]

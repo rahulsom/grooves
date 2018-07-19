@@ -3,7 +3,11 @@ package grooves.example.javaee.queries;
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.java.Query;
 import grooves.example.javaee.Database;
-import grooves.example.javaee.domain.*;
+import grooves.example.javaee.domain.Patient;
+import grooves.example.javaee.domain.PatientAccount;
+import grooves.example.javaee.domain.PatientCreated;
+import grooves.example.javaee.domain.PaymentMade;
+import grooves.example.javaee.domain.ProcedurePerformed;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
@@ -11,9 +15,9 @@ import org.reactivestreams.Publisher;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 
-import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
-import static rx.Observable.just;
-import static rx.RxReactiveStreams.toPublisher;
+import static com.github.rahulsom.grooves.api.EventApplyOutcome.*;
+import static rx.Observable.*;
+import static rx.RxReactiveStreams.*;
 
 // tag::documented[]
 @Query(aggregate = Patient.class, snapshot = PatientAccount.class) // <9>
@@ -50,6 +54,7 @@ public class PatientAccountQuery
      * @return the result of apply
      */
     // tag::documented[]
+    @Override
     public Publisher<EventApplyOutcome> applyPatientCreated(
             PatientCreated event, PatientAccount snapshot) { // <12>
         if (snapshot.getAggregate() == event.getAggregate()) {

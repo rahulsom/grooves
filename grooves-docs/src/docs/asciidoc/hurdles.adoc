@@ -9,8 +9,7 @@ That is the problem that Grooves aims to solve.
 When applying events on a Snapshot, you need to be sure that you have handled every single event type.
 Let's say you've got 3 types of events for an aggregate and 2 snapshots.
 If you add a new event type, you need to handle it in the computation of both snapshots.
-When a language has case classes, (sealed classes in Kotlin), it's easier to achieve this.
-Alas, Groovy and Java do not have case classes.
+For Kotlin, you can easily achieve this with sealed classes. For Java, you can use default method on a super-class / super-interface.
 
 There are some special kinds of Events that require a lot of complex handling:
 
