@@ -613,15 +613,13 @@ No name, no address, no other information.</p>
 <div class="title">Java</div>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">import com.github.rahulsom.grooves.java.Aggregate;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serializable;
 
 @Aggregate <i class="conum" data-value="1"></i><b>(1)</b>
 public class Patient implements Serializable {
-    @Getter @Setter private Long id;
-    @Getter @Setter private String uniqueId;
+    private Long id;
+    private String uniqueId;
 }</code></pre>
 </div>
 </div>
@@ -743,12 +741,11 @@ If it is implicit for your codebase, you do not have to declare it.</td>
 <pre class="highlight"><code class="language-java" data-lang="java">// Some imports omitted
 
 public abstract class PatientEvent implements BaseEvent&lt;Patient, Long, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
-    @Getter @Setter private Patient aggregate;
-    @Getter @Setter private Long id;
-    @Getter @Setter
+    private Patient aggregate;
+    private Long id;
     private RevertEvent&lt;Patient, Long, PatientEvent&gt; revertedBy;  <i class="conum" data-value="2"></i><b>(2)</b>
-    @Getter @Setter private Date timestamp; <i class="conum" data-value="3"></i><b>(3)</b>
-    @Getter @Setter private long position; <i class="conum" data-value="4"></i><b>(4)</b>
+    private Date timestamp; <i class="conum" data-value="3"></i><b>(3)</b>
+    private long position; <i class="conum" data-value="4"></i><b>(4)</b>
 
     @Override
     @NotNull
@@ -957,7 +954,7 @@ In our case, it doesn&#8217;t matter much since we&#8217;re using Hibernate, whi
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Event(Patient.class) <i class="conum" data-value="1"></i><b>(1)</b>
 public class PatientCreated extends PatientEvent { <i class="conum" data-value="2"></i><b>(2)</b>
-    @Getter private final String name;
+    private final String name;
 
     public PatientCreated(String name) {
         this.name = name;
@@ -1087,11 +1084,10 @@ Their implementation is similar to one another, but slightly different from your
 <div class="title">Java</div>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">import com.github.rahulsom.grooves.api.events.RevertEvent;
-import lombok.Getter;
 
 public class PatientEventReverted extends PatientEvent <i class="conum" data-value="1"></i><b>(1)</b>
         implements RevertEvent&lt;Patient, Long, PatientEvent&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
-    @Getter private final Long revertedEventId; <i class="conum" data-value="3"></i><b>(3)</b>
+    private final Long revertedEventId; <i class="conum" data-value="3"></i><b>(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -1211,16 +1207,16 @@ Even if you do, you cannot process this event.</td>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public class PatientAccount implements Snapshot&lt;Patient, Long, Long, PatientEvent&gt;, <i class="conum" data-value="1"></i><b>(1)</b>
         Serializable {
-    @Getter @Setter private Long id;
-    @Getter @Setter private Patient aggregate;
-    @Getter @Setter private Patient deprecatedBy;
-    @Getter @Setter private List&lt;Patient&gt; deprecates = new ArrayList&lt;&gt;();
-    @Getter @Setter private long lastEventPosition; <i class="conum" data-value="2"></i><b>(2)</b>
-    @Getter @Setter private Date lastEventTimestamp; <i class="conum" data-value="3"></i><b>(3)</b>
+    private Long id;
+    private Patient aggregate;
+    private Patient deprecatedBy;
+    private List&lt;Patient&gt; deprecates = new ArrayList&lt;&gt;();
+    private long lastEventPosition; <i class="conum" data-value="2"></i><b>(2)</b>
+    private Date lastEventTimestamp; <i class="conum" data-value="3"></i><b>(3)</b>
 
-    @Getter @Setter private String name;
-    @Getter @Setter private BigDecimal balance = new BigDecimal(0);
-    @Getter @Setter private BigDecimal moneyMade = new BigDecimal(0);
+    private String name;
+    private BigDecimal balance = new BigDecimal(0);
+    private BigDecimal moneyMade = new BigDecimal(0);
 
     public Publisher&lt;Patient&gt; getAggregateObservable() { <i class="conum" data-value="4"></i><b>(4)</b>
         return toPublisher(aggregate != null ? just(aggregate) : empty());
