@@ -1,9 +1,6 @@
 package grooves.example.javaee.domain;
 
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
@@ -18,15 +15,79 @@ import static rx.RxReactiveStreams.toPublisher;
 
 public class PatientHealth
         implements Snapshot<Patient, Long, Long, PatientEvent>, Serializable {
-    @Getter @Setter private List<Procedure> procedures = new ArrayList<>();
-    @Getter @Setter private Long id;
-    @Getter @Setter private Patient aggregate;
-    @Getter @Setter private Patient deprecatedBy;
-    @Getter @Setter private List<Patient> deprecates = new ArrayList<>();
-    @Getter @Setter private long lastEventPosition;
-    @Getter @Setter private Date lastEventTimestamp;
+    private List<Procedure> procedures = new ArrayList<>();
+    private Long id;
+    private Patient aggregate;
+    private Patient deprecatedBy;
+    private List<Patient> deprecates = new ArrayList<>();
+    private long lastEventPosition;
+    private Date lastEventTimestamp;
 
-    @Getter @Setter private String name;
+    private String name;
+
+    public List<Procedure> getProcedures() {
+        return procedures;
+    }
+
+    public void setProcedures(List<Procedure> procedures) {
+        this.procedures = procedures;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Patient getAggregate() {
+        return aggregate;
+    }
+
+    public void setAggregate(Patient aggregate) {
+        this.aggregate = aggregate;
+    }
+
+    public Patient getDeprecatedBy() {
+        return deprecatedBy;
+    }
+
+    public void setDeprecatedBy(Patient deprecatedBy) {
+        this.deprecatedBy = deprecatedBy;
+    }
+
+    public List<Patient> getDeprecates() {
+        return deprecates;
+    }
+
+    public void setDeprecates(List<Patient> deprecates) {
+        this.deprecates = deprecates;
+    }
+
+    public long getLastEventPosition() {
+        return lastEventPosition;
+    }
+
+    public void setLastEventPosition(long lastEventPosition) {
+        this.lastEventPosition = lastEventPosition;
+    }
+
+    public Date getLastEventTimestamp() {
+        return lastEventTimestamp;
+    }
+
+    public void setLastEventTimestamp(Date lastEventTimestamp) {
+        this.lastEventTimestamp = lastEventTimestamp;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     @NotNull
     @Override
@@ -56,9 +117,21 @@ public class PatientHealth
                 id, aggregate, lastEventPosition, lastEventTimestamp);
     }
 
-    @AllArgsConstructor
     public static class Procedure implements Serializable {
-        @Getter private String code;
-        @Getter private Date date;
+        private String code;
+        private Date date;
+
+        public Procedure(String code, Date date) {
+            this.code = code;
+            this.date = date;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public Date getDate() {
+            return date;
+        }
     }
 }

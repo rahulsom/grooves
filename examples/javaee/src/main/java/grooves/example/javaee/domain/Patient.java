@@ -2,16 +2,30 @@ package grooves.example.javaee.domain;
 
 // tag::documented[]
 import com.github.rahulsom.grooves.java.Aggregate;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serializable;
 
 @Aggregate // <1>
 public class Patient implements Serializable {
-    @Getter @Setter private Long id;
-    @Getter @Setter private String uniqueId;
+    private Long id;
+    private String uniqueId;
     // end::documented[]
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
 
     @Override
     public String toString() {

@@ -4,7 +4,6 @@ import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.java.Query;
 import grooves.example.javaee.Database;
 import grooves.example.javaee.domain.*;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
@@ -21,8 +20,12 @@ public class PatientAccountQuery
         implements CustomQuerySupport<PatientAccount> { // <10>
 
     // end::documented[]
-    @Inject @Getter
+    @Inject
     private Database database;
+
+    public Database getDatabase() {
+        return database;
+    }
 
     @Override
     public Class<PatientAccount> getSnapshotClass() {

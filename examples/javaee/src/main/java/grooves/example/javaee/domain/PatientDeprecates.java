@@ -1,7 +1,6 @@
 package grooves.example.javaee.domain;
 
 import com.github.rahulsom.grooves.api.events.Deprecates;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
@@ -13,7 +12,11 @@ import static rx.RxReactiveStreams.toPublisher;
 public class PatientDeprecates extends PatientEvent
         implements Deprecates<Patient, Long, PatientEvent> {
     private final PatientDeprecatedBy converse;
-    @Getter private final Patient deprecated;
+    private final Patient deprecated;
+
+    public Patient getDeprecated() {
+        return deprecated;
+    }
 
     @NotNull
     @Override

@@ -1,13 +1,16 @@
 package grooves.example.javaee.domain;
 
 import com.github.rahulsom.grooves.java.Event;
-import lombok.Getter;
 
 //tag::documented[]
 @Event(Patient.class) // <1>
 public class PatientCreated extends PatientEvent { // <2>
-    @Getter private final String name;
+    private final String name;
     //end::documented[]
+
+    public String getName() {
+        return name;
+    }
 
     @Override
     public String toString() {

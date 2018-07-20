@@ -25,7 +25,6 @@ dependencies {
     compileOnly "org.jetbrains:annotations:latest.release"
     compile project(':grooves-java')
     compile 'org.apache.commons:commons-lang3:latest.release'
-    compile 'org.projectlombok:lombok:latest.release'
     compile 'io.reactivex:rxjava-reactive-streams:latest.release'
     compile 'io.reactivex:rxjava:latest.release'
 
