@@ -5,10 +5,9 @@ com.beust:jcommander:1.35
 com.github.rahulsom:svg-builder:0.2.3
 com.github.sommeri:less4j:1.17.2
 com.google.code.gson:gson:2.5
-commons-beanutils:commons-beanutils:1.9.3
-commons-collections:commons-collections:3.2.2
+commons-beanutils:commons-beanutils:1.8.3
 commons-io:commons-io:2.3
-commons-logging:commons-logging:1.2
+commons-logging:commons-logging:1.1.1
 org.antlr:antlr-runtime:3.5.2
 org.asciidoctor:asciidoctorj:1.5.4.1
 org.codehaus.groovy:groovy-all:2.4.11
