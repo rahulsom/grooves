@@ -38,6 +38,12 @@ dependencies {
 
     compile project(':grooves-groovy')
     compile project(':grooves-example-test')
+
+    runtime 'javax.xml.bind:jaxb-api:2.2.11'
+    runtime 'com.sun.xml.bind:jaxb-core:2.2.11'
+    runtime 'com.sun.xml.bind:jaxb-impl:2.2.11'
+    runtime 'javax.activation:activation:1.1.1'
+
 }
 
 sonarqube {

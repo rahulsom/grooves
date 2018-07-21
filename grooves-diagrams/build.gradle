@@ -23,6 +23,11 @@ dependencies {
     compile 'org.jruby:jruby-complete:9.1.14.0'
     compile "org.slf4j:slf4j-api:$slf4jVersion"
 
+    compile 'javax.xml.bind:jaxb-api:2.2.11'
+    compile 'com.sun.xml.bind:jaxb-core:2.2.11'
+    compile 'com.sun.xml.bind:jaxb-impl:2.2.11'
+    compile 'javax.activation:activation:1.1.1'
+
     compileOnly 'org.kordamp.gipsy:gipsy:latest.release'
 }
 
