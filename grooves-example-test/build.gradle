@@ -12,5 +12,5 @@ dependencies {
     compile "org.spockframework:spock-core:latest.release"
     compile 'org.codehaus.groovy:groovy-all:2.4.15'
 
-    compileOnly "org.jetbrains:annotations:latest.release"
+    compileOnly "org.jetbrains:annotations:16.0.2"
 }
