@@ -8,14 +8,16 @@ buildscript {
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:latest.release'
         classpath 'org.jetbrains.kotlin:kotlin-allopen:latest.release'
         classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:latest.release"
+        classpath "gradle.plugin.com.sourcemuse.gradle.plugin:GradleMongoPlugin:latest.release"
+        classpath "de.flapdoodle.embed:de.flapdoodle.embed.process:latest.release"
     }
 }
 
 plugins {
     id "groovy"
-    id "com.sourcemuse.mongo" version "1.0.0"
 }
 
+apply plugin: "com.sourcemuse.mongo"
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'org.jetbrains.kotlin.jvm'
