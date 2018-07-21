@@ -16,7 +16,7 @@ import static javax.tools.Diagnostic.Kind.ERROR;
         QueryProcessor.EVENT_ANNOTATION,
         QueryProcessor.QUERY_ANNOTATION,
 })
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_10)
 @AutoService(Processor.class)
 public class QueryProcessor extends AbstractProcessor {
 

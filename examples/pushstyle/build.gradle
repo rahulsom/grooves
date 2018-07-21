@@ -7,6 +7,12 @@ buildscript {
     dependencies {
         classpath "com.h2database:h2:latest.release"
         classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:latest.release"
+
+        classpath 'javax.xml.bind:jaxb-api:2.2.11'
+        classpath 'com.sun.xml.bind:jaxb-core:2.2.11'
+        classpath 'com.sun.xml.bind:jaxb-impl:2.2.11'
+        classpath 'javax.activation:activation:1.1.1'
+
     }
 }
 
@@ -43,9 +49,18 @@ dependencies {
     compile "com.h2database:h2:latest.release"
     compile 'org.jooq:jooq'
 
+    compile 'javax.xml.bind:jaxb-api:2.2.11'
+    compile 'com.sun.xml.bind:jaxb-core:2.2.11'
+    compile 'com.sun.xml.bind:jaxb-impl:2.2.11'
+    compile 'javax.activation:activation:1.1.1'
+
     compile project(':grooves-api')
 
     jooqRuntime "com.h2database:h2:latest.release"
+    jooqRuntime 'javax.xml.bind:jaxb-api:2.2.11'
+    jooqRuntime 'com.sun.xml.bind:jaxb-core:2.2.11'
+    jooqRuntime 'com.sun.xml.bind:jaxb-impl:2.2.11'
+    jooqRuntime 'javax.activation:activation:1.1.1'
 
     runtime 'ch.qos.logback:logback-classic:latest.release'
 

@@ -66,6 +66,12 @@ dependencies {
     testCompile "org.grails:grails-datastore-rest-client"
     testCompile "org.grails:grails-test-mixins:latest.release"
     testCompile "org.grails.plugins:geb"
+
+    runtime 'javax.xml.bind:jaxb-api:2.2.11'
+    runtime 'com.sun.xml.bind:jaxb-core:2.2.11'
+    runtime 'com.sun.xml.bind:jaxb-impl:2.2.11'
+    runtime 'javax.activation:activation:1.1.1'
+
 }
 
 bootRun {
