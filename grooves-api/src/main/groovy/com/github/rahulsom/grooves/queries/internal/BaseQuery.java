@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
  * Aggregate trait that simplifies computing snapshots from events.
  *
  * @param <AggregateT>   The aggregate over which the query executes
- * @param <EventIdT>     The type of the {@link EventT}'s id field
+ * @param <EventIdT>     The type of the EventT's id field
  * @param <EventT>       The type of the Event
- * @param <SnapshotIdT>  The type of the {@link SnapshotT}'s id field
+ * @param <SnapshotIdT>  The type of the SnapshotT's id field
  * @param <SnapshotT>    The type of the Snapshot
  *
  * @author Rahul Somasunderam

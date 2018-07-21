@@ -47,9 +47,9 @@ public class Utils {
      * @param it                 The snapshot
      * @param redirectedSnapshot A computation for the redirected snapshot
      * @param <AggregateT>       The type of Aggregate
-     * @param <EventIdT>         The type of {@link EventT}'s id
+     * @param <EventIdT>         The type of EventT's id
      * @param <EventT>           The type of the event
-     * @param <SnapshotIdT>      The type of {@link SnapshotT}'s id
+     * @param <SnapshotIdT>      The type of SnapshotT's id
      * @param <SnapshotT>        The type of the snapshot
      *
      * @return An observable of a snapshot.
@@ -88,9 +88,9 @@ public class Utils {
      * @param executor                  The executor to use for processing events
      * @param fallbackSnapshotAndEvents The fallback supplier
      * @param <AggregateT>              The type of Aggregate
-     * @param <EventIdT>                The type of {@link EventT}'s id
+     * @param <EventIdT>                The type of EventT's id
      * @param <EventT>                  The type of Event
-     * @param <SnapshotIdT>             The type of {@link SnapshotT}'s id
+     * @param <SnapshotIdT>             The type of SnapshotT's id
      * @param <SnapshotT>               The type of Snapshot
      * @param <QueryT>                  The type of Query
      * @param <ExecutorT>               The type of the query executor
@@ -177,9 +177,9 @@ public class Utils {
      * Computes applicable events.
      *
      * @param <AggregateT>           The aggregate over which the query executes
-     * @param <EventIdT>             The type of the {@link EventT}'s id field
+     * @param <EventIdT>             The type of the EventT's id field
      * @param <EventT>               The type of the Event
-     * @param <SnapshotIdT>          The type of the {@link SnapshotT}'s id field
+     * @param <SnapshotIdT>          The type of the SnapshotT's id field
      * @param <SnapshotT>            The type of the Snapshot
      * @param forwardOnlyEvents      Known forward only events
      * @param executor               An instance of Executor
@@ -224,9 +224,9 @@ public class Utils {
      * @param nonReusableSnapshotAndEvents Supplies a snapshot without reuse
      * @param emptySnapshot                Supplies an empty snapshot
      * @param <AggregateT>                 The aggregate over which the query executes
-     * @param <EventIdT>                   The type of the {@link EventT}'s id field
+     * @param <EventIdT>                   The type of the EventT's id field
      * @param <EventT>                     The type of the Event
-     * @param <SnapshotIdT>                The type of the {@link SnapshotT}'s id field
+     * @param <SnapshotIdT>                The type of the SnapshotT's id field
      * @param <SnapshotT>                  The type of the Snapshot
      *
      * @return A flowable with one pair of snapshot and list of events.

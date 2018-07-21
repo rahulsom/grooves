@@ -17,9 +17,9 @@ import java.util.function.Supplier;
  * Util class to build Versioned Queries in a Functional Style.
  *
  * @param <AggregateT>   The aggregate over which the query executes
- * @param <EventIdT>     The type of the {@link EventT}'s id field
+ * @param <EventIdT>     The type of the EventT's id field
  * @param <EventT>       The type of the Event
- * @param <SnapshotIdT>  The type of the {@link SnapshotT}'s id field
+ * @param <SnapshotIdT>  The type of the SnapshotT's id field
  * @param <SnapshotT>    The type of the Snapshot
  *
  * @author Rahul Somasunderam
@@ -101,12 +101,12 @@ public class FunctionalVersionedQuery<
     }
 
     /**
-     * Builder for {@link FunctionalVersionedQuery}.
+     * Builder for FunctionalVersionedQuery.
      *
      * @param <AggregateT>   The aggregate over which the query executes
-     * @param <EventIdT>     The type of the {@link EventT}'s id field
+     * @param <EventIdT>     The type of the EventT's id field
      * @param <EventT>       The type of the Event
-     * @param <SnapshotIdT>  The type of the {@link SnapshotT}'s id field
+     * @param <SnapshotIdT>  The type of the SnapshotT's id field
      * @param <SnapshotT>    The type of the Snapshot
      * @param <QueryT>       A reference to the query type. Typically a self reference.
      */

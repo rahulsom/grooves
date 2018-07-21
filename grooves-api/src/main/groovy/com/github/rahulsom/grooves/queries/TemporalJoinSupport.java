@@ -11,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
  * Default interface that makes temporal joins easier to write.
  *
  * @param <AggregateT>         The Aggregate this join represents
- * @param <EventIdT>           The type for the {@link EventT}'s id field
- * @param <EventT>             The base type for events that apply to {@link AggregateT}
- * @param <JoinedAggregateT>   The type for the other aggregate that {@link AggregateT} joins to
+ * @param <EventIdT>           The type for the EventT's id field
+ * @param <EventT>             The base type for events that apply to AggregateT
+ * @param <JoinedAggregateT>   The type for the other aggregate that AggregateT joins to
  * @param <SnapshotIdT>        The type for the join's id field
  * @param <SnapshotT>          The type of Snapshot that is computed
  * @param <JoinEventT>         The type of the Join Event

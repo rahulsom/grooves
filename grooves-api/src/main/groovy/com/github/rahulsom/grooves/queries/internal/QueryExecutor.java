@@ -27,9 +27,9 @@ import static io.reactivex.Flowable.*;
  * executors.
  *
  * @param <AggregateT>  The aggregate over which the query executes
- * @param <EventIdT>    The type of the {@link EventT}'s id field
+ * @param <EventIdT>    The type of the EventT's id field
  * @param <EventT>      The type of the Event
- * @param <SnapshotIdT> The type of the {@link SnapshotT}'s id field
+ * @param <SnapshotIdT> The type of the SnapshotT's id field
  * @param <SnapshotT>   The type of the Snapshot
  * @param <QueryT>      A reference to the query type.
  * @author Rahul Somasunderam
@@ -135,14 +135,14 @@ public class QueryExecutor<
 
     /**
      * Decides how to proceed after inspecting the response of a method that returns an
-     * {@link EventApplyOutcome}.
+     * EventApplyOutcome.
      *
      * @param stopApplyingEvents Whether a previous decision has been made to stop applying new
      *                           events
      * @param snapshot           The snapshot on which events are being added
      * @param methodName         The name of the method that was called
      * @param retval             The outcome of calling the method
-     * @return The snapshot after deciding what to do with the {@link EventApplyOutcome}
+     * @return The snapshot after deciding what to do with the EventApplyOutcome
      */
     private Flowable<? extends SnapshotT> handleMethodResponse(
             AtomicBoolean stopApplyingEvents, SnapshotT snapshot, String methodName,
@@ -160,11 +160,11 @@ public class QueryExecutor<
     }
 
     /**
-     * Applies a {@link DeprecatedBy} event to a snapshot.
+     * Applies a DeprecatedBy event to a snapshot.
      *
-     * @param event    The {@link DeprecatedBy} event
+     * @param event    The DeprecatedBy event
      * @param snapshot The snapshot computed until before this event
-     * @return The snapshot after applying the {@link DeprecatedBy} event
+     * @return The snapshot after applying the DeprecatedBy event
      */
     @SuppressWarnings("GrMethodMayBeStatic")
     Flowable<SnapshotT> applyDeprecatedBy(
@@ -179,15 +179,15 @@ public class QueryExecutor<
     }
 
     /**
-     * Applies a {@link Deprecates} event to a snapshot.
+     * Applies a Deprecates event to a snapshot.
      *
-     * @param event            The {@link Deprecates} event
+     * @param event            The Deprecates event
      * @param query            The Query Util instance
-     * @param events           All {@link EventT}s that have been gathered so far
-     * @param deprecatesEvents The list of {@link Deprecates} events that have been collected so
+     * @param events           All EventTs that have been gathered so far
+     * @param deprecatesEvents The list of Deprecates events that have been collected so
      *                         far
      * @param aggregate        The current aggregate
-     * @return The snapshot after applying the {@link Deprecates} event
+     * @return The snapshot after applying the Deprecates event
      */
     Flowable<SnapshotT> applyDeprecates(
             final Deprecates<AggregateT, EventIdT, EventT> event,

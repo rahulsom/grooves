@@ -12,9 +12,9 @@ import java.util.List;
  * Executes a query by controlling how events are applied.
  *
  * @param <AggregateT>   The type of Aggregate
- * @param <EventIdT>     The type of {@link EventT}'s id
+ * @param <EventIdT>     The type of EventT's id
  * @param <EventT>       The type of Event
- * @param <SnapshotIdT>  The type of {@link SnapshotT}'s id
+ * @param <SnapshotIdT>  The type of SnapshotT's id
  * @param <SnapshotT>    The type of Snapshot
  *
  * @author Rahul Somasunderam
