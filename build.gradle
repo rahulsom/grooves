@@ -35,6 +35,19 @@ subprojects {
         maxWarnings = 0
         maxErrors = 0
     }
+
+    def theProject = project
+    def projectPath = theProject.name
+    while (theProject.parent != rootProject) {
+        projectPath = "${theProject.parent.name}-${projectPath}"
+        theProject = theProject.parent
+    }
+
+    sonarqube {
+        properties {
+            property 'sonar.moduleKey', "com.github.rahulsom:grooves:${projectPath}"
+        }
+    }
 }
 
 gradle.releasable.each {
