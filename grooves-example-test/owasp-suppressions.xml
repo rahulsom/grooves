@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
+    <suppress>
+        <notes>groovy-all-2.3.11.jar is a transitive that has been upgraded to 2.4.15.</notes>
+        <gav>org.codehaus.groovy:groovy-all:2.3.11</gav>
+        <cpe>cpe:/a:apache:groovy</cpe>
+    </suppress>
+</suppressions>
