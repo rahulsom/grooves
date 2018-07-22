@@ -79,7 +79,9 @@ nexus {
 }
 
 dependencyCheck {
-    suppressionFile = file("$rootDir/gradle/owasp-suppressions.xml")
+    suppressionFile = file("$projectDir/owasp-suppressions.xml").exists() ?
+            file("$projectDir/owasp-suppressions.xml") :
+            file("$rootDir/gradle/owasp-suppressions.xml")
     skipConfigurations = [
             // KtLint is a build dependency scope. Nothing gets shipped.
             'ktlint',
