@@ -14,5 +14,5 @@ javax.activation:activation:1.1.1
 javax.xml.bind:jaxb-api:2.2.11
 org.antlr:antlr-runtime:3.5.2
 org.asciidoctor:asciidoctorj:1.5.4.1
-org.jruby:jruby-complete:9.1.14.0
+org.jruby:jruby-complete:1.7.25
 org.slf4j:slf4j-api:1.7.25

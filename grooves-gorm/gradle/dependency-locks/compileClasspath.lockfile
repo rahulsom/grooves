@@ -12,11 +12,11 @@ org.codehaus.gpars:gpars:1.2.1
 org.codehaus.groovy:groovy:2.5.1
 org.codehaus.jsr166-mirror:jsr166y:1.7.0
 org.grails:grails-async:3.0.15
-org.grails:grails-datastore-async:6.0.7.RELEASE
-org.grails:grails-datastore-core:6.0.7.RELEASE
-org.grails:grails-datastore-gorm-rx:6.0.7.RELEASE
-org.grails:grails-datastore-gorm-validation:6.0.7.RELEASE
-org.grails:grails-datastore-gorm:6.0.7.RELEASE
+org.grails:grails-datastore-async:6.0.12.RELEASE
+org.grails:grails-datastore-core:6.0.12.RELEASE
+org.grails:grails-datastore-gorm-rx:6.0.12.RELEASE
+org.grails:grails-datastore-gorm-validation:6.0.12.RELEASE
+org.grails:grails-datastore-gorm:6.0.12.RELEASE
 org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final
 org.javassist:javassist:3.17.1-GA
 org.jetbrains:annotations:16.0.2
