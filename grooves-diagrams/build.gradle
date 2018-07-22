@@ -1,7 +1,4 @@
-plugins {
-    id "groovy"
-}
-
+apply plugin: 'groovy'
 apply from: "$rootDir/gradle/publishing.gradle"
 apply from: "$rootDir/gradle/jacoco.gradle"
 
@@ -20,7 +17,6 @@ dependencies {
     }
     compile 'commons-beanutils:commons-beanutils:latest.release'
     compile 'org.asciidoctor:asciidoctorj:1.5.4.1'
-    compile 'org.jruby:jruby-complete:9.1.14.0'
     compile "org.slf4j:slf4j-api:$slf4jVersion"
 
     compile 'javax.xml.bind:jaxb-api:2.2.11'

@@ -1,7 +1,4 @@
-plugins {
-    id "java"
-}
-
+apply plugin: 'java'
 apply from: "$rootDir/gradle/publishing.gradle"
 apply from: "$rootDir/gradle/jacoco.gradle"
 

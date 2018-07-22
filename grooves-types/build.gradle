@@ -6,15 +6,14 @@ buildscript {
     }
     dependencies {
         classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:latest.release"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:latest.release"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:latest.release"
     }
 }
 
-plugins {
-    id "groovy"
-    id "org.jetbrains.kotlin.jvm" version "1.2.51"
-    id "org.jetbrains.dokka" version "0.9.17"
-}
-
+apply plugin: 'groovy'
+apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: "org.jetbrains.dokka"
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply from: "$rootDir/gradle/publishing.gradle"
 apply from: "$rootDir/gradle/jacoco.gradle"

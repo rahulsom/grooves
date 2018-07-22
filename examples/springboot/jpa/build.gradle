@@ -8,10 +8,7 @@ buildscript {
     }
 }
 
-plugins {
-    id "groovy"
-}
-
+apply plugin: 'groovy'
 apply plugin: "org.springframework.boot"
 apply from: "$rootDir/gradle/codenarc/codenarc.gradle"
 apply from: "$rootDir/gradle/jacoco.gradle"

@@ -7,6 +7,9 @@ buildscript {
     dependencies {
         classpath "com.h2database:h2:latest.release"
         classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:latest.release"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:latest.release"
+        classpath "nu.studer:gradle-jooq-plugin:2.0.9"
+        classpath "gradle.plugin.com.boxfuse.client:gradle-plugin-publishing:latest.release"
 
         classpath 'javax.xml.bind:jaxb-api:2.2.11'
         classpath 'com.sun.xml.bind:jaxb-core:2.2.11'
@@ -16,13 +19,10 @@ buildscript {
     }
 }
 
-plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.2.51"
-    id "nu.studer.jooq" version "2.0.9"
-    id "org.flywaydb.flyway" version "5.1.4"
-}
-
+apply plugin: "nu.studer.jooq"
+apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "org.jlleitschuh.gradle.ktlint"
+apply plugin: "org.flywaydb.flyway"
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8

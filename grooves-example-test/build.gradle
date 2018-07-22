@@ -1,7 +1,4 @@
-plugins {
-    id "groovy"
-}
-
+apply plugin: 'groovy'
 apply from: "$rootDir/gradle/codenarc/codenarc.gradle"
 
 dependencies {

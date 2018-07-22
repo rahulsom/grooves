@@ -1,7 +1,17 @@
-plugins {
-    id 'org.ajoberstar.git-publish' version '0.3.2'
-    id "org.asciidoctor.convert" version "1.5.3"
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.ajoberstar:gradle-git-publish:0.3.2"
+        classpath "org.asciidoctor:asciidoctor-gradle-plugin:1.5.3"
+    }
 }
+
+apply plugin: "org.ajoberstar.git-publish"
+apply plugin: "org.asciidoctor.convert"
 
 repositories {
     mavenCentral()

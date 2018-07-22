@@ -1,15 +1,15 @@
 buildscript {
     repositories {
-        jcenter()
         maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "com.bmuschko:gradle-cargo-plugin:2.2.3"
     }
 }
 
-plugins {
-    id "war"
-    id "groovy"
-    id "com.bmuschko.cargo" version "2.2.3"
-}
+apply plugin: "com.bmuschko.cargo"
+apply plugin: 'war'
+apply plugin: 'groovy'
 
 version = '0.1'
 
