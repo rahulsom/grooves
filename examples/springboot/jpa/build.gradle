@@ -42,9 +42,3 @@ dependencies {
     runtime 'javax.activation:activation:1.1.1'
 
 }
-
-sonarqube {
-    properties {
-        property 'sonar.moduleKey', 'com.github.rahulsom:grooves:examples-springboot-jpa'
-    }
-}

@@ -78,9 +78,3 @@ cargoStartLocal.doLast {
 
 test.dependsOn 'cargoStartLocal'
 test.finalizedBy 'cargoStopLocal'
-
-sonarqube {
-    properties {
-        property 'sonar.moduleKey', 'com.github.rahulsom:grooves:examples-javaee'
-    }
-}
