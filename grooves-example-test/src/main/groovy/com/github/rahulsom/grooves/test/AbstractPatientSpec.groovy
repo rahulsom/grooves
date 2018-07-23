@@ -26,7 +26,7 @@ abstract class AbstractPatientSpec extends Specification {
     }
 
     /**
-     * Provides a preconfigured {@link RESTClient} that can be given a path to execute a HTTP query.
+     * Provides a preconfigured RESTClient that can be given a path to execute a HTTP query.
      *
      * @return Preconfigured RESTClient
      */
