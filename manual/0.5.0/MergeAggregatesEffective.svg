@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<svg width="800.0" height="100" xmlns="http://www.w3.org/2000/svg" xmlns:ns2="http://www.w3.org/1999/xlink">
+    <style>/* &lt;![CDATA[ */.background {
+  fill: #FCFCFC;
+  stroke-width: 0.2;
+  stroke: grey;
+}
+.aggregate rect {
+  fill: azure;
+  stroke-width: 0.2;
+  stroke: grey;
+}
+.aggregate text {
+  font-family: Menlo, monospace;
+  font-size: 14px;
+}
+.aggregate .description {
+  font-family: "Times New Roman", serif;
+  font-size: 16px;
+  font-style: italic;
+}
+.aggregate line {
+  stroke: grey;
+  stroke-width: 0.2;
+}
+.event path {
+  fill: transparent;
+  stroke-width: 2;
+}
+.event circle {
+  fill: azure;
+  stroke-width: 0.2;
+  stroke: grey;
+}
+.event text {
+  font-family: Menlo, monospace;
+  font-size: 12px;
+  stroke: grey;
+  stroke-width: 0.1;
+  fill: grey;
+  text-anchor: middle;
+  alignment-baseline: central;
+}
+.event circle.reverted {
+  fill: lightgrey !important;
+}
+.event.reverted path {
+  stroke-width: 0.2;
+}
+.event.Revert circle {
+  fill: #ffe5e5;
+}
+.event.Revert path {
+  stroke: red;
+  stroke-dasharray: 5, 5;
+  marker-end: url(#triangle);
+}
+.eventCreated {
+  fill: #FCFCFC;
+  stroke-width: 1 !important;
+  stroke: #222;
+}
+.event.DeprecatedBy circle {
+  fill: black;
+}
+.event.DeprecatedBy text {
+  fill: white;
+  stroke-width: 0;
+  font-weight: 100;
+}
+.event.DeprecatedBy path {
+  stroke: blue;
+  stroke-dasharray: 5, 5;
+  marker-end: url(#triangle);
+}
+.event.Deprecates circle {
+  fill: #e6c300;
+}
+.event.Deprecates text {
+  fill: white;
+  font-weight: bold;
+}
+.event.Join circle {
+  stroke-width: 2;
+  stroke: #e6c300;
+}
+.event.Join path {
+  stroke: #e6c300;
+  stroke-dasharray: 5, 5;
+}
+.event.Disjoin circle {
+  stroke-width: 2;
+}
+.event.Disjoin path {
+  stroke: gray;
+  stroke-dasharray: 2, 5;
+}
+/* ]]&gt; */</style>
+    <rect x="0" y="0" width="800.0" height="100" class="background"/>
+    <defs>
+        <marker refX="0" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto" viewBox="0 0 10 10" id="triangle">
+            <path d="M 0 0 L 10 5 L 0 10 z"/>
+        </marker>
+    </defs>
+    <g class="aggregate" id="aggregate907234947">
+        <rect x="10" y="45" width="100" height="40"/>
+        <text x="15" y="63" class="type">Patient</text>
+        <text x="15" y="81" class="id">4</text>
+        <text x="10" y="40" class="description">Farrokh Bulsara</text>
+        <line x1="110" y1="65" x2="700.0" y2="65" class="eventLine" marker-end="url(#triangle)"/>
+    </g>
+    <g class="event Normal " id="event1479793226">
+        <circle cx="210" cy="65.0" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
+        <circle cx="210" cy="65" r="10" class="event Normal "/>
+        <text x="210" y="65" class="eventId">1</text>
+    </g>
+    <g class="event Normal " id="event1847893575">
+        <circle cx="260" cy="65" r="10" class="event Normal "/>
+        <text x="260" y="65" class="eventId">2</text>
+    </g>
+    <g class="event Normal " id="event1345840861">
+        <circle cx="310" cy="65" r="10" class="event Normal "/>
+        <text x="310" y="65" class="eventId">3</text>
+    </g>
+    <g class="event Normal reverted" id="event2096942350">
+        <circle cx="360" cy="65.0" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
+        <circle cx="360" cy="65" r="10" class="event Normal reverted"/>
+        <text x="360" y="65" class="eventId">4</text>
+    </g>
+    <g class="event Normal " id="event987474257">
+        <circle cx="370" cy="47" r="10" class="event Normal "/>
+        <text x="370" y="47" class="eventId">5</text>
+    </g>
+    <g class="event DeprecatedBy " id="event1892142827">
+        <circle cx="510" cy="65" r="10" class="event DeprecatedBy "/>
+        <text x="510" y="65" class="eventId">6</text>
+    </g>
+    <g class="event Deprecates " id="event531222304">
+        <circle cx="520" cy="47" r="10" class="event Deprecates "/>
+        <text x="520" y="47" class="eventId">7</text>
+    </g>
+    <g class="event Normal " id="event94889318">
+        <circle cx="610" cy="65" r="10" class="event Normal "/>
+        <text x="610" y="65" class="eventId">8</text>
+    </g>
+</svg>
