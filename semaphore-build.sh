@@ -95,7 +95,7 @@ function main() {
         fi
     else
         if [ "$PULL_REQUEST_NUMBER" != "" ]; then
-            gw check &&  codecov
+            gw check && codecov
         elif [ "$BRANCH_NAME" = "master" ]; then
             setupSonatype && gw build snapshot && sonarqube
         elif [[ "$BRANCH_NAME" =~ ^[0-9]+\.[0-9]+\.x$ ]]; then

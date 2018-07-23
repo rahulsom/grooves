@@ -15,6 +15,10 @@ apply plugin: com.bmuschko.gradle.nexus.NexusPlugin
 apply plugin: org.owasp.dependencycheck.gradle.DependencyCheckPlugin
 apply plugin: nebula.plugin.info.InfoPlugin
 
+
+targetCompatibility = '1.8'
+sourceCompatibility = '1.8'
+
 dependencyLocking {
     lockAllConfigurations()
 }
