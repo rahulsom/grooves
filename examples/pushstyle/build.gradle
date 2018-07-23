@@ -15,7 +15,6 @@ buildscript {
         classpath 'com.sun.xml.bind:jaxb-core:2.2.11'
         classpath 'com.sun.xml.bind:jaxb-impl:2.2.11'
         classpath 'javax.activation:activation:1.1.1'
-
     }
 }
 
@@ -111,4 +110,4 @@ flyway {
 generateMainJooqSchemaSource.dependsOn 'flywayMigrate'
 compileKotlin.dependsOn 'generateMainJooqSchemaSource'
 
-checkstyleMain.source = "src/main/java"
+tasks.findByName('checkstyleMain')?.source = "src/main/java"
