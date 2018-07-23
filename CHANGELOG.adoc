@@ -19,6 +19,7 @@ a| * Remove `AggregateType`. Now anything can be an aggregate.
 * Use dependency locking
 * Stop relying on Lombok.
   It breaks IDEs sometimes, and build tools sometimes.
+* Build Java 10. Test with Java 10 and 8.
 
 | 0.4.0
 a| * Make position and timestamp non nullable in Events
