@@ -102,13 +102,13 @@ public interface CustomQuerySupport<
         // <7>
         // end::documented[]
         Predicate<PatientEvent> patientEventPredicate = x -> {
-            Long eventPosition = x.getPosition();
-            Long snapshotPosition = 0L;
+            long eventPosition = x.getPosition();
+            long snapshotPosition = 0L;
             if (lastSnapshot != null) {
                 snapshotPosition = lastSnapshot.getLastEventPosition();
             }
             return Objects.equals(x.getAggregate(), aggregate)
-                    && (snapshotPosition == null || eventPosition > snapshotPosition)
+                    && eventPosition > snapshotPosition
                     && eventPosition <= version;
         };
         final List<PatientEvent> patientEvents = getDatabase().events()
