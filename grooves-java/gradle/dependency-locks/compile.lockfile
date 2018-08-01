@@ -4,6 +4,6 @@
 com.google.auto.service:auto-service:1.0-rc3
 com.google.auto:auto-common:0.3
 com.google.guava:guava:19.0
-io.reactivex.rxjava2:rxjava:2.1.17
+io.reactivex.rxjava2:rxjava:2.2.0
 org.reactivestreams:reactive-streams:1.0.2
 org.slf4j:slf4j-api:1.7.25
