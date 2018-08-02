@@ -1,9 +1,9 @@
 # This is a Gradle generated file for dependency locking.
 # Manual edits can break the build and are not advised.
 # This file is expected to be part of source control.
-org.codehaus.groovy:groovy:2.5.1
+org.jetbrains.kotlin:kotlin-compiler-embeddable:1.2.60
+org.jetbrains.kotlin:kotlin-reflect:1.2.60
+org.jetbrains.kotlin:kotlin-script-runtime:1.2.60
 org.jetbrains.kotlin:kotlin-stdlib-common:1.2.60
-org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.60
-org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.60
 org.jetbrains.kotlin:kotlin-stdlib:1.2.60
 org.jetbrains:annotations:13.0
