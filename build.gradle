@@ -4,7 +4,7 @@ buildscript {
         maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
-        classpath "com.gradle:build-scan-plugin:latest.release"
+        classpath "com.gradle:build-scan-plugin:1.16"
         classpath "me.champeau.gradle:buildscan-recipes-plugin:latest.release"
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:latest.release"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:latest.release"
