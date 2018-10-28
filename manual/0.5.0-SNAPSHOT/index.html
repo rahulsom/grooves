@@ -1413,7 +1413,7 @@ class PatientAccount : Snapshot&lt;Patient, String, String, PatientEvent&gt; { <
     override var lastEventPosition: Long = 0 <i class="conum" data-value="2"></i><b>(2)</b>
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    override var lastEventTimestamp: Date? = null<i class="conum" data-value="3"></i><b>(3)</b>
+    override var lastEventTimestamp: Date? = null <i class="conum" data-value="3"></i><b>(3)</b>
     val deprecatesIds: MutableList&lt;String&gt; = mutableListOf()
     private var deprecator: Patient? = null
     var aggregateId: String? = null
@@ -1963,21 +1963,21 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
     override fun onException(e: Exception, snapshot: PatientAccount, event: PatientEvent) = <i class="conum" data-value="8"></i><b>(8)</b>
         just(CONTINUE)
 
-    override fun getUncomputedEvents(<i class="conum" data-value="9"></i><b>(9)</b>
+    override fun getUncomputedEvents(
         aggregate: Patient,
         lastSnapshot: PatientAccount?,
         version: Long
-    ) =
+    ) = <i class="conum" data-value="9"></i><b>(9)</b>
         patientEventRepository.findAllByPositionRange(
             aggregate.id!!,
             lastSnapshot?.lastEventPosition ?: 0, version
         )
 
-    override fun getUncomputedEvents(<i class="conum" data-value="10"></i><b>(10)</b>
+    override fun getUncomputedEvents(
         aggregate: Patient,
         lastSnapshot: PatientAccount?,
         snapshotTime: Date
-    ) =
+    ) = <i class="conum" data-value="10"></i><b>(10)</b>
         lastSnapshot?.lastEventTimestamp?.let {
             patientEventRepository.findAllByTimestampRange(
                 aggregate.id!!, it, snapshotTime
