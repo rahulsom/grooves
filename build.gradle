@@ -8,7 +8,7 @@ buildscript {
         classpath "me.champeau.gradle:buildscan-recipes-plugin:latest.release"
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:latest.release"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2"
-        classpath "com.netflix.nebula:nebula-release-plugin:latest.release"
+        classpath "com.netflix.nebula:nebula-release-plugin:8.0.3"
     }
 }
 
