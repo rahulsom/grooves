@@ -26,7 +26,7 @@ dependencies {
     compileOnly "org.codehaus.groovy:groovy:$groovyVersion"
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:latest.release"
 
-    testCompile "org.spockframework:spock-core:latest.release"
+    testCompile "org.spockframework:spock-core:${spockVersion}"
 }
 
 dokka {

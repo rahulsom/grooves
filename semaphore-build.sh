@@ -74,22 +74,9 @@ function updateGradleWrapper() {
     fi
 }
 
-function updateDependencyLocks() {
-    gw resolveAndLockAll --write-locks
-    if [ $(git status --short| wc -l) != 0 ]; then
-        echo "Dependency changes found..."
-        gw check asciidoctor \
-                && commitNewCode "Update dependency locks" \
-                || resetChanges resolveAndLockAll
-    else
-        echo "No new dependencies found."
-    fi
-}
-
 function main() {
     if [ "$SEMAPHORE_TRIGGER_SOURCE" = "scheduler" ]; then
         updateGradleWrapper
-        updateDependencyLocks
         if [ "$(echo ${ERROR_IN})" != "" ]; then
             exit 1
         fi
