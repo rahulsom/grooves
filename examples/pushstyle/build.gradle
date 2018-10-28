@@ -2,7 +2,6 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://plugins.gradle.org/m2/' }
-        maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.2" }
     }
     dependencies {
         classpath "com.h2database:h2:latest.release"
@@ -34,7 +33,6 @@ compileTestKotlin {
 
 repositories {
     mavenCentral()
-    maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.2" }
 }
 
 dependencies {

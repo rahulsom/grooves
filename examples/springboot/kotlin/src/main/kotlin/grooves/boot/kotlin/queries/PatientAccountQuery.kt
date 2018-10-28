@@ -16,7 +16,7 @@ import java.lang.Exception
 import java.util.Date
 
 @Component
-//tag::documented[]
+// tag::documented[]
 class PatientAccountQuery constructor(
     @Autowired val patientEventRepository: PatientEventRepository,
     @Autowired val patientAccountRepository: PatientAccountRepository
@@ -49,21 +49,21 @@ class PatientAccountQuery constructor(
     override fun onException(e: Exception, snapshot: PatientAccount, event: PatientEvent) = // <8>
         just(CONTINUE)
 
-    override fun getUncomputedEvents(// <9>
+    override fun getUncomputedEvents(
         aggregate: Patient,
         lastSnapshot: PatientAccount?,
         version: Long
-    ) =
+    ) = // <9>
         patientEventRepository.findAllByPositionRange(
             aggregate.id!!,
             lastSnapshot?.lastEventPosition ?: 0, version
         )
 
-    override fun getUncomputedEvents(// <10>
+    override fun getUncomputedEvents(
         aggregate: Patient,
         lastSnapshot: PatientAccount?,
         snapshotTime: Date
-    ) =
+    ) = // <10>
         lastSnapshot?.lastEventTimestamp?.let {
             patientEventRepository.findAllByTimestampRange(
                 aggregate.id!!, it, snapshotTime
@@ -91,4 +91,4 @@ class PatientAccountQuery constructor(
             }
         }
 }
-//end::documented[]
+// end::documented[]

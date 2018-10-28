@@ -34,7 +34,6 @@ compileTestKotlin {
 repositories {
     mavenCentral()
     maven { url "https://repo.spring.io/milestone" }
-    maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.2" }
 }
 
 dependencies {
@@ -46,8 +45,8 @@ dependencies {
     compile 'org.springframework:spring-aspects'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
-    testCompile "org.spockframework:spock-core:latest.release"
-    testCompile "org.spockframework:spock-spring:latest.release"
+    testCompile "org.spockframework:spock-core:1.1-groovy-2.4"
+    testCompile "org.spockframework:spock-spring:1.1-groovy-2.4"
     testCompile 'io.projectreactor.addons:reactor-test:latest.release'
 
     compile project(':grooves-api')

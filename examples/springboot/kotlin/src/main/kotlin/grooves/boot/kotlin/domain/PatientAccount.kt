@@ -21,7 +21,7 @@ class PatientAccount : Snapshot<Patient, String, String, PatientEvent> { // <1>
     override var lastEventPosition: Long = 0 // <2>
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    override var lastEventTimestamp: Date? = null// <3>
+    override var lastEventTimestamp: Date? = null // <3>
     val deprecatesIds: MutableList<String> = mutableListOf()
     private var deprecator: Patient? = null
     var aggregateId: String? = null

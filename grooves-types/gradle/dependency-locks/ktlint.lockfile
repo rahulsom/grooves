@@ -2,14 +2,14 @@
 # Manual edits can break the build and are not advised.
 # This file is expected to be part of source control.
 com.andreapivetta.kolor:kolor:0.0.2
-com.github.shyiko.klob:klob:0.2.0
-com.github.shyiko.ktlint:ktlint-core:0.22.0
-com.github.shyiko.ktlint:ktlint-reporter-checkstyle:0.22.0
-com.github.shyiko.ktlint:ktlint-reporter-json:0.22.0
-com.github.shyiko.ktlint:ktlint-reporter-plain:0.22.0
-com.github.shyiko.ktlint:ktlint-ruleset-standard:0.22.0
-com.github.shyiko.ktlint:ktlint-test:0.22.0
-com.github.shyiko:ktlint:0.22.0
+com.github.shyiko.klob:klob:0.2.1
+com.github.shyiko.ktlint:ktlint-core:0.29.0
+com.github.shyiko.ktlint:ktlint-reporter-checkstyle:0.29.0
+com.github.shyiko.ktlint:ktlint-reporter-json:0.29.0
+com.github.shyiko.ktlint:ktlint-reporter-plain:0.29.0
+com.github.shyiko.ktlint:ktlint-ruleset-standard:0.29.0
+com.github.shyiko.ktlint:ktlint-test:0.29.0
+com.github.shyiko:ktlint:0.29.0
 com.google.guava:guava:18.0
 commons-codec:commons-codec:1.6
 info.picocli:picocli:2.3.0
@@ -32,9 +32,11 @@ org.eclipse.aether:aether-spi:1.1.0
 org.eclipse.aether:aether-transport-file:1.1.0
 org.eclipse.aether:aether-transport-http:1.1.0
 org.eclipse.aether:aether-util:1.1.0
-org.jetbrains.kotlin:kotlin-compiler-embeddable:1.2.40
-org.jetbrains.kotlin:kotlin-script-runtime:1.2.40
-org.jetbrains.kotlin:kotlin-stdlib:1.2.40
+org.jetbrains.kotlin:kotlin-compiler-embeddable:1.2.71
+org.jetbrains.kotlin:kotlin-reflect:1.2.71
+org.jetbrains.kotlin:kotlin-script-runtime:1.2.71
+org.jetbrains.kotlin:kotlin-stdlib-common:1.2.71
+org.jetbrains.kotlin:kotlin-stdlib:1.2.71
 org.jetbrains:annotations:13.0
 org.slf4j:jcl-over-slf4j:1.6.2
 org.slf4j:slf4j-api:1.6.2

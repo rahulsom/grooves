@@ -2,7 +2,6 @@ buildscript {
     repositories {
         jcenter()
         maven { url "https://plugins.gradle.org/m2/" }
-        maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.2" }
     }
     dependencies {
         classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:latest.release"
