@@ -4,11 +4,11 @@ buildscript {
         maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
-        classpath "com.h2database:h2:latest.release"
-        classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:latest.release"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:latest.release"
-        classpath "nu.studer:gradle-jooq-plugin:2.0.9"
-        classpath "gradle.plugin.com.boxfuse.client:gradle-plugin-publishing:latest.release"
+        classpath 'com.h2database:h2:1.4.197'
+        classpath 'gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:latest.release'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.71'
+        classpath 'nu.studer:gradle-jooq-plugin:2.0.9'
+        classpath 'gradle.plugin.com.boxfuse.client:gradle-plugin-publishing:latest.release'
 
         classpath 'javax.xml.bind:jaxb-api:2.2.11'
         classpath 'com.sun.xml.bind:jaxb-core:2.2.11'
@@ -17,10 +17,10 @@ buildscript {
     }
 }
 
-apply plugin: "nu.studer.jooq"
-apply plugin: "org.jetbrains.kotlin.jvm"
-apply plugin: "org.jlleitschuh.gradle.ktlint"
-apply plugin: "org.flywaydb.flyway"
+apply plugin: 'nu.studer.jooq'
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'org.jlleitschuh.gradle.ktlint'
+apply plugin: 'org.flywaydb.flyway'
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
@@ -36,14 +36,14 @@ repositories {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:latest.release"
-    compile "org.jetbrains.kotlin:kotlin-reflect:latest.release"
-    compile 'org.codehaus.groovy:groovy-all:latest.release'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.71'
+    compile 'org.jetbrains.kotlin:kotlin-reflect:1.2.71'
+    compile 'org.codehaus.groovy:groovy-all:2.4.15'
 
-    compile 'com.google.inject:guice:latest.release'
-    compile 'com.google.guava:guava:latest.release'
+    compile 'com.google.inject:guice:4.2.1'
+    compile 'com.google.guava:guava:27.0-jre'
 
-    compile "com.h2database:h2:latest.release"
+    compile 'com.h2database:h2:1.4.197'
     compile 'org.jooq:jooq'
 
     compile 'javax.xml.bind:jaxb-api:2.2.11'
@@ -53,16 +53,16 @@ dependencies {
 
     compile project(':grooves-api')
 
-    jooqRuntime "com.h2database:h2:latest.release"
+    jooqRuntime 'com.h2database:h2:1.4.197'
     jooqRuntime 'javax.xml.bind:jaxb-api:2.2.11'
     jooqRuntime 'com.sun.xml.bind:jaxb-core:2.2.11'
     jooqRuntime 'com.sun.xml.bind:jaxb-impl:2.2.11'
     jooqRuntime 'javax.activation:activation:1.1.1'
 
-    runtime 'ch.qos.logback:logback-classic:latest.release'
+    runtime 'ch.qos.logback:logback-classic:1.2.3'
 
     testCompile 'junit:junit:4.+'
-    testCompile 'org.awaitility:awaitility:latest.release'
+    testCompile 'org.awaitility:awaitility:3.1.2'
 }
 
 jooq {

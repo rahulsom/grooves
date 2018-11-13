@@ -12,12 +12,12 @@ repositories {
 
 dependencies {
     compile 'com.github.rahulsom:svg-builder:0.2.3'
-    compile('com.github.sommeri:less4j:latest.release') {
+    compile('com.github.sommeri:less4j:1.17.2') {
         exclude group: 'com.google.protobuf'
     }
     compile 'org.codehaus.groovy:groovy-all:2.4.+'
 
-    compile 'commons-beanutils:commons-beanutils:latest.release'
+    compile 'commons-beanutils:commons-beanutils:1.9.3'
     compile 'org.asciidoctor:asciidoctorj:1.5.4.1'
     compile "org.slf4j:slf4j-api:$slf4jVersion"
 
@@ -26,7 +26,7 @@ dependencies {
     compile 'com.sun.xml.bind:jaxb-impl:2.2.11'
     compile 'javax.activation:activation:1.1.1'
 
-    compileOnly 'org.kordamp.gipsy:gipsy:latest.release'
+    compileOnly 'org.kordamp.gipsy:gipsy:0.5.0'
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {

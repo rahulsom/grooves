@@ -7,13 +7,13 @@ description = "APIs that help in computation of Grooves based Snapshots"
 dependencies {
     compile project(':grooves-types')
 
-    compile 'io.reactivex.rxjava2:rxjava:latest.release'
+    compile 'io.reactivex.rxjava2:rxjava:2.2.3'
     compile "org.slf4j:slf4j-api:$slf4jVersion"
 
     compileOnly "org.codehaus.groovy:groovy:$groovyVersion"
-    compileOnly "org.jetbrains:annotations:latest.release"
+    compileOnly 'org.jetbrains:annotations:16.0.2'
 
-    testCompile "org.spockframework:spock-core:latest.release"
+    testCompile 'org.spockframework:spock-core:1.2-groovy-2.4'
 }
 
 groovydoc {

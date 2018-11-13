@@ -4,23 +4,23 @@ buildscript {
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.0.3.RELEASE"
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:latest.release'
-        classpath 'org.jetbrains.kotlin:kotlin-allopen:latest.release'
-        classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:latest.release"
-        classpath "gradle.plugin.com.sourcemuse.gradle.plugin:GradleMongoPlugin:latest.release"
-        classpath "de.flapdoodle.embed:de.flapdoodle.embed.process:latest.release"
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.0.3.RELEASE'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.71'
+        classpath 'org.jetbrains.kotlin:kotlin-allopen:1.2.71'
+        classpath 'gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:latest.release'
+        classpath 'gradle.plugin.com.sourcemuse.gradle.plugin:GradleMongoPlugin:latest.release'
+        classpath 'de.flapdoodle.embed:de.flapdoodle.embed.process:latest.release'
     }
 }
 
 apply plugin: 'groovy'
-apply plugin: "com.sourcemuse.mongo"
+apply plugin: 'com.sourcemuse.mongo'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'org.jetbrains.kotlin.plugin.spring'
 apply plugin: 'org.jetbrains.kotlin.plugin.allopen'
-apply plugin: "org.jlleitschuh.gradle.ktlint"
+apply plugin: 'org.jlleitschuh.gradle.ktlint'
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
@@ -33,21 +33,21 @@ compileTestKotlin {
 
 repositories {
     mavenCentral()
-    maven { url "https://repo.spring.io/milestone" }
+    maven { url 'https://repo.spring.io/milestone' }
 }
 
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
     compile 'org.springframework.boot:spring-boot-starter-webflux'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:latest.release"
-    compile "org.jetbrains.kotlin:kotlin-reflect:latest.release"
-    compile "io.reactivex:rxjava-reactive-streams"
+    compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.71'
+    compile 'org.jetbrains.kotlin:kotlin-reflect:1.2.71'
+    compile 'io.reactivex:rxjava-reactive-streams'
     compile 'org.springframework:spring-aspects'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
-    testCompile "org.spockframework:spock-core:1.1-groovy-2.4"
-    testCompile "org.spockframework:spock-spring:1.1-groovy-2.4"
-    testCompile 'io.projectreactor.addons:reactor-test:latest.release'
+    testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
+    testCompile 'org.spockframework:spock-spring:1.1-groovy-2.4'
+    testCompile 'io.projectreactor.addons:reactor-test:3.1.0.M1'
 
     compile project(':grooves-api')
     compile project(':grooves-example-test')
