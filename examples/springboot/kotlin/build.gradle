@@ -7,9 +7,9 @@ buildscript {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.0.3.RELEASE'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.71'
         classpath 'org.jetbrains.kotlin:kotlin-allopen:1.2.71'
-        classpath 'gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:latest.release'
-        classpath 'gradle.plugin.com.sourcemuse.gradle.plugin:GradleMongoPlugin:latest.release'
-        classpath 'de.flapdoodle.embed:de.flapdoodle.embed.process:latest.release'
+        classpath 'org.jlleitschuh.gradle:ktlint-gradle:6.3.0'
+        classpath 'gradle.plugin.com.sourcemuse.gradle.plugin:GradleMongoPlugin:1.0.6'
+        classpath 'de.flapdoodle.embed:de.flapdoodle.embed.process:2.0.5'
     }
 }
 

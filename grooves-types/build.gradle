@@ -4,9 +4,9 @@ buildscript {
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath 'gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:latest.release'
+        classpath 'org.jlleitschuh.gradle:ktlint-gradle:6.3.0'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.71'
-        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:latest.release'
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.17'
     }
 }
 
