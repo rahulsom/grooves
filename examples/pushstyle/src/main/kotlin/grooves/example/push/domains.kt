@@ -25,8 +25,10 @@ sealed class Transaction(
         Flowable.fromIterable(listOf(aggregate).filter { it != null })
 
     override var revertedBy: RevertEvent<Account, String, Transaction>?
-        get() = null
-        set(value) {}
+        get() = revertedBy
+        set(value) {
+            revertedBy = value
+        }
 
     data class Deposit(
         override val id: String,
