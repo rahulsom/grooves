@@ -6,15 +6,12 @@ buildscript {
     }
     dependencies {
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
-        classpath 'org.owasp:dependency-check-gradle:3.3.2'
         classpath 'com.netflix.nebula:gradle-info-plugin:4.0.3'
     }
 }
 
 apply plugin: com.bmuschko.gradle.nexus.NexusPlugin
-apply plugin: org.owasp.dependencycheck.gradle.DependencyCheckPlugin
 apply plugin: nebula.plugin.info.InfoPlugin
-
 
 targetCompatibility = '1.8'
 sourceCompatibility = '1.8'
@@ -81,36 +78,3 @@ extraArchive {
 nexus {
     sign = !version.toString().contains('-SNAPSHOT')
 }
-
-dependencyCheck {
-    suppressionFile = file("$projectDir/owasp-suppressions.xml").exists() ?
-            file("$projectDir/owasp-suppressions.xml") :
-            file("$rootDir/gradle/owasp-suppressions.xml")
-    skipConfigurations = [
-            // KtLint is a build dependency scope. Nothing gets shipped.
-            'ktlint',
-
-            // Dependencies in compileOnly are never shipped. They are marked optional in the pom
-            'compileOnly',
-
-            // This is a computed scope.
-            'compileClasspath',
-    ]
-    format = 'ALL'
-    failOnError = true
-}
-
-tasks.findByName('dependencyCheckAnalyze').
-        doLast {
-            /*
-             * grooves-diagrams lights up like a christmas tree because of asciidoctor and jruby.
-             * It shouldn't be a major problem as long as it's used in a gradle task.
-             */
-            if (project.name != 'grooves-diagrams') {
-                if (file("$buildDir/reports/dependency-check-report.csv").readLines().size() > 1) {
-                    ant.fail("There's a dependency check failure. Check $buildDir/reports/dependency-check-report.html")
-                }
-            }
-        }
-
-tasks.findByName('check').dependsOn('dependencyCheckAnalyze')
