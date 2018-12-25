@@ -18,7 +18,7 @@ readonly GH_TOKEN
 readonly TERM
 
 function gw() {
-    ./gradlew --scan --build-cache --configure-on-demand "$@"
+    ./gradlew --scan --build-cache --stacktrace --configure-on-demand "$@"
 }
 
 function codecov() {
@@ -64,7 +64,7 @@ function updateGradleWrapper() {
     local NEW_GRADLE=$(getLatestRelease gradle/gradle)
     echo "Upgrading gradle to $NEW_GRADLE"
     gw wrapper --gradle-version ${NEW_GRADLE} --distribution-type all
-    if [ $(git status --short| wc -l) != 0 ]; then
+    if [[ $(git status --short| wc -l) != 0 ]]; then
         echo "New gradle found. Testing..."
         gw check asciidoctor \
                 && commitNewCode "Upgrade gradlew to $NEW_GRADLE" \
@@ -75,15 +75,15 @@ function updateGradleWrapper() {
 }
 
 function main() {
-    if [ "$SEMAPHORE_TRIGGER_SOURCE" = "scheduler" ]; then
+    if [[ "$SEMAPHORE_TRIGGER_SOURCE" = "scheduler" ]]; then
         updateGradleWrapper
-        if [ "$(echo ${ERROR_IN})" != "" ]; then
+        if [[ "$(echo ${ERROR_IN})" != "" ]]; then
             exit 1
         fi
     else
-        if [ "$PULL_REQUEST_NUMBER" != "" ]; then
+        if [[ "$PULL_REQUEST_NUMBER" != "" ]]; then
             gw check asciidoctor && codecov
-        elif [ "$BRANCH_NAME" = "master" ]; then
+        elif [[ "$BRANCH_NAME" = "master" ]]; then
             setupSonatype && gw build snapshot && sonarqube
         elif [[ "$BRANCH_NAME" =~ ^[0-9]+\.[0-9]+\.x$ ]]; then
             setupSonatype && gw build snapshot && sonarqube
