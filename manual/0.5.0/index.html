@@ -485,7 +485,7 @@ You could very well be using Maven, or ant+ivy, or leiningen, or sbt.</p>
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">repositories {
   // ... other repositories ...
-  jcenter() <i class="conum" data-value="1"></i><b>(1)</b>
+  mavenCentral() <i class="conum" data-value="1"></i><b>(1)</b>
 }
 dependencies {
   // ... other dependencies ...
@@ -497,7 +497,7 @@ dependencies {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>In this example, we&#8217;re using <code>jcenter</code>. You could also be using <code>mavenCentral</code>.
+<td>In this example, we&#8217;re using <code>mavenCentral</code>. You could also be using <code>jcenter</code> or <code>google</code>.
 As long as your private artifact repository mirrors <code>mavenCentral</code>, you can use that as well.</td>
 </tr>
 <tr>
@@ -513,7 +513,7 @@ That contains the interfaces for your aggregates, events, and snapshots.</td>
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">repositories {
   // ... other repositories ...
-  jcenter() <i class="conum" data-value="1"></i><b>(1)</b>
+  mavenCentral() <i class="conum" data-value="1"></i><b>(1)</b>
 }
 dependencies {
   // ... other dependencies ...
@@ -525,7 +525,7 @@ dependencies {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>In this example, we&#8217;re using <code>jcenter</code>. You could also be using <code>mavenCentral</code>.
+<td>In this example, we&#8217;re using <code>mavenCentral</code>. You could also be using <code>jcenter</code> or <code>google</code>.
 As long as your private artifact repository mirrors <code>mavenCentral</code>, you can use that as well.</td>
 </tr>
 <tr>
@@ -542,7 +542,7 @@ That contains the interfaces for your aggregates, events, and snapshots.</td>
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">repositories {
   // ... other repositories ...
-  jcenter() <i class="conum" data-value="1"></i><b>(1)</b>
+  mavenCentral() <i class="conum" data-value="1"></i><b>(1)</b>
 }
 dependencies {
   // ... other dependencies ...
@@ -554,7 +554,7 @@ dependencies {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>In this example, we&#8217;re using <code>jcenter</code>. You could also be using <code>mavenCentral</code>.
+<td>In this example, we&#8217;re using <code>mavenCentral</code>. You could also be using <code>jcenter</code> or <code>google</code>.
 As long as your private artifact repository mirrors <code>mavenCentral</code>, you can use that as well.</td>
 </tr>
 <tr>
@@ -572,7 +572,7 @@ It has transitive dependencies on <code>grooves-api</code>, and <code>grooves-ty
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">repositories {
   // ... other repositories ...
-  jcenter() <i class="conum" data-value="1"></i><b>(1)</b>
+  mavenCentral() <i class="conum" data-value="1"></i><b>(1)</b>
 }
 dependencies {
   // ... other dependencies ...
@@ -584,7 +584,7 @@ dependencies {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>In this example, we&#8217;re using <code>jcenter</code>. You could also be using <code>mavenCentral</code>.
+<td>In this example, we&#8217;re using <code>mavenCentral</code>. You could also be using <code>jcenter</code> or <code>google</code>.
 As long as your private artifact repository mirrors <code>mavenCentral</code>, you can use that as well.</td>
 </tr>
 <tr>
@@ -2292,7 +2292,7 @@ That can be used to compute snapshots.</td>
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3' <i class="conum" data-value="1"></i><b>(1)</b>
@@ -2302,7 +2302,7 @@ That can be used to compute snapshots.</td>
 apply plugin: 'org.asciidoctor.convert' <i class="conum" data-value="2"></i><b>(2)</b>
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
