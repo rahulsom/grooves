@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
         gradlePluginPortal()
     }
     dependencies {
@@ -24,7 +24,8 @@ allprojects {
 
 subprojects {
     repositories {
-        jcenter()
+        google()
+        mavenCentral()
     }
     apply plugin: 'checkstyle'
 
