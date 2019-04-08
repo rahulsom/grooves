@@ -231,7 +231,7 @@ public class BootStrap {
                 .count() + 1);
         e1.setId(database.events().count() + 1);
 
-        PatientDeprecates e2 = new PatientDeprecates(self, e1);
+        PatientDeprecates e2 = new PatientDeprecates(e1, self);
 
         e2.setAggregate(into);
         e2.setTimestamp(currDate);

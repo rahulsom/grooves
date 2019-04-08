@@ -2,6 +2,7 @@ package grooves.example.javaee.domain;
 
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
@@ -13,7 +14,7 @@ import static rx.Observable.just;
 import static rx.RxReactiveStreams.toPublisher;
 
 // tag::documented[]
-
+@Data
 public abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> { // <1>
     private Patient aggregate;
     private Long id;
@@ -22,48 +23,6 @@ public abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEv
     private long position; // <4>
 
     // end::documented[]
-
-
-    public Patient getAggregate() {
-        return aggregate;
-    }
-
-    public void setAggregate(Patient aggregate) {
-        this.aggregate = aggregate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public RevertEvent<Patient, Long, PatientEvent> getRevertedBy() {
-        return revertedBy;
-    }
-
-    public void setRevertedBy(RevertEvent<Patient, Long, PatientEvent> revertedBy) {
-        this.revertedBy = revertedBy;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public long getPosition() {
-        return position;
-    }
-
-    public void setPosition(long position) {
-        this.position = position;
-    }
-
     @XmlTransient
     // tag::documented[]
     @Override
