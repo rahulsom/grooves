@@ -1,6 +1,7 @@
 package grooves.example.javaee.domain;
 
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import static rx.Observable.*;
 import static rx.RxReactiveStreams.toPublisher;
 
+@Data
 public class PatientHealth
         implements Snapshot<Patient, Long, Long, PatientEvent>, Serializable {
     private List<Procedure> procedures = new ArrayList<>();
@@ -24,70 +26,6 @@ public class PatientHealth
     private Date lastEventTimestamp;
 
     private String name;
-
-    public List<Procedure> getProcedures() {
-        return procedures;
-    }
-
-    public void setProcedures(List<Procedure> procedures) {
-        this.procedures = procedures;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Patient getAggregate() {
-        return aggregate;
-    }
-
-    public void setAggregate(Patient aggregate) {
-        this.aggregate = aggregate;
-    }
-
-    public Patient getDeprecatedBy() {
-        return deprecatedBy;
-    }
-
-    public void setDeprecatedBy(Patient deprecatedBy) {
-        this.deprecatedBy = deprecatedBy;
-    }
-
-    public List<Patient> getDeprecates() {
-        return deprecates;
-    }
-
-    public void setDeprecates(List<Patient> deprecates) {
-        this.deprecates = deprecates;
-    }
-
-    public long getLastEventPosition() {
-        return lastEventPosition;
-    }
-
-    public void setLastEventPosition(long lastEventPosition) {
-        this.lastEventPosition = lastEventPosition;
-    }
-
-    public Date getLastEventTimestamp() {
-        return lastEventTimestamp;
-    }
-
-    public void setLastEventTimestamp(Date lastEventTimestamp) {
-        this.lastEventTimestamp = lastEventTimestamp;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     @NotNull
     @Override
@@ -117,21 +55,9 @@ public class PatientHealth
                 id, aggregate, lastEventPosition, lastEventTimestamp);
     }
 
+    @Data
     public static class Procedure implements Serializable {
-        private String code;
-        private Date date;
-
-        public Procedure(String code, Date date) {
-            this.code = code;
-            this.date = date;
-        }
-
-        public String getCode() {
-            return code;
-        }
-
-        public Date getDate() {
-            return date;
-        }
+        private final String code;
+        private final Date date;
     }
 }
