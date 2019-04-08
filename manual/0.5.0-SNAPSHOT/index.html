@@ -613,13 +613,14 @@ No name, no address, no other information.</p>
 <div class="title">Java</div>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">import com.github.rahulsom.grooves.java.Aggregate;
-
+import lombok.Data;
 import java.io.Serializable;
 
+@Data
 @Aggregate <i class="conum" data-value="1"></i><b>(1)</b>
 public class Patient implements Serializable {
     private Long id;
-    private String uniqueId;
+    private final String uniqueId;
 }</code></pre>
 </div>
 </div>
@@ -739,7 +740,7 @@ If it is implicit for your codebase, you do not have to declare it.</td>
 <div class="title">Java</div>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">// Some imports omitted
-
+@Data
 public abstract class PatientEvent implements BaseEvent&lt;Patient, Long, PatientEvent&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
     private Patient aggregate;
     private Long id;
@@ -952,13 +953,11 @@ In our case, it doesn&#8217;t matter much since we&#8217;re using Hibernate, whi
 <div class="listingblock primary">
 <div class="title">Java</div>
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Event(Patient.class) <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlight"><code class="language-java" data-lang="java">@Data
+@EqualsAndHashCode(callSuper = true)
+@Event(Patient.class) <i class="conum" data-value="1"></i><b>(1)</b>
 public class PatientCreated extends PatientEvent { <i class="conum" data-value="2"></i><b>(2)</b>
     private final String name;
-
-    public PatientCreated(String name) {
-        this.name = name;
-    }
 }</code></pre>
 </div>
 </div>
@@ -1084,7 +1083,11 @@ Their implementation is similar to one another, but slightly different from your
 <div class="title">Java</div>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">import com.github.rahulsom.grooves.api.events.RevertEvent;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class PatientEventReverted extends PatientEvent <i class="conum" data-value="1"></i><b>(1)</b>
         implements RevertEvent&lt;Patient, Long, PatientEvent&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
     private final Long revertedEventId; <i class="conum" data-value="3"></i><b>(3)</b>
@@ -1205,7 +1208,8 @@ Even if you do, you cannot process this event.</td>
 <div class="listingblock primary">
 <div class="title">Java</div>
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class PatientAccount implements Snapshot&lt;Patient, Long, Long, PatientEvent&gt;, <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlight"><code class="language-java" data-lang="java">@Data
+public class PatientAccount implements Snapshot&lt;Patient, Long, Long, PatientEvent&gt;, <i class="conum" data-value="1"></i><b>(1)</b>
         Serializable {
     private Long id;
     private Patient aggregate;
