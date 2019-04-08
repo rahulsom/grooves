@@ -8,14 +8,14 @@ You could very well be using Maven, or ant+ivy, or leiningen, or sbt.
 ----
 repositories {
   // ... other repositories ...
-  jcenter() // <1>
+  mavenCentral() // <1>
 }
 dependencies {
   // ... other dependencies ...
   compile 'com.github.rahulsom:grooves-java:{version}' // <2>
 }
 ----
-<1> In this example, we're using `jcenter`. You could also be using `mavenCentral`.
+<1> In this example, we're using `mavenCentral`. You could also be using `jcenter` or `google`.
   As long as your private artifact repository mirrors `mavenCentral`, you can use that as well.
 <2> `grooves-api` contains the interfaces for your queries.
   It has a dependency on `grooves-types`.
@@ -26,14 +26,14 @@ dependencies {
 ----
 repositories {
   // ... other repositories ...
-  jcenter() // <1>
+  mavenCentral() // <1>
 }
 dependencies {
   // ... other dependencies ...
   compile 'com.github.rahulsom:grooves-groovy:{version}' // <2>
 }
 ----
-<1> In this example, we're using `jcenter`. You could also be using `mavenCentral`.
+<1> In this example, we're using `mavenCentral`. You could also be using `jcenter` or `google`.
   As long as your private artifact repository mirrors `mavenCentral`, you can use that as well.
 <2> `grooves-groovy` contains support for writing idiomatic groovy code.
   It has a dependency on `grooves-api` which contains interfaces for your queries.
@@ -45,14 +45,14 @@ dependencies {
 ----
 repositories {
   // ... other repositories ...
-  jcenter() // <1>
+  mavenCentral() // <1>
 }
 dependencies {
   // ... other dependencies ...
   compile 'com.github.rahulsom:grooves-gorm:{version}' // <2>
 }
 ----
-<1> In this example, we're using `jcenter`. You could also be using `mavenCentral`.
+<1> In this example, we're using `mavenCentral`. You could also be using `jcenter` or `google`.
   As long as your private artifact repository mirrors `mavenCentral`, you can use that as well.
 <2> `grooves-gorm` contains support for simplifying access of data using gorm.
   It depends on `grooves-groovy`, which contains support for writing idiomatic groovy code.
@@ -65,14 +65,14 @@ dependencies {
 ----
 repositories {
   // ... other repositories ...
-  jcenter() // <1>
+  mavenCentral() // <1>
 }
 dependencies {
   // ... other dependencies ...
   compile 'com.github.rahulsom:grooves-api:{version}' // <2>
 }
 ----
-<1> In this example, we're using `jcenter`. You could also be using `mavenCentral`.
+<1> In this example, we're using `mavenCentral`. You could also be using `jcenter` or `google`.
   As long as your private artifact repository mirrors `mavenCentral`, you can use that as well.
 <2> `grooves-api` contains the interfaces for your queries.
   It has a dependency on `grooves-types`.

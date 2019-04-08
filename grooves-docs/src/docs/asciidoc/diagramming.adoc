@@ -6,7 +6,7 @@ In a gradle project, if you're using asciidoctor for documentation, you can gene
 ----
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3' // <1>
@@ -16,7 +16,7 @@ buildscript {
 apply plugin: 'org.asciidoctor.convert' // <2>
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
