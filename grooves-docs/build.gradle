@@ -1,8 +1,6 @@
 buildscript {
     repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+        gradlePluginPortal()
     }
     dependencies {
         classpath "org.ajoberstar:gradle-git-publish:1.0.1"

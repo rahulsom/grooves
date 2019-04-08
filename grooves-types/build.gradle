@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url "https://plugins.gradle.org/m2/" }
+        gradlePluginPortal()
     }
     dependencies {
         classpath 'org.jlleitschuh.gradle:ktlint-gradle:6.3.0'
