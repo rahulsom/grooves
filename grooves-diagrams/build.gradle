@@ -6,7 +6,6 @@ description = "Asciidoctor Extension to generate Event Sourcing Diagrams like th
 
 repositories {
     google()
-    maven { url 'http://dl.bintray.com/aalmiray/kordamp' }
 }
 
 dependencies {
@@ -25,7 +24,7 @@ dependencies {
     compile 'com.sun.xml.bind:jaxb-impl:2.2.11'
     compile 'javax.activation:activation:1.1.1'
 
-    compileOnly 'org.kordamp.gipsy:gipsy:0.5.0'
+    testCompile 'org.spockframework:spock-core:1.2-groovy-2.4'
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
