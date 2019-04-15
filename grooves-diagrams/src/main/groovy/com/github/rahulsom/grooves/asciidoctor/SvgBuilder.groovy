@@ -26,16 +26,17 @@ class SvgBuilder {
     private long minInterval = 0
 
     SvgBuilder(String input) {
+        int idx = 0
         Aggregate lastAggregate = null
 
         input.split('\n').each { String it ->
             if (it.startsWith('|')) {
-                lastAggregate = toAggregate(it)
+                lastAggregate = toAggregate(it, idx++)
                 lastAggregate.index = aggregates.size()
                 aggregates << lastAggregate
             }
             if (it.startsWith('  - ') || it.startsWith('  + ')) {
-                Event event = toEvent(it)
+                Event event = toEvent(it, idx++)
                 lastAggregate.events << event
                 allEvents << event
             }
@@ -59,11 +60,11 @@ class SvgBuilder {
     }
 
     @CompileDynamic
-    private Event toEvent(String it) {
+    private Event toEvent(String it, int idx) {
         def m = it =~ / +([-+]) ([^ ]+) ([^ ]+) (.+)/
         def (_, sign, id, date, description) = m[0]
         EventType type = computeEventType(description)
-        def event = new Event(id, Date.parse('yyyy-MM-dd', date), description, type)
+        def event = new Event(idx, id, Date.parse('yyyy-MM-dd', date), description, type)
         if (sign == '-') {
             event.reverted = true
         }
@@ -71,10 +72,10 @@ class SvgBuilder {
     }
 
     @CompileDynamic
-    private Aggregate toAggregate(String it) {
+    private Aggregate toAggregate(String it, int idx) {
         Aggregate lastAggregate
         def parts = it.replaceFirst('\\|', '').split(',')
-        lastAggregate = new Aggregate(*parts)
+        lastAggregate = new Aggregate(idx, *parts)
         lastAggregate
     }
 

@@ -18,6 +18,7 @@ import static java.lang.System.identityHashCode
 @TupleConstructor
 @CompileStatic
 class Aggregate {
+    int counter
     String type
     String id
     String description
@@ -29,7 +30,7 @@ class Aggregate {
 
     G buildSvg(Map<Date, Double> dates) {
 
-        return new G(id: "aggregate${identityHashCode(this)}", clazz: 'aggregate').content {
+        return new G(id: "aggregate_${counter}", clazz: 'aggregate').content {
             def y = index * eventLineHeight + offset
 
             it << new Rect(x: '10', y: y.toString(),
