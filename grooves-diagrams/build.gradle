@@ -1,3 +1,18 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+        google()
+    }
+    dependencies {
+        classpath 'org.jlleitschuh.gradle:ktlint-gradle:7.2.1'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.71'
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.17'
+    }
+}
+
+apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: "org.jetbrains.dokka"
+apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply plugin: 'groovy'
 apply from: "$rootDir/gradle/publishing.gradle"
 apply from: "$rootDir/gradle/jacoco.gradle"
@@ -14,6 +29,7 @@ dependencies {
         exclude group: 'com.google.protobuf'
     }
     compile 'org.codehaus.groovy:groovy-all:2.4.+'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.71'
 
     compile 'commons-beanutils:commons-beanutils:1.9.3'
     compile 'org.asciidoctor:asciidoctorj:1.5.4.1'
@@ -31,3 +47,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
+
+compileGroovy.dependsOn compileKotlin
+compileGroovy.classpath += files(compileKotlin.destinationDir)
+classes.dependsOn compileGroovy

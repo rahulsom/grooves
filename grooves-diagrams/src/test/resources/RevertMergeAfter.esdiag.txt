@@ -1,0 +1,12 @@
+|Patient,4,Tina Fey
+  + 1 2016-01-02 created as Tina Fey
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  - 7 2016-01-09 deprecates 5 converse 6
+  + 8 2016-01-11 performed ANNUALPHYSICAL for $ 78.93
+  + 9 2016-01-12 reverted 7
+|Patient,5,Sarah Palin
+  + 4 2016-01-05 created as Sarah Palin
+  + 5 2016-01-05 paid $ 100.25
+  - 6 2016-01-09 deprecated by 4 converse 7
+  + 10 2016-01-12 reverted 6

@@ -1,22 +1,36 @@
 package com.github.rahulsom.grooves.asciidoctor
 
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import java.nio.file.Files
 
 class SvgBuilderSpec extends Specification {
-    void 'test SimpleEvents'() {
+    @Unroll
+    void 'test #name'() {
         given:
         def file = Files.createTempFile("SimpleEvents", "svg").toFile()
+
         when:
-        new SvgBuilder('''\
-            |Type,ID,Description
-              + 1 2016-01-02 created as John Lennon
-              + 2 2016-01-03 performed FLUSHOT for $ 32.40
-              + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
-              + 4 2016-01-05 paid $ 100.25
-            '''.stripIndent()).write(file)
+        new SvgBuilder(this.class.getResourceAsStream("/${name}.esdiag.txt")?.text).write(file)
+        if (!new File("src/test/resources/${name}.esdiag.svg").exists()) {
+            new File("src/test/resources/${name}.esdiag.svg").text = file.text
+        }
+
         then:
-        file.text != ''
+        file.text == this.class.getResourceAsStream("/${name}.esdiag.svg")?.text
+
+        where:
+        name << [
+                'SimpleEvents',
+                'RevertEvent',
+                'RevertEventEffective',
+                'RevertOnRevert',
+                'RevertOnRevertEffective',
+                'MergeAggregates',
+                'MergeAggregatesEffective',
+                'RevertMergeBefore',
+                'RevertMergeAfter',
+        ]
     }
 }

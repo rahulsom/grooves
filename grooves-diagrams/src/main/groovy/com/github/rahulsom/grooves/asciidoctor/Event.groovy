@@ -18,6 +18,7 @@ import static java.lang.System.identityHashCode
 @TupleConstructor
 @CompileStatic
 class Event {
+    int counter
     String id
     Date date
     String description
@@ -38,7 +39,7 @@ class Event {
         def xOffset = svgBuilder.dates[date]
         // builder.mkp.comment(toString())
         def revertedClass = this.reverted ? 'reverted' : ''
-        return new G(id: "event${identityHashCode(this)}",
+        return new G(id: "event_${counter}",
                 clazz: "event ${this.type.name()} ${revertedClass}").content {
             def x = 10 + aggregateWidth * 2 + xOffset * eventSpace as int
             def y = index * eventLineHeight + offset + aggregateHeight / 2 as int
