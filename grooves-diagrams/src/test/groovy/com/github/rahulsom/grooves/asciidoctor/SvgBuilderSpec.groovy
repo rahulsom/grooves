@@ -31,6 +31,10 @@ class SvgBuilderSpec extends Specification {
                 'MergeAggregatesEffective',
                 'RevertMergeBefore',
                 'RevertMergeAfter',
+                'JoinExample',
+                'DisjoinExample',
+                'ParallelEvents',
+                'ConcurrentEvents',
         ]
     }
 }

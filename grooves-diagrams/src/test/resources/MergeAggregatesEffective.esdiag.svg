@@ -110,7 +110,7 @@
         <line x1="110" y1="65" x2="700.0" y2="65" class="eventLine" marker-end="url(#triangle)"/>
     </g>
     <g class="event Normal " id="event_1">
-        <circle cx="210" cy="65.0" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
+        <circle cx="210" cy="65" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
         <circle cx="210" cy="65" r="10" class="event Normal "/>
         <text x="210" y="65" class="eventId">1</text>
     </g>
@@ -123,21 +123,21 @@
         <text x="310" y="65" class="eventId">3</text>
     </g>
     <g class="event Normal reverted" id="event_4">
-        <circle cx="360" cy="65.0" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
+        <circle cx="360" cy="65" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
         <circle cx="360" cy="65" r="10" class="event Normal reverted"/>
         <text x="360" y="65" class="eventId">4</text>
     </g>
     <g class="event Normal " id="event_5">
-        <circle cx="370" cy="47" r="10" class="event Normal "/>
-        <text x="370" y="47" class="eventId">5</text>
+        <circle cx="370" cy="48" r="10" class="event Normal "/>
+        <text x="370" y="48" class="eventId">5</text>
     </g>
     <g class="event DeprecatedBy " id="event_6">
         <circle cx="510" cy="65" r="10" class="event DeprecatedBy "/>
         <text x="510" y="65" class="eventId">6</text>
     </g>
     <g class="event Deprecates " id="event_7">
-        <circle cx="520" cy="47" r="10" class="event Deprecates "/>
-        <text x="520" y="47" class="eventId">7</text>
+        <circle cx="520" cy="48" r="10" class="event Deprecates "/>
+        <text x="520" y="48" class="eventId">7</text>
     </g>
     <g class="event Normal " id="event_8">
         <circle cx="610" cy="65" r="10" class="event Normal "/>

@@ -1,0 +1,13 @@
+|Department,1,Science
+  + 1 2016-01-02 created as Science
+  + 1a 2016-01-03 .
+  + 5 2016-01-05 joins 5 converse 4
+  + 7 2016-01-10 disjoins 5 converse 6
+|Department,2,Command
+  + 2 2016-01-02 created as Command
+  + 9 2016-01-10 joins 5 converse 8
+|Employee,5,Mr Spock
+  + 3 2016-01-05 created as Mr Spock
+  + 4 2016-01-05 joins by 1 converse 5
+  + 6 2016-01-10 disjoins by 1 converse 7
+  + 8 2016-01-10 joins by 2 converse 9
