@@ -14,6 +14,7 @@ apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "org.jetbrains.dokka"
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply plugin: 'groovy'
+apply plugin: 'java-library'
 apply from: "$rootDir/gradle/publishing.gradle"
 apply from: "$rootDir/gradle/jacoco.gradle"
 
@@ -24,23 +25,22 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.rahulsom:svg-builder:0.2.3'
-    compile('com.github.sommeri:less4j:1.17.2') {
+    implementation 'com.github.rahulsom:svg-builder:0.2.3'
+    implementation('com.github.sommeri:less4j:1.17.2') {
         exclude group: 'com.google.protobuf'
     }
-    compile 'org.codehaus.groovy:groovy-all:2.4.+'
-    compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.71'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.71'
 
-    compile 'commons-beanutils:commons-beanutils:1.9.3'
-    compile 'org.asciidoctor:asciidoctorj:1.5.4.1'
-    compile "org.slf4j:slf4j-api:$slf4jVersion"
+    implementation 'commons-beanutils:commons-beanutils:1.9.3'
+    implementation 'org.asciidoctor:asciidoctorj:1.5.4.1'
+    implementation "org.slf4j:slf4j-api:$slf4jVersion"
 
-    compile 'javax.xml.bind:jaxb-api:2.2.11'
-    compile 'com.sun.xml.bind:jaxb-core:2.2.11'
-    compile 'com.sun.xml.bind:jaxb-impl:2.2.11'
-    compile 'javax.activation:activation:1.1.1'
+    implementation 'javax.xml.bind:jaxb-api:2.2.11'
+    implementation 'com.sun.xml.bind:jaxb-core:2.2.11'
+    implementation 'com.sun.xml.bind:jaxb-impl:2.2.11'
+    implementation 'javax.activation:activation:1.1.1'
 
-    testCompile 'org.spockframework:spock-core:1.2-groovy-2.4'
+    testImplementation 'org.spockframework:spock-core:1.2-groovy-2.4'
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {

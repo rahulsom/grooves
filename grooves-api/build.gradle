@@ -12,12 +12,6 @@ dependencies {
 
     compileOnly "org.codehaus.groovy:groovy:$groovyVersion"
     compileOnly 'org.jetbrains:annotations:16.0.2'
-
-    testCompile 'org.spockframework:spock-core:1.2-groovy-2.4'
-}
-
-groovydoc {
-    exclude '**/*.java'
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
