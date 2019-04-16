@@ -1,0 +1,11 @@
+|Patient,1,John Lennon
+  + 1 2016-01-02 created as John Lennon
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-08 paid $ 100.25
+  + 5 2016-01-19 paid $ 100.25
+|Patient,1,Ringo Starr
+  + 1 2016-01-10 created as Ringo Starr
+  + 2 2016-01-11 performed FLUSHOT for $ 32.40
+  + 3 2016-01-12 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-19 paid $ 100.25

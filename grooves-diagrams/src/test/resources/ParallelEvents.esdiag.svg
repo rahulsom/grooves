@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<svg width="700.0" height="100" xmlns="http://www.w3.org/2000/svg" xmlns:ns2="http://www.w3.org/1999/xlink">
+<svg width="950.0" height="200" xmlns="http://www.w3.org/2000/svg" xmlns:ns2="http://www.w3.org/1999/xlink">
     <style>/* &lt;![CDATA[ */.background {
   fill: #FCFCFC;
   stroke-width: 0.2;
@@ -96,7 +96,7 @@
   stroke-dasharray: 2, 5;
 }
 /* ]]&gt; */</style>
-    <rect x="0" y="0" width="700.0" height="100" class="background"/>
+    <rect x="0" y="0" width="950.0" height="200" class="background"/>
     <defs>
         <marker refX="0" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto" viewBox="0 0 10 10" id="triangle">
             <path d="M 0 0 L 10 5 L 0 10 z"/>
@@ -106,8 +106,8 @@
         <rect x="10" y="45" width="100" height="40"/>
         <text x="15" y="63" class="type">Patient</text>
         <text x="15" y="81" class="id">1</text>
-        <text x="10" y="40" class="description">Paul McCartney</text>
-        <line x1="110" y1="65" x2="600.0" y2="65" class="eventLine" marker-end="url(#triangle)"/>
+        <text x="10" y="40" class="description">John Lennon</text>
+        <line x1="110" y1="65" x2="850.0" y2="65" class="eventLine" marker-end="url(#triangle)"/>
     </g>
     <g class="event Normal " id="event_1">
         <circle cx="210" cy="65" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
@@ -119,8 +119,39 @@
         <text x="260" y="65" class="eventId">2</text>
     </g>
     <g class="event Normal " id="event_3">
-        <circle cx="360" cy="65" r="10" class="event Normal "/>
-        <text x="360" y="65" class="eventId">4</text>
+        <circle cx="310" cy="65" r="10" class="event Normal "/>
+        <text x="310" y="65" class="eventId">3</text>
     </g>
-    <g/>
+    <g class="event Normal " id="event_4">
+        <circle cx="460" cy="65" r="10" class="event Normal "/>
+        <text x="460" y="65" class="eventId">4</text>
+    </g>
+    <g class="event Normal " id="event_5">
+        <circle cx="760" cy="65" r="10" class="event Normal "/>
+        <text x="760" y="65" class="eventId">5</text>
+    </g>
+    <g class="aggregate" id="aggregate_6">
+        <rect x="10" y="145" width="100" height="40"/>
+        <text x="15" y="163" class="type">Patient</text>
+        <text x="15" y="181" class="id">1</text>
+        <text x="10" y="140" class="description">Ringo Starr</text>
+        <line x1="110" y1="165" x2="850.0" y2="165" class="eventLine" marker-end="url(#triangle)"/>
+    </g>
+    <g class="event Normal " id="event_7">
+        <circle cx="560" cy="165" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
+        <circle cx="560" cy="165" r="10" class="event Normal "/>
+        <text x="560" y="165" class="eventId">1</text>
+    </g>
+    <g class="event Normal " id="event_8">
+        <circle cx="610" cy="165" r="10" class="event Normal "/>
+        <text x="610" y="165" class="eventId">2</text>
+    </g>
+    <g class="event Normal " id="event_9">
+        <circle cx="660" cy="165" r="10" class="event Normal "/>
+        <text x="660" y="165" class="eventId">3</text>
+    </g>
+    <g class="event Normal " id="event_10">
+        <circle cx="760" cy="165" r="10" class="event Normal "/>
+        <text x="760" y="165" class="eventId">4</text>
+    </g>
 </svg>
