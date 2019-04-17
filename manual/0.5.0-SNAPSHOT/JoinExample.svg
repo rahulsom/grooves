@@ -110,7 +110,7 @@
         <line x1="110" y1="65" x2="600.0" y2="65" class="eventLine" marker-end="url(#triangle)"/>
     </g>
     <g class="event Normal " id="event_1">
-        <circle cx="210" cy="65.0" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
+        <circle cx="210" cy="65" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
         <circle cx="210" cy="65" r="10" class="event Normal "/>
         <text x="210" y="65" class="eventId">1</text>
     </g>
@@ -138,13 +138,13 @@
         <line x1="110" y1="165" x2="600.0" y2="165" class="eventLine" marker-end="url(#triangle)"/>
     </g>
     <g class="event Normal " id="event_7">
-        <circle cx="360" cy="165.0" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
+        <circle cx="360" cy="165" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
         <circle cx="360" cy="165" r="10" class="event Normal "/>
         <text x="360" y="165" class="eventId">4</text>
     </g>
     <g class="event Join " id="event_8">
-        <path d="M370 147.67949192431124 Q 394.80384757729337 106.3397459621556180309198680333793163299560546875, 370 75"/>
-        <circle cx="370" cy="147" r="10" class="event Join "/>
-        <text x="370" y="147" class="eventId">5</text>
+        <path d="M370 148 Q 394 106, 370 75"/>
+        <circle cx="370" cy="148" r="10" class="event Join "/>
+        <text x="370" y="148" class="eventId">5</text>
     </g>
 </svg>

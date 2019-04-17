@@ -110,7 +110,7 @@
         <line x1="110" y1="65" x2="750.0" y2="65" class="eventLine" marker-end="url(#triangle)"/>
     </g>
     <g class="event Normal " id="event_1">
-        <circle cx="210" cy="65.0" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
+        <circle cx="210" cy="65" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
         <circle cx="210" cy="65" r="10" class="event Normal "/>
         <text x="210" y="65" class="eventId">1</text>
     </g>
@@ -131,7 +131,7 @@
         <text x="610" y="65" class="eventId">8</text>
     </g>
     <g class="event Revert " id="event_6">
-        <path d="M660 65.0 Q 585 15, 525 50"/>
+        <path d="M660 65 Q 585 15, 525 50"/>
         <circle cx="660" cy="65" r="10" class="event Revert "/>
         <text x="660" y="65" class="eventId">9</text>
     </g>
@@ -143,21 +143,21 @@
         <line x1="110" y1="165" x2="750.0" y2="165" class="eventLine" marker-end="url(#triangle)"/>
     </g>
     <g class="event Normal " id="event_8">
-        <circle cx="360" cy="165.0" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
+        <circle cx="360" cy="165" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
         <circle cx="360" cy="165" r="10" class="event Normal "/>
         <text x="360" y="165" class="eventId">4</text>
     </g>
     <g class="event Normal " id="event_9">
-        <circle cx="370" cy="147" r="10" class="event Normal "/>
-        <text x="370" y="147" class="eventId">5</text>
+        <circle cx="370" cy="148" r="10" class="event Normal "/>
+        <text x="370" y="148" class="eventId">5</text>
     </g>
     <g class="event DeprecatedBy reverted" id="event_10">
-        <path d="M510 165.0 Q 540.0 115, 520 85"/>
+        <path d="M510 165 Q 540 115, 520 85"/>
         <circle cx="510" cy="165" r="10" class="event DeprecatedBy reverted"/>
         <text x="510" y="165" class="eventId">6</text>
     </g>
     <g class="event Revert " id="event_11">
-        <path d="M660 165.0 Q 585 115, 525 150"/>
+        <path d="M660 165 Q 585 115, 525 150"/>
         <circle cx="660" cy="165" r="10" class="event Revert "/>
         <text x="660" y="165" class="eventId">10</text>
     </g>

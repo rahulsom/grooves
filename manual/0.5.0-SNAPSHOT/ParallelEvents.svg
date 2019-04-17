@@ -110,7 +110,7 @@
         <line x1="110" y1="65" x2="850.0" y2="65" class="eventLine" marker-end="url(#triangle)"/>
     </g>
     <g class="event Normal " id="event_1">
-        <circle cx="210" cy="65.0" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
+        <circle cx="210" cy="65" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
         <circle cx="210" cy="65" r="10" class="event Normal "/>
         <text x="210" y="65" class="eventId">1</text>
     </g>
@@ -138,7 +138,7 @@
         <line x1="110" y1="165" x2="850.0" y2="165" class="eventLine" marker-end="url(#triangle)"/>
     </g>
     <g class="event Normal " id="event_7">
-        <circle cx="560" cy="165.0" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
+        <circle cx="560" cy="165" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
         <circle cx="560" cy="165" r="10" class="event Normal "/>
         <text x="560" y="165" class="eventId">1</text>
     </g>
