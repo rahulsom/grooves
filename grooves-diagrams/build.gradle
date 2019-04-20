@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.jlleitschuh.gradle:ktlint-gradle:7.2.1'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.71'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.17'
     }
 }
@@ -29,7 +29,7 @@ dependencies {
     implementation('com.github.sommeri:less4j:1.17.2') {
         exclude group: 'com.google.protobuf'
     }
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.71'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
 
     implementation 'commons-beanutils:commons-beanutils:1.9.3'
     implementation 'org.asciidoctor:asciidoctorj:1.5.4.1'
