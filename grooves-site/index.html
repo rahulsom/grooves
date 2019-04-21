@@ -25,20 +25,15 @@
                 </div>
 
                 <a class="btn btn-lg dropdown-toggle"
-                   href="https://example.com" id="dropdownMenuLink"
+                   href="#" id="dropdownMenuLink"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-book" aria-hidden="true"></i> &nbsp; Documentation
                 </a>
 
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item" href="manual/0.5.0/index.html"><strong>0.5.0</strong></a>
-                    <a class="dropdown-item" href="manual/0.4.0/index.html">0.4.0</a>
-                    <div class="dropdown-divider">Upcoming</div>
-                    <a class="dropdown-item" href="manual/0.5.0-SNAPSHOT/index.html">0.6.0-SNAPSHOT</a>
-                    <div class="dropdown-divider">Old</div>
-                    <a class="dropdown-item" href="manual/0.3.0/index.html">0.3.0</a>
-                    <a class="dropdown-item" href="manual/0.2.1/index.html">0.2.1</a>
-                    <a class="dropdown-item" href="manual/0.1.1/index.html">0.1.1</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="versions">
+                    <!--
+                    Content to be populated from versions.json
+                    -->
                 </div>
 
                 <a href="http://github.com/rahulsom/grooves"
@@ -88,8 +83,8 @@
 
         </div>
 
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-                integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.js"
+                integrity="sha256-DYZMCC8HTC+QDr5QNaIcfR7VSPtcISykd+6eSmBW5qo="
                 crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
                 integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
@@ -97,5 +92,32 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
                 integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
                 crossorigin="anonymous"></script>
+        <script>
+
+            $(function() {
+                function createVersion(name, recommended = false) {
+                    if (recommended) {
+                        return `<a class="dropdown-item" href="manual/${name}/index.html"><strong>${name}</strong></a>`;
+                    } else {
+                        return `<a class="dropdown-item" href="manual/${name}/index.html">${name}</a>`;
+                    }
+                }
+                $.getJSON('versions.json', function(data) {
+                    $('#versions').html('');
+                    for (i = 0; i < data.supported.length; i ++) {
+                        $('#versions').append(createVersion(data.supported[i], i == 0));
+                    }
+                    $('#versions').append('<div class="dropdown-divider">Upcoming</div>');
+                    for (i = 0; i < data.upcoming.length; i ++) {
+                        $('#versions').append(createVersion(data.upcoming[i]));
+                    }
+                    $('#versions').append('<div class="dropdown-divider">Old</div>');
+                    for (i = 0; i < data.old.length; i ++) {
+                        $('#versions').append(createVersion(data.old[i]));
+                    }
+                    console.log(data);
+                });
+            })
+        </script>
     </body>
 </html>
