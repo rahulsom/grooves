@@ -5,6 +5,9 @@ apply from: "$rootDir/gradle/codenarc/codenarc.gradle"
 dependencies {
     compile project(':grooves-api')
 
+    compile 'io.reactivex.rxjava2:rxjava:2.2.3'
+    compile "org.slf4j:slf4j-api:$slf4jVersion"
+
     compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
     compile 'xerces:xercesImpl:2.12.0'
     compile "org.slf4j:slf4j-api:$slf4jVersion"
