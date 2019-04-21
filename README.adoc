@@ -82,3 +82,15 @@ The events are never persisted. They are processed as they come on the EventBus.
 |===
 
 
+== Releasing
+
+* Ensure environment variable `GRGIT_USER` is populated
+* Ensure ~/.gradle/gradle.properties has these properties
+  ** signing.keyId
+  ** signing.password
+  ** nexusUsername
+  ** nexusPassword
+* Tag the version
+* Run this command
+
+    ./gradlew -Prelease.useLastTag=true -Dorg.gradle.parallel=false <candidate|final>
