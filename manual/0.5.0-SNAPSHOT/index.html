@@ -1782,54 +1782,7 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">// You don't need to have an intermediate type to manage your queries, but it does make code reuse better.
 // Also this is written in java.
-public interface GormQuerySupport&lt;
-        AggregateIdT,
-        AggregateT extends GormAggregate&lt;AggregateIdT&gt; &amp; GormEntity&lt;AggregateT&gt;,
-        EventIdT,
-        EventT extends BaseEvent&lt;AggregateT, EventIdT, EventT&gt; &amp; GormEntity&lt;EventT&gt;,
-        SnapshotIdT,
-        SnapshotT extends Snapshot&lt;AggregateT, SnapshotIdT, EventIdT, EventT&gt; &amp;
-                GormEntity&lt;SnapshotT&gt;
-        &gt; extends QuerySupport&lt;AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT&gt;, <i class="conum" data-value="1"></i><b>(1)</b>
-        BlockingEventSource&lt;AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT&gt;,
-        BlockingSnapshotSource&lt;AggregateIdT, AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT&gt; {
-
-    Class&lt;EventT&gt; getEventClass(); <i class="conum" data-value="2"></i><b>(2)</b>
-
-    Class&lt;SnapshotT&gt; getSnapshotClass(); <i class="conum" data-value="3"></i><b>(3)</b>
-
-    @NotNull
-    @Override
-    default Publisher&lt;SnapshotT&gt; getSnapshot(long maxPosition, @NotNull AggregateT aggregate) {
-        return BlockingSnapshotSource.super
-                .getSnapshot(maxPosition, aggregate); <i class="conum" data-value="4"></i><b>(4)</b>
-    }
-
-    @NotNull
-    @Override
-    default Publisher&lt;SnapshotT&gt; getSnapshot(Date maxTimestamp, @NotNull AggregateT aggregate) {
-        return BlockingSnapshotSource.super
-                .getSnapshot(maxTimestamp, aggregate);
-    }
-
-    @NotNull
-    @Override
-    default Publisher&lt;EventT&gt; getUncomputedEvents(
-            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot, long version) {
-        return BlockingEventSource.super
-                .getUncomputedEvents(aggregate, lastSnapshot, version);
-    }
-
-    @NotNull
-    @Override
-    default Publisher&lt;EventT&gt; getUncomputedEvents(
-            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot,
-            @NotNull Date snapshotTime) {
-        return BlockingEventSource.super
-                .getUncomputedEvents(aggregate, lastSnapshot, snapshotTime);
-    }
-
-}
+Unresolved directive in examples/queries.adoc - include::/home/runner/grooves/grooves-gorm/src/main/groovy/com/github/rahulsom/grooves/grails/GormQuerySupport.java[tags=documented]
 // This is the implementation we need here
 @Query(aggregate = Patient, snapshot = PatientAccount) <i class="conum" data-value="5"></i><b>(5)</b>
 class PatientAccountQuery implements
