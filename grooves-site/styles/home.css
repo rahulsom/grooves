@@ -9,7 +9,7 @@
     animation-duration: 12s;
     animation-iteration-count: infinite;
     transform: rotate(-1.5deg);
-    text-shadow: 8px 8px 8px rgba(128,128,128,.25);
+    text-shadow: 8px 8px 8px rgba(128,128,128,.5);
 }
 .btn {
     border-color: rgb(92, 92, 92);
