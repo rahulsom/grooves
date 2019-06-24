@@ -46,7 +46,7 @@ cargo {
     }
     local {
         installer {
-            installUrl = 'http://download.jboss.org/wildfly/10.1.0.Final/wildfly-10.1.0.Final.zip'
+            installUrl = 'https://download.jboss.org/wildfly/10.1.0.Final/wildfly-10.1.0.Final.zip'
             downloadDir = file("${gradle.gradleUserHomeDir}/cargo")
             extractDir = file("$buildDir/extract")
             outputFile = file('build/output.log')
