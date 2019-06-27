@@ -3,7 +3,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath "org.ajoberstar:gradle-git-publish:1.0.1"
+        classpath "org.ajoberstar:gradle-git-publish:2.1.1"
         classpath "org.asciidoctor:asciidoctor-gradle-plugin:1.5.3"
     }
 }
