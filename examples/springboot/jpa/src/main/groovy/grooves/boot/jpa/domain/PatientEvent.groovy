@@ -31,7 +31,7 @@ abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> { 
     @OneToOne Patient aggregate
 
     Publisher<Patient> getAggregateObservable() { // <5>
-        aggregate ? just(aggregate) : empty()
+        aggregate == null ? empty() : just(aggregate)
     }
 
 }

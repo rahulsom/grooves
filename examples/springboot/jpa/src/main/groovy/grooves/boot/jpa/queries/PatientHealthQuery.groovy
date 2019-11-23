@@ -15,7 +15,8 @@ import org.springframework.transaction.annotation.Transactional
 import javax.persistence.EntityManager
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
-import static io.reactivex.Flowable.*
+import static io.reactivex.Flowable.fromIterable
+import static io.reactivex.Flowable.just
 
 /**
  * Query for Patient Health
@@ -43,7 +44,8 @@ class PatientHealthQuery implements
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
                 patientHealthRepository.findAllByAggregateIdAndLastEventPositionLessThan(
                         aggregate.id, maxPosition)
-        snapshots ? just(detachSnapshot(snapshots[0])) : empty()
+
+        fromIterable(snapshots).firstElement().toFlowable()
     }
 
     @Override
@@ -52,7 +54,8 @@ class PatientHealthQuery implements
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
                 patientHealthRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
                         aggregate.id, maxTimestamp)
-        snapshots ? just(detachSnapshot(snapshots[0])) : empty()
+
+        fromIterable(snapshots).firstElement().toFlowable()
     }
 
     @Override

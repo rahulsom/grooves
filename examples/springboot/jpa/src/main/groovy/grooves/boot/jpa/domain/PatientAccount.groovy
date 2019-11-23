@@ -39,11 +39,11 @@ class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> { //
     int processingErrors = 0
 
     @Override @JsonIgnore Publisher<Patient> getAggregateObservable() { // <4>
-        aggregate ? just(aggregate) : empty()
+        aggregate == null ? empty() : just(aggregate)
     }
 
     @Override @JsonIgnore Publisher<Patient> getDeprecatedByObservable() { // <5>
-        deprecatedBy ? just(deprecatedBy) : empty()
+        deprecatedBy == null ? empty() : just(deprecatedBy)
     }
 
     @Override @JsonIgnore Publisher<Patient> getDeprecatesObservable() { // <6>

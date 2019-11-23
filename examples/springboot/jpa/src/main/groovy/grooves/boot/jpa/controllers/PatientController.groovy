@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-import javax.persistence.EntityManager
-
 /**
  * Serves Patient Resources over HTTP
  *
@@ -25,7 +23,6 @@ import javax.persistence.EntityManager
 class PatientController {
 
     @Autowired PatientRepository patientRepository
-    @Autowired EntityManager entityManager
     @Autowired PatientAccountQuery patientAccountQuery
     @Autowired PatientHealthQuery patientHealthQuery
 
