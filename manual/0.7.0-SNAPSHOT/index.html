@@ -799,7 +799,7 @@ abstract class PatientEvent implements BaseEvent&lt;Patient, Long, PatientEvent&
     @OneToOne Patient aggregate
 
     Publisher&lt;Patient&gt; getAggregateObservable() { <i class="conum" data-value="5"></i><b>(5)</b>
-        aggregate ? just(aggregate) : empty()
+        aggregate == null ? empty() : just(aggregate)
     }
 
 }</code></pre>
@@ -1288,11 +1288,11 @@ It is empty when the aggregate is not deprecated.</td>
     int processingErrors = 0
 
     @Override @JsonIgnore Publisher&lt;Patient&gt; getAggregateObservable() { <i class="conum" data-value="4"></i><b>(4)</b>
-        aggregate ? just(aggregate) : empty()
+        aggregate == null ? empty() : just(aggregate)
     }
 
     @Override @JsonIgnore Publisher&lt;Patient&gt; getDeprecatedByObservable() { <i class="conum" data-value="5"></i><b>(5)</b>
-        deprecatedBy ? just(deprecatedBy) : empty()
+        deprecatedBy == null ? empty() : just(deprecatedBy)
     }
 
     @Override @JsonIgnore Publisher&lt;Patient&gt; getDeprecatesObservable() { <i class="conum" data-value="6"></i><b>(6)</b>
