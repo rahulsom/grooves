@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.rahulsom:svg-builder:0.2.3'
+    implementation 'com.github.rahulsom:svg-builder:0.3.1'
     implementation('com.github.sommeri:less4j:1.17.2') {
         exclude group: 'com.google.protobuf'
     }
