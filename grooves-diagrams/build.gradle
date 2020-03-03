@@ -36,7 +36,7 @@ dependencies {
     implementation "org.slf4j:slf4j-api:$slf4jVersion"
 
     implementation 'javax.xml.bind:jaxb-api:2.2.11'
-    implementation 'com.sun.xml.bind:jaxb-core:2.2.11'
+    implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
     implementation 'com.sun.xml.bind:jaxb-impl:2.2.11'
     implementation 'javax.activation:activation:1.1.1'
 
