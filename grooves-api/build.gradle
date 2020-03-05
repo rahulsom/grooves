@@ -11,7 +11,7 @@ dependencies {
     implementation "org.slf4j:slf4j-api:$slf4jVersion"
 
     compileOnly "org.codehaus.groovy:groovy:$groovyVersion"
-    compileOnly 'org.jetbrains:annotations:16.0.2'
+    compileOnly 'org.jetbrains:annotations:19.0.0'
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
