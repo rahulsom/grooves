@@ -20,7 +20,7 @@ apply from: "$rootDir/gradle/jacoco.gradle"
 description = "Types that are used by Grooves to build an Event Sourcing system"
 
 dependencies {
-    api 'org.reactivestreams:reactive-streams:1.0.2'
+    api 'org.reactivestreams:reactive-streams:1.0.3'
     implementation "org.slf4j:slf4j-api:$slf4jVersion"
 
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
