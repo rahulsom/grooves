@@ -61,5 +61,5 @@ extraArchive {
 }
 
 nexus {
-    sign = !version.toString().contains('-SNAPSHOT')
+    sign = true
 }
