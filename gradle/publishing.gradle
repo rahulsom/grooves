@@ -18,19 +18,6 @@ dependencyLocking {
     lockAllConfigurations()
 }
 
-task resolveAndLockAll {
-    doFirst {
-        assert gradle.startParameter.writeDependencyLocks
-    }
-    doLast {
-        configurations.each {
-            if (it.canBeResolved && !(it.name in ['jacocoAgent', 'jacocoAnt', 'checkstyle'])) {
-                it.resolve()
-            }
-        }
-    }
-}
-
 modifyPom {
     project {
         name project.name.split('-').collect { it.capitalize() }.join(' ')
