@@ -22,7 +22,7 @@ modifyPom {
     project {
         name project.name.split('-').collect { it.capitalize() }.join(' ')
         description project.description
-        url 'https://github.com/rahulsom/grooves'
+        url 'https://rahulsom.github.io/grooves'
         inceptionYear '2017'
 
         scm {
