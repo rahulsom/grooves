@@ -54,7 +54,7 @@ subprojects {
 gradle.releasable.each {
     tasks.release.dependsOn "grooves-${it}:uploadArchives"
 }
-tasks.release.dependsOn 'grooves-docs:gitPublishPush'
+tasks.getByName('release').dependsOn 'grooves-docs:gitPublishPush'
 
 project.afterEvaluate {
     gradle.releasable.each {
