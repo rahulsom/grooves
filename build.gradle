@@ -4,7 +4,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath "com.gradle:build-scan-plugin:1.16"
+        classpath "com.gradle:build-scan-plugin:2.4.2"
         classpath "me.champeau.gradle:buildscan-recipes-plugin:0.2.3"
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.8.0.1969"
