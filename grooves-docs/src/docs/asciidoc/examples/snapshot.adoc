@@ -28,19 +28,6 @@ include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/do
   It is empty when the aggregate is not deprecated.
 <6> The `deprecatesObservable` points to the aggregates deprecated by snapshot's aggregate.
 
-[source,groovy,indent=0,role="secondary"]
-.Gorm
-----
-include::{sourcedir}/examples/grails/rdbms/grails-app/domain/grooves/grails/rdbms/PatientAccount.groovy[tags=documented]
-----
-<1> For most snapshots, you may implement `Snapshot`.
-<2> The `lastEventPosition` is useful when locating snapshots by version.
-<3> The `lastEventTimestamp` is useful when locating snapshots by timestamp.
-<4> The `aggregateObservable` getter points to the aggregate from the snapshot.
-<5> The `deprecatedByObservable` points to the deprecator of the snapshot's aggregate.
-  It is empty when the aggregate is not deprecated.
-<6> The `deprecatesObservable` points to the aggregates deprecated by snapshot's aggregate.
-
 [source,kotlin,indent=0,role="secondary"]
 .Kotlin
 ----

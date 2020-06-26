@@ -28,19 +28,6 @@ include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/do
 <5> The aggregate observable allows for lazy fetching of the aggregate.
   In our case, it doesn't matter much since we're using JPA, which is blocking in nature.
 
-[source,groovy,indent=0,role="secondary"]
-.Gorm
-----
-// All imports omitted
-include::{sourcedir}/examples/grails/rdbms/grails-app/domain/grooves/grails/rdbms/PatientEvent.groovy[tags=abstract]
-----
-<1> You'll have to extend `BaseEvent`.
-<2> This is transient from a persistence perspective. Look at <6>
-<3> Timestamp is used for time based filtering and ordering
-<4> Position is used for version based filtering and ordering.
-<5> The aggregate observable allows for lazy fetching of the aggregate.
-  In our case, it doesn't matter much since we're using Hibernate, which is blocking in nature.
-
 [source,kotlin,indent=0,role="secondary"]
 .Kotlin
 ----

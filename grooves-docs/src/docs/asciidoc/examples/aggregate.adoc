@@ -28,21 +28,6 @@ include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/do
   Together, the three will help us ensure that our queries cover all events.
   This is optional, but highly recommended.
 
-[source,groovy,indent=0,role="secondary"]
-.Gorm
-----
-include::{sourcedir}/examples/grails/rdbms/grails-app/domain/grooves/grails/rdbms/Patient.groovy[tags=documented]
-----
-<1> This annotation will assist in checking for completeness of queries.
-  There are two other annotations we'll see - `@Event` and `@Query`.
-  Together, the three will help us ensure that our queries cover all events.
-  This is optional, but highly recommended.
-<2> For grooves to use an aggregate, you must implement the `GormAggregate` interface.
-  It accepts a type using generics that identifies the `id` of the aggregate.
-  That is typically used as the primary key in a database.
-<3> This is commented out, because it is implicit in grails with a type of `Long`.
-  If it is implicit for your codebase, you do not have to declare it.
-
 [source,kotlin,indent=0,role="secondary"]
 .Kotlin
 ----

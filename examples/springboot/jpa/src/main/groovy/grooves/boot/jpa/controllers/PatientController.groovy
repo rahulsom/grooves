@@ -27,12 +27,12 @@ class PatientController {
     @Autowired PatientHealthQuery patientHealthQuery
 
     @GetMapping('/patient')
-    List<Patient> patient() {
+    List<Patient> list() {
         patientRepository.findAll()
     }
 
     @GetMapping('/patient/show/{id}')
-    Patient patient(@PathVariable Long id) {
+    Patient show(@PathVariable Long id) {
         patientRepository.getOne(id)
     }
 

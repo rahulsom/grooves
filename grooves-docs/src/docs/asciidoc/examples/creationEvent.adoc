@@ -18,15 +18,6 @@ include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/do
   It accepts as a param, the Aggregate over which it applies.
 <2> For most events you're interested in as a user, you'll just have to extend `PatientEvent`.
 
-[source,groovy,indent=0,role="secondary"]
-.Gorm
-----
-include::{sourcedir}/examples/grails/rdbms/grails-app/domain/grooves/grails/rdbms/PatientEvent.groovy[tags=created]
-----
-<1> The `@Event` annotation is the second step to achieving completeness of events.
-  It accepts as a param, the Aggregate over which it applies.
-<2> For most events you're interested in as a user, you'll just have to extend `PatientEvent`.
-
 [source,kotlin,indent=0,role="secondary"]
 .Kotlin
 ----
