@@ -67,8 +67,7 @@ public class GroovyEventsDsl<
     public AggregateT on(
             AggregateT aggregate, Consumer entityConsumer, Supplier<Long> positionSupplier,
             @DelegatesTo(OnSpec.class) Closure closure) {
-        return on(aggregate, entityConsumer, positionSupplier, Date::new,
-                closure);
+        return on(aggregate, entityConsumer, positionSupplier, Date::new, closure);
     }
 
     /**

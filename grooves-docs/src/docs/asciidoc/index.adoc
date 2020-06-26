@@ -36,9 +36,6 @@ We will be using 4 different kinds of projects.
   For the code to actually work, those would be required.
 * Groovy - A project that uses SpringBoot and JPA for persistence.
   It's written using Groovy. This uses RxJava2 as the Reactive Streams Framework.
-* Gorm - It's a grails project that uses Hibernate for persistence.
-  This is the most thorough example in our codebase.
-  It is the only one that demonstrates joins.
 * Kotlin - This is a SpringBoot Reactive Web project that uses RxMongo for persistence.
   This example uses Spring Reactor as the Reactive Streams Framework.
 

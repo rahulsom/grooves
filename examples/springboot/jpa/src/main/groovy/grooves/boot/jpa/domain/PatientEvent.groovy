@@ -3,8 +3,11 @@ package grooves.boot.jpa.domain
 import com.github.rahulsom.grooves.api.events.BaseEvent
 import com.github.rahulsom.grooves.api.events.DeprecatedBy
 import com.github.rahulsom.grooves.api.events.Deprecates
+import com.github.rahulsom.grooves.api.events.DisjoinEvent
+import com.github.rahulsom.grooves.api.events.JoinEvent
 import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.groovy.transformations.Event
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import org.reactivestreams.Publisher
 
@@ -100,4 +103,28 @@ class PatientDeprecates extends PatientEvent
     Publisher<Patient> getDeprecatedObservable() { just(deprecated) }
 
     @Override String toString() { "PatientDeprecates(deprecated=$deprecated)" }
+}
+
+@Entity
+@EqualsAndHashCode
+class PatientAddedToZipcode extends PatientEvent implements
+    JoinEvent<Patient, Long, PatientEvent, Zipcode> {
+
+    @ManyToOne Zipcode zipcode
+    @Override Publisher<Zipcode> getJoinAggregateObservable() { just(zipcode) }
+
+    @Override String toString() {
+        "<${aggregate.uniqueId}> ${timestamp} sent to zipcode ${zipcode.uniqueId}" }
+}
+
+@Entity
+@EqualsAndHashCode
+class PatientRemovedFromZipcode extends PatientEvent implements
+    DisjoinEvent<Patient, Long, PatientEvent, Zipcode> {
+
+    @ManyToOne Zipcode zipcode
+    @Override Publisher<Zipcode> getJoinAggregateObservable() { just(zipcode) }
+
+    @Override String toString() {
+        "<${aggregate.uniqueId}> ${timestamp} removed from zipcode ${zipcode.uniqueId}" }
 }

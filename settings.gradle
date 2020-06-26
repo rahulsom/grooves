@@ -1,6 +1,6 @@
 rootProject.name = 'grooves'
 
-def releasable = ['api', 'groovy', 'gorm', 'types', 'diagrams', 'java', 'example-test']
+def releasable = ['api', 'groovy', 'types', 'diagrams', 'java', 'example-test']
 gradle.ext.releasable = releasable
 releasable.each { include "grooves-${it}" }
 
@@ -16,9 +16,6 @@ def examples = [
 
         /* JavaEE + Java + Data Structures for persistence */
         'javaee',
-
-        /* Grails + RDBMS */
-        'grails:rdbms',
 
         /* Guava EventBus for events + Kotlin + jOOQ for snapshots  */
         'pushstyle',

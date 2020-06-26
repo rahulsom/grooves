@@ -53,36 +53,6 @@ include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/qu
 <11> Each of these methods takes the event and the snapshot as inputs and returns an `Publisher<EventApplyOutcome>` as output.
   It can `CONTINUE` or `RETURN`.
 
-[source,groovy,indent=0,role="secondary"]
-.Gorm
-----
-// You don't need to have an intermediate type to manage your queries, but it does make code reuse better.
-// Also this is written in java.
-include::{sourcedir}/grooves-gorm/src/main/groovy/com/github/rahulsom/grooves/grails/GormQuerySupport.java[tags=documented]
-// This is the implementation we need here
-include::{sourcedir}/examples/grails/rdbms/src/main/groovy/grooves/grails/rdbms/PatientAccountQuery.groovy[tags=documented]
-----
-<1> `QuerySupport` allows computing both temporal and versioned snapshots.
-<2> `BlockingEventSource` needs an `eventClass`.
-  `BlockingEventSource` and `RxEventSource` greatly simplify working with events from a gorm source.
-<3> `BlockingSnapshotSource` needs a `snapshotClass`.
-  `BlockingSnapshotSource` and `RxSnapshotSource` do the same for snapshots.
-<4> This is an example of using the `BlockingEventSource`.
-<5> This annotation is the final step in verification of completeness.
-  The AST Transformation checks that all `@Event` s associated with the `@Aggregate` are accounted for in the `@Query`.
-<6> Here we'll implement the interface we just wrote.
-<7> This configures the event class.
-<8> This configures the snapshot class.
-<9> This method gets called if no prior snapshot that is usable is found.
-<10> This allows the query to have some control over when to stop applying events on a snapshot.
-<11> This is an exception handler.
-  You can decide to `CONTINUE` or `RETURN`.
-<12> We name our methods `apply<EventType>`.
-  This is required.
-  Your IDE might not point out if you don't do it right, but the compiler will.
-<13> Each of these methods takes the event and the snapshot as inputs and returns an `Publisher<EventApplyOutcome>` as output.
-  It can `CONTINUE` or `RETURN`.
-
 [source,kotlin,indent=0,role="secondary"]
 .Kotlin
 ----

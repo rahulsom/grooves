@@ -27,4 +27,4 @@ jobs:
         mkdir -p ~/.gradle
         echo "nexusUsername=$NEXUS_USER"     >> ~/.gradle/gradle.properties
         echo "nexusPassword=$NEXUS_PASSWORD" >> ~/.gradle/gradle.properties
-        ./gradlew build snapshot --stacktrace
+        ./gradlew build snapshot asciidoctor --stacktrace
