@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.jlleitschuh.gradle:ktlint-gradle:9.2.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72"
         classpath 'org.jetbrains.dokka:dokka-gradle-plugin:0.9.17'
     }
 }
@@ -21,9 +21,9 @@ description = "Types that are used by Grooves to build an Event Sourcing system"
 
 dependencies {
     api 'org.reactivestreams:reactive-streams:1.0.3'
-    implementation "org.slf4j:slf4j-api:$slf4jVersion"
+    implementation "org.slf4j:slf4j-api:1.7.30"
 
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72"
 
     testImplementation "org.spockframework:spock-core:1.1-groovy-2.4"
 }
