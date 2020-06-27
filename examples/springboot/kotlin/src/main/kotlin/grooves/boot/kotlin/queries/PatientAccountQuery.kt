@@ -9,11 +9,11 @@ import grooves.boot.kotlin.domain.PatientAccount
 import grooves.boot.kotlin.domain.PatientEvent
 import grooves.boot.kotlin.repositories.PatientAccountRepository
 import grooves.boot.kotlin.repositories.PatientEventRepository
+import java.lang.Exception
+import java.util.Date
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono.just
-import java.lang.Exception
-import java.util.Date
 
 @Component
 // tag::documented[]

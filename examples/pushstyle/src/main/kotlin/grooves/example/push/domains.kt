@@ -5,11 +5,11 @@ import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import grooves.example.pushstyle.tables.records.BalanceRecord
 import io.reactivex.Flowable
-import org.reactivestreams.Publisher
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID
+import org.reactivestreams.Publisher
 
 data class Account(val id: String)
 

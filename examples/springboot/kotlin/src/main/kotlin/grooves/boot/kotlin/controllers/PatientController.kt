@@ -4,6 +4,9 @@ import grooves.boot.kotlin.queries.PatientAccountQuery
 import grooves.boot.kotlin.queries.PatientHealthQuery
 import grooves.boot.kotlin.repositories.PatientEventRepository
 import grooves.boot.kotlin.repositories.PatientRepository
+import java.time.Instant
+import java.util.Calendar
+import java.util.Calendar.HOUR
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
@@ -11,9 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
-import java.time.Instant
-import java.util.Calendar
-import java.util.Calendar.HOUR
 
 @RestController
 class PatientController constructor(

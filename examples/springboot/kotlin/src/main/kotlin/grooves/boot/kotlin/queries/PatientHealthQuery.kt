@@ -10,11 +10,11 @@ import grooves.boot.kotlin.domain.PatientHealth
 import grooves.boot.kotlin.domain.Procedure
 import grooves.boot.kotlin.repositories.PatientEventRepository
 import grooves.boot.kotlin.repositories.PatientHealthRepository
+import java.lang.Exception
+import java.util.Date
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono.just
-import java.lang.Exception
-import java.util.Date
 
 @Component
 class PatientHealthQuery constructor(

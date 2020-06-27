@@ -3,7 +3,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath "com.bmuschko:gradle-cargo-plugin:2.2.3"
+        classpath "com.bmuschko:gradle-cargo-plugin:2.7.1"
     }
 }
 
@@ -33,8 +33,8 @@ dependencies {
     compile 'io.reactivex:rxjava-reactive-streams:1.2.1'
     compile 'io.reactivex:rxjava:1.3.8'
 
-    cargo 'org.codehaus.cargo:cargo-core-uberjar:1.6.11'
-    cargo 'org.codehaus.cargo:cargo-ant:1.6.11'
+    cargo 'org.codehaus.cargo:cargo-core-uberjar:1.7.10'
+    cargo 'org.codehaus.cargo:cargo-ant:1.7.10'
 
     compile project(':grooves-example-test')
 }

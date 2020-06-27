@@ -5,10 +5,10 @@ import com.google.common.util.concurrent.AbstractService
 import com.google.inject.Inject
 import grooves.example.pushstyle.Public
 import grooves.example.pushstyle.Tables.BALANCE
-import org.jooq.DSLContext
-import org.slf4j.LoggerFactory.getLogger
 import java.util.Date
 import java.util.UUID
+import org.jooq.DSLContext
+import org.slf4j.LoggerFactory.getLogger
 
 class Application @Inject constructor(
     val eventBus: EventBus,

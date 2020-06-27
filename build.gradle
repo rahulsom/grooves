@@ -4,7 +4,6 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath "com.gradle:build-scan-plugin:1.16"
         classpath "me.champeau.gradle:buildscan-recipes-plugin:0.2.3"
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.0"
@@ -12,7 +11,6 @@ buildscript {
     }
 }
 
-apply plugin: "com.gradle.build-scan"
 apply plugin: "me.champeau.buildscan-recipes"
 apply plugin: "io.codearte.nexus-staging"
 apply plugin: "org.sonarqube"
@@ -64,11 +62,6 @@ project.afterEvaluate {
     if (!version.toString().endsWith('-SNAPSHOT')) {
         tasks.release.dependsOn 'closeAndReleaseRepository'// , 'srcclr'
     }
-}
-
-buildScan {
-    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
-    licenseAgree = 'yes'
 }
 
 buildScanRecipes {

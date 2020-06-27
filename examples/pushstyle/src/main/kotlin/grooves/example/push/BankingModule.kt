@@ -3,9 +3,9 @@ package grooves.example.push
 import com.google.common.eventbus.EventBus
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
+import java.sql.DriverManager.getConnection
 import org.jooq.SQLDialect.H2
 import org.jooq.impl.DSL
-import java.sql.DriverManager.getConnection
 
 object BankingModule : AbstractModule() {
 

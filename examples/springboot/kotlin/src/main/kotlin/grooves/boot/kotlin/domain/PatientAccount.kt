@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import grooves.boot.kotlin.repositories.PatientRepository
+import java.math.BigDecimal
+import java.util.Date
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Configurable
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Flux.empty
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
-import java.math.BigDecimal
-import java.util.Date
 
 // tag::documented[]
 @Configurable
