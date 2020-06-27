@@ -10,8 +10,6 @@ readonly SEMAPHORE_CACHE_DIR
 # Secrets that are exported through build configuration
 readonly CODECOV_IO_TOKEN
 readonly SONAR_TOKEN
-readonly SONATYPE_USER
-readonly SONATYPE_PASSWORD
 readonly GRGIT_USER
 readonly SRC_CLR_TOKEN
 readonly GH_TOKEN
@@ -19,11 +17,6 @@ readonly TERM
 
 function gw() {
     ./gradlew "$@"
-}
-
-function setupSonatype() {
-    echo "nexusUsername=$SONATYPE_USER"     >> ~/.gradle/gradle.properties
-    echo "nexusPassword=$SONATYPE_PASSWORD" >> ~/.gradle/gradle.properties
 }
 
 function sonarqube() {
@@ -35,9 +28,9 @@ function sonarqube() {
 
 function main() {
         if [[ "$BRANCH_NAME" = "master" ]]; then
-            setupSonatype && gw build snapshot && sonarqube
+            gw build  && sonarqube
         elif [[ "$BRANCH_NAME" =~ ^[0-9]+\.[0-9]+\.x$ ]]; then
-            setupSonatype && gw build snapshot && sonarqube
+            gw build  && sonarqube
         else
             gw check asciidoctor
         fi
