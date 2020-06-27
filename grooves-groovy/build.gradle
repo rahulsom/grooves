@@ -8,7 +8,7 @@ description = "Support for completeness of queries in Groovy code"
 dependencies {
     api project(':grooves-api')
 
-    implementation "org.codehaus.groovy:groovy:2.5.1"
+    implementation "org.codehaus.groovy:groovy:3.0.4"
 
     testCompile 'io.reactivex:rxjava:1.3.8'
     testCompile 'io.reactivex:rxjava-reactive-streams:1.2.1'
