@@ -1,3 +1,14 @@
+plugins {
+    id "com.gradle.enterprise" version "3.3.4"
+}
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}
+
 rootProject.name = 'grooves'
 
 def releasable = ['api', 'groovy', 'types', 'diagrams', 'java', 'example-test']

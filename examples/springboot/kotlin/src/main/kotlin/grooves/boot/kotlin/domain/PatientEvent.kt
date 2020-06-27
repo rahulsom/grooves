@@ -9,15 +9,15 @@ import com.github.rahulsom.grooves.api.events.RevertEvent
 import grooves.boot.kotlin.BeansHolder
 import grooves.boot.kotlin.repositories.PatientEventRepository
 import grooves.boot.kotlin.repositories.PatientRepository
+import java.math.BigDecimal
+import java.text.SimpleDateFormat
+import java.util.Date
 import org.reactivestreams.Publisher
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Transient
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.empty
 import reactor.core.publisher.Mono.just
-import java.math.BigDecimal
-import java.text.SimpleDateFormat
-import java.util.Date
 
 // tag::patientEvent[]
 sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>

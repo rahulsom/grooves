@@ -6,22 +6,22 @@ import com.github.rahulsom.grooves.test.OnSpec
 import grooves.boot.kotlin.domain.Patient
 import grooves.boot.kotlin.domain.PatientEvent
 import grooves.boot.kotlin.domain.PatientEvent.Applicable.Created
-import grooves.boot.kotlin.domain.PatientEvent.Applicable.ProcedurePerformed
 import grooves.boot.kotlin.domain.PatientEvent.Applicable.PaymentMade
+import grooves.boot.kotlin.domain.PatientEvent.Applicable.ProcedurePerformed
 import grooves.boot.kotlin.queries.PatientAccountQuery
 import grooves.boot.kotlin.queries.PatientHealthQuery
 import grooves.boot.kotlin.repositories.PatientAccountRepository
 import grooves.boot.kotlin.repositories.PatientBlockingRepository
 import grooves.boot.kotlin.repositories.PatientEventBlockingRepository
 import grooves.boot.kotlin.repositories.PatientHealthRepository
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.repository.reactive.ReactiveCrudRepository
-import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.TimeZone
 import javax.annotation.PostConstruct
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.reactive.ReactiveCrudRepository
+import org.springframework.stereotype.Component
 
 @Component
 class BootStrap constructor(

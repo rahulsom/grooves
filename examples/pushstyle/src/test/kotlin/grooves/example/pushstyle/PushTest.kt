@@ -3,12 +3,12 @@ package grooves.example.pushstyle
 import com.google.inject.Guice
 import grooves.example.push.Application
 import grooves.example.push.BankingModule
+import java.util.concurrent.TimeUnit.SECONDS
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import java.util.concurrent.TimeUnit.SECONDS
 
 class PushTest {
 

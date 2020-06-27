@@ -1,13 +1,12 @@
 package com.github.rahulsom.grooves.asciidoctor
 
-import com.github.rahulsom.svg.Circle
-import com.github.rahulsom.svg.G
-
 import com.github.rahulsom.grooves.asciidoctor.Constants.aggregateHeight
 import com.github.rahulsom.grooves.asciidoctor.Constants.aggregateWidth
 import com.github.rahulsom.grooves.asciidoctor.Constants.eventLineHeight
 import com.github.rahulsom.grooves.asciidoctor.Constants.eventSpace
 import com.github.rahulsom.grooves.asciidoctor.Constants.offset
+import com.github.rahulsom.svg.Circle
+import com.github.rahulsom.svg.G
 import com.github.rahulsom.svg.ObjectFactory
 import java.text.SimpleDateFormat
 import java.util.Date

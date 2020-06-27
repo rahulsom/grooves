@@ -1,11 +1,11 @@
 package com.github.rahulsom.grooves.asciidoctor
 
-import org.asciidoctor.ast.AbstractBlock
-import org.asciidoctor.extension.BlockProcessor
-import org.asciidoctor.extension.Reader
 import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
+import org.asciidoctor.ast.AbstractBlock
+import org.asciidoctor.extension.BlockProcessor
+import org.asciidoctor.extension.Reader
 
 /**
  * Renders an Events block as SVG.
