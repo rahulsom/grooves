@@ -14,6 +14,7 @@ import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,8 @@ public interface VersionedQuerySupport<
                             it.getLastEventPosition() == 0 ? "<none>" :
                                     it.getLastEventPosition() == 0 ? "<none>" :
                                             it.toString();
-                    getLog().debug("  -> Last Usable Snapshot: {}", snapshotAsString);
+                    LoggerFactory.getLogger(getClass())
+                        .debug("  -> Last Usable Snapshot: {}", snapshotAsString);
                     it.setAggregate(aggregate);
                 });
     }
@@ -140,14 +142,15 @@ public interface VersionedQuerySupport<
     default Publisher<SnapshotT> computeSnapshot(
             @NotNull AggregateT aggregate, long version, boolean redirect) {
 
-        getLog().info("Computing snapshot for {} version {}",
+        LoggerFactory.getLogger(getClass()).info("Computing snapshot for {} version {}",
                 aggregate, version == Long.MAX_VALUE ? "<LATEST>" : version);
 
         return (getSnapshotAndEventsSince(aggregate, version).flatMap(seTuple2 -> {
             List<EventT> events = seTuple2.getSecond();
             SnapshotT lastUsableSnapshot = seTuple2.getFirst();
 
-            getLog().info("     Events including redirects: {}", Utils.stringify(events));
+            LoggerFactory.getLogger(getClass())
+                .info("     Events including redirects: {}", Utils.stringify(events));
 
             if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
                 return fromPublisher(lastUsableSnapshot.getAggregateObservable())
@@ -216,7 +219,7 @@ public interface VersionedQuerySupport<
                         Utils.setLastEvent(snapshot, lastEvent);
                     }
 
-                    getLog().info("  --> Computed: {}", snapshot);
+                    LoggerFactory.getLogger(getClass()).info("  --> Computed: {}", snapshot);
                 })
                 .flatMap(it -> returnOrRedirect(redirect, events, it,
                         () -> fromPublisher(it.getDeprecatedByObservable())

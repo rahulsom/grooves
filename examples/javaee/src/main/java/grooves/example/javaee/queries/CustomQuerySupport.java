@@ -11,6 +11,7 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -90,7 +91,7 @@ public interface CustomQuerySupport<
     @Override
     default Publisher<EventApplyOutcome> onException(
             @NotNull Exception e, @NotNull SnapshotT snapshot, @NotNull PatientEvent event) { // <6>
-        getLog().error("Error computing snapshot", e);
+        LoggerFactory.getLogger(getClass()).error("Error computing snapshot", e);
         return toPublisher(just(CONTINUE));
         // tag::documented[]
     }

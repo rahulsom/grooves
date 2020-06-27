@@ -36,25 +36,25 @@ repositories {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72"
-    compile "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
-    compile 'org.codehaus.groovy:groovy-all:2.4.15'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
+    implementation 'org.codehaus.groovy:groovy-all:2.4.15'
 
-    compile 'com.google.inject:guice:4.2.1'
-    compile 'com.google.guava:guava:27.0-jre'
+    implementation 'com.google.inject:guice:4.2.1'
+    implementation 'com.google.guava:guava:27.0-jre'
 
-    compile 'com.h2database:h2:1.4.197'
-    compile 'org.jooq:jooq'
+    implementation 'com.h2database:h2:1.4.197'
+    implementation 'org.jooq:jooq'
 
-    compile 'javax.xml.bind:jaxb-api:2.2.11'
-    compile 'com.sun.xml.bind:jaxb-core:2.2.11'
-    compile 'com.sun.xml.bind:jaxb-impl:2.2.11'
-    compile 'javax.activation:activation:1.1.1'
+    implementation 'javax.xml.bind:jaxb-api:2.2.11'
+    implementation 'com.sun.xml.bind:jaxb-core:2.2.11'
+    implementation 'com.sun.xml.bind:jaxb-impl:2.2.11'
+    implementation 'javax.activation:activation:1.1.1'
     compileOnly 'javax.annotation:javax.annotation-api:1.2'
 
-    compile project(':grooves-api')
+    implementation project(':grooves-api')
 
-    compile 'io.reactivex.rxjava2:rxjava:2.2.3'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.3'
     implementation "org.slf4j:slf4j-api:1.7.30"
 
     jooqRuntime 'com.h2database:h2:1.4.197'
@@ -65,8 +65,8 @@ dependencies {
 
     runtime 'ch.qos.logback:logback-classic:1.2.3'
 
-    testCompile 'junit:junit:4.+'
-    testCompile 'org.awaitility:awaitility:3.1.2'
+    testImplementation 'junit:junit:4.+'
+    testImplementation 'org.awaitility:awaitility:3.1.2'
 }
 
 jooq {

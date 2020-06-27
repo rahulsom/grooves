@@ -12,7 +12,7 @@ repositories {
 }
 dependencies {
   // ... other dependencies ...
-  compile 'com.github.rahulsom:grooves-java:{version}' // <2>
+  implementation 'com.github.rahulsom:grooves-java:{version}' // <2>
 }
 ----
 <1> In this example, we're using `mavenCentral`. You could also be using `jcenter` or `google`.
@@ -30,7 +30,7 @@ repositories {
 }
 dependencies {
   // ... other dependencies ...
-  compile 'com.github.rahulsom:grooves-groovy:{version}' // <2>
+  implementation 'com.github.rahulsom:grooves-groovy:{version}' // <2>
 }
 ----
 <1> In this example, we're using `mavenCentral`. You could also be using `jcenter` or `google`.
@@ -49,7 +49,7 @@ repositories {
 }
 dependencies {
   // ... other dependencies ...
-  compile 'com.github.rahulsom:grooves-gorm:{version}' // <2>
+  implementation 'com.github.rahulsom:grooves-gorm:{version}' // <2>
 }
 ----
 <1> In this example, we're using `mavenCentral`. You could also be using `jcenter` or `google`.
@@ -69,7 +69,7 @@ repositories {
 }
 dependencies {
   // ... other dependencies ...
-  compile 'com.github.rahulsom:grooves-api:{version}' // <2>
+  implementation 'com.github.rahulsom:grooves-api:{version}' // <2>
 }
 ----
 <1> In this example, we're using `mavenCentral`. You could also be using `jcenter` or `google`.

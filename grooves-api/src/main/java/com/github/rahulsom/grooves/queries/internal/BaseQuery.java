@@ -27,10 +27,6 @@ public interface BaseQuery<
         SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
         > {
 
-    default Logger getLog() {
-        return LoggerFactory.getLogger(getClass());
-    }
-
     /**
      * When no snapshot is found in the database, the query has to create the zero of the snapshot.
      * This is the implementation of such a snapshot.
