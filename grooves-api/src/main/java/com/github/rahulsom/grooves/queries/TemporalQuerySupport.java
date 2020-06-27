@@ -11,6 +11,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Publisher;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public interface TemporalQuerySupport<
         return fromPublisher(getSnapshot(maxTimestamp, aggregate))
                 .defaultIfEmpty(createEmptySnapshot())
                 .doOnNext(it -> {
-                    getLog().debug("  -> Last Usable Snapshot: {}",
+                    LoggerFactory.getLogger(getClass()).debug("  -> Last Usable Snapshot: {}",
                             it.getLastEventTimestamp() == null ? "<none>" : it.toString());
                     it.setAggregate(aggregate);
                 });
@@ -126,8 +127,8 @@ public interface TemporalQuerySupport<
      */
     @NotNull default Publisher<SnapshotT> computeSnapshot(
             @NotNull AggregateT aggregate, @NotNull Date moment, boolean redirect) {
-        if (getLog().isInfoEnabled()) {
-            getLog().info("Computing snapshot for {} at {}", aggregate,
+        if (LoggerFactory.getLogger(getClass()).isInfoEnabled()) {
+            LoggerFactory.getLogger(getClass()).info("Computing snapshot for {} at {}", aggregate,
                     new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(moment));
         }
 
@@ -135,7 +136,8 @@ public interface TemporalQuerySupport<
             List<EventT> events = seTuple2.getSecond();
             SnapshotT snapshot = seTuple2.getFirst();
 
-            getLog().info("     Events including redirects: {}", Utils.stringify(events));
+            LoggerFactory.getLogger(getClass())
+                .info("     Events including redirects: {}", Utils.stringify(events));
 
             if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
                 return fromPublisher(snapshot.getAggregateObservable())
@@ -195,7 +197,7 @@ public interface TemporalQuerySupport<
                     if (!events.isEmpty()) {
                         Utils.setLastEvent(snapshot, events.get(events.size() - 1));
                     }
-                    getLog().info("  --> Computed: {}", snapshot);
+                    LoggerFactory.getLogger(getClass()).info("  --> Computed: {}", snapshot);
                 })
                 .flatMap(it -> returnOrRedirect(redirect, events, it,
                         () -> fromPublisher(it.getDeprecatedByObservable())

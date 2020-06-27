@@ -1,20 +1,20 @@
 apply plugin: 'groovy'
+apply plugin: 'java-library'
 apply from: "$rootDir/gradle/publishing.gradle"
 apply from: "$rootDir/gradle/codenarc/codenarc.gradle"
 
 dependencies {
-    compile project(':grooves-api')
+    api project(':grooves-api')
+    api 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
+    api 'org.spockframework:spock-core:1.1-groovy-2.4'
 
     compile 'io.reactivex.rxjava2:rxjava:2.2.19'
-    compile "org.slf4j:slf4j-api:1.7.30"
+    implementation "org.slf4j:slf4j-api:1.7.30"
 
-    compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
-    compile 'xerces:xercesImpl:2.12.0'
-    compile "org.slf4j:slf4j-api:1.7.30"
-    compile 'org.spockframework:spock-core:1.1-groovy-2.4'
-    compile 'org.codehaus.groovy:groovy-all:2.4.15'
-    compile 'org.apache.httpcomponents:httpclient:4.5.12'
-    compile 'commons-beanutils:commons-beanutils:1.9.4'
+    implementation 'xerces:xercesImpl:2.12.0'
+    implementation 'org.codehaus.groovy:groovy-all:2.4.15'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.12'
+    implementation 'commons-beanutils:commons-beanutils:1.9.4'
 
     compileOnly 'org.jetbrains:annotations:19.0.0'
 }
