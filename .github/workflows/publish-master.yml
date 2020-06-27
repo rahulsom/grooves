@@ -46,9 +46,12 @@ jobs:
         GRGIT_USER: ${{secrets.GH_TOKEN}}
       run: |
         mkdir -p ~/.gradle
-        echo "nexusUsername=$NEXUS_USER"     >> ~/.gradle/gradle.properties
-        echo "nexusPassword=$NEXUS_PASSWORD" >> ~/.gradle/gradle.properties
-        ./gradlew build snapshot asciidoctor --stacktrace --scan
+        {
+          echo "nexusUsername=$NEXUS_USER"
+          echo "nexusPassword=$NEXUS_PASSWORD"
+          echo "systemProp.sonar.login=$SONAR_TOKEN"
+        } >> ~/.gradle/gradle.properties
+        ./gradlew build snapshot asciidoctor sonarqube --stacktrace --scan
 
     - uses: codecov/codecov-action@v1
       name: Publish Code Coverage

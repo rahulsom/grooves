@@ -20,10 +20,7 @@ function gw() {
 }
 
 function sonarqube() {
-    gw sonarqube \
-            -Dsonar.login=${SONAR_TOKEN} \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.organization=rahulsom-github
+    gw sonarqube -Dsonar.login=${SONAR_TOKEN}
 }
 
 function main() {
