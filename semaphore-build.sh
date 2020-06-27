@@ -18,11 +18,7 @@ readonly GH_TOKEN
 readonly TERM
 
 function gw() {
-    ./gradlew --scan --build-cache --stacktrace --configure-on-demand "$@"
-}
-
-function codecov() {
-    bash <(curl -s https://codecov.io/bash) -t ${CODECOV_IO_TOKEN}
+    ./gradlew "$@"
 }
 
 function setupSonatype() {
@@ -37,74 +33,14 @@ function sonarqube() {
             -Dsonar.organization=rahulsom-github
 }
 
-function getLatestRelease() {
-    curl -s "https://api.github.com/repos/$1/releases/latest" \
-            | jq -r ".tag_name" \
-            | python extractVersion.py
-}
-
-CODE_COMMITTED=no
-function commitNewCode() {
-    git add .
-    git config --global user.email "semaphoreci@grooves.rahulsom.github.com"
-    git config --global user.name "SemaphoreCI"
-    git commit -m "$1"
-    git push
-    CODE_COMMITTED=yes
-}
-
-function resetChanges () {
-    git reset --hard
-    CODE_COMMITTED=no
-    ERROR_IN="$ERROR_IN $1"
-    echo "ERROR_IN<<$ERROR_IN"
-}
-
-function updateGradleWrapper() {
-    local NEW_GRADLE=$(getLatestRelease gradle/gradle)
-    echo "Upgrading gradle to $NEW_GRADLE"
-    gw wrapper --gradle-version ${NEW_GRADLE} --distribution-type all
-    if [[ $(git status --short| wc -l) != 0 ]]; then
-        echo "New gradle found. Testing..."
-        gw check asciidoctor \
-                && commitNewCode "Upgrade gradlew to $NEW_GRADLE" \
-                || resetChanges update-gradlew
-    else
-        echo "No gradlew update available"
-    fi
-}
-
 function main() {
-    if [[ "$SEMAPHORE_TRIGGER_SOURCE" = "scheduler" ]]; then
-        updateGradleWrapper
-        if [[ "$(echo ${ERROR_IN})" != "" ]]; then
-            exit 1
-        fi
-    else
-        if [[ "$PULL_REQUEST_NUMBER" != "" ]]; then
-            gw check asciidoctor && codecov
-        elif [[ "$BRANCH_NAME" = "master" ]]; then
+        if [[ "$BRANCH_NAME" = "master" ]]; then
             setupSonatype && gw build snapshot && sonarqube
         elif [[ "$BRANCH_NAME" =~ ^[0-9]+\.[0-9]+\.x$ ]]; then
             setupSonatype && gw build snapshot && sonarqube
         else
-            gw check && codecov
+            gw check asciidoctor
         fi
-    fi
 }
 
-function setup() {
-    mkdir -p ~/.gradle/cache
-    rsync -a ${SEMAPHORE_CACHE_DIR}/gradle ~/.gradle/cache || echo "no cache existed"
-    gw --scan --build-cache --configure-on-demand
-}
-
-function recache() {
-    git status
-    mkdir -p ${SEMAPHORE_CACHE_DIR}/gradle
-    rsync -a ~/.gradle/cache ${SEMAPHORE_CACHE_DIR}/gradle
-}
-
-setup
 main
-recache
