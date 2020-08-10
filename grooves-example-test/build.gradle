@@ -16,7 +16,7 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpclient:4.5.12'
     implementation 'commons-beanutils:commons-beanutils:1.9.4'
 
-    compileOnly 'org.jetbrains:annotations:19.0.0'
+    compileOnly 'org.jetbrains:annotations:20.0.0'
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
