@@ -484,7 +484,7 @@ You could very well be using Maven, or ant+ivy, or leiningen, or sbt.</p>
 }
 dependencies {
   // ... other dependencies ...
-  compile 'com.github.rahulsom:grooves-java:0.7.0-SNAPSHOT' <i class="conum" data-value="2"></i><b>(2)</b>
+  implementation 'com.github.rahulsom:grooves-java:0.7.0-SNAPSHOT' <i class="conum" data-value="2"></i><b>(2)</b>
 }</code></pre>
 </div>
 </div>
@@ -512,7 +512,7 @@ That contains the interfaces for your aggregates, events, and snapshots.</td>
 }
 dependencies {
   // ... other dependencies ...
-  compile 'com.github.rahulsom:grooves-groovy:0.7.0-SNAPSHOT' <i class="conum" data-value="2"></i><b>(2)</b>
+  implementation 'com.github.rahulsom:grooves-groovy:0.7.0-SNAPSHOT' <i class="conum" data-value="2"></i><b>(2)</b>
 }</code></pre>
 </div>
 </div>
@@ -541,7 +541,7 @@ That contains the interfaces for your aggregates, events, and snapshots.</td>
 }
 dependencies {
   // ... other dependencies ...
-  compile 'com.github.rahulsom:grooves-gorm:0.7.0-SNAPSHOT' <i class="conum" data-value="2"></i><b>(2)</b>
+  implementation 'com.github.rahulsom:grooves-gorm:0.7.0-SNAPSHOT' <i class="conum" data-value="2"></i><b>(2)</b>
 }</code></pre>
 </div>
 </div>
@@ -571,7 +571,7 @@ It has transitive dependencies on <code>grooves-api</code>, and <code>grooves-ty
 }
 dependencies {
   // ... other dependencies ...
-  compile 'com.github.rahulsom:grooves-api:0.7.0-SNAPSHOT' <i class="conum" data-value="2"></i><b>(2)</b>
+  implementation 'com.github.rahulsom:grooves-api:0.7.0-SNAPSHOT' <i class="conum" data-value="2"></i><b>(2)</b>
 }</code></pre>
 </div>
 </div>
@@ -1298,7 +1298,7 @@ public interface CustomQuerySupport&lt;
     @Override
     default Publisher&lt;EventApplyOutcome&gt; onException(
             @NotNull Exception e, @NotNull SnapshotT snapshot, @NotNull PatientEvent event) { <i class="conum" data-value="6"></i><b>(6)</b>
-        getLog().error("Error computing snapshot", e);
+        LoggerFactory.getLogger(getClass()).error("Error computing snapshot", e);
         return toPublisher(just(CONTINUE));
     }
 
