@@ -1,6 +1,5 @@
 apply plugin: 'java-library'
 apply plugin: 'groovy'
-apply from: "$rootDir/gradle/publishing.gradle"
 apply from: "$rootDir/gradle/jacoco.gradle"
 
 description = "Support for completeness of queries in Groovy code"

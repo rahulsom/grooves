@@ -14,7 +14,6 @@ apply plugin: 'java-library'
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "org.jetbrains.dokka"
 apply plugin: "org.jlleitschuh.gradle.ktlint"
-apply from: "$rootDir/gradle/publishing.gradle"
 apply from: "$rootDir/gradle/jacoco.gradle"
 
 description = "Types that are used by Grooves to build an Event Sourcing system"

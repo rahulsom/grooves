@@ -15,7 +15,6 @@ apply plugin: "org.jetbrains.dokka"
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply plugin: 'groovy'
 apply plugin: 'java-library'
-apply from: "$rootDir/gradle/publishing.gradle"
 apply from: "$rootDir/gradle/jacoco.gradle"
 
 description = "Asciidoctor Extension to generate Event Sourcing Diagrams like those on https://rahulsom.github.io/grooves"
