@@ -14,7 +14,7 @@ dependencies {
     implementation 'xerces:xercesImpl:2.12.0'
     implementation 'org.codehaus.groovy:groovy-all:2.4.15'
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
-    implementation 'commons-beanutils:commons-beanutils:1.9.4'
+    implementation 'commons-beanutils:commons-beanutils:20030211.134440'
 
     compileOnly 'org.jetbrains:annotations:20.1.0'
 }
