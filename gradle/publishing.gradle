@@ -3,13 +3,13 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
-        classpath 'com.netflix.nebula:gradle-info-plugin:4.0.3'
+//        classpath 'com.netflix.nebula:nebula-publishing-plugin:17.0.0'
+//        classpath "com.netflix.nebula:nebula-bintray-plugin:8.5.0"
     }
 }
 
-apply plugin: com.bmuschko.gradle.nexus.NexusPlugin
-apply plugin: nebula.plugin.info.InfoPlugin
+//apply plugin: nebula.plugin.publishing.maven.MavenNebulaPublishPlugin
+apply plugin: nebula.plugin.bintray.NebulaBintrayPublishingPlugin
 
 targetCompatibility = '1.8'
 sourceCompatibility = '1.8'
@@ -18,48 +18,44 @@ dependencyLocking {
     lockAllConfigurations()
 }
 
-modifyPom {
-    project {
-        name project.name.split('-').collect { it.capitalize() }.join(' ')
-        description project.description
-        url 'https://rahulsom.github.io/grooves'
-        inceptionYear '2017'
+//modifyPom {
+//    project {
+//        name project.name.split('-').collect { it.capitalize() }.join(' ')
+//        description project.description
+//        url 'https://rahulsom.github.io/grooves'
+//        inceptionYear '2017'
+//
+//        scm {
+//            url 'https://github.com/rahulsom/grooves'
+//            connection 'scm:https://github.com/rahulsom/grooves.git'
+//            developerConnection 'scm:git://github.com/rahulsom/grooves.git'
+//        }
+//
+//        licenses {
+//            license {
+//                name 'The Apache Software License, Version 2.0'
+//                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//                distribution 'repo'
+//            }
+//        }
+//
+//        developers {
+//            developer {
+//                id 'rahulsom'
+//                name 'Rahul Somasunderam'
+//                email 'rahul.som@gmail.com'
+//            }
+//        }
+//
+//        issueManagement {
+//            system 'Github'
+//            url 'https://github.com/rahulsom/grooves/issues'
+//        }
+//    }
+//}
 
-        scm {
-            url 'https://github.com/rahulsom/grooves'
-            connection 'scm:https://github.com/rahulsom/grooves.git'
-            developerConnection 'scm:git://github.com/rahulsom/grooves.git'
-        }
-
-        licenses {
-            license {
-                name 'The Apache Software License, Version 2.0'
-                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                distribution 'repo'
-            }
-        }
-
-        developers {
-            developer {
-                id 'rahulsom'
-                name 'Rahul Somasunderam'
-                email 'rahul.som@gmail.com'
-            }
-        }
-
-        issueManagement {
-            system 'Github'
-            url 'https://github.com/rahulsom/grooves/issues'
-        }
-    }
-}
-
-extraArchive {
-    sources = true
-    tests = true
-    javadoc = false
-}
-
-nexus {
-    sign = true
-}
+//extraArchive {
+//    sources = true
+//    tests = true
+//    javadoc = false
+//}

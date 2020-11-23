@@ -14,10 +14,12 @@ buildscript {
 apply plugin: "me.champeau.buildscan-recipes"
 apply plugin: "io.codearte.nexus-staging"
 apply plugin: "org.sonarqube"
-apply plugin: "nebula.release"
+apply plugin: nebula.plugin.publishing.maven.MavenNebulaPublishPlugin
+apply plugin: "com.dorongold.task-tree"
 
 allprojects {
     group = 'com.github.rahulsom'
+    apply plugin: 'nebula.release'
 }
 
 subprojects {
@@ -49,26 +51,8 @@ subprojects {
     }
 }
 
-gradle.releasable.each {
-    tasks.release.dependsOn "grooves-${it}:uploadArchives"
-}
-tasks.getByName('release').dependsOn 'grooves-docs:gitPublishPush'
-
-project.afterEvaluate {
-    gradle.releasable.each {
-        project.tasks.findByName('closeRepository').mustRunAfter "grooves-${it}:uploadArchives"
-    }
-
-    if (!version.toString().endsWith('-SNAPSHOT')) {
-        tasks.release.dependsOn 'closeAndReleaseRepository'// , 'srcclr'
-    }
-}
+// tasks.getByName('release').dependsOn 'grooves-docs:gitPublishPush'
 
 buildScanRecipes {
     recipes 'git-commit', 'git-status', 'travis-ci', 'gc-stats'
-}
-
-nexusStaging {
-    delayBetweenRetriesInMillis = 10000
-    numberOfRetries = 30
 }
