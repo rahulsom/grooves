@@ -23,7 +23,7 @@ dependencies {
     api 'org.reactivestreams:reactive-streams:1.0.3'
     implementation "org.slf4j:slf4j-api:1.7.30"
 
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.21"
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.21-2"
 
     testImplementation "org.spockframework:spock-core:1.1-groovy-2.4"
 }
