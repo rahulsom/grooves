@@ -1,6 +1,6 @@
 package com.github.rahulsom.grooves.asciidoctor
 
-import com.github.rahulsom.grooves.asciidoctor.Constants.LESS
+import com.github.rahulsom.grooves.asciidoctor.Constants.CSS
 import com.github.rahulsom.grooves.asciidoctor.Constants.aggregateWidth
 import com.github.rahulsom.grooves.asciidoctor.Constants.eventLineHeight
 import com.github.rahulsom.grooves.asciidoctor.Constants.eventSpace
@@ -10,7 +10,6 @@ import com.github.rahulsom.svg.Rect
 import com.github.rahulsom.svg.SVGMarkerClass
 import com.github.rahulsom.svg.SVGStyleClass
 import com.github.rahulsom.svg.Svg
-import com.github.sommeri.less4j.core.ThreadUnsafeLessCompiler
 import java.io.File
 import java.lang.Boolean.TRUE
 import java.text.SimpleDateFormat
@@ -105,11 +104,9 @@ class SvgBuilder(private val input: String) {
         val svg = Svg().withHeight("${aggregates.size * eventLineHeight}")
             .withWidth("${dates.values.max()!! * eventSpace + 4 * aggregateWidth}")
 
-        val css = ThreadUnsafeLessCompiler().compile(LESS).css
-
         svg.withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
             ObjectFactory().createStyle(
-                SVGStyleClass().withContent("/* <![CDATA[ */" + css + "/* ]]> */")
+                SVGStyleClass().withContent("/* <![CDATA[ */" + CSS + "/* ]]> */")
             )
         )
 

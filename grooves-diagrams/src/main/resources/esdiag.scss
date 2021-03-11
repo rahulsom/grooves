@@ -1,33 +1,33 @@
-@fixedWidthFont: Menlo, monospace;
-@serifFont: "Times New Roman", serif;
-@lightStroke: 0.2;
-@darkStroke: 2;
-@goldColor: #e6c300;
+$fixedWidthFont: Menlo, monospace;
+$serifFont: "Times New Roman", serif;
+$lightStroke: 0.2;
+$darkStroke: 2;
+$goldColor: #e6c300;
 
 .background {
     fill: #FCFCFC;
-    stroke-width: @lightStroke;
+    stroke-width: $lightStroke;
     stroke: grey;
 }
 
 .aggregate {
     rect {
         fill: azure;
-        stroke-width: @lightStroke;
+        stroke-width: $lightStroke;
         stroke: grey;
     }
     text {
-        font-family: @fixedWidthFont;
+        font-family: $fixedWidthFont;
         font-size: 14px;
     }
     .description {
-        font-family: @serifFont;
+        font-family: $serifFont;
         font-size: 16px;
         font-style: italic;
     }
     line {
         stroke: grey;
-        stroke-width: @lightStroke;
+        stroke-width: $lightStroke;
     }
 
 }
@@ -35,15 +35,15 @@
 .event {
     path {
         fill: transparent;
-        stroke-width: @darkStroke;
+        stroke-width: $darkStroke;
     }
     circle {
         fill: azure;
-        stroke-width: @lightStroke;
+        stroke-width: $lightStroke;
         stroke: grey;
     }
     text {
-        font-family: @fixedWidthFont;
+        font-family: $fixedWidthFont;
         font-size: 12px;
         stroke: grey;
         stroke-width: 0.1;
@@ -58,7 +58,7 @@
 
 .event.reverted {
     path {
-        stroke-width: @lightStroke;
+        stroke-width: $lightStroke;
     }
 }
 
@@ -97,7 +97,7 @@
 
 .event.Deprecates {
     circle {
-        fill: @goldColor;
+        fill: $goldColor;
     }
     text {
         fill: white;
@@ -107,18 +107,18 @@
 
 .event.Join {
     circle {
-        stroke-width: @darkStroke;
-        stroke: @goldColor;
+        stroke-width: $darkStroke;
+        stroke: $goldColor;
     }
     path {
-        stroke: @goldColor;
+        stroke: $goldColor;
         stroke-dasharray: 5, 5;
     }
 }
 
 .event.Disjoin {
     circle {
-        stroke-width: @darkStroke;
+        stroke-width: $darkStroke;
     }
     path {
         stroke: gray;

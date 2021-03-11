@@ -13,5 +13,5 @@ object Constants {
     val offset: Int = 45
     val textLineHeight: Int = 18
 
-    val LESS: String = Constants::class.java.getResourceAsStream("/esdiag.less").reader().readText()
+    val CSS: String = Constants::class.java.getResourceAsStream("/esdiag.css").reader().readText()
 }
