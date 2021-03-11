@@ -1,7 +1,4 @@
-# This workflow will build a Java project with Gradle
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
-
-name: Publish Master
+name: Build Master
 
 on:
   push:
@@ -9,7 +6,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +18,6 @@ jobs:
         key: ${{ runner.os }}-${{hashFiles('**/*.gradle')}}
         path: |
           ~/.gradle/caches
-
     - name: Cache Gradle Wrapper
       id: cache-gradle-wrapper
       uses: actions/cache@v2
@@ -30,7 +25,6 @@ jobs:
         key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
         path: |
           ~/.gradle/wrapper
-
     - uses: gradle/wrapper-validation-action@v1
       name: Validate Gradle Wrapper
 
@@ -41,14 +35,11 @@ jobs:
 
     - name: Build with Gradle
       env:
-        NEXUS_USER: rahulsom
-        NEXUS_PASSWORD: ${{secrets.NEXUS_PASSWORD}}
-        GRGIT_USER: ${{secrets.GH_TOKEN}}
-      run: |
-        mkdir -p ~/.gradle
-        echo "nexusUsername=$NEXUS_USER"     >> ~/.gradle/gradle.properties
-        echo "nexusPassword=$NEXUS_PASSWORD" >> ~/.gradle/gradle.properties
-        ./gradlew build snapshot asciidoctor --stacktrace --scan
+        ORG_GRADLE_PROJECT_sonatypeUsername: rahulsom
+        ORG_GRADLE_PROJECT_sonatypePassword: ${{secrets.ORG_GRADLE_PROJECT_sonatypePassword}}
+        ORG_GRADLE_PROJECT_signingKey:       ${{secrets.ORG_GRADLE_PROJECT_signingKey}}
+        ORG_GRADLE_PROJECT_signingPassword:  ${{secrets.ORG_GRADLE_PROJECT_signingPassword}}
+      run: ./gradlew build snapshot asciidoctor --stacktrace --scan
 
     - uses: codecov/codecov-action@v1
       name: Publish Code Coverage
