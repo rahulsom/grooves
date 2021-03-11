@@ -1,5 +1,8 @@
-apply plugin: 'java-library'
-apply from: "$rootDir/gradle/publishing.gradle"
+plugins {
+    id("java-library")
+    id("com.github.rahulsom.waena.published")
+}
+
 apply from: "$rootDir/gradle/jacoco.gradle"
 
 description = "AspectJ Support for Java implementations of Grooves"
@@ -16,9 +19,4 @@ dependencies {
     testImplementation 'io.reactivex:rxjava-reactive-streams:1.2.1'
 
     testRuntime "org.jetbrains:annotations:16.0.3"
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.outputDirectory
 }

@@ -1,5 +1,9 @@
-apply plugin: 'java-library'
-apply from: "$rootDir/gradle/publishing.gradle"
+plugins {
+    id("java-library")
+    id("org.jetbrains.kotlin.jvm") version "1.4.31"
+    id("com.github.rahulsom.waena.published")
+}
+
 apply from: "$rootDir/gradle/jacoco.gradle"
 
 description = "APIs that help in computation of Grooves based Snapshots"
@@ -12,9 +16,4 @@ dependencies {
 
     compileOnly "org.codehaus.groovy:groovy:2.5.14"
     compileOnly 'org.jetbrains:annotations:20.1.0'
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.outputDirectory
 }

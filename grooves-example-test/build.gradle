@@ -1,6 +1,9 @@
-apply plugin: 'groovy'
-apply plugin: 'java-library'
-apply from: "$rootDir/gradle/publishing.gradle"
+plugins {
+    id("java-library")
+    id("groovy")
+    id("com.github.rahulsom.waena.published")
+}
+
 apply from: "$rootDir/gradle/codenarc/codenarc.gradle"
 
 dependencies {
@@ -17,9 +20,4 @@ dependencies {
     implementation 'commons-beanutils:commons-beanutils:1.9.4'
 
     compileOnly 'org.jetbrains:annotations:20.1.0'
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.outputDirectory
 }

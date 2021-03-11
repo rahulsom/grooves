@@ -4,22 +4,24 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
+        classpath "com.bmuschko:gradle-cargo-plugin:2.7.1"
+
         classpath "me.champeau.gradle:buildscan-recipes-plugin:0.2.3"
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.30.0"
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.1.1"
-        classpath "com.netflix.nebula:nebula-release-plugin:15.3.1"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.0"
+
+        classpath 'org.jlleitschuh.gradle:ktlint-gradle:9.2.1'
     }
 }
 
+plugins {
+    id("com.github.rahulsom.waena.root") version "0.2.0"
+}
+
 apply plugin: "me.champeau.buildscan-recipes"
-apply plugin: "io.codearte.nexus-staging"
 apply plugin: "org.sonarqube"
-apply plugin: nebula.plugin.publishing.maven.MavenNebulaPublishPlugin
-apply plugin: "com.dorongold.task-tree"
 
 allprojects {
     group = 'com.github.rahulsom'
-    apply plugin: 'nebula.release'
 }
 
 subprojects {
