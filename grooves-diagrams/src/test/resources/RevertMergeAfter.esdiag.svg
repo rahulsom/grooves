@@ -3,35 +3,37 @@
     <style>/* &lt;![CDATA[ */.background {
   fill: #FCFCFC;
   stroke-width: 0.2;
-  stroke: grey; }
+  stroke: grey;
+}
 
 .aggregate rect {
   fill: azure;
   stroke-width: 0.2;
-  stroke: grey; }
-
+  stroke: grey;
+}
 .aggregate text {
   font-family: Menlo, monospace;
-  font-size: 14px; }
-
+  font-size: 14px;
+}
 .aggregate .description {
   font-family: "Times New Roman", serif;
   font-size: 16px;
-  font-style: italic; }
-
+  font-style: italic;
+}
 .aggregate line {
   stroke: grey;
-  stroke-width: 0.2; }
+  stroke-width: 0.2;
+}
 
 .event path {
   fill: transparent;
-  stroke-width: 2; }
-
+  stroke-width: 2;
+}
 .event circle {
   fill: azure;
   stroke-width: 0.2;
-  stroke: grey; }
-
+  stroke: grey;
+}
 .event text {
   font-family: Menlo, monospace;
   font-size: 12px;
@@ -39,63 +41,72 @@
   stroke-width: 0.1;
   fill: grey;
   text-anchor: middle;
-  alignment-baseline: central; }
-
+  alignment-baseline: central;
+}
 .event circle.reverted {
-  fill: lightgrey !important; }
+  fill: lightgrey !important;
+}
 
 .event.reverted path {
-  stroke-width: 0.2; }
+  stroke-width: 0.2;
+}
 
 .event.Revert circle {
-  fill: #ffe5e5; }
-
+  fill: #ffe5e5;
+}
 .event.Revert path {
   stroke: red;
   stroke-dasharray: 5, 5;
-  marker-end: url(#triangle); }
+  marker-end: url(#triangle);
+}
 
 .eventCreated {
   fill: #FCFCFC;
   stroke-width: 1 !important;
-  stroke: #222; }
+  stroke: #222;
+}
 
 .event.DeprecatedBy circle {
-  fill: black; }
-
+  fill: black;
+}
 .event.DeprecatedBy text {
   fill: white;
   stroke-width: 0;
-  font-weight: 100; }
-
+  font-weight: 100;
+}
 .event.DeprecatedBy path {
   stroke: blue;
   stroke-dasharray: 5, 5;
-  marker-end: url(#triangle); }
+  marker-end: url(#triangle);
+}
 
 .event.Deprecates circle {
-  fill: #e6c300; }
-
+  fill: #e6c300;
+}
 .event.Deprecates text {
   fill: white;
-  font-weight: bold; }
+  font-weight: bold;
+}
 
 .event.Join circle {
   stroke-width: 2;
-  stroke: #e6c300; }
-
+  stroke: #e6c300;
+}
 .event.Join path {
   stroke: #e6c300;
-  stroke-dasharray: 5, 5; }
+  stroke-dasharray: 5, 5;
+}
 
 .event.Disjoin circle {
-  stroke-width: 2; }
-
+  stroke-width: 2;
+}
 .event.Disjoin path {
   stroke: gray;
-  stroke-dasharray: 2, 5; }
+  stroke-dasharray: 2, 5;
+}
 
-/*# sourceMappingURL=esdiag.css.map *//* ]]&gt; */</style>
+/*# sourceMappingURL=esdiag.css.map */
+/* ]]&gt; */</style>
     <rect x="0" y="0" width="850.0" height="200" class="background"/>
     <defs>
         <marker refX="0" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto" viewBox="0 0 10 10" id="triangle">

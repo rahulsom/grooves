@@ -6,12 +6,14 @@ package com.github.rahulsom.grooves.asciidoctor
  * @author Rahul Somasunderam
  */
 object Constants {
-    val eventLineHeight: Int = 100
-    val aggregateHeight: Int = 40
-    val aggregateWidth: Int = 100
-    val eventSpace: Int = 50
-    val offset: Int = 45
-    val textLineHeight: Int = 18
+    const val eventLineHeight: Int = 100
+    const val aggregateHeight: Int = 40
+    const val aggregateWidth: Int = 100
+    const val eventSpace: Int = 50
+    const val offset: Int = 45
+    const val textLineHeight: Int = 18
 
-    val CSS: String = Constants::class.java.getResourceAsStream("/esdiag.css").reader().readText()
+    val CSS: String by lazy {
+        Constants::class.java.getResourceAsStream("/esdiag.css").reader().readText()
+    }
 }

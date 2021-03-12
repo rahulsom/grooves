@@ -2,7 +2,7 @@ plugins {
     id("java-library")
     id("org.jetbrains.kotlin.jvm") version "1.4.31"
     id("com.github.rahulsom.waena.published")
-    id("io.freefair.jsass-java") version "5.3.0"
+    id("io.miret.etienne.sass") version "1.1.1"
 }
 
 apply plugin: 'groovy'
@@ -33,3 +33,16 @@ dependencies {
 compileGroovy.dependsOn compileKotlin
 compileGroovy.classpath += files(compileKotlin.destinationDir)
 classes.dependsOn compileGroovy
+
+compileSass {
+    sourceDir = project.file ("${projectDir}/src/main/resources")
+    outputDir = project.file ("${buildDir}/generated/css")
+}
+
+sourceSets {
+    main {
+        resources.srcDirs "${buildDir}/generated/css"
+    }
+}
+
+tasks.getByName("processResources").dependsOn("compileSass")
