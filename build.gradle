@@ -4,7 +4,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath "com.bmuschko:gradle-cargo-plugin:2.7.1"
+        classpath "com.bmuschko:gradle-cargo-plugin:2.8.0"
 
         classpath "me.champeau.gradle:buildscan-recipes-plugin:0.2.3"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.0"
