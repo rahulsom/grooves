@@ -14,7 +14,7 @@ buildscript {
 }
 
 plugins {
-    id("com.github.rahulsom.waena.root").version("0.2.0")
+    id("com.github.rahulsom.waena.root").version("0.2.1")
     id("org.jetbrains.kotlin.jvm").version("1.4.31").apply(false)
 }
 
