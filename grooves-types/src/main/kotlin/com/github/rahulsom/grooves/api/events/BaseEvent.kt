@@ -1,7 +1,7 @@
 package com.github.rahulsom.grooves.api.events
 
-import java.util.Date
 import org.reactivestreams.Publisher
+import java.util.Date
 
 /**
  * Base class for Events corresponding to [AggregateT].

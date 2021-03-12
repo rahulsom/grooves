@@ -13,11 +13,11 @@ import com.github.rahulsom.grooves.api.events.BaseEvent
  * @author Rahul Somasunderam
  */
 interface BaseJoin<
-        AggregateT,
-        JoinIdT,
-        in JoinedAggregateT,
-        EventIdT,
-        in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
+    AggregateT,
+    JoinIdT,
+    in JoinedAggregateT,
+    EventIdT,
+    in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
     BaseSnapshot<AggregateT, JoinIdT, EventIdT, EventT> {
 
     fun addJoinedAggregate(joinedAggregateT: JoinedAggregateT)

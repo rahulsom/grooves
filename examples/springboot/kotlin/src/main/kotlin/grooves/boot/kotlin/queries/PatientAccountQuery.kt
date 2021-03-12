@@ -9,11 +9,11 @@ import grooves.boot.kotlin.domain.PatientAccount
 import grooves.boot.kotlin.domain.PatientEvent
 import grooves.boot.kotlin.repositories.PatientAccountRepository
 import grooves.boot.kotlin.repositories.PatientEventRepository
-import java.lang.Exception
-import java.util.Date
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono.just
+import java.lang.Exception
+import java.util.Date
 
 @Component
 // tag::documented[]
@@ -21,12 +21,13 @@ class PatientAccountQuery constructor(
     @Autowired val patientEventRepository: PatientEventRepository,
     @Autowired val patientAccountRepository: PatientAccountRepository
 ) :
-    QuerySupport<Patient, String, PatientEvent, String, PatientAccount>, // <1>
+    QuerySupport<Patient, String, PatientEvent, String, PatientAccount>,
+    // <1>
     SimpleQuery<Patient, String, PatientEvent, PatientEvent.Applicable, String,
-            PatientAccount> { // <2>
+        PatientAccount> { // <2>
 
     override fun getExecutor() = SimpleExecutor<Patient, String, PatientEvent,
-            PatientEvent.Applicable, String, PatientAccount, PatientAccountQuery>() // <3>
+        PatientEvent.Applicable, String, PatientAccount, PatientAccountQuery>() // <3>
 
     override fun createEmptySnapshot() = PatientAccount() // <4>
 

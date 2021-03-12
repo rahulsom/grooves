@@ -4,9 +4,6 @@ import grooves.boot.kotlin.queries.PatientAccountQuery
 import grooves.boot.kotlin.queries.PatientHealthQuery
 import grooves.boot.kotlin.repositories.PatientEventRepository
 import grooves.boot.kotlin.repositories.PatientRepository
-import java.time.Instant
-import java.util.Calendar
-import java.util.Calendar.HOUR
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,6 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
+import java.time.Instant
+import java.util.Calendar
+import java.util.Calendar.HOUR
 
 @RestController
 class PatientController constructor(
@@ -48,12 +48,14 @@ class PatientController constructor(
     ) =
         patientRepository.findById(id)
             .flatMap { patient ->
-                Mono.from(version?.let { patientAccountQuery.computeSnapshot(patient, it) }
+                Mono.from(
+                    version?.let { patientAccountQuery.computeSnapshot(patient, it) }
                         ?: date?.let {
                             patientAccountQuery.computeSnapshot(
                                 patient, extractDate(it)
                             )
-                        } ?: patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE))
+                        } ?: patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE)
+                )
             }
 
     private fun extractDate(instant: Instant) =
@@ -77,11 +79,13 @@ class PatientController constructor(
     ) =
         patientRepository.findById(id)
             .flatMap { patient ->
-                Mono.from(version?.let { patientHealthQuery.computeSnapshot(patient, version) }
+                Mono.from(
+                    version?.let { patientHealthQuery.computeSnapshot(patient, version) }
                         ?: date?.let {
                             patientHealthQuery.computeSnapshot(
                                 patient, extractDate(it)
                             )
-                        } ?: patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE))
+                        } ?: patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE)
+                )
             }
 }

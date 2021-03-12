@@ -14,10 +14,10 @@ import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot
  * @author Rahul Somasunderam
  */
 interface VersionedSnapshot<
-        AggregateT,
-        SnapshotIdT,
-        EventIdT,
-        in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
+    AggregateT,
+    SnapshotIdT,
+    EventIdT,
+    in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
     BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT> {
 
     /**

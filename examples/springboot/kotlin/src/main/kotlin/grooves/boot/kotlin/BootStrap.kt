@@ -14,14 +14,14 @@ import grooves.boot.kotlin.repositories.PatientAccountRepository
 import grooves.boot.kotlin.repositories.PatientBlockingRepository
 import grooves.boot.kotlin.repositories.PatientEventBlockingRepository
 import grooves.boot.kotlin.repositories.PatientHealthRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.reactive.ReactiveCrudRepository
+import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.TimeZone
 import javax.annotation.PostConstruct
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.repository.reactive.ReactiveCrudRepository
-import org.springframework.stereotype.Component
 
 @Component
 class BootStrap constructor(
@@ -165,12 +165,12 @@ class BootStrap constructor(
     }
 
     private fun <SnapshotT : Snapshot<Patient, String, String, PatientEvent>,
-            QueryT : QuerySupport<Patient, String, PatientEvent, String, SnapshotT>> snapshotWith(
-                it: OnSpec<Patient, String, PatientEvent, String,
-                out Snapshot<Patient, String, String, PatientEvent>>,
-                query: QueryT,
-                repository: ReactiveCrudRepository<SnapshotT, String>
-            ) = null
+        QueryT : QuerySupport<Patient, String, PatientEvent, String, SnapshotT>> snapshotWith(
+        it: OnSpec<Patient, String, PatientEvent, String,
+            out Snapshot<Patient, String, String, PatientEvent>>,
+        query: QueryT,
+        repository: ReactiveCrudRepository<SnapshotT, String>
+    ) = null
 //            query.computeSnapshot(it.aggregate, Long.MAX_VALUE)
 //                    .flatMap { repository.save(it).toObservable() }
 //                    .toBlocking()
@@ -183,17 +183,21 @@ class BootStrap constructor(
      * @return
      */
     private fun merge(self: Patient, into: Patient): PatientEvent.PatientDeprecatedBy {
-        val e2 = patientEventRepository.save(PatientEvent.PatientDeprecates(self).also {
-            it.aggregate = into
-            it.timestamp = currDate.time
-            it.position = countEvents(into)
-        })
+        val e2 = patientEventRepository.save(
+            PatientEvent.PatientDeprecates(self).also {
+                it.aggregate = into
+                it.timestamp = currDate.time
+                it.position = countEvents(into)
+            }
+        )
 
-        val e1 = patientEventRepository.save(PatientEvent.PatientDeprecatedBy(into, e2.id!!).also {
-            it.aggregate = self
-            it.timestamp = currDate.time
-            it.position = countEvents(self)
-        })
+        val e1 = patientEventRepository.save(
+            PatientEvent.PatientDeprecatedBy(into, e2.id!!).also {
+                it.aggregate = self
+                it.timestamp = currDate.time
+                it.position = countEvents(self)
+            }
+        )
 
         e2.converseId = e1.id
 

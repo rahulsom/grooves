@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import grooves.boot.kotlin.repositories.PatientRepository
-import java.util.Date
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Configurable
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
+import java.util.Date
 
 @Configurable
 class PatientHealth : Snapshot<Patient, String, String, PatientEvent> {
@@ -53,7 +53,7 @@ class PatientHealth : Snapshot<Patient, String, String, PatientEvent> {
         patientRepository.findAllById(deprecatesIds)
 
     override fun toString() = "PatientAccount(id=$id, aggregate=$aggregateId, " +
-            "lastEventPosition=$lastEventPosition, lastEventTimestamp=$lastEventTimestamp)"
+        "lastEventPosition=$lastEventPosition, lastEventTimestamp=$lastEventTimestamp)"
 }
 
 class Procedure(
