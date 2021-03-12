@@ -1,5 +1,6 @@
 package com.github.rahulsom.grooves.test
 
+import groovy.transform.CompileDynamic
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.RESTClient
 import spock.lang.Shared
@@ -12,6 +13,7 @@ import spock.lang.Unroll
  * @author Rahul Somasunderam
  */
 @SuppressWarnings(['UnnecessaryGetter', 'GroovyAssignabilityCheck'])
+@CompileDynamic
 abstract class AbstractPatientSpec extends Specification {
 
     @SuppressWarnings(['Instanceof', 'MethodParameterTypeRequired', 'AbstractPatientSpec',])

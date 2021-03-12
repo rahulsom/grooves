@@ -3,12 +3,20 @@ ruleset {
     ruleset('rulesets/basic.xml')
     ruleset('rulesets/braces.xml')
     ruleset('rulesets/concurrency.xml')
+    ruleset('rulesets/comments.xml') {
+        ClassJavadoc(enabled: false)
+        JavadocEmptyFirstLine(enabled: false)
+        JavadocEmptyLastLine(enabled: false)
+    }
     ruleset('rulesets/convention.xml') {
+        CompileStatic(enabled: false)
         FieldTypeRequired(enabled: false)
         NoDef(enabled: false)
         VariableTypeRequired(enabled: false)
         MethodReturnTypeRequired(enabled: false)
         NoJavaUtilDate(enabled: false)
+        ImplicitClosureParameter(enabled: false)
+        ImplicitReturnStatement(enabled: false)
     }
     ruleset('rulesets/design.xml')
     // ruleset('rulesets/dry.xml')
@@ -19,8 +27,9 @@ ruleset {
             characterBeforeColonRegex = /./
             characterAfterColonRegex = /\s/
         }
-        ClassJavadoc(enabled: false)
         Indentation(enabled: false)
+        ClassStartsWithBlankLine(enabled: false)
+        ClassEndsWithBlankLine(enabled: false)
     }
     ruleset('rulesets/generic.xml')
     ruleset('rulesets/grails.xml')

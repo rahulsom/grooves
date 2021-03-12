@@ -9,6 +9,7 @@ import grooves.boot.jpa.repositories.PatientEventRepository
 import grooves.boot.jpa.repositories.PatientRepository
 import grooves.boot.jpa.repositories.ZipcodeEventRepository
 import grooves.boot.jpa.repositories.ZipcodeRepository
+import groovy.transform.CompileDynamic
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -25,6 +26,7 @@ import java.util.function.Supplier
  */
 @Component
 @SuppressWarnings(['DuplicateNumberLiteral', 'DuplicateStringLiteral'])
+@CompileDynamic
 class BootStrap implements InitializingBean {
 
     private static final String START_DATE = '2016-01-01'
@@ -336,7 +338,7 @@ class BootStrap implements InitializingBean {
      *
      * @param self The aggregate to be deprecated
      * @param into The aggregate to survive
-     * @return
+     * @return the deprecatedBy event
      */
     private PatientDeprecatedBy merge(Patient self, Patient into) {
         def e1 = new PatientDeprecatedBy(
