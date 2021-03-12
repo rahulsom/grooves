@@ -14,10 +14,10 @@ import org.reactivestreams.Publisher
  * @author Rahul Somasunderam
  */
 interface BaseSnapshot<
-        AggregateT,
-        SnapshotIdT,
-        EventIdT,
-        in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> {
+    AggregateT,
+    SnapshotIdT,
+    EventIdT,
+    in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> {
 
     /**
      * A unique identifier for the Snapshot.

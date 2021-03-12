@@ -4,12 +4,12 @@ import grooves.boot.kotlin.domain.Patient
 import grooves.boot.kotlin.domain.PatientAccount
 import grooves.boot.kotlin.domain.PatientEvent
 import grooves.boot.kotlin.domain.PatientHealth
-import java.util.Date
 import org.springframework.data.mongodb.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.util.Date
 
 interface PatientBlockingRepository : CrudRepository<Patient, String>
 interface PatientEventBlockingRepository : CrudRepository<PatientEvent, String> {

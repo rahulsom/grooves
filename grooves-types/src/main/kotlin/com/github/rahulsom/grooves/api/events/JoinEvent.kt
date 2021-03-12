@@ -13,10 +13,10 @@ import org.reactivestreams.Publisher
  * @author Rahul Somasunderam
  */
 interface JoinEvent<
-        AggregateT,
-        EventIdT,
-        EventT,
-        JoinedAggregateT> :
+    AggregateT,
+    EventIdT,
+    EventT,
+    JoinedAggregateT> :
     BaseEvent<AggregateT, EventIdT, EventT> {
 
     /**

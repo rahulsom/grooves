@@ -9,15 +9,15 @@ import com.github.rahulsom.grooves.api.events.RevertEvent
 import grooves.boot.kotlin.BeansHolder
 import grooves.boot.kotlin.repositories.PatientEventRepository
 import grooves.boot.kotlin.repositories.PatientRepository
-import java.math.BigDecimal
-import java.text.SimpleDateFormat
-import java.util.Date
 import org.reactivestreams.Publisher
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Transient
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.empty
 import reactor.core.publisher.Mono.just
+import java.math.BigDecimal
+import java.text.SimpleDateFormat
+import java.util.Date
 
 // tag::patientEvent[]
 sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
@@ -54,7 +54,8 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
 
     // tag::reverted[]
     data class Reverted(override val revertedEventId: String) : // <1>
-        PatientEvent(), // <2>
+        PatientEvent(),
+        // <2>
         RevertEvent<Patient, String, PatientEvent> { // <3>
         fun getAudit(): String = "$id - Revert $revertedEventId"
         // end::reverted[]

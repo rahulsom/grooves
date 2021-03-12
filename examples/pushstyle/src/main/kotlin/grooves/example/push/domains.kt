@@ -5,11 +5,11 @@ import com.github.rahulsom.grooves.api.events.RevertEvent
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import grooves.example.pushstyle.tables.records.BalanceRecord
 import io.reactivex.Flowable
+import org.reactivestreams.Publisher
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID
-import org.reactivestreams.Publisher
 
 data class Account(val id: String)
 
@@ -76,10 +76,10 @@ class Balance() : Snapshot<Account, String, String, Transaction> {
     }
 
     constructor(balance: BalanceRecord) :
-            this(
-                balance.bId, Account(balance.bAccount), balance.balance,
-                balance.bVersion, balance.bTime
-            )
+        this(
+            balance.bId, Account(balance.bAccount), balance.balance,
+            balance.bVersion, balance.bTime
+        )
 
     fun toBalanceRecord(): BalanceRecord {
         return BalanceRecord(
@@ -112,6 +112,6 @@ class Balance() : Snapshot<Account, String, String, Transaction> {
             SimpleDateFormat("HH:mm:ss,SSS").format(it)
         }
         return "Balance(id=$idPart, aggregate=$aggPart, lastEventTimestamp=$ts, " +
-                "version=$lastEventPosition, balance=$balance)"
+            "version=$lastEventPosition, balance=$balance)"
     }
 }

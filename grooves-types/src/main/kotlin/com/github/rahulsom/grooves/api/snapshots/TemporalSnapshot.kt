@@ -15,10 +15,10 @@ import java.util.Date
  * @author Rahul Somasunderam
  */
 interface TemporalSnapshot<
-        AggregateT,
-        SnapshotIdT,
-        EventIdT,
-        in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
+    AggregateT,
+    SnapshotIdT,
+    EventIdT,
+    in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
     BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT> {
 
     /**
