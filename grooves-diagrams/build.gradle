@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.rahulsom:svg-builder:0.2.3'
+    implementation 'com.github.rahulsom:svg-builder:0.3.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.31"
 
     implementation 'commons-beanutils:commons-beanutils:1.9.4'
