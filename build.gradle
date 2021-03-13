@@ -51,7 +51,7 @@ subprojects {
     }
 }
 
-// tasks.getByName('release').dependsOn 'grooves-docs:gitPublishPush'
+tasks.getByName('release').dependsOn 'grooves-docs:gitPublishPush'
 
 buildScanRecipes {
     recipes 'git-commit', 'git-status', 'travis-ci', 'gc-stats'
