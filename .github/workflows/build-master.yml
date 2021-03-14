@@ -42,6 +42,7 @@ jobs:
         SONAR_TOKEN:                         ${{secrets.SONAR_TOKEN}}
         GITHUB_TOKEN:                        ${{secrets.GITHUB_TOKEN}}
         GH_TOKEN:                            ${{secrets.GITHUB_TOKEN}}
+        GRGIT_TOKEN:                         ${{secrets.GITHUB_TOKEN}}
       run: ./gradlew build snapshot asciidoctor --stacktrace --parallel --scan
 
     - uses: codecov/codecov-action@v1
