@@ -7,6 +7,8 @@ import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import java.text.SimpleDateFormat
+
 /**
  * Base test to replicate across example projects.
  *
@@ -287,7 +289,7 @@ abstract class AbstractPatientSpec extends Specification {
             it.moneyMade == 100.25
             it.lastEventPosition == 3
 
-            getDate(it.lastEventTimestamp)?.format('yyyyMMdd') == '20160128'
+            new SimpleDateFormat('yyyyMMdd', Locale.US).format(getDate(it.lastEventTimestamp)) == '20160128'
         }
 
         when:
@@ -305,7 +307,7 @@ abstract class AbstractPatientSpec extends Specification {
             it.moneyMade == 100.25
             it.lastEventPosition == 3
 
-            getDate(it.lastEventTimestamp)?.format('yyyyMMdd') == '20160128'
+            new SimpleDateFormat('yyyyMMdd', Locale.US).format(getDate(it.lastEventTimestamp)) == '20160128'
         }
     }
 
