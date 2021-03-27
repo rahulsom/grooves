@@ -5,6 +5,7 @@
   stroke-width: 0.2;
   stroke: grey;
 }
+
 .aggregate rect {
   fill: azure;
   stroke-width: 0.2;
@@ -23,6 +24,7 @@
   stroke: grey;
   stroke-width: 0.2;
 }
+
 .event path {
   fill: transparent;
   stroke-width: 2;
@@ -44,9 +46,11 @@
 .event circle.reverted {
   fill: lightgrey !important;
 }
+
 .event.reverted path {
   stroke-width: 0.2;
 }
+
 .event.Revert circle {
   fill: #ffe5e5;
 }
@@ -55,11 +59,13 @@
   stroke-dasharray: 5, 5;
   marker-end: url(#triangle);
 }
+
 .eventCreated {
   fill: #FCFCFC;
   stroke-width: 1 !important;
   stroke: #222;
 }
+
 .event.DeprecatedBy circle {
   fill: black;
 }
@@ -73,6 +79,7 @@
   stroke-dasharray: 5, 5;
   marker-end: url(#triangle);
 }
+
 .event.Deprecates circle {
   fill: #e6c300;
 }
@@ -80,6 +87,7 @@
   fill: white;
   font-weight: bold;
 }
+
 .event.Join circle {
   stroke-width: 2;
   stroke: #e6c300;
@@ -88,6 +96,7 @@
   stroke: #e6c300;
   stroke-dasharray: 5, 5;
 }
+
 .event.Disjoin circle {
   stroke-width: 2;
 }
@@ -95,6 +104,8 @@
   stroke: gray;
   stroke-dasharray: 2, 5;
 }
+
+/*# sourceMappingURL=esdiag.css.map */
 /* ]]&gt; */</style>
     <rect x="0" y="0" width="800.0" height="100" class="background"/>
     <defs>
@@ -107,10 +118,10 @@
         <text x="15" y="63" class="type">Patient</text>
         <text x="15" y="81" class="id">4</text>
         <text x="10" y="40" class="description">Farrokh Bulsara</text>
-        <line x1="110" y1="65" x2="700.0" y2="65" class="eventLine" marker-end="url(#triangle)"/>
+        <line x1="110" y1="65" x2="700.0" y2="65" marker-end="url(#triangle)" class="eventLine"/>
     </g>
     <g class="event Normal " id="event_1">
-        <circle cx="210" cy="65" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
+        <circle cx="210" cy="65" r="14" stroke-dasharray="2, 5" class="eventCreated Normal"/>
         <circle cx="210" cy="65" r="10" class="event Normal "/>
         <text x="210" y="65" class="eventId">1</text>
     </g>
@@ -123,7 +134,7 @@
         <text x="310" y="65" class="eventId">3</text>
     </g>
     <g class="event Normal reverted" id="event_4">
-        <circle cx="360" cy="65" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
+        <circle cx="360" cy="65" r="14" stroke-dasharray="2, 5" class="eventCreated Normal"/>
         <circle cx="360" cy="65" r="10" class="event Normal reverted"/>
         <text x="360" y="65" class="eventId">4</text>
     </g>
