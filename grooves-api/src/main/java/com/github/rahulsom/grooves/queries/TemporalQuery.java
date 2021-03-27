@@ -19,7 +19,7 @@ public interface TemporalQuery<
      * @param aggregate The aggregate
      * @param moment    The moment at which the snapshot is desired
      *
-     * @return An Flowable that returns at most one Snapshot
+     * @return A Publisher that returns at most one Snapshot
      */
     @NotNull Publisher<SnapshotT> computeSnapshot(
             @NotNull AggregateT aggregate, @NotNull Date moment);

@@ -11,7 +11,7 @@ dependencies {
     api 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
     api 'org.spockframework:spock-core:1.1-groovy-2.4'
 
-    compile 'io.reactivex.rxjava2:rxjava:2.2.21'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
     implementation "org.slf4j:slf4j-api:1.7.30"
 
     implementation 'xerces:xercesImpl:2.12.1'
