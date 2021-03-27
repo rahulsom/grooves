@@ -40,9 +40,7 @@ jobs:
         ORG_GRADLE_PROJECT_signingKey:       ${{secrets.ORG_GRADLE_PROJECT_signingKey}}
         ORG_GRADLE_PROJECT_signingPassword:  ${{secrets.ORG_GRADLE_PROJECT_signingPassword}}
         SONAR_TOKEN:                         ${{secrets.SONAR_TOKEN}}
-        GITHUB_TOKEN:                        ${{secrets.GITHUB_TOKEN}}
-        GH_TOKEN:                            ${{secrets.GITHUB_TOKEN}}
-        GRGIT_TOKEN:                         ${{secrets.GITHUB_TOKEN}}
+        GRGIT_USER:                          ${{secrets.GITHUB_TOKEN}}
       run: ./gradlew build snapshot asciidoctor --stacktrace --parallel --scan
 
     - uses: codecov/codecov-action@v1
