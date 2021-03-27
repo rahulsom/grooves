@@ -52,9 +52,9 @@ public interface VersionedQuerySupport<
      * @param aggregate   The aggregate for which a snapshot is to be computed
      * @param maxPosition The maximum allowed version of the snapshot that is deemed usable
      *
-     * @return An Flowable that returns at most one snapshot
+     * @return A Publisher that returns at most one snapshot
      */
-    default Flowable<SnapshotT> getLastUsableSnapshot(
+    default Publisher<SnapshotT> getLastUsableSnapshot(
             final AggregateT aggregate, long maxPosition) {
         return fromPublisher(getSnapshot(maxPosition, aggregate))
                 .defaultIfEmpty(createEmptySnapshot())
@@ -78,7 +78,7 @@ public interface VersionedQuerySupport<
      *
      * @return A Tuple containing the snapshot and the events
      */
-    default Flowable<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
+    default Publisher<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
             AggregateT aggregate, long version) {
         return getSnapshotAndEventsSince(aggregate, version, true);
     }
@@ -95,13 +95,13 @@ public interface VersionedQuerySupport<
      *
      * @return A Tuple containing the snapshot and the events
      */
-    default Flowable<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
+    default Publisher<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
             AggregateT aggregate, long version, boolean reuseEarlierSnapshot) {
         return Utils.getSnapshotsWithReuse(
                 reuseEarlierSnapshot,
-                () -> getLastUsableSnapshot(aggregate, version),
+                () -> fromPublisher(getLastUsableSnapshot(aggregate, version)),
                 lastSnapshot -> getUncomputedEvents(aggregate, lastSnapshot, version),
-                () -> getSnapshotAndEventsSince(aggregate, version, false),
+                () -> fromPublisher(getSnapshotAndEventsSince(aggregate, version, false)),
                 this::createEmptySnapshot
         );
 
@@ -145,7 +145,7 @@ public interface VersionedQuerySupport<
         LoggerFactory.getLogger(getClass()).info("Computing snapshot for {} version {}",
                 aggregate, version == Long.MAX_VALUE ? "<LATEST>" : version);
 
-        return (getSnapshotAndEventsSince(aggregate, version).flatMap(seTuple2 -> {
+        return fromPublisher(getSnapshotAndEventsSince(aggregate, version)).flatMap(seTuple2 -> {
             List<EventT> events = seTuple2.getSecond();
             SnapshotT lastUsableSnapshot = seTuple2.getFirst();
 
@@ -159,13 +159,13 @@ public interface VersionedQuerySupport<
                                         aggregate, version, redirect, events, lastUsableSnapshot) :
                                 empty())
                         .map(Flowable::just)
-                        .defaultIfEmpty(computeSnapshotAndEvents(
-                                aggregate, version, redirect, events, lastUsableSnapshot))
+                        .defaultIfEmpty(fromPublisher(computeSnapshotAndEvents(
+                                aggregate, version, redirect, events, lastUsableSnapshot)))
                         .flatMap(it -> it);
             }
             return computeSnapshotAndEvents(
                     aggregate, version, redirect, events, lastUsableSnapshot);
-        }));
+        });
 
     }
 
@@ -181,18 +181,19 @@ public interface VersionedQuerySupport<
      *
      * @return An observable of the snapshot
      */
-    default Flowable<SnapshotT> computeSnapshotAndEvents(
+    default Publisher<SnapshotT> computeSnapshotAndEvents(
             AggregateT aggregate, long version, boolean redirect, List<EventT> events,
             SnapshotT lastUsableSnapshot) {
         lastUsableSnapshot.setAggregate(aggregate);
 
         Flowable<EventT> forwardOnlyEvents = getForwardOnlyEvents(
-                events, getExecutor(), () -> getSnapshotAndEventsSince(aggregate, version, false)
+                events, getExecutor(), () ->
+                        fromPublisher(getSnapshotAndEventsSince(aggregate, version, false))
         );
 
         Flowable<EventT> applicableEvents =
                 getApplicableEvents(forwardOnlyEvents, getExecutor(),
-                        () -> getSnapshotAndEventsSince(aggregate, version, false)
+                        () -> fromPublisher(getSnapshotAndEventsSince(aggregate, version, false))
                 );
 
         final Flowable<SnapshotT> snapshotObservable =
