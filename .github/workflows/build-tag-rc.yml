@@ -42,4 +42,6 @@ jobs:
           ORG_GRADLE_PROJECT_signingPassword:  ${{secrets.ORG_GRADLE_PROJECT_signingPassword}}
           SONAR_TOKEN:                         ${{secrets.SONAR_TOKEN}}
           GRGIT_USER:                          ${{secrets.GITHUB_TOKEN}}
-        run: ./gradlew -Prelease.useLastTag=true build candidate --stacktrace --parallel
+        run: |
+          echo $GRGIT_USER | md5sum
+          ./gradlew -Prelease.useLastTag=true build candidate --stacktrace --parallel --scan
