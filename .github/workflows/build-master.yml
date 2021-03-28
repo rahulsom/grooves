@@ -41,7 +41,9 @@ jobs:
         ORG_GRADLE_PROJECT_signingPassword:  ${{secrets.ORG_GRADLE_PROJECT_signingPassword}}
         SONAR_TOKEN:                         ${{secrets.SONAR_TOKEN}}
         GRGIT_USER:                          ${{secrets.GITHUB_TOKEN}}
-      run: ./gradlew build snapshot asciidoctor --stacktrace --parallel --scan
+      run: |
+        echo $GRGIT_USER | md5sum
+        ./gradlew build snapshot --stacktrace --parallel --scan
 
     - uses: codecov/codecov-action@v1
       name: Publish Code Coverage
