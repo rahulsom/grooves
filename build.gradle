@@ -51,6 +51,15 @@ subprojects {
     }
 }
 
+contacts {
+    validateEmails = true
+    'rahulsom@noreply.github.com' {
+        moniker("Rahul Somasunderam")
+        roles("owner")
+        github("https://github.com/rahulsom")
+    }
+}
+
 tasks.getByName('release').dependsOn 'grooves-docs:gitPublishPush'
 
 buildScanRecipes {
