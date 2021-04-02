@@ -94,3 +94,4 @@ The events are never persisted. They are processed as they come on the EventBus.
 * Run this command
 
     ./gradlew -Prelease.useLastTag=true -Dorg.gradle.parallel=false <candidate|final>
+
