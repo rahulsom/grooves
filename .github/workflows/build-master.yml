@@ -25,7 +25,7 @@ jobs:
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
           path: |
             ~/.gradle/wrapper
-      - uses: gradle/wrapper-validation-action@v1
+      - uses: gradle/wrapper-validation-action@v2
         name: Validate Gradle Wrapper
 
       - name: Set up JDK 1.8
