@@ -1026,7 +1026,8 @@ Even if you do, you cannot process this event.</td>
 <pre class="highlight"><code class="language-kotlin" data-lang="kotlin">sealed class PatientEvent : BaseEvent&lt;...&gt; {
     // ... skipping stuff already there ...
     data class Reverted(override val revertedEventId: String) : <i class="conum" data-value="1"></i><b>(1)</b>
-        PatientEvent(), <i class="conum" data-value="2"></i><b>(2)</b>
+        PatientEvent(),
+        <i class="conum" data-value="2"></i><b>(2)</b>
         RevertEvent&lt;Patient, String, PatientEvent&gt; { <i class="conum" data-value="3"></i><b>(3)</b>
         fun getAudit(): String = "$id - Revert $revertedEventId"
     }
@@ -1558,12 +1559,13 @@ It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
     @Autowired val patientEventRepository: PatientEventRepository,
     @Autowired val patientAccountRepository: PatientAccountRepository
 ) :
-    QuerySupport&lt;Patient, String, PatientEvent, String, PatientAccount&gt;, <i class="conum" data-value="1"></i><b>(1)</b>
+    QuerySupport&lt;Patient, String, PatientEvent, String, PatientAccount&gt;,
+    <i class="conum" data-value="1"></i><b>(1)</b>
     SimpleQuery&lt;Patient, String, PatientEvent, PatientEvent.Applicable, String,
-            PatientAccount&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
+        PatientAccount&gt; { <i class="conum" data-value="2"></i><b>(2)</b>
 
     override fun getExecutor() = SimpleExecutor&lt;Patient, String, PatientEvent,
-            PatientEvent.Applicable, String, PatientAccount, PatientAccountQuery&gt;() <i class="conum" data-value="3"></i><b>(3)</b>
+        PatientEvent.Applicable, String, PatientAccount, PatientAccountQuery&gt;() <i class="conum" data-value="3"></i><b>(3)</b>
 
     override fun createEmptySnapshot() = PatientAccount() <i class="conum" data-value="4"></i><b>(4)</b>
 
