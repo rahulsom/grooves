@@ -36,7 +36,7 @@ asciidoctor.dependsOn ':grooves-diagrams:jar'
 def env = System.getenv()
 
 gitPublish {
-    repoUri.set 'https://github.com/rahulsom/grooves.git'
+    repoUri.set "https://${System.getenv('GITHUB_TOKEN')}@github.com/rahulsom/grooves.git"
     branch.set 'gh-pages'
     contents {
         from(file("$buildDir/asciidoc/html5")) {
