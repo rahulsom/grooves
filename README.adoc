@@ -15,12 +15,6 @@ Documentation can be found https://rahulsom.github.io/grooves/[here].
 [cols="25%,75%"]
 |===
 
-a|grooves-gorm
-
-image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-gorm/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-gorm", width="300px"]
-a|This is for you if you're using GORM for persistence.
-It has interfaces that need to know the domain object used, and build flexible queries without forcing you to write the code to read domain objects from the database.
-
 a|grooves-groovy
 
 image::https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-groovy/badge.svg[link="https://maven-badges.herokuapp.com/maven-central/com.github.rahulsom/grooves-groovy", width="300px"]
