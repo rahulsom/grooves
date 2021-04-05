@@ -5,6 +5,7 @@ plugins {
 }
 
 apply from: "$rootDir/gradle/codenarc/codenarc.gradle"
+description = "Standard Tests for Grooves"
 
 dependencies {
     api project(':grooves-api')
