@@ -19,24 +19,24 @@ jar {
 }
 
 dependencies {
+    compileOnly "org.jetbrains:annotations:16.0.3"
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.codehaus.groovy:groovy-all'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
-    compileOnly "org.jetbrains:annotations:16.0.3"
-
-    runtime 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    testImplementation "org.spockframework:spock-core:1.1-groovy-2.4"
-    testImplementation "org.spockframework:spock-spring:1.1-groovy-2.4"
 
     implementation project(':grooves-groovy')
     implementation project(':grooves-example-test')
 
-    runtime 'javax.xml.bind:jaxb-api:2.2.11'
-    runtime 'com.sun.xml.bind:jaxb-core:2.2.11'
-    runtime 'com.sun.xml.bind:jaxb-impl:2.2.11'
-    runtime 'javax.activation:activation:1.1.1'
+    runtimeOnly 'javax.xml.bind:jaxb-api:2.2.11'
+    runtimeOnly 'com.sun.xml.bind:jaxb-core:2.2.11'
+    runtimeOnly 'com.sun.xml.bind:jaxb-impl:2.2.11'
+    runtimeOnly 'javax.activation:activation:1.1.1'
+    runtimeOnly 'com.h2database:h2'
 
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    testImplementation "org.spockframework:spock-core:1.1-groovy-2.4"
+    testImplementation "org.spockframework:spock-spring:1.1-groovy-2.4"
 }

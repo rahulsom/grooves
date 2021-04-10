@@ -44,19 +44,19 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.31"
     implementation 'io.reactivex:rxjava-reactive-streams'
     implementation 'org.springframework:spring-aspects'
+    implementation project(':grooves-api')
+    implementation project(':grooves-example-test')
+
+    runtimeOnly 'javax.xml.bind:jaxb-api:2.2.11'
+    runtimeOnly 'com.sun.xml.bind:jaxb-core:2.2.11'
+    runtimeOnly 'com.sun.xml.bind:jaxb-impl:2.2.11'
+    runtimeOnly 'javax.activation:activation:1.1.1'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.spockframework:spock-core:1.1-groovy-2.4'
     testImplementation 'org.spockframework:spock-spring:1.1-groovy-2.4'
     testImplementation 'io.projectreactor.addons:reactor-test:3.1.0.M1'
 
-    implementation project(':grooves-api')
-    implementation project(':grooves-example-test')
-
-    runtime 'javax.xml.bind:jaxb-api:2.2.11'
-    runtime 'com.sun.xml.bind:jaxb-core:2.2.11'
-    runtime 'com.sun.xml.bind:jaxb-impl:2.2.11'
-    runtime 'javax.activation:activation:1.1.1'
 
 }
 
