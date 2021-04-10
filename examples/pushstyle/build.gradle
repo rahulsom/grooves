@@ -64,7 +64,7 @@ dependencies {
     jooqRuntime 'com.sun.xml.bind:jaxb-impl:2.2.11'
     jooqRuntime 'javax.activation:activation:1.1.1'
 
-    runtime 'ch.qos.logback:logback-classic:1.2.3'
+    runtimeOnly 'ch.qos.logback:logback-classic:1.2.3'
 
     testImplementation 'junit:junit:4.+'
     testImplementation 'org.awaitility:awaitility:3.1.2'
