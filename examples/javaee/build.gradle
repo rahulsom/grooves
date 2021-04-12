@@ -1,6 +1,8 @@
-apply plugin: "com.bmuschko.cargo"
-apply plugin: 'war'
-apply plugin: 'groovy'
+plugins {
+    id("com.bmuschko.cargo").version("2.8.0")
+    id("war")
+    id("groovy")
+}
 
 version = '0.1'
 

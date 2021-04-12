@@ -4,28 +4,20 @@ In a gradle project, if you're using asciidoctor for documentation, you can gene
 
 [source,groovy,subs="attributes+"]
 ----
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3' // <1>
-    }
+plugins {
+    id("org.asciidoctor.convert").version("1.5.3") // <1>
 }
-
-apply plugin: 'org.asciidoctor.convert' // <2>
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    asciidoctor 'com.github.rahulsom:grooves-diagrams:{version}' // <3>
+    asciidoctor 'com.github.rahulsom:grooves-diagrams:{version}' // <2>
 }
 ----
-<1> This adds the asciidoctor gradle plugin to your build
-<2> This applies the plugin
-<3> This includes the dependency on grooves-diagrams
+<1> This adds and applies the asciidoctor gradle plugin to your build
+<2> This includes the dependency on grooves-diagrams
 
 Now in your asciidoctor files, you can do this
 
