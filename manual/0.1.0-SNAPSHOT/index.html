@@ -1745,7 +1745,7 @@ This is a good example for such a <a href="https://github.com/rahulsom/grooves/b
 
     final Class&lt;ZipcodeGotPatient&gt; joinEventClass = ZipcodeGotPatient <i class="conum" data-value="8"></i><b>(8)</b>
     final Class&lt;ZipcodeLostPatient&gt; disjoinEventClass = ZipcodeLostPatient <i class="conum" data-value="9"></i><b>(9)</b>
-    // Skipping familiar methods (10)
+    // Skipping familiar methods <i class="conum" data-value="10"></i><b>(10)</b>
 }</code></pre>
 </div>
 </div>
@@ -1914,23 +1914,16 @@ That can be used to compute snapshots.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3' <i class="conum" data-value="1"></i><b>(1)</b>
-    }
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id("org.asciidoctor.convert").version("1.5.3") <i class="conum" data-value="1"></i><b>(1)</b>
 }
-
-apply plugin: 'org.asciidoctor.convert' <i class="conum" data-value="2"></i><b>(2)</b>
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    asciidoctor 'com.github.rahulsom:grooves-diagrams:0.1.0-SNAPSHOT' <i class="conum" data-value="3"></i><b>(3)</b>
+    asciidoctor 'com.github.rahulsom:grooves-diagrams:0.1.0-SNAPSHOT' <i class="conum" data-value="2"></i><b>(2)</b>
 }</code></pre>
 </div>
 </div>
@@ -1938,14 +1931,10 @@ dependencies {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>This adds the asciidoctor gradle plugin to your build</td>
+<td>This adds and applies the asciidoctor gradle plugin to your build</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>This applies the plugin</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>This includes the dependency on grooves-diagrams</td>
 </tr>
 </table>
