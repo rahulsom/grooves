@@ -5,8 +5,6 @@ buildscript {
     }
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.0.3.RELEASE'
-        classpath "org.jetbrains.kotlin:kotlin-allopen:1.4.31"
-        classpath 'gradle.plugin.com.sourcemuse.gradle.plugin:GradleMongoPlugin:1.0.7'
         classpath 'de.flapdoodle.embed:de.flapdoodle.embed.process:2.1.2'
     }
 }
@@ -14,14 +12,15 @@ buildscript {
 plugins {
     id("org.jetbrains.kotlin.jvm")
     id("org.jlleitschuh.gradle.ktlint")
+    id("org.jetbrains.kotlin.plugin.allopen")
+    id("org.jetbrains.kotlin.plugin.spring")
+    id("groovy")
+    id("com.sourcemuse.mongo").version("1.0.7")
+
 }
 
-apply plugin: 'groovy'
-apply plugin: 'com.sourcemuse.mongo'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'org.jetbrains.kotlin.plugin.spring'
-apply plugin: 'org.jetbrains.kotlin.plugin.allopen'
 
 version = '0.0.1-SNAPSHOT'
 
