@@ -81,6 +81,6 @@ class ZipcodePatientsQuery implements JoinSupport< // <1>
     }
 
 // tag::joins[]
-    // Skipping familiar methods (10)
+    // Skipping familiar methods <10>
 }
 // end::joins[]
