@@ -5,7 +5,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.h2database:h2:1.4.197'
-        classpath 'gradle.plugin.com.boxfuse.client:gradle-plugin-publishing:5.2.1'
 
         classpath 'javax.xml.bind:jaxb-api:2.2.11'
         classpath 'com.sun.xml.bind:jaxb-core:2.2.11'
@@ -18,9 +17,8 @@ plugins {
     id("org.jetbrains.kotlin.jvm")
     id("org.jlleitschuh.gradle.ktlint")
     id("nu.studer.jooq").version("2.0.9")
+    id("org.flywaydb.flyway").version("5.2.1")
 }
-
-apply plugin: 'org.flywaydb.flyway'
 
 version = '0.0.1-SNAPSHOT'
 
