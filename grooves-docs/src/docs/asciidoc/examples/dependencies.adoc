@@ -41,26 +41,6 @@ dependencies {
   That contains the interfaces for your aggregates, events, and snapshots.
 
 [source,groovy,indent=0,role="secondary",subs="attributes+"]
-.Gorm
-----
-repositories {
-  // ... other repositories ...
-  mavenCentral() // <1>
-}
-dependencies {
-  // ... other dependencies ...
-  implementation 'com.github.rahulsom:grooves-gorm:{gradle-project-version}' // <2>
-}
-----
-<1> In this example, we're using `mavenCentral`. You could also be using `jcenter` or `google`.
-  As long as your private artifact repository mirrors `mavenCentral`, you can use that as well.
-<2> `grooves-gorm` contains support for simplifying access of data using gorm.
-  It depends on `grooves-groovy`, which contains support for writing idiomatic groovy code.
-  It has transitive dependencies on `grooves-api`, and `grooves-types`.
-  `grooves-api` contains interfaces for your queries.
-  `grooves-types` contains the interfaces for your aggregates, events, and snapshots.
-
-[source,groovy,indent=0,role="secondary",subs="attributes+"]
 .Kotlin
 ----
 repositories {
