@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    asciidoctor 'com.github.rahulsom:grooves-diagrams:{version}' // <2>
+    asciidoctor 'com.github.rahulsom:grooves-diagrams:{gradle-project-version}' // <2>
 }
 ----
 <1> This adds and applies the asciidoctor gradle plugin to your build
