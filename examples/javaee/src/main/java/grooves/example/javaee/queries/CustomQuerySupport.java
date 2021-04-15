@@ -60,8 +60,7 @@ public interface CustomQuerySupport<
     @NotNull
     @Override
     default Publisher<SnapshotT> getSnapshot(
-            @Nullable Date maxTimestamp, @NotNull Patient aggregate) {
-        // <4>
+            @Nullable Date maxTimestamp, @NotNull Patient aggregate) { // <4>
         // end::documented[]
         final Stream<SnapshotT> stream = getDatabase().snapshots(getSnapshotClass());
         return toPublisher(from(stream::iterator)
@@ -84,13 +83,16 @@ public interface CustomQuerySupport<
     // tag::documented[]
     @Override
     default boolean shouldEventsBeApplied(@NotNull SnapshotT snapshot) { // <5>
+        // end::documented[]
         return true;
+        // tag::documented[]
     }
 
     @NotNull
     @Override
     default Publisher<EventApplyOutcome> onException(
             @NotNull Exception e, @NotNull SnapshotT snapshot, @NotNull PatientEvent event) { // <6>
+        // end::documented[]
         LoggerFactory.getLogger(getClass()).error("Error computing snapshot", e);
         return toPublisher(just(CONTINUE));
         // tag::documented[]

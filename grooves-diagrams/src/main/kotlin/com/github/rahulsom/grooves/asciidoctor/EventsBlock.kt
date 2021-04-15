@@ -1,6 +1,6 @@
 package com.github.rahulsom.grooves.asciidoctor
 
-import org.asciidoctor.ast.AbstractBlock
+import org.asciidoctor.ast.StructuralNode
 import org.asciidoctor.extension.BlockProcessor
 import org.asciidoctor.extension.Reader
 import java.io.File
@@ -15,16 +15,13 @@ import java.security.MessageDigest
 class EventsBlock(name: String, config: Map<String, Any>) :
     BlockProcessor(name, mapOf("contexts" to listOf(":literal"), "content_model" to ":simple")) {
 
-    override fun process(parent: AbstractBlock, reader: Reader, attributes: MutableMap<String, Any>?): Any {
-        val docDir = File(parent.document.attributes["docdir"] as String)
-        var projectDir = docDir
-        val projectDirAttr = parent.document.attributes["projectdir"] as String
-        repeat(projectDirAttr.split('/').size) { projectDir = projectDir.parentFile }
-        val outDir = File(projectDir, "build/asciidoc/html5")
+    override fun process(parent: StructuralNode, reader: Reader, attributes: MutableMap<String, Any>?): Any {
+        val projectDirAttr = parent.document.attributes["gradle-projectdir"] as String
+        val outDir = File(projectDirAttr, "build/docs/asciidoc")
 
         val input = reader.readLines().joinToString("\n")
 
-        var filename = (attributes as Map<*, *>)[2L] as String? ?: md5(input)
+        var filename = (attributes ?: emptyMap()).get("2") as String? ?: md5(input)
         filename = if (filename.endsWith(".svg")) filename else "$filename.svg"
 
         SvgBuilder(input).write(File(outDir, filename))
@@ -35,7 +32,7 @@ class EventsBlock(name: String, config: Map<String, Any>) :
             "format" to "svg"
         )
 
-        val block = createBlock(parent, "image", input, newAttributes, attributes.mapKeys { it as Any })
+        val block = createBlock(parent, "image", input, newAttributes, attributes?.mapKeys { it as Any })
         return block
     }
 

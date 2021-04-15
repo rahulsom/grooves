@@ -1,7 +1,7 @@
 package com.github.rahulsom.grooves.asciidoctor
 
 import org.asciidoctor.Asciidoctor
-import org.asciidoctor.extension.spi.ExtensionRegistry
+import org.asciidoctor.jruby.extension.spi.ExtensionRegistry
 
 /**
  * Registers [EventsBlock] as `esdiag`

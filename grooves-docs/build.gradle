@@ -1,6 +1,6 @@
 plugins {
     id("org.ajoberstar.git-publish").version("3.0.0")
-    id("org.asciidoctor.convert").version("1.5.3")
+    id("org.asciidoctor.jvm.convert").version("3.3.2")
 }
 
 repositories {
@@ -8,20 +8,39 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-dependencies {
-    asciidoctor project(':grooves-diagrams')
-    asciidoctor 'com.github.spring-io:spring-asciidoctor-extensions:05bca0c665'
+configurations {
+    asciidoctorExt
 }
 
+dependencies {
+    asciidoctorExt project(':grooves-diagrams')
+    asciidoctorExt 'com.github.spring-io:spring-asciidoctor-extensions:0.5.0'
+}
+
+project.version = rootProject.version.toString()
+
 asciidoctor {
+    sourceDir file('src/docs/asciidoc')
+    baseDir file('src/docs/asciidoc')
     sources {
         include 'index.adoc'
     }
-    attributes 'sourcedir': rootDir.absolutePath,
-            'version': project.version.toString(),
-            'toc': 'left',
-            'icons': 'font',
-            'stylesheet': 'grooves.css'
+    configurations 'asciidoctorExt'
+
+    attributes (
+        'sourcedir': rootDir.absolutePath,
+        'includedir': file('src/docs/asciidoc'),
+        'toc': 'left',
+        'icons': 'font',
+        'stylesheet': 'grooves.css',
+        'source-highlighter': 'rouge' ,
+    )
+
+    resources {
+        from("src/docs/asciidoc") {
+            include("*.css")
+        }
+    }
 }
 
 asciidoctor.dependsOn ':grooves-diagrams:jar'
