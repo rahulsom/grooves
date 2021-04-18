@@ -41,7 +41,7 @@ class SvgBuilder(private val input: String) {
             }
 
         val justDates = aggregates.flatMap { it.events }.map { it.date }.sorted().distinct()
-        minInterval = justDates.windowed(2, 1, false).map { a -> a[1].time - a[0].time }.min()!!
+        minInterval = justDates.windowed(2, 1, false).map { a -> a[1].time - a[0].time }.minOrNull()!!
         justDates.forEach {
             dates[it] = (it.time - justDates[0].time) * 1.0 / minInterval
         }
@@ -99,10 +99,8 @@ class SvgBuilder(private val input: String) {
     fun write(file: File) {
         init()
 
-        Svg().withHeight("${aggregates.size * eventLineHeight}")
-            .withWidth("${dates.values.max()!! * eventSpace + 4 * aggregateWidth}")
         val svg = Svg().withHeight("${aggregates.size * eventLineHeight}")
-            .withWidth("${dates.values.max()!! * eventSpace + 4 * aggregateWidth}")
+            .withWidth("${dates.values.maxOrNull()!! * eventSpace + 4 * aggregateWidth}")
 
         svg.withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
             ObjectFactory().createStyle(
@@ -113,7 +111,7 @@ class SvgBuilder(private val input: String) {
         svg.withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
             ObjectFactory().createRect(
                 Rect().withX("0").withY("0").withHeight("${aggregates.size * eventLineHeight}").withWidth(
-                    "${dates.values.max()!! * eventSpace + 4 * aggregateWidth}"
+                    "${dates.values.maxOrNull()!! * eventSpace + 4 * aggregateWidth}"
                 ).withClazz("background")
             ),
             ObjectFactory().createDefs(
