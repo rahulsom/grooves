@@ -39,8 +39,8 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.31"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.31"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-reflect"
     implementation 'io.reactivex:rxjava-reactive-streams'
     implementation 'org.springframework:spring-aspects'
     implementation project(':grooves-api')
