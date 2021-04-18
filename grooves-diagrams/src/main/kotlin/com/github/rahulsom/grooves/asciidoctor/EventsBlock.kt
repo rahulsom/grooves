@@ -32,7 +32,7 @@ class EventsBlock(name: String, config: Map<String, Any>) :
             "format" to "svg"
         )
 
-        val block = createBlock(parent, "image", input, newAttributes, attributes?.mapKeys { it as Any })
+        val block = createBlock(parent, "image", input, newAttributes, attributes?.mapKeys { it })
         return block
     }
 

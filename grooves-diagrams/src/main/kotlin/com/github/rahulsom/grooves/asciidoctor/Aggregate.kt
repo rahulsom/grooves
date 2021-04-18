@@ -54,7 +54,7 @@ class Aggregate(val counter: Int, var type: String, var id: String, var descript
             ),
             objectFactory.createLine(
                 objectFactory.createLine().withX1("${10 + aggregateWidth}").withY1("$yMid")
-                    .withX2("${dates.values.max()!! * eventSpace + 3 * aggregateWidth}")
+                    .withX2("${dates.values.maxOrNull()!! * eventSpace + 3 * aggregateWidth}")
                     .withY2("$yMid")
                     .withClazz("eventLine").withMarkerEnd("url(#triangle)")
             )
