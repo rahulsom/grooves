@@ -26,6 +26,7 @@ import static io.reactivex.Flowable.just
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = 'eventType')
 @SuppressWarnings(['AbstractClassWithoutAbstractMethod'])
+@EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeEvent implements BaseEvent<Zipcode, Long, ZipcodeEvent> {
     @GeneratedValue @Id Long id
     @Transient RevertEvent<Zipcode, Long, ZipcodeEvent> revertedBy
@@ -40,7 +41,6 @@ class ZipcodeEvent implements BaseEvent<Zipcode, Long, ZipcodeEvent> {
 
 @Event(Zipcode)
 @Entity
-@EqualsAndHashCode(includes = ['aggregate', 'position'])
 class ZipcodeCreated extends ZipcodeEvent {
     String name
 
@@ -49,7 +49,6 @@ class ZipcodeCreated extends ZipcodeEvent {
 
 @Event(Zipcode)
 @Entity
-@EqualsAndHashCode(includes = ['aggregate', 'position'])
 // tag::joins[]
 class ZipcodeGotPatient extends ZipcodeEvent // <1>
     implements JoinEvent<Zipcode, Long, ZipcodeEvent, Patient> { // <2>
@@ -63,7 +62,6 @@ class ZipcodeGotPatient extends ZipcodeEvent // <1>
 
 @Event(Zipcode)
 @Entity
-@EqualsAndHashCode(includes = ['aggregate', 'position'])
 // tag::joins[]
 class ZipcodeLostPatient extends ZipcodeEvent implements
     DisjoinEvent<Zipcode, Long, ZipcodeEvent, Patient> { // <3>

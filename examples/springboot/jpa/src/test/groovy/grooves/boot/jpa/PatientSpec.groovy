@@ -6,8 +6,8 @@ import grooves.boot.jpa.domain.PatientDeprecates
 import grooves.boot.jpa.repositories.PatientEventRepository
 import groovyx.net.http.RESTClient
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.embedded.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Unroll

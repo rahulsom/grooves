@@ -51,10 +51,10 @@ class BootStrap implements InitializingBean {
         setupFreddieMercury()
         setupTinaFeyAndSarahPalin()
 
-        def campbell = on(zipcodeRepository.save(new Zipcode(uniqueId: '95008'))) {
+        def campbell = on(zipcodeRepository.save(new Zipcode(uniqueId: '95008', id: 1))) {
             apply new ZipcodeCreated(name: 'Campbell, California', timestamp: currDate)
         }
-        def santanaRow = on(zipcodeRepository.save(new Zipcode(uniqueId: '95128'))) {
+        def santanaRow = on(zipcodeRepository.save(new Zipcode(uniqueId: '95128', id: 2))) {
             apply new ZipcodeCreated(name: 'Santana Row, San Jose, California', timestamp: currDate)
         }
         linkZipcodesAndPatients(campbell, santanaRow)
@@ -89,7 +89,7 @@ class BootStrap implements InitializingBean {
 
     @SuppressWarnings(['MethodSize', 'AbcMetric'])
     private void linkZipcodesAndPatients(Zipcode campbell, Zipcode santanaRow) {
-        def i1 = on(patientRepository.save(new Patient(uniqueId: 'I1'))) {
+        def i1 = on(patientRepository.save(new Patient(uniqueId: 'I1', id: 8))) {
             apply new PatientCreated(timestamp: d('2016-01-02 02:56:02'), name: 'LISA BAKER')
             apply new ProcedurePerformed(timestamp: d('2016-01-04 02:56:02'), code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(timestamp: d('2016-01-05 02:56:02'), code: 'ANNUALPHYSICAL',
@@ -98,7 +98,7 @@ class BootStrap implements InitializingBean {
         }
         join(i1, campbell, d('2016-01-04 12:14:20'))
 
-        def i2 = on(patientRepository.save(new Patient(uniqueId: 'I2'))) {
+        def i2 = on(patientRepository.save(new Patient(uniqueId: 'I2', id: 9))) {
             apply new PatientCreated(timestamp: d('2016-01-02 09:45:28'), name: 'CAROL BENNETT')
             apply new ProcedurePerformed(timestamp: d('2016-01-03 09:45:28'), code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(timestamp: d('2016-01-04 09:45:28'), code: 'ANNUALPHYSICAL',
@@ -111,7 +111,7 @@ class BootStrap implements InitializingBean {
         disjoin(i2, santanaRow, d('2016-01-26 19:52:05'))
         join(i2, campbell, d('2016-01-27 19:52:05'))
 
-        def i3 = on(patientRepository.save(new Patient(uniqueId: 'I3'))) {
+        def i3 = on(patientRepository.save(new Patient(uniqueId: 'I3', id: 10))) {
             apply new PatientCreated(timestamp: d('2016-01-02 17:53:55'), name: 'JESSICA TUCKER')
             apply new ProcedurePerformed(timestamp: d('2016-01-07 17:53:55'), code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(timestamp: d('2016-01-10 17:53:55'), code: 'ANNUALPHYSICAL',
@@ -121,13 +121,13 @@ class BootStrap implements InitializingBean {
         }
         join(i3, campbell, d('2016-01-03 21:25:31'))
 
-        def i4 = on(patientRepository.save(new Patient(uniqueId: 'I4'))) {
+        def i4 = on(patientRepository.save(new Patient(uniqueId: 'I4', id: 11))) {
             apply new PatientCreated(timestamp: d('2016-01-02 07:29:07'), name: 'KATHLEEN HARPER')
             apply new ProcedurePerformed(timestamp: d('2016-01-03 07:29:07'), code: 'FLUSHOT', cost: 32.40)
         }
         join(i4, santanaRow, d('2020-06-25 19:57:38'))
 
-        def i5 = on(patientRepository.save(new Patient(uniqueId: 'I5'))) {
+        def i5 = on(patientRepository.save(new Patient(uniqueId: 'I5', id: 12))) {
             apply new PatientCreated(timestamp: d('2016-01-02 02:06:56'), name: 'ANN ZIMMERMAN')
             apply new ProcedurePerformed(timestamp: d('2016-01-04 02:06:56'), code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(timestamp: d('2016-01-05 02:06:56'), code: 'ANNUALPHYSICAL',
@@ -140,7 +140,7 @@ class BootStrap implements InitializingBean {
         disjoin(i5, santanaRow, d('2016-01-16 16:03:15'))
         join(i5, campbell, d('2016-01-17 16:03:15'))
 
-        def i6 = on(patientRepository.save(new Patient(uniqueId: 'I6'))) {
+        def i6 = on(patientRepository.save(new Patient(uniqueId: 'I6', id: 13))) {
             apply new PatientCreated(timestamp: d('2016-01-02 02:56:02'), name: 'KATHERINE CARDENAS')
             apply new ProcedurePerformed(timestamp: d('2016-01-04 02:56:02'), code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(timestamp: d('2016-01-05 02:56:02'), code: 'ANNUALPHYSICAL',
@@ -149,7 +149,7 @@ class BootStrap implements InitializingBean {
         }
         join(i6, campbell, d('2016-01-04 12:14:20'))
 
-        def i7 = on(patientRepository.save(new Patient(uniqueId: 'I7'))) {
+        def i7 = on(patientRepository.save(new Patient(uniqueId: 'I7', id: 14))) {
             apply new PatientCreated(timestamp: d('2016-01-02 09:48:41'), name: 'JANE HICKMAN')
             apply new ProcedurePerformed(timestamp: d('2016-01-04 09:48:41'), code: 'FLUSHOT', cost: 32.40)
         }
@@ -159,7 +159,7 @@ class BootStrap implements InitializingBean {
         disjoin(i7, santanaRow, d('2016-01-30 12:58:36'))
         join(i7, campbell, d('2016-01-31 12:58:36'))
 
-        def i8 = on(patientRepository.save(new Patient(uniqueId: 'I8'))) {
+        def i8 = on(patientRepository.save(new Patient(uniqueId: 'I8', id: 15))) {
             apply new PatientCreated(timestamp: d('2016-01-02 17:53:55'), name: 'ANNIE NIEVES')
             apply new ProcedurePerformed(timestamp: d('2016-01-07 17:53:55'), code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(timestamp: d('2016-01-10 17:53:55'), code: 'ANNUALPHYSICAL',
@@ -169,13 +169,13 @@ class BootStrap implements InitializingBean {
         }
         join(i8, campbell, d('2016-01-03 21:25:31'))
 
-        def i9 = on(patientRepository.save(new Patient(uniqueId: 'I9'))) {
+        def i9 = on(patientRepository.save(new Patient(uniqueId: 'I9', id: 16))) {
             apply new PatientCreated(timestamp: d('2016-01-02 07:29:07'), name: 'SYLVIA CARLISLE')
             apply new ProcedurePerformed(timestamp: d('2016-01-03 07:29:07'), code: 'FLUSHOT', cost: 32.40)
         }
         join(i9, santanaRow, d('2016-01-03 12:48:52'))
 
-        def i10 = on(patientRepository.save(new Patient(uniqueId: 'I10'))) {
+        def i10 = on(patientRepository.save(new Patient(uniqueId: 'I10', id: 17))) {
             apply new PatientCreated(timestamp: d('2016-01-02 01:57:19'), name: 'JOANNE KELSEY')
             apply new ProcedurePerformed(timestamp: d('2016-01-04 01:57:19'), code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(timestamp: d('2016-01-05 01:57:19'), code: 'ANNUALPHYSICAL',
@@ -210,7 +210,7 @@ class BootStrap implements InitializingBean {
     }
 
     private Patient setupJohnLennon() {
-        def patient = patientRepository.save(new Patient(uniqueId: '42'))
+        def patient = patientRepository.save(new Patient(uniqueId: '42', id: 1))
 
         on(patient) {
             apply new PatientCreated(name: 'John Lennon')
@@ -230,7 +230,7 @@ class BootStrap implements InitializingBean {
     }
 
     private Patient setupRingoStarr() {
-        def patient = patientRepository.save(new Patient(uniqueId: '43'))
+        def patient = patientRepository.save(new Patient(uniqueId: '43', id: 2))
 
         on(patient) {
             apply new PatientCreated(name: 'Ringo Starr')
@@ -250,7 +250,7 @@ class BootStrap implements InitializingBean {
     }
 
     private Patient setupPaulMcCartney() {
-        def patient = patientRepository.save(new Patient(uniqueId: '44'))
+        def patient = patientRepository.save(new Patient(uniqueId: '44', id: 3))
 
         on(patient) {
             apply new PatientCreated(name: 'Paul McCartney')
@@ -277,8 +277,8 @@ class BootStrap implements InitializingBean {
     }
 
     private Patient setupFreddieMercury() {
-        def patient = patientRepository.save(new Patient(uniqueId: '45'))
-        def patient2 = patientRepository.save(new Patient(uniqueId: '46'))
+        def patient = patientRepository.save(new Patient(uniqueId: '45', id: 4))
+        def patient2 = patientRepository.save(new Patient(uniqueId: '46', id: 5))
 
         on(patient) {
             apply new PatientCreated(name: 'Farrokh Bulsara')
@@ -303,8 +303,8 @@ class BootStrap implements InitializingBean {
     }
 
     private Patient setupTinaFeyAndSarahPalin() {
-        def patient = patientRepository.save(new Patient(uniqueId: '47'))
-        def patient2 = patientRepository.save(new Patient(uniqueId: '48'))
+        def patient = patientRepository.save(new Patient(uniqueId: '47', id: 6))
+        def patient2 = patientRepository.save(new Patient(uniqueId: '48', id: 7))
 
         on(patient) {
             apply new PatientCreated(name: 'Tina Fey')
@@ -353,7 +353,7 @@ class BootStrap implements InitializingBean {
             converse: e1,
             position: patientEventRepository.countByAggregateId(into.id) + 1,)
         e1.converse = e2
-        patientEventRepository.save([e1, e2,])
+        patientEventRepository.saveAll([e1, e2,])
         e2.converse
     }
 }
