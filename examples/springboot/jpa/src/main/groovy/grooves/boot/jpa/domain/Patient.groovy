@@ -28,7 +28,7 @@ import javax.persistence.*
 @EqualsAndHashCode(includes = ['uniqueId'])
 // tag::documented[]
 class Patient {
-    @GeneratedValue @Id Long id
+    @Id Long id
     String uniqueId
 }
 // end::documented[]
