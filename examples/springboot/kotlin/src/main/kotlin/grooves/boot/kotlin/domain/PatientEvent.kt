@@ -23,7 +23,7 @@ import java.util.Date
 sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
 
     @Id
-    override val id: String? = null
+    override var id: String? = null
 
     var aggregateId: String? = null
 

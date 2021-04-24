@@ -4,7 +4,7 @@ buildscript {
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.0.3.RELEASE'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.2.13.RELEASE'
         classpath 'de.flapdoodle.embed:de.flapdoodle.embed.process:2.1.2'
     }
 }
