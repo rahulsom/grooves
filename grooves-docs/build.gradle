@@ -14,7 +14,7 @@ configurations {
 
 dependencies {
     asciidoctorExt project(':grooves-diagrams')
-    asciidoctorExt 'com.github.spring-io:spring-asciidoctor-extensions:0.5.0'
+    asciidoctorExt 'com.github.spring-io:spring-asciidoctor-extensions:0.6.0'
 }
 
 project.version = rootProject.version.toString()
