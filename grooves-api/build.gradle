@@ -16,5 +16,5 @@ dependencies {
     implementation "org.slf4j:slf4j-api:1.7.30"
 
     compileOnly "org.codehaus.groovy:groovy:2.5.14"
-    compileOnly 'org.jetbrains:annotations:20.1.0'
+    compileOnly 'org.jetbrains:annotations:21.0.0'
 }
