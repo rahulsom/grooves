@@ -41,5 +41,5 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build asciidoctor --stacktrace --parallel --scan
 
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v2
         name: Publish Code Coverage
