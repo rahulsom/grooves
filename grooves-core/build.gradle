@@ -36,7 +36,7 @@ dependencies {
     testRuntimeOnly("org.slf4j:slf4j-simple:1.7.32")
     testRuntimeOnly("org.apache.logging.log4j:log4j-core:2.14.1")
     testRuntimeOnly("org.apache.logging.log4j:log4j-slf4j-impl:2.14.1")
-    testRuntimeOnly("ch.qos.logback:logback-classic:0.9.30")
+    testRuntimeOnly("ch.qos.logback:logback-classic:1.2.7")
 
     implementation("org.aspectj:aspectjrt:1.9.7")
 }
