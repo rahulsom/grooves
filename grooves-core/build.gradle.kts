@@ -6,7 +6,7 @@ plugins {
     id("dev.jacomet.logging-capabilities") version "0.+"
     id("io.freefair.aspectj.post-compile-weaving") version "6.3.0"
     id("com.github.rahulsom.waena.published")
-    id('java-library')
+    `java-library`
 }
 
 loggingCapabilities {
@@ -27,13 +27,13 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     // configureJUnit()
-    implementation(platform("org.junit:junit-bom:5.+"))
+    testImplementation(platform("org.junit:junit-bom:5.+"))
     testImplementation("org.assertj:assertj-core:3.21.0")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 
-    //configureLogging()
+    // configureLogging()
     implementation("org.slf4j:slf4j-api:1.7.32")
     testRuntimeOnly("org.slf4j:slf4j-simple:1.7.32")
     testRuntimeOnly("org.apache.logging.log4j:log4j-core:2.14.1")
@@ -43,19 +43,16 @@ dependencies {
     implementation("org.aspectj:aspectjrt:1.9.7")
 }
 
-tasks.withType(KotlinCompile) {
+tasks.withType<KotlinCompile> {
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs = ["-Xjvm-default=all", "-Xinline-classes"]
+        freeCompilerArgs = listOf("-Xjvm-default=all", "-Xinline-classes")
     }
 }
 
-tasks.withType(Test) {
+tasks.withType<Test> {
     useJUnitPlatform()
 
     // Configure Slf4j Simple Logger
     systemProperty("org.slf4j.simpleLogger.log.com.github.rahulsom.grooves", "DEBUG")
 }
-
-
-

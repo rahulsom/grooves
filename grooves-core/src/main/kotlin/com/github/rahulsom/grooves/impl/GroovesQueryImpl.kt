@@ -45,18 +45,19 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Trace(true)
-    override fun computeSnapshot(aggregate: Aggregate, at: VersionOrTimestamp?, redirect: Boolean): GroovesResult<Snapshot, Aggregate, VersionOrTimestamp> {
-        val providedSnapshot = snapshotProvider.invoke(aggregate, at)
-        val snapshot = providedSnapshot ?: emptySnapshotProvider.invoke(aggregate)
-        val events = eventsProvider.invoke(listOf(aggregate), at, snapshot).collect(Collectors.toList())
+    override fun computeSnapshot(aggregate: Aggregate, at: VersionOrTimestamp?, redirect: Boolean):
+        GroovesResult<Snapshot, Aggregate, VersionOrTimestamp> {
+            val providedSnapshot = snapshotProvider.invoke(aggregate, at)
+            val snapshot = providedSnapshot ?: emptySnapshotProvider.invoke(aggregate)
+            val events = eventsProvider.invoke(listOf(aggregate), at, snapshot).collect(Collectors.toList())
 
-        return computeSnapshotImpl(events, snapshot, listOf(aggregate), at, redirect) { c, s ->
-            if (s != null) {
-                log.trace("${c.data} -> $s")
+            return computeSnapshotImpl(events, snapshot, listOf(aggregate), at, redirect) { c, s ->
+                if (s != null) {
+                    log.trace("${c.data} -> $s")
+                }
+                IndentedLogging.stepOut()
             }
-            IndentedLogging.stepOut()
         }
-    }
 
     // @JvmInline
     private inline class CallIdentifier(val data: String)
@@ -71,7 +72,9 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
     ): GroovesResult<Snapshot, Aggregate, VersionOrTimestamp> {
         val indent = IndentedLogging.indentString()
 
-        val callIdentifier = CallIdentifier("${indent}computeSnapshotImpl(<... ${events.size} items>, $snapshot, $aggregates, $at)")
+        val callIdentifier = CallIdentifier(
+            "${indent}computeSnapshotImpl(<... ${events.size} items>, $snapshot, $aggregates, $at)"
+        )
         log.trace(callIdentifier.data)
         IndentedLogging.stepIn()
         val (revertEvents, forwardEvents) = events
@@ -165,7 +168,8 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
                 if (forwardEvents.remove(revertedEvent)) {
                     log.debug("$indent  ...Reverting $revertedEvent based on $mostRecentRevert")
                 } else {
-                    log.debug("$indent  ...There is an event that needs to be reverted but part of the last snapshot - $revertedEvent. Recursing with older snapshot...")
+                    val problem = "There is an event that needs to be reverted but part of the last snapshot - $revertedEvent"
+                    log.debug("$indent  ...$problem. Recursing with older snapshot...")
                     return true
                 }
             }

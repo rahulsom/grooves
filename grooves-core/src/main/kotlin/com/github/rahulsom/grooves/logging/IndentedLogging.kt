@@ -26,7 +26,11 @@ class IndentedLogging {
         val classWithFunction = joinPoint.target.javaClass
         val loggerName = classWithFunction.name.replace(Regex("\\\$\\\$Lambda.*$"), "")
         val log = LoggerFactory.getLogger(loggerName)
-        val methodName = if (signature.name == "invoke") signature.declaringType.simpleName.replaceFirstChar { x -> x.lowercaseChar() } else signature.name
+        val methodName =
+            if (signature.name == "invoke")
+                signature.declaringType.simpleName.replaceFirstChar { x -> x.lowercaseChar() }
+            else
+                signature.name
 
         val args = joinPoint.args.map { if (it is List<*>) eventsToString(it) else it }.joinToString(", ")
         if (trace.twoStep) {
@@ -37,7 +41,8 @@ class IndentedLogging {
         try {
             val result = joinPoint.proceed()
             stepOut()
-            log.trace("${indentString()}$methodName($args) --> ${if (result is List<*>) eventsToString(result) else result}")
+            val listRender = if (result is List<*>) eventsToString(result) else result
+            log.trace("${indentString()}$methodName($args) --> $listRender")
             return result
         } catch (t: Throwable) {
             stepOut()
