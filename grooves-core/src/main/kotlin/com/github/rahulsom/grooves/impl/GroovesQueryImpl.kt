@@ -153,11 +153,7 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
         return GroovesResult.Success(snapshot)
     }
 
-    private fun revertsExistOutsideEvents(
-        revertEvents: MutableList<Event>,
-        indent: String,
-        forwardEvents: MutableList<Event>
-    ): Boolean {
+    private fun revertsExistOutsideEvents(revertEvents: MutableList<Event>, indent: String, forwardEvents: MutableList<Event>): Boolean {
         while (revertEvents.isNotEmpty()) {
             val mostRecentRevert = revertEvents.removeLast()
             val revertedEvent = revertedEventProvider.invoke(mostRecentRevert)
@@ -184,5 +180,4 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
             exceptionHandler.invoke(e, snapshot, it)
         }
 
-    private fun ((CallIdentifier, Snapshot) -> Unit).then(other: () -> Unit): (CallIdentifier, Snapshot) -> Unit = { c, s -> this(c, s); other() }
 }
