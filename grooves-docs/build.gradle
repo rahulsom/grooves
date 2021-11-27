@@ -44,7 +44,6 @@ asciidoctor {
 }
 
 asciidoctor.dependsOn ':grooves-diagrams:jar'
-def env = System.getenv()
 
 gitPublish {
     repoUri.set "https://github.com/rahulsom/grooves.git"
@@ -53,7 +52,7 @@ gitPublish {
         from(file("$buildDir/asciidoc/html5")) {
             into "manual/${version}"
         }
-        if (env['BRANCH_NAME'] == 'master') {
+        if (System.getenv('BRANCH_NAME') == 'master') {
             from(file("$buildDir/asciidoc/html5")) {
                 into "manual/current"
             }

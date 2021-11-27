@@ -179,5 +179,4 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
         } catch (e: Exception) {
             exceptionHandler.invoke(e, snapshot, it)
         }
-
 }
