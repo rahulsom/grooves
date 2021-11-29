@@ -8,7 +8,7 @@ import java.util.stream.Stream
  * If the version specified is null, then all events are returned.
  */
 interface EventsProvider<Aggregate, VersionOrTimestamp, Snapshot, Event> {
-    @Trace(false)
+    @Trace
     fun invoke(
         aggregates: List<Aggregate>,
         versionOrTimestamp: VersionOrTimestamp?,

@@ -7,6 +7,6 @@ import com.github.rahulsom.grooves.logging.Trace
  * Classifies the type of event.
  */
 interface EventClassifier<Event> {
-    @Trace(false)
+    @Trace
     fun invoke(event: Event): EventType
 }

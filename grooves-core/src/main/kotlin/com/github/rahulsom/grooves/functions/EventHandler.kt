@@ -7,6 +7,6 @@ import com.github.rahulsom.grooves.logging.Trace
  * Applies the event to a snapshot.
  */
 interface EventHandler<Event, Snapshot> {
-    @Trace(false)
+    @Trace
     fun invoke(event: Event, snapshot: Snapshot): EventApplyOutcome
 }

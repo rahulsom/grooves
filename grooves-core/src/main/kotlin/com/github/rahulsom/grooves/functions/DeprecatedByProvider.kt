@@ -7,6 +7,6 @@ import com.github.rahulsom.grooves.logging.Trace
  * Identifies the Aggregate that is deprecated by the given event, and the event id that's the converse of the given event.
  */
 interface DeprecatedByProvider<Event, Aggregate, EventId> {
-    @Trace(false)
+    @Trace
     fun invoke(event: Event): DeprecatedByResult<Aggregate, EventId>
 }

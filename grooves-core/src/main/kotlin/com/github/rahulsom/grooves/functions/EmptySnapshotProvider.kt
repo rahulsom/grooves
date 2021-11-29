@@ -7,6 +7,6 @@ import com.github.rahulsom.grooves.logging.Trace
  * This can be used to build a snapshot with additional events.
  */
 interface EmptySnapshotProvider<Aggregate, Snapshot> {
-    @Trace(false)
+    @Trace
     fun invoke(aggregate: Aggregate): Snapshot
 }

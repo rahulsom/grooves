@@ -44,7 +44,7 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @Trace(true)
+    @Trace
     override fun computeSnapshot(aggregate: Aggregate, at: VersionOrTimestamp?, redirect: Boolean):
         GroovesResult<Snapshot, Aggregate, VersionOrTimestamp> {
             val providedSnapshot = snapshotProvider.invoke(aggregate, at)
@@ -70,7 +70,7 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
         redirect: Boolean,
         beforeReturn: (CallIdentifier, Snapshot?) -> Unit
     ): GroovesResult<Snapshot, Aggregate, VersionOrTimestamp> {
-        val indent = IndentedLogging.indentString()
+        val indent = IndentedLogging.indent()
 
         val callIdentifier = CallIdentifier(
             "${indent}computeSnapshotImpl(<... ${events.size} items>, $snapshot, $aggregates, $at)"

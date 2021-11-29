@@ -7,6 +7,6 @@ import com.github.rahulsom.grooves.logging.Trace
  * Some conditions may require that the snapshot is not updated and returned as is.
  */
 interface ApplyMoreEventsPredicate<Snapshot> {
-    @Trace(false)
+    @Trace
     fun invoke(snapshot: Snapshot): Boolean
 }

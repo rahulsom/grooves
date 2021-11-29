@@ -9,16 +9,16 @@ import kotlin.concurrent.getOrSet
 @Aspect
 class IndentedLogging {
     companion object {
-        private val indent = ThreadLocal<Int>()
+        private val indentLevel = ThreadLocal<Int>()
         private const val INITIAL_INDENT = 1
-        fun stepIn() = indent.set(indent.getOrSet { INITIAL_INDENT } + 1)
-        fun stepOut() = indent.set(indent.getOrSet { INITIAL_INDENT } - 1)
+        fun stepIn() = indentLevel.set(indentLevel.getOrSet { INITIAL_INDENT } + 1)
+        fun stepOut() = indentLevel.set(indentLevel.getOrSet { INITIAL_INDENT } - 1)
         @JvmStatic
-        fun indentString() = "".padStart(indent.getOrSet { INITIAL_INDENT } * 2)
+        fun indent() = "".padStart(indentLevel.getOrSet { INITIAL_INDENT } * 2)
         private fun eventsToString(it: List<*>): Any = "<... ${it.size} item(s)>"
     }
 
-    @Suppress("unused")
+    @Suppress("unused", "UNUSED_PARAMETER")
     @Around(value = "@annotation(trace)", argNames = "trace")
     @ExperimentalStdlibApi
     fun around(joinPoint: ProceedingJoinPoint, trace: Trace): Any? {
@@ -33,20 +33,18 @@ class IndentedLogging {
                 signature.name
 
         val args = joinPoint.args.map { if (it is List<*>) eventsToString(it) else it }.joinToString(", ")
-        if (trace.twoStep) {
-            log.trace("${indentString()}$methodName($args)")
-        }
+        log.trace("${indent()}$methodName($args)")
         stepIn()
 
         try {
             val result = joinPoint.proceed()
             stepOut()
             val listRender = if (result is List<*>) eventsToString(result) else result
-            log.trace("${indentString()}$methodName($args) --> $listRender")
+            log.trace("${indent()}$methodName($args) --> $listRender")
             return result
         } catch (t: Throwable) {
             stepOut()
-            log.trace("${indentString()}$methodName($args) ~~> $t")
+            log.trace("${indent()}$methodName($args) ~~> $t")
             throw t
         }
     }

@@ -8,6 +8,4 @@ package com.github.rahulsom.grooves.logging
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class Trace(
-    val twoStep: Boolean
-)
+annotation class Trace
