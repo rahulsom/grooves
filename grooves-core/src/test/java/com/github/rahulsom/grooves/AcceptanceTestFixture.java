@@ -18,7 +18,7 @@ public class AcceptanceTestFixture {
 
         @Override
         public String toString() {
-            return MessageFormat.format("Aggregate'{'id={0}'}'", id);
+            return MessageFormat.format("A{0}", id);
         }
     }
 
@@ -39,9 +39,7 @@ public class AcceptanceTestFixture {
 
         @Override
         public String toString() {
-            return MessageFormat.format(
-                "Event'{'id={0}, aggregateId={1}, eventType={2}, version={3}, data=''{4}'''}'",
-                id, aggregateId, eventType, version, data);
+            return MessageFormat.format("A{1}.E{0}-{2}-{3}", id, aggregateId, eventType, version);
         }
     }
 
@@ -56,10 +54,7 @@ public class AcceptanceTestFixture {
 
         @Override
         public String toString() {
-            return MessageFormat.format(
-                "Snapshot'{'aggregateId={0}, version={1}, summary=''{2}'', "
-                            + "deprecatedAggregates={3}'}'",
-                aggregateId, version, summary, deprecatedAggregates);
+            return MessageFormat.format("A{0}.S{1}", aggregateId, version);
         }
     }
 
