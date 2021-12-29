@@ -41,7 +41,7 @@ tasks.withType<Test> {
 fun DependencyHandlerScope.configureLogging() {
     implementation("org.slf4j:slf4j-api:1.7.32")
     testRuntimeOnly("org.slf4j:slf4j-simple:1.7.32")
-    testRuntimeOnly("org.apache.logging.log4j:log4j-core:2.17.0")
+    testRuntimeOnly("org.apache.logging.log4j:log4j-core:2.17.1")
     testRuntimeOnly("org.apache.logging.log4j:log4j-slf4j-impl:2.17.0")
     testRuntimeOnly("ch.qos.logback:logback-classic:1.2.10")
 }
