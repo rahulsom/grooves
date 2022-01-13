@@ -21,7 +21,7 @@ dependencies {
 
     implementation 'commons-beanutils:commons-beanutils:1.9.4'
     implementation 'org.asciidoctor:asciidoctorj:2.5.3'
-    implementation "org.slf4j:slf4j-api:1.7.32"
+    implementation "org.slf4j:slf4j-api:1.7.33"
 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'com.sun.xml.bind:jaxb-core:3.0.2'
