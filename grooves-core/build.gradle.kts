@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm")
     id("org.jlleitschuh.gradle.ktlint")
     id("dev.jacomet.logging-capabilities") version "0.+"
-    id("io.freefair.aspectj.post-compile-weaving") version "6.3.0"
+    id("io.freefair.aspectj.post-compile-weaving") version "6.5.0.3"
     id("com.github.rahulsom.waena.published")
     `java-library`
 }
