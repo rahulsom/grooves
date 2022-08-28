@@ -43,3 +43,17 @@ jobs:
 
       - uses: codecov/codecov-action@v2
         name: Publish Code Coverage
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v3
+        if: always()
+        with:
+          report_paths: '**/build/test-results/test/TEST-*.xml'
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: JUnit Tests
+          path: '**/build/test-results/test/TEST-*.xml'
+          reporter: java-junit
