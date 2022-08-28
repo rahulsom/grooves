@@ -45,5 +45,5 @@ jobs:
         run: |
           ./gradlew build snapshot --stacktrace --parallel --scan
 
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3
         name: Publish Code Coverage
