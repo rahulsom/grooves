@@ -26,7 +26,7 @@ dependencies {
 
     runtimeOnly 'javax.xml.bind:jaxb-api:2.2.11'
     runtimeOnly 'com.sun.xml.bind:jaxb-core:2.3.0.1'
-    runtimeOnly 'com.sun.xml.bind:jaxb-impl:2.3.6'
+    runtimeOnly 'com.sun.xml.bind:jaxb-impl:4.0.0'
     runtimeOnly 'javax.activation:activation:1.1.1'
     runtimeOnly 'com.h2database:h2'
 
