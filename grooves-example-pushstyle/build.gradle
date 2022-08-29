@@ -64,7 +64,7 @@ dependencies {
     runtimeOnly 'ch.qos.logback:logback-classic:1.2.3'
 
     testImplementation 'junit:junit:4.+'
-    testImplementation 'org.awaitility:awaitility:3.1.2'
+    testImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
 jooq {
