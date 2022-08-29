@@ -4,7 +4,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath 'com.h2database:h2:1.4.197'
+        classpath 'com.h2database:h2:1.4.200'
 
         classpath 'javax.xml.bind:jaxb-api:2.2.11'
         classpath 'com.sun.xml.bind:jaxb-core:2.2.11'
@@ -41,7 +41,7 @@ dependencies {
     implementation 'com.google.inject:guice:4.2.1'
     implementation 'com.google.guava:guava:27.0-jre'
 
-    implementation 'com.h2database:h2:1.4.197'
+    implementation 'com.h2database:h2:1.4.200'
     implementation 'org.jooq:jooq'
 
     implementation 'javax.xml.bind:jaxb-api:2.2.11'
@@ -55,7 +55,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.3'
     implementation "org.slf4j:slf4j-api:1.7.30"
 
-    jooqRuntime 'com.h2database:h2:1.4.197'
+    jooqRuntime 'com.h2database:h2:1.4.200'
     jooqRuntime 'javax.xml.bind:jaxb-api:2.2.11'
     jooqRuntime 'com.sun.xml.bind:jaxb-core:2.2.11'
     jooqRuntime 'com.sun.xml.bind:jaxb-impl:2.2.11'
