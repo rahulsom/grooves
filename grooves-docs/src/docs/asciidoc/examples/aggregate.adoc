@@ -11,7 +11,7 @@ The rest of the information will be brought in using events.
 [source,java,indent=0,role="primary"]
 .Java
 ----
-include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/domain/Patient.java[tags=documented]
+include::{sourcedir}/examples/grooves-example-javaee/src/main/java/grooves/example/javaee/domain/Patient.java[tags=documented]
 ----
 <1> This annotation will assist in checking for completeness of queries.
   There are two other annotations we'll see - `@Event` and `@Query`.
@@ -21,7 +21,7 @@ include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/domain
 [source,groovy,indent=0,role="secondary"]
 .Groovy
 ----
-include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/domain/Patient.groovy[tags=documented]
+include::{sourcedir}/examples/grooves-example-springboot/grooves-example-springboot-jpa/src/main/groovy/grooves/boot/jpa/domain/Patient.groovy[tags=documented]
 ----
 <1> This annotation will assist in checking for completeness of queries.
   There are two other annotations we'll see - `@Event` and `@Query`.
@@ -31,6 +31,6 @@ include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/do
 [source,kotlin,indent=0,role="secondary"]
 .Kotlin
 ----
-include::{sourcedir}/examples/springboot/kotlin/src/main/kotlin/grooves/boot/kotlin/domain/Patient.kt[tags=documented]
+include::{sourcedir}/examples/grooves-example-springboot/grooves-example-springboot-kotlin/src/main/kotlin/grooves/boot/kotlin/domain/Patient.kt[tags=documented]
 ----
 <1> Since 0.5.0, there isn't really anything special to do for declaring Aggregates.
