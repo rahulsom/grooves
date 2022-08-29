@@ -16,7 +16,7 @@ dependencies {
     providedCompile 'javax:javaee-api:8.0.1'
 
     compileOnly 'org.projectlombok:lombok:1.18.6'
-    compileOnly "org.jetbrains:annotations:16.0.3"
+    compileOnly "org.jetbrains:annotations:23.0.0"
 
     implementation project(':grooves-java')
     implementation "org.slf4j:slf4j-api:1.7.30"
