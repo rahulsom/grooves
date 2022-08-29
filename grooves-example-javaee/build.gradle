@@ -13,7 +13,7 @@ repositories {
 dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.6'
 
-    providedCompile 'javax:javaee-api:7.0'
+    providedCompile 'javax:javaee-api:8.0.1'
 
     compileOnly 'org.projectlombok:lombok:1.18.6'
     compileOnly "org.jetbrains:annotations:16.0.3"
