@@ -32,10 +32,6 @@ dependencies {
     testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5'
 }
 
-compileGroovy.dependsOn compileKotlin
-compileGroovy.classpath += files(compileKotlin.destinationDir)
-classes.dependsOn compileGroovy
-
 compileSass {
     sourceDir = project.file ("${projectDir}/src/main/resources")
     outputDir = project.file ("${buildDir}/generated/css")
