@@ -17,19 +17,7 @@ releasable.each { include "grooves-${it}" }
 
 include "grooves-docs"
 include 'grooves-example-test'
-def examples = [
-
-        /* SpringBoot + Jpa + Groovy */
-        'springboot:jpa',
-
-        /* SpringBoot + Kotlin + Mongo */
-        'springboot:kotlin',
-
-        /* JavaEE + Java + Data Structures for persistence */
-        'javaee',
-
-        /* Guava EventBus for events + Kotlin + jOOQ for snapshots  */
-        'pushstyle',
-]
-
-examples.each { include "examples:${it}" }
+include 'grooves-example-springboot-jpa'
+include 'grooves-example-springboot-kotlin'
+include 'grooves-example-javaee'
+include 'grooves-example-pushstyle'

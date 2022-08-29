@@ -3,7 +3,7 @@ Next up, let's look at our first event, `PatientCreated`.
 [source,java,indent=0,role="primary"]
 .Java
 ----
-include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/domain/PatientCreated.java[tags=documented]
+include::{sourcedir}/examples/grooves-example-javaee/src/main/java/grooves/example/javaee/domain/PatientCreated.java[tags=documented]
 ----
 <1> The `@Event` annotation is the second step to achieving completeness of events.
   It accepts as a param, the Aggregate over which it applies.
@@ -12,7 +12,7 @@ include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/domain
 [source,groovy,indent=0,role="secondary"]
 .Groovy
 ----
-include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/domain/PatientEvent.groovy[tags=created]
+include::{sourcedir}/examples/grooves-example-springboot/grooves-example-springboot-jpa/src/main/groovy/grooves/boot/jpa/domain/PatientEvent.groovy[tags=created]
 ----
 <1> The `@Event` annotation is the second step to achieving completeness of events.
   It accepts as a param, the Aggregate over which it applies.
@@ -23,7 +23,7 @@ include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/do
 ----
 sealed class PatientEvent : BaseEvent<...> {
     // ... skipping stuff already there ...
-include::{sourcedir}/examples/springboot/kotlin/src/main/kotlin/grooves/boot/kotlin/domain/PatientEvent.kt[tags=created]
+include::{sourcedir}/examples/grooves-example-springboot/grooves-example-springboot-kotlin/src/main/kotlin/grooves/boot/kotlin/domain/PatientEvent.kt[tags=created]
 }
 ----
 <1> First we create a sealed class within the `PatientEvent` called `Applicable`.

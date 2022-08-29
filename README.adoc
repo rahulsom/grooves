@@ -51,20 +51,20 @@ a|This is an asciidoctor extension that allows you to generate diagrams like tho
 [cols="1,3"]
 |===
 
-|link:examples/springboot/jpa[examples/springboot/jpa]
+|link:examples/grooves-example-springboot/grooves-example-springboot-jpa[examples/springboot/jpa]
 |This uses Springboot and JPA repositories for everything.
 All the code is written in groovy.
 
-|link:examples/springboot/kotlin[examples/springboot/kotlin]
+|link:examples/grooves-example-springboot/grooves-example-springboot-kotlin[examples/springboot/kotlin]
 |This uses Spring Reactive Web and RxMongo repositories for everything.
 All the code is written in kotlin.
 
-|link:examples/javaee[examples/javaee]
+|link:examples/grooves-example-javaee[examples/javaee]
 |This uses Java and JavaEE for the APIs.
 The persistence here is completely made up using a few `List` objects.
 The reason for that is to show how you don't have to be tied to any one persistence mechanism.
 
-|link:examples/pushstyle[examples/pushstyle]
+|link:examples/grooves-example-pushstyle[examples/pushstyle]
 |This uses Kotlin and Guava EventBus.
 The snapshots are persisted using jOOQ.
 The events are never persisted. They are processed as they come on the EventBus.

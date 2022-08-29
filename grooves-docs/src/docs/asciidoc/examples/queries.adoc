@@ -4,9 +4,9 @@
 .Java
 ----
 // You don't need to have an intermediate type to manage your queries, but it does make code reuse better.
-include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/queries/CustomQuerySupport.java[tags=documented]
+include::{sourcedir}/examples/grooves-example-javaee/src/main/java/grooves/example/javaee/queries/CustomQuerySupport.java[tags=documented]
 // This is the implementation we need
-include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/queries/PatientAccountQuery.java[tags=documented]
+include::{sourcedir}/examples/grooves-example-javaee/src/main/java/grooves/example/javaee/queries/PatientAccountQuery.java[tags=documented]
 ----
 <1> This is a placeholder for the snapshot we'll compute.
 <2> `QuerySupport` allows computing both temporal and versioned snapshots.
@@ -32,7 +32,7 @@ include::{sourcedir}/examples/javaee/src/main/java/grooves/example/javaee/querie
 [source,groovy,indent=0,role="secondary"]
 .Groovy
 ----
-include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/queries/PatientAccountQuery.groovy[tags=documented]
+include::{sourcedir}/examples/grooves-example-springboot/grooves-example-springboot-jpa/src/main/groovy/grooves/boot/jpa/queries/PatientAccountQuery.groovy[tags=documented]
 ----
 <1> This annotation is the final step in verification of completeness.
   The AST Transformation checks that all `@Event` s associated with the `@Aggregate` are accounted for in the `@Query`.
@@ -56,7 +56,7 @@ include::{sourcedir}/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/qu
 [source,kotlin,indent=0,role="secondary"]
 .Kotlin
 ----
-include::{sourcedir}/examples/springboot/kotlin/src/main/kotlin/grooves/boot/kotlin/queries/PatientAccountQuery.kt[tags=documented]
+include::{sourcedir}/examples/grooves-example-springboot/grooves-example-springboot-kotlin/src/main/kotlin/grooves/boot/kotlin/queries/PatientAccountQuery.kt[tags=documented]
 ----
 <1> `QuerySupport` allows computing both temporal and versioned snapshots.
 <2> `SimpleQuery` makes working with Kotlin better.
