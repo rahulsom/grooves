@@ -36,7 +36,7 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlin:kotlin-reflect"
-    implementation 'org.codehaus.groovy:groovy-all:2.5.18'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.12'
 
     implementation 'com.google.inject:guice:5.1.0'
     implementation 'com.google.guava:guava:31.1-jre'

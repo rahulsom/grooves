@@ -29,7 +29,7 @@ dependencies {
     implementation 'javax.activation:activation:1.1.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.0'
 
-    testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5'
+    testImplementation 'org.spockframework:spock-core:2.1-groovy-3.0'
 }
 
 compileSass {
@@ -44,3 +44,8 @@ sourceSets {
 }
 
 tasks.getByName("processResources").dependsOn("compileSass")
+tasks.getByName("sourcesJar").dependsOn("compileSass")
+
+test {
+    useJUnitPlatform()
+}
