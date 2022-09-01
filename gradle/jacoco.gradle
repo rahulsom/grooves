@@ -13,10 +13,3 @@ if (project.tasks.findByName('integrationTest')) {
     integrationTest.jacoco.destinationFile = file("$buildDir/jacoco/test.exec")
     integrationTest.jacoco.append = true
 }
-
-jacocoTestReport {
-    reports {
-        html.enabled = true
-        xml.enabled = true
-    }
-}

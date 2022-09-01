@@ -7,11 +7,6 @@ plugins {
 apply from: "$rootDir/gradle/codenarc/codenarc.gradle"
 apply from: "$rootDir/gradle/jacoco.gradle"
 
-jar {
-    baseName = 'grooves-example-springboot-jpa'
-    version = '0.0.1-SNAPSHOT'
-}
-
 dependencies {
     compileOnly "org.jetbrains:annotations:23.0.0"
 

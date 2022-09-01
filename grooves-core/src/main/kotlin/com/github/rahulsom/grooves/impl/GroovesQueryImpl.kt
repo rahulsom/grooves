@@ -45,19 +45,18 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Trace
-    override fun computeSnapshot(aggregate: Aggregate, at: VersionOrTimestamp?, redirect: Boolean):
-        GroovesResult<Snapshot, Aggregate, VersionOrTimestamp> {
-            val providedSnapshot = snapshotProvider.invoke(aggregate, at)
-            val snapshot = providedSnapshot ?: emptySnapshotProvider.invoke(aggregate)
-            val events = eventsProvider.invoke(listOf(aggregate), at, snapshot).collect(Collectors.toList())
+    override fun computeSnapshot(aggregate: Aggregate, at: VersionOrTimestamp?, redirect: Boolean): GroovesResult<Snapshot, Aggregate, VersionOrTimestamp> {
+        val providedSnapshot = snapshotProvider.invoke(aggregate, at)
+        val snapshot = providedSnapshot ?: emptySnapshotProvider.invoke(aggregate)
+        val events = eventsProvider.invoke(listOf(aggregate), at, snapshot).collect(Collectors.toList())
 
-            return computeSnapshotImpl(events, snapshot, listOf(aggregate), at, redirect) { c, s ->
-                if (s != null) {
-                    log.trace("${c.data} -> $s")
-                }
-                IndentedLogging.stepOut()
+        return computeSnapshotImpl(events, snapshot, listOf(aggregate), at, redirect) { c, s ->
+            if (s != null) {
+                log.trace("${c.data} -> $s")
             }
+            IndentedLogging.stepOut()
         }
+    }
 
     // @JvmInline
     private inline class CallIdentifier(val data: String)
