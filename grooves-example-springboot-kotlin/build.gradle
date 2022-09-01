@@ -33,7 +33,6 @@ compileTestKotlin {
 
 repositories {
     mavenCentral()
-    maven { url 'https://repo.spring.io/milestone' }
 }
 
 dependencies {
@@ -54,9 +53,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5'
     testImplementation 'org.spockframework:spock-spring:1.3-groovy-2.5'
-    testImplementation 'io.projectreactor.addons:reactor-test:3.1.0.M1'
-
-
+    testImplementation 'io.projectreactor.addons:reactor-test:3.0.7.RELEASE'
 }
 
 tasks.findByName('bootRun').dependsOn 'startMongoDb'
