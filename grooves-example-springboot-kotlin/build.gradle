@@ -4,23 +4,20 @@ buildscript {
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.3.12.RELEASE'
         classpath 'de.flapdoodle.embed:de.flapdoodle.embed.process:2.1.2'
     }
 }
 
 plugins {
+    id ('org.springframework.boot')
+    id('io.spring.dependency-management')
     id("org.jetbrains.kotlin.jvm")
     id("org.jlleitschuh.gradle.ktlint")
     id("org.jetbrains.kotlin.plugin.allopen")
     id("org.jetbrains.kotlin.plugin.spring")
     id("groovy")
     id("com.sourcemuse.mongo").version("1.0.7")
-
 }
-
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
 
 version = '0.0.1-SNAPSHOT'
 
