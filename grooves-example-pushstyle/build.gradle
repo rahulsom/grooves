@@ -111,3 +111,4 @@ generateMainJooqSchemaSource.dependsOn 'flywayMigrate'
 compileKotlin.dependsOn 'generateMainJooqSchemaSource'
 
 tasks.findByName('checkstyleMain')?.source = "src/main/java"
+tasks.findByName('runKtlintCheckOverMainSourceSet').dependsOn('generateMainJooqSchemaSource')

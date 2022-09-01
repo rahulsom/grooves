@@ -164,6 +164,7 @@ class BootStrap constructor(
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun <SnapshotT : Snapshot<Patient, String, String, PatientEvent>,
         QueryT : QuerySupport<Patient, String, PatientEvent, String, SnapshotT>> snapshotWith(
         it: OnSpec<Patient, String, PatientEvent, String,
