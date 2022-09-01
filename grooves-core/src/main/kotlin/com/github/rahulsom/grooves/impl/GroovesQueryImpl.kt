@@ -58,8 +58,8 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
         }
     }
 
-    // @JvmInline
-    private inline class CallIdentifier(val data: String)
+    @JvmInline
+    private value class CallIdentifier(val data: String)
 
     private tailrec fun computeSnapshotImpl(
         events: List<Event>,
