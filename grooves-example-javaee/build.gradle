@@ -37,7 +37,7 @@ cargo {
     }
     local {
         installer {
-            installUrl = 'https://download.jboss.org/wildfly/10.1.0.Final/wildfly-10.1.0.Final.zip'
+            installUrl = 'https://github.com/wildfly/wildfly/releases/download/26.1.2.Final/wildfly-26.1.2.Final.zip'
             downloadDir = file("${gradle.gradleUserHomeDir}/cargo")
             extractDir = file("$buildDir/extract")
             outputFile = file('build/output.log')
@@ -74,3 +74,7 @@ cargoStartLocal.doLast {
 
 test.dependsOn 'cargoStartLocal'
 test.finalizedBy 'cargoStopLocal'
+
+test {
+    useJUnitPlatform()
+}

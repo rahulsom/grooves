@@ -4,10 +4,10 @@ import com.google.inject.Guice
 import grooves.example.push.Application
 import grooves.example.push.BankingModule
 import org.awaitility.Awaitility.await
-import org.junit.After
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.util.concurrent.TimeUnit.SECONDS
 
 class PushTest {
@@ -15,12 +15,12 @@ class PushTest {
     val injector = Guice.createInjector(BankingModule)
     val application = injector.getInstance(Application::class.java)
 
-    @Before
+    @BeforeEach
     fun before() {
         application.doStart()
     }
 
-    @After
+    @AfterEach
     fun after() {
         application.doStop()
     }
@@ -29,7 +29,7 @@ class PushTest {
     fun testMissingAggregate() {
         val accountId = "A0000"
 
-        Assert.assertEquals(null, application.getBalance(accountId))
+        Assertions.assertEquals(null, application.getBalance(accountId))
     }
 
     @Test
@@ -65,6 +65,6 @@ class PushTest {
             .pollDelay(1, SECONDS)
             .until { application.getBalance(firstAccount) == 50L }
 
-        Assert.assertEquals(null, application.getBalance(secondAccount))
+        Assertions.assertEquals(null, application.getBalance(secondAccount))
     }
 }
