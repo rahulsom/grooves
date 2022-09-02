@@ -7,7 +7,7 @@ This is an example for such a query in Kotlin.
 
 [source,kotlin,indent=0]
 ----
-include::{sourcedir}/examples/grooves-example-pushstyle/src/main/kotlin/grooves/example/push/EventService.kt[tags=documented]
+include::{sourcedir}/grooves-example-pushstyle/src/main/kotlin/grooves/example/push/EventService.kt[tags=documented]
 ----
 <1> `Grooves` is a class that allows creating FRP style queries.
   You can start with `versioned` or `temporal`.

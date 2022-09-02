@@ -36,7 +36,7 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlin:kotlin-reflect"
-    implementation 'org.codehaus.groovy:groovy-all:2.5.18'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.9'
 
     implementation 'com.google.inject:guice:5.1.0'
     implementation 'com.google.guava:guava:31.1-jre'
@@ -63,7 +63,7 @@ dependencies {
 
     runtimeOnly 'ch.qos.logback:logback-classic:1.2.3'
 
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
@@ -112,3 +112,7 @@ compileKotlin.dependsOn 'generateMainJooqSchemaSource'
 
 tasks.findByName('checkstyleMain')?.source = "src/main/java"
 tasks.findByName('runKtlintCheckOverMainSourceSet').dependsOn('generateMainJooqSchemaSource')
+
+test {
+    useJUnitPlatform()
+}
