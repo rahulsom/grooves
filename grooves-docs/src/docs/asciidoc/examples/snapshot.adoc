@@ -5,7 +5,7 @@ Let's start with a snapshot that manages account balance for a patient.
 [source,java,indent=0,role="primary"]
 .Java
 ----
-include::{sourcedir}/examples/grooves-example-javaee/src/main/java/grooves/example/javaee/domain/PatientAccount.java[tags=documented]
+include::{sourcedir}/grooves-example-javaee/src/main/java/grooves/example/javaee/domain/PatientAccount.java[tags=documented]
 ----
 <1> For most snapshots, you may implement `Snapshot`.
 <2> The `lastEventPosition` is useful when locating snapshots by version.
@@ -18,7 +18,7 @@ include::{sourcedir}/examples/grooves-example-javaee/src/main/java/grooves/examp
 [source,groovy,indent=0,role="secondary"]
 .Groovy
 ----
-include::{sourcedir}/examples/grooves-example-springboot/grooves-example-springboot-jpa/src/main/groovy/grooves/boot/jpa/domain/PatientAccount.groovy[tags=documented]
+include::{sourcedir}/grooves-example-springboot-jpa/src/main/groovy/grooves/boot/jpa/domain/PatientAccount.groovy[tags=documented]
 ----
 <1> For most snapshots, you may implement `Snapshot`.
 <2> The `lastEventPosition` is useful when locating snapshots by version.
@@ -31,7 +31,7 @@ include::{sourcedir}/examples/grooves-example-springboot/grooves-example-springb
 [source,kotlin,indent=0,role="secondary"]
 .Kotlin
 ----
-include::{sourcedir}/examples/grooves-example-springboot/grooves-example-springboot-kotlin/src/main/kotlin/grooves/boot/kotlin/domain/PatientAccount.kt[tags=documented]
+include::{sourcedir}/grooves-example-springboot-kotlin/src/main/kotlin/grooves/boot/kotlin/domain/PatientAccount.kt[tags=documented]
 ----
 <1> For most snapshots, you may implement `Snapshot`.
 <2> The `lastEventPosition` is useful when locating snapshots by version.

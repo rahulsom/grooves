@@ -6,7 +6,7 @@ This is a good example for [join events] in a SpringBoot JPA project.
 
 [source,groovy]
 ----
-include::{sourcedir}/examples/grooves-example-springboot/grooves-example-springboot-jpa/src/main/groovy/grooves/boot/jpa/domain/ZipcodeEvent.groovy[tags=joins]
+include::{sourcedir}/grooves-example-springboot-jpa/src/main/groovy/grooves/boot/jpa/domain/ZipcodeEvent.groovy[tags=joins]
 ----
 <1> This extends a base class corresponding to its aggregate
 <2> This implements `JoinEvent` to mark the beginning of a join
@@ -19,7 +19,7 @@ This is a good example for such a https://github.com/rahulsom/grooves/blob/maste
 
 [source,groovy]
 ----
-include::{sourcedir}/examples/grooves-example-springboot/grooves-example-springboot-jpa/src/main/groovy/grooves/boot/jpa/queries/ZipcodePatientsQuery.groovy[tags=joins]
+include::{sourcedir}/grooves-example-springboot-jpa/src/main/groovy/grooves/boot/jpa/queries/ZipcodePatientsQuery.groovy[tags=joins]
 ----
 <1> `JoinSupport` is similar to `QuerySupport`.
   It does not require implementing methods for each event.
