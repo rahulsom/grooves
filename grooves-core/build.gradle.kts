@@ -19,7 +19,7 @@ dependencies {
     configureJUnit()
     configureLogging()
 
-    implementation("org.aspectj:aspectjrt:1.9.7")
+    implementation("org.aspectj:aspectjrt:1.9.9.1")
 }
 
 tasks.withType<Test> {
