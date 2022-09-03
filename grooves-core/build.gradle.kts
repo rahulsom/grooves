@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("org.jetbrains.kotlin.jvm")
     id("org.jlleitschuh.gradle.ktlint")
@@ -22,13 +20,6 @@ dependencies {
     configureLogging()
 
     implementation("org.aspectj:aspectjrt:1.9.7")
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = listOf("-Xjvm-default=all", "-Xinline-classes")
-    }
 }
 
 tasks.withType<Test> {
