@@ -46,7 +46,7 @@ dependencies {
     implementation project(':grooves-api')
 
     implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
-    implementation "org.slf4j:slf4j-api:2.0.0"
+    implementation "org.slf4j:slf4j-api:2.0.1"
 
     jooqRuntime 'com.h2database:h2:1.4.200'
     jooqRuntime 'javax.xml.bind:jaxb-api:2.3.1'
