@@ -1,7 +1,7 @@
+= Grooves
+
 https://opensource.org/licenses/Apache-2.0[image:https://img.shields.io/badge/License-Apache%202.0-blue.svg[License]]
 https://codecov.io/gh/rahulsom/grooves[image:https://codecov.io/gh/rahulsom/grooves/branch/master/graph/badge.svg[codecov]]
-
-= Grooves
 
 Event Sourcing Library for Java.
 
@@ -51,20 +51,20 @@ a|This is an asciidoctor extension that allows you to generate diagrams like tho
 [cols="1,3"]
 |===
 
-|link:examples/grooves-example-springboot/grooves-example-springboot-jpa[examples/springboot/jpa]
+|link:grooves-example-springboot-jpa[grooves-example-springboot-jpa]
 |This uses Springboot and JPA repositories for everything.
 All the code is written in groovy.
 
-|link:examples/grooves-example-springboot/grooves-example-springboot-kotlin[examples/springboot/kotlin]
+|link:grooves-example-springboot-kotlin[grooves-example-springboot-kotlin]
 |This uses Spring Reactive Web and RxMongo repositories for everything.
 All the code is written in kotlin.
 
-|link:examples/grooves-example-javaee[examples/javaee]
+|link:grooves-example-javaee[grooves-example-javaee]
 |This uses Java and JavaEE for the APIs.
 The persistence here is completely made up using a few `List` objects.
 The reason for that is to show how you don't have to be tied to any one persistence mechanism.
 
-|link:examples/grooves-example-pushstyle[examples/pushstyle]
+|link:grooves-example-pushstyle[grooves-example-pushstyle]
 |This uses Kotlin and Guava EventBus.
 The snapshots are persisted using jOOQ.
 The events are never persisted. They are processed as they come on the EventBus.
