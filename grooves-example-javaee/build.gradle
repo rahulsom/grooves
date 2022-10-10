@@ -1,5 +1,5 @@
 plugins {
-    id("com.bmuschko.cargo").version("2.8.0")
+    id("io.openliberty.tools.gradle.Liberty") version "3.5"
     id("war")
     id("groovy")
 }
@@ -13,40 +13,35 @@ repositories {
 dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
-    providedCompile 'javax:javaee-api:8.0.1'
+    providedCompile 'javax:javaee-api:8.0.1', "javax.xml.bind:jaxb-api:2.3.1"
 
     compileOnly 'org.projectlombok:lombok:1.18.24'
     compileOnly "org.jetbrains:annotations:23.0.0"
 
     implementation project(':grooves-java')
+    implementation project(':grooves-example-test')
     implementation "org.slf4j:slf4j-api:2.0.2"
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'io.reactivex:rxjava-reactive-streams:1.2.1'
     implementation 'io.reactivex:rxjava:1.3.8'
-    implementation project(':grooves-example-test')
 
-    cargo 'org.codehaus.cargo:cargo-core-uberjar:1.10.2'
-    cargo 'org.codehaus.cargo:cargo-ant:1.10.2'
-
+    libertyFeature 'io.openliberty.features:jaxrs-2.1:22.0.0.10'
 }
 
-cargo {
-    containerId = 'wildfly10x'
-    deployable {
-        context = 'grooves-jee'
-    }
-    local {
-        installer {
-            installUrl = 'https://github.com/wildfly/wildfly/releases/download/26.1.2.Final/wildfly-26.1.2.Final.zip'
-            downloadDir = file("${gradle.gradleUserHomeDir}/cargo")
-            extractDir = file("$buildDir/extract")
-            outputFile = file('build/output.log')
+liberty {
+    server {
+        features {
+            name = [
+                'jaxrs-2.1',
+                /*'adminCenter-1.0',*/
+                /*'restfulWS-3.0',*/
+            ]
         }
     }
 }
 
-cargoRunLocal.dependsOn 'war'
-cargoStartLocal.dependsOn 'war'
+libertyRun.dependsOn 'war'
+libertyStart.dependsOn 'war'
 
 int statusOfUrl(String url) {
     int status = -1
@@ -61,19 +56,19 @@ int statusOfUrl(String url) {
     status
 }
 
-cargoStartLocal.doLast {
+libertyStart.doLast {
     int attempt = 0
     while (attempt < 20) {
         println "Waiting (${++attempt})..."
-        if (statusOfUrl('http://localhost:8080/grooves-jee/patient') == 200) {
+        if (statusOfUrl('http://localhost:9080/grooves-example-javaee/patient') == 200) {
             break
         }
         sleep 5000
     }
 }
 
-test.dependsOn 'cargoStartLocal'
-test.finalizedBy 'cargoStopLocal'
+test.dependsOn 'libertyStart'
+test.finalizedBy 'libertyStop'
 
 test {
     useJUnitPlatform()

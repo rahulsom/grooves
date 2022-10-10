@@ -16,7 +16,7 @@ buildscript {
 plugins {
     id("org.jetbrains.kotlin.jvm")
     id("org.jlleitschuh.gradle.ktlint")
-    id("nu.studer.jooq").version("2.0.9")
+    id("nu.studer.jooq").version("7.1")
     id("org.flywaydb.flyway").version("6.5.7")
 }
 
@@ -48,11 +48,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
     implementation "org.slf4j:slf4j-api:2.0.2"
 
-    jooqRuntime 'com.h2database:h2:1.4.200'
-    jooqRuntime 'javax.xml.bind:jaxb-api:2.3.1'
-    jooqRuntime 'com.sun.xml.bind:jaxb-core:4.0.1'
-    jooqRuntime 'com.sun.xml.bind:jaxb-impl:4.0.1'
-    jooqRuntime 'javax.activation:activation:1.1.1'
+    jooqGenerator 'com.h2database:h2:1.4.200'
 
     runtimeOnly 'ch.qos.logback:logback-classic:1.2.3'
 
@@ -61,33 +57,36 @@ dependencies {
 }
 
 jooq {
-    version = '3.10.1'
-    edition = 'OSS'
-    main(sourceSets.main) {
-        jdbc {
-            driver = 'org.h2.Driver'
-            url = "jdbc:h2:file:${buildDir}/schema"
-            user = 'sa'
-            password = ''
-        }
-        generator {
-            name = 'org.jooq.util.DefaultGenerator'
-            strategy {
-                name = 'org.jooq.util.DefaultGeneratorStrategy'
-            }
-            database {
-                name = 'org.jooq.util.h2.H2Database'
-                inputSchema = 'public'
-            }
-            generate {
-                relations = true
-                deprecated = false
-                records = true
-                immutablePojos = true
-                fluentSetters = true
-            }
-            target {
-                packageName = 'grooves.example.pushstyle'
+    edition = nu.studer.gradle.jooq.JooqEdition.OSS
+    configurations {
+        main {
+            generationTool {
+                jdbc {
+                    driver = 'org.h2.Driver'
+                    url = "jdbc:h2:file:${buildDir}/schema"
+                    user = 'sa'
+                    password = ''
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    strategy {
+                        name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+                    }
+                    database {
+                        name = 'org.jooq.meta.h2.H2Database'
+                        inputSchema = 'public'
+                    }
+                    generate {
+                        relations = true
+                        deprecated = false
+                        records = true
+                        immutablePojos = true
+                        fluentSetters = true
+                    }
+                    target {
+                        packageName = 'grooves.example.pushstyle'
+                    }
+                }
             }
         }
     }
@@ -100,11 +99,11 @@ flyway {
     schemas = ['public']
 }
 
-generateMainJooqSchemaSource.dependsOn 'flywayMigrate'
-compileKotlin.dependsOn 'generateMainJooqSchemaSource'
+generateJooq.dependsOn 'flywayMigrate'
+compileKotlin.dependsOn 'generateJooq'
 
 tasks.findByName('checkstyleMain')?.source = "src/main/java"
-tasks.findByName('runKtlintCheckOverMainSourceSet').dependsOn('generateMainJooqSchemaSource')
+tasks.findByName('runKtlintCheckOverMainSourceSet').dependsOn('generateJooq')
 
 test {
     useJUnitPlatform()

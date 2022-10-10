@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm")
     id("org.jlleitschuh.gradle.ktlint")
     id("com.github.rahulsom.waena.published")
-    id("io.miret.etienne.sass") version "1.4.1"
+    id("io.miret.etienne.sass").version("1.4.1")
 }
 
 apply from: "$rootDir/gradle/jacoco.gradle"
@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.rahulsom:svg-builder:0.3.1'
+    implementation 'com.github.rahulsom:svg-builder:0.4.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
     implementation 'commons-beanutils:commons-beanutils:1.9.4'
@@ -24,11 +24,14 @@ dependencies {
     implementation "org.slf4j:slf4j-api:2.0.2"
 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
-    implementation 'com.sun.xml.bind:jaxb-core:4.0.1'
-    implementation 'com.sun.xml.bind:jaxb-impl:4.0.1'
-    implementation 'javax.activation:activation:1.1.1'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.1'
-
+//    implementation 'com.sun.xml.bind:jaxb-core:4.0.1'
+//    implementation 'com.sun.xml.bind:jaxb-impl:4.0.1'
+//    implementation 'javax.activation:activation:1.1.1'
+//    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.1'
+//
+//    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
+//    implementation 'com.sun.xml.bind:jaxb-ri:2.3.3'
+//
     testImplementation 'org.spockframework:spock-core:2.1-groovy-3.0'
 }
 
