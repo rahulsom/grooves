@@ -13,7 +13,7 @@ dependencies {
     api 'org.spockframework:spock-core:2.1-groovy-3.0'
 
     implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
-    implementation "org.slf4j:slf4j-api:2.0.2"
+    implementation "org.slf4j:slf4j-api:2.0.3"
 
     implementation 'xerces:xercesImpl:2.12.2'
     implementation 'org.codehaus.groovy:groovy-all:3.0.13'
