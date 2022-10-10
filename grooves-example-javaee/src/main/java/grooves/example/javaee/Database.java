@@ -35,7 +35,7 @@ public class Database {
      * @return A Stream of type
      */
     @NotNull
-    public <T extends Snapshot> Stream<T> snapshots(Class<T> clazz) {
+    public <T extends Snapshot<?, ?, ?, ?>> Stream<T> snapshots(Class<T> clazz) {
         return (Stream<T>) snapshotList
                 .stream()
                 .filter(it -> clazz.isAssignableFrom(it.getClass()));

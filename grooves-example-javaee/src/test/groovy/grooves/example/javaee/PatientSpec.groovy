@@ -15,6 +15,6 @@ class PatientSpec extends AbstractPatientSpec {
 
     @Override
     RESTClient getRest() {
-        new RESTClient("http://localhost:8080/grooves-jee/", JSON)
+        new RESTClient("http://localhost:9080/grooves-example-javaee/", JSON)
     }
 }

@@ -1,7 +1,7 @@
 CREATE TABLE balance (
     b_id      VARCHAR(36),
-    b_version BIGINT,
-    b_time    DATETIME,
+    b_version NUMERIC(12, 0),
+    b_time    TIMESTAMP WITH TIME ZONE,
     b_account VARCHAR(36),
-    balance   BIGINT
+    balance   NUMERIC(12, 0)
 );

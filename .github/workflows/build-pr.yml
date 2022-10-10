@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        jdk: ['8']
+        jdk: ['17']
       fail-fast: false
 
     steps:
@@ -33,7 +33,7 @@ jobs:
       - uses: gradle/wrapper-validation-action@v1
         name: Validate Gradle Wrapper
 
-      - name: Set up JDK 1.8
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
