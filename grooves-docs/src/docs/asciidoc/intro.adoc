@@ -1,20 +1,20 @@
-== Introduction
+= Introduction
 
 Event Sourcing is a way of storing data for flexible retrieval.
 The principle behind Event Sourcing is very simple.
 We treat our database like a log file.
 It is a record of everything that happened as events, and we read these events in order to compute the state of things like we do while debugging an application from the logs.
 
-=== Event Sourcing Concepts
+== Event Sourcing Concepts
 
 Here are some things that we will need to get familiar with, that are relevant to Event Sourcing.
 
-==== Aggregate
+=== Aggregate
 
 An aggregate is a type of object that you are interested in managing data about.
 A classic example would be a bank account.
 
-==== Event
+=== Event
 
 An event is an atomic change that needs to occur on the aggregate.
 A suitable example for the bank account would be a transaction.
@@ -25,21 +25,21 @@ When there is a `revert` event or a `merge` (which is represented as a `deprecat
 We will not be modifying the aggregate in our data store.
 We will however, store the event in the data store so we know when we read to read it a certain way.
 
-==== Snapshot
+=== Snapshot
 
 A snapshot is a way of looking at the state of an aggregate at a point in time.
 In our banking example, this could be your account balance.
 
-=== CQRS
+== CQRS
 
 Event Sourcing works particularly well with CQRS - Command Query Responsibility Segregation.
 There are a couple of types of objects that are relevant to Event Sourcing and CQRS.
 
-==== Command
+=== Command
 A command is an input which causes one or more events to be stored.
 It typically represents a broad intention of the user.
 
-==== Query
+=== Query
 A query is a computation that needs to be performed in order to obtain a snapshot.
 
 A query performs a computation like the one below.
@@ -63,7 +63,7 @@ S_N = f(S_k, [E_(k+1) .. E_(N)])
 
 The second one holds true only for forward events.
 
-=== Representing Events
+== Representing Events
 
 This is how we'll be representing events in the documentation.
 

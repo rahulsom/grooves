@@ -1,4 +1,4 @@
-== Support
+= Support
 
 If you're having trouble using this, head over to https://github.com/rahulsom/grooves/issues[Github Issues] and raise a question.
 Our aim is to document things here rather than answering individual questions on the issue tracker.

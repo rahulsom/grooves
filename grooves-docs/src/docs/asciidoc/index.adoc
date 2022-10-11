@@ -3,15 +3,16 @@
 :nofooter:
 :linkcss:
 :docinfo: shared
+:includedir: .
 
 Formerly, _Groovy + Event Sourcing_.
 Now, _Grooves_ is just a name.
 It supports Event Sourcing on many JVM languages.
 Examples and tests are included in java, kotlin, and of course, groovy.
 
-include::{includedir}/intro.adoc[]
+include::{includedir}/intro.adoc[leveloffset=1]
 
-include::{includedir}/hurdles.adoc[]
+include::{includedir}/hurdles.adoc[leveloffset=1]
 
 == How Grooves solves it
 
@@ -39,20 +40,20 @@ We will be using 4 different kinds of projects.
 * Kotlin - This is a SpringBoot Reactive Web project that uses RxMongo for persistence.
   This example uses Spring Reactor as the Reactive Streams Framework.
 
-include::{includedir}/examples/dependencies.adoc[]
+include::{includedir}/examples/dependencies.adoc[leveloffset=2]
 
-include::{includedir}/examples/aggregate.adoc[]
+include::{includedir}/examples/aggregate.adoc[leveloffset=2]
 
-include::{includedir}/examples/events.adoc[]
+include::{includedir}/examples/events.adoc[leveloffset=2]
 
-include::{includedir}/examples/snapshot.adoc[]
+include::{includedir}/examples/snapshot.adoc[leveloffset=2]
 
-include::{includedir}/examples/queries.adoc[]
+include::{includedir}/examples/queries.adoc[leveloffset=2]
 
-include::{includedir}/examples/joins.adoc[]
+include::{includedir}/examples/joins.adoc[leveloffset=2]
 
-include::{includedir}/examples/frp.adoc[]
+include::{includedir}/examples/frp.adoc[leveloffset=2]
 
-include::{includedir}/diagramming.adoc[]
+include::{includedir}/diagramming.adoc[leveloffset=1]
 
-include::{includedir}/support.adoc[]
+include::{includedir}/support.adoc[leveloffset=1]

@@ -1,4 +1,4 @@
-== Creating your own diagrams
+= Creating your own diagrams
 
 In a gradle project, if you're using asciidoctor for documentation, you can generate diagrams using `grooves-diagrams`.
 

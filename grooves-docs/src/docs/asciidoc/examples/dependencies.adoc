@@ -1,4 +1,4 @@
-=== Dependencies
+= Dependencies
 
 The examples here use gradle to manage dependencies.
 You could very well be using Maven, or ant+ivy, or leiningen, or sbt.

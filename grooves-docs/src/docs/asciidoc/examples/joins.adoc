@@ -1,4 +1,4 @@
-=== Joins
+= Joins
 
 Joins are just snapshots of a different kind.
 With Grooves, they're always _One-To-Many_. _One-To-One_ is just a special case of _One-To-Many_.

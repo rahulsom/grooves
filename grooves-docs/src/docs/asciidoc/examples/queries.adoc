@@ -1,4 +1,4 @@
-=== Queries
+= Queries
 
 [source,java,indent=0,role="primary"]
 .Java

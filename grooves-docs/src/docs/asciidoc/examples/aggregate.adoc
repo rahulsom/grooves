@@ -1,4 +1,4 @@
-=== Aggregates
+= Aggregates
 
 In our examples, to begin with, we will use one aggregate - a patient.
 We'll model our system such that there are events that get applied on a Patient's timeline.

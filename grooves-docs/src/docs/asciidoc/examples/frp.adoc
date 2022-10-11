@@ -1,4 +1,4 @@
-=== FRP Style
+= FRP Style
 
 Sometimes, it is not ideal to create classes to implement the queries.
 Since 0.4.0, grooves has experimental support for doing this in a somewhat _Functional Reactive Programming_ style.

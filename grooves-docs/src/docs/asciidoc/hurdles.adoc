@@ -1,10 +1,10 @@
-== Hurdles
+= Hurdles
 
 While the theory is very simple, in practice, it's a little more complicated.
 The functions that you see above are very simple at first glance, but implementing an entire system based on it requires some patterns.
 That is the problem that Grooves aims to solve.
 
-=== Completeness of Queries
+== Completeness of Queries
 
 When applying events on a Snapshot, you need to be sure that you have handled every single event type.
 Let's say you've got 3 types of events for an aggregate and 2 snapshots.
@@ -14,7 +14,7 @@ Alas, Groovy and Java do not have case classes.
 
 There are some special kinds of Events that require a lot of complex handling:
 
-=== Reverting Events
+== Reverting Events
 
 Some times events are entered into an aggregate's timeline in error.
 This could be a system error, or a human error.
@@ -71,7 +71,7 @@ This should be interpreted as 6 cancels out 5, so 5 can no more cancel out 3.
   + 6 2016-01-16 .
 ....
 
-=== Merging Aggregates
+== Merging Aggregates
 
 `DeprecatedBy` and `Deprecates` is a pair of events that work together on aggregates of the same type.
 Sometimes, real world things merge together.
@@ -117,7 +117,7 @@ The exception to the rule is when we're reverting the merge.
 That might not always be true.
 Some systems might choose to continue adding events on an aggregate like 5.
 
-=== Reverting Merges
+== Reverting Merges
 
 Lets assume we got confused with a pair of aggregates like these and performed a merge like this.
 
@@ -154,7 +154,7 @@ This is complicated, but necessary in order to make the reads on both aggregates
   + 10 2016-01-12 reverted 6
 ....
 
-=== Performing joins
+== Performing joins
 
 In an event sourced system, even joins are just events.
 That way we can preserve their temporal changes.
@@ -172,7 +172,7 @@ That way we can preserve their temporal changes.
   + 5 2016-01-05 joins 1 converse 7
 ....
 
-=== Performing disjoins
+== Performing disjoins
 
 Since joins can change with time, you could have a situation where you need to perform a `disjoin`.
 In our example here, Mr Spock stops being the Science Officer when he becomes captain.
