@@ -8,6 +8,18 @@ import org.jetbrains.annotations.NotNull;
 
 import static io.reactivex.Flowable.fromPublisher;
 
+/**
+ * An executor that applies a function.
+ *
+ * @param <AggregateT>       The type of Aggregate.
+ * @param <EventIdT>         The type of EventT's id.
+ * @param <EventT>           The type of Event.
+ * @param <ApplicableEventT> The type of EventT that can be applied.
+ * @param <SnapshotIdT>      The type of SnapshotT's id.
+ * @param <SnapshotT>        The type of Snapshot.
+ * @param <QueryT>           The type of Query.
+ * @author Rahul Somasunderam
+ */
 public class SimpleExecutor<
         AggregateT,
         EventIdT,

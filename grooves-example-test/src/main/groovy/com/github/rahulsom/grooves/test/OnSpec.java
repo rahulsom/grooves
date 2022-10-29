@@ -13,6 +13,17 @@ import java.util.function.Supplier;
 
 import static io.reactivex.Flowable.fromPublisher;
 
+/**
+ * Helps configure the {@code on} method.
+ *
+ * @param <AggregateT>  The aggregate over which the query executes
+ * @param <EventIdT>    The type of the Event's id field
+ * @param <EventT>      The type of the Event
+ * @param <SnapshotIdT> The type of the Snapshot's id field
+ * @param <SnapshotT>   The type of the Snapshot
+ *
+ * @author Rahul Somasunderam
+ */
 public class OnSpec<
         AggregateT,
         EventIdT,

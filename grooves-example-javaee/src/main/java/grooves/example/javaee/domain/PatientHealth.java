@@ -17,14 +17,32 @@ import static rx.RxReactiveStreams.toPublisher;
 @Data
 public class PatientHealth
         implements Snapshot<Patient, Long, Long, PatientEvent>, Serializable {
+    /**
+     * The procedures performed on this patient.
+     */
     private List<Procedure> procedures = new ArrayList<>();
     private Long id;
+    /**
+     * The patient corresponding to this snapshot.
+     */
     private Patient aggregate;
+    /**
+     * The patient that deprecated the patient of this snapshot.
+     */
     private Patient deprecatedBy;
     private List<Patient> deprecates = new ArrayList<>();
+    /**
+     * The position of the last event in the snapshot.
+     */
     private long lastEventPosition;
+    /**
+     * The timestamp of the last event in the snapshot.
+     */
     private Date lastEventTimestamp;
 
+    /**
+     * The name of the patient.
+     */
     private String name;
 
     @NotNull
@@ -57,7 +75,13 @@ public class PatientHealth
 
     @Data
     public static class Procedure implements Serializable {
+        /**
+         * The code for the procedure.
+         */
         private final String code;
+        /**
+         * The date of the procedure.
+         */
         private final Date date;
     }
 }

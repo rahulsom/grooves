@@ -215,6 +215,15 @@ public interface TemporalQuerySupport<
                         fromPublisher(getUncomputedEvents(aggregate, null, event.getTimestamp())));
     }
 
+    /**
+     * Returns events that are not part of lastSnapshot, but are needed for computing the snapshot
+     * until snapshotTime.
+     *
+     * @param aggregate    The aggregate
+     * @param lastSnapshot The last available snapshot
+     * @param snapshotTime The time for which we need a snapshot
+     * @return A list of events
+     */
     @NotNull Publisher<EventT> getUncomputedEvents(
             @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot,
             @NotNull Date snapshotTime);

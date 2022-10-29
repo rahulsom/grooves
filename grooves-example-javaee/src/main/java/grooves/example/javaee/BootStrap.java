@@ -22,6 +22,9 @@ import java.util.function.Supplier;
 
 import static rx.RxReactiveStreams.toObservable;
 
+/**
+ * Initializes data for app.
+ */
 @SuppressWarnings("UnusedReturnValue")
 @Singleton
 @Startup
@@ -41,16 +44,31 @@ public class BootStrap {
     private PatientHealthQuery patientHealthQuery;
     private Database database;
 
+    /**
+     * Injects a {@link PatientAccountQuery}.
+     *
+     * @param patientAccountQuery The {@link PatientAccountQuery} to inject.
+     */
     @Inject
     public void setPatientAccountQuery(PatientAccountQuery patientAccountQuery) {
         this.patientAccountQuery = patientAccountQuery;
     }
 
+    /**
+     * Injects a {@link PatientHealthQuery}.
+     *
+     * @param patientHealthQuery The {@link PatientHealthQuery} to inject.
+     */
     @Inject
     public void setPatientHealthQuery(PatientHealthQuery patientHealthQuery) {
         this.patientHealthQuery = patientHealthQuery;
     }
 
+    /**
+     * Sets a database instance.
+     *
+     * @param database the Database to connect to
+     */
     @Inject
     public void setDatabase(Database database) {
         this.database = database;
@@ -82,8 +100,7 @@ public class BootStrap {
             it.apply(new PatientCreated("John Lennon"));
             it.apply(new ProcedurePerformed(FLU_SHOT_NAME, new BigDecimal(FLU_SHOT_COST)));
             it.apply(new ProcedurePerformed(GLUCOSE_TEST_NAME, new BigDecimal(GLUCOSE_TEST_COST)));
-            it.apply(
-                    new PaymentMade(new BigDecimal("100.25")));
+            it.apply(new PaymentMade(new BigDecimal("100.25")));
 
             it.snapshotWith(patientAccountQuery);
             it.snapshotWith(patientHealthQuery);
@@ -219,7 +236,6 @@ public class BootStrap {
      *
      * @param self The aggregate to be deprecated
      * @param into The aggregate to survive
-     *
      * @return The DeprecatedBy event
      */
     private PatientDeprecatedBy merge(Patient self, Patient into) {
@@ -267,11 +283,11 @@ public class BootStrap {
 
         Supplier<Long> positionSupplier =
                 () -> database.events()
-                        .filter(x -> toObservable(x.getAggregateObservable())
-                                .toBlocking()
-                                .single()
-                                .equals(patient))
-                        .count() + 1;
+                    .filter(x -> toObservable(x.getAggregateObservable())
+                        .toBlocking()
+                        .single()
+                        .equals(patient))
+                    .count() + 1;
 
         Supplier<Date> dateSupplier =
                 () -> {
