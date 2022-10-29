@@ -33,8 +33,18 @@ public interface TemporalJoinSupport<
         > extends
         TemporalQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
+    /**
+     * The class for join events of this query.
+     *
+     * @return the join event class
+     */
     Class<JoinEventT> getJoinEventClass();
 
+    /**
+     * The class for disjoin events of this query.
+     *
+     * @return the disjoin event class
+     */
     Class<DisjoinEventT> getDisjoinEventClass();
 
     @NotNull

@@ -41,6 +41,12 @@ public class JoinExecutor<
     private final Class<JoinEventT> classJoinE;
     private final Class<DisjoinEventT> classDisjoinE;
 
+    /**
+     * Constructor for a join executor.
+     *
+     * @param classJoinE the class representing join events
+     * @param classDisjoinE the class representing disjoin events
+     */
     public JoinExecutor(
             @NotNull Class<JoinEventT> classJoinE, @NotNull Class<DisjoinEventT> classDisjoinE) {
         this.classJoinE = classJoinE;

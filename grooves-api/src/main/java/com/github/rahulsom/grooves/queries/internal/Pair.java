@@ -1,5 +1,7 @@
 package com.github.rahulsom.grooves.queries.internal;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -10,20 +12,9 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Rahul Somasunderam
  */
+@RequiredArgsConstructor
+@Getter
 public class Pair<FirstT, SecondT> {
-    private final FirstT first;
-    private final SecondT second;
-
-    public Pair(@NotNull FirstT first, @NotNull SecondT second) {
-        this.first = first;
-        this.second = second;
-    }
-
-    @NotNull public FirstT getFirst() {
-        return first;
-    }
-
-    @NotNull public SecondT getSecond() {
-        return second;
-    }
+    @NotNull private final FirstT first;
+    @NotNull private final SecondT second;
 }
