@@ -7,6 +7,16 @@ import org.reactivestreams.Publisher;
 
 import java.util.Date;
 
+/**
+ * A query that produces a {@link TemporalSnapshot}.
+ *
+ * @param <AggregateT>  The aggregate over which the query executes
+ * @param <EventIdT>    The type of the EventT's id field
+ * @param <EventT>      The type of the event
+ * @param <SnapshotIdT> The type of the SnapshotT's id field
+ * @param <SnapshotT>   The type of the snapshot
+ * @author Rahul Somasunderam
+ */
 public interface TemporalQuery<
         AggregateT,
         EventIdT,

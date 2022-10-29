@@ -42,7 +42,7 @@ public class Grooves {
             SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
             > FunctionalVersionedQuery.Builder<AggregateT, EventIdT, EventT,
             SnapshotIdT, SnapshotT, ?> versioned() {
-        return FunctionalVersionedQuery.Builder.newBuilder();
+        return FunctionalVersionedQuery.newBuilder();
     }
 
     /**
@@ -75,6 +75,6 @@ public class Grooves {
             SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
             > FunctionalTemporalQuery.Builder<AggregateT, EventIdT, EventT,
             SnapshotIdT, SnapshotT, ?> temporal() {
-        return FunctionalTemporalQuery.Builder.newBuilder();
+        return FunctionalTemporalQuery.newBuilder();
     }
 }

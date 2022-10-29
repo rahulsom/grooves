@@ -100,6 +100,19 @@ public class FunctionalVersionedQuery<
         return eventHandler.apply(event, snapshot);
     }
 
+    public static <
+            AggregateT,
+            EventIdT,
+            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+            SnapshotIdT,
+            SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
+            QueryT extends FunctionalVersionedQuery<AggregateT, EventIdT, EventT,
+                SnapshotIdT, SnapshotT>
+            > Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+            QueryT> newBuilder() {
+        return new Builder<>();
+    }
+
     /**
      * Builder for FunctionalVersionedQuery.
      *
@@ -129,19 +142,6 @@ public class FunctionalVersionedQuery<
         private BiFunction<EventT, SnapshotT, Publisher<EventApplyOutcome>> eventHandler;
 
         private Builder() {
-        }
-
-        public static <
-                AggregateT,
-                EventIdT,
-                EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-                SnapshotIdT,
-                SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
-                QueryT extends FunctionalVersionedQuery<AggregateT, EventIdT, EventT,
-                        SnapshotIdT, SnapshotT>
-                > Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-                QueryT> newBuilder() {
-            return new Builder<>();
         }
 
         public Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT>

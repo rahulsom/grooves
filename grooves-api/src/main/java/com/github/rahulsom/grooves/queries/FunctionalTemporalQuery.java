@@ -102,6 +102,32 @@ public class FunctionalTemporalQuery<
     }
 
     /**
+     * Creates a new builder that helps construct the query.
+     *
+     * @param <AggregateT>  The aggregate over which the query executes
+     * @param <EventIdT>    The type of the EventT's id field
+     * @param <EventT>      The type of the Event
+     * @param <SnapshotIdT> The type of the SnapshotT's id field
+     * @param <SnapshotT>   The type of the Snapshot
+     * @param <QueryT>      A reference to the query type. Typically a self reference.
+     * @return A Builder for the query
+     */
+    public static <
+            AggregateT,
+            EventIdT,
+            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+            SnapshotIdT,
+            SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT,
+                EventT>,
+            QueryT extends FunctionalTemporalQuery<AggregateT, EventIdT, EventT,
+                SnapshotIdT, SnapshotT>
+            > Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
+            QueryT> newBuilder() {
+        return new Builder<>();
+    }
+
+
+    /**
      * Builder for FunctionalTemporalQuery.
      *
      * @param <AggregateT>   The aggregate over which the query executes
@@ -132,19 +158,6 @@ public class FunctionalTemporalQuery<
         private Builder() {
         }
 
-        public static <
-                AggregateT,
-                EventIdT,
-                EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-                SnapshotIdT,
-                SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT,
-                        EventT>,
-                QueryT extends FunctionalTemporalQuery<AggregateT, EventIdT, EventT,
-                        SnapshotIdT, SnapshotT>
-                > Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
-                QueryT> newBuilder() {
-            return new Builder<>();
-        }
 
         public Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT,
                 QueryT> withSnapshot(BiFunction<Date, AggregateT,
