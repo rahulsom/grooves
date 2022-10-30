@@ -43,9 +43,20 @@ public class QueryExecutor<
         QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
         > implements Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
+    /**
+     * The logger for this class.
+     */
     @SuppressWarnings("WeakerAccess")
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
+    /**
+     * Produces a list of elements from a given list appending a new element to it.
+     *
+     * @param list    the list to append to
+     * @param element the new element to append
+     * @param <T>     the type of elements in the list
+     * @return the new list
+     */
     private static <T> List<T> plus(List<T> list, T element) {
         List<T> retval = new ArrayList<>(list);
         retval.add(element);

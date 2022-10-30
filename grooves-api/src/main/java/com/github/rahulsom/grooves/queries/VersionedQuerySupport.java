@@ -112,6 +112,15 @@ public interface VersionedQuerySupport<
         return new QueryExecutor<>();
     }
 
+    /**
+     * The uncomputed events between the last snapshot and the desired version.
+     *
+     * @param aggregate The aggregate for which such data is desired
+     * @param lastSnapshot The last snapshot
+     * @param version The version of the snapshot that is desired
+     *
+     * @return A Publisher that returns the events
+     */
     @NotNull Publisher<EventT> getUncomputedEvents(
             @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot, long version);
 
