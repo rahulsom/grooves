@@ -23,7 +23,7 @@ interface JoinEvent<
      * An observable that points to the aggregate to which a join is being performed.
      *
      * This join is unidirectional, but a good system will always create a pair of events to make all joins bidirectional.
-     * That makes it possible for a system at a later date to change it's problem space and answer questions that unidirectional joins can't.
+     * That makes it possible for a system at a later date to change its problem space and answer questions that unidirectional joins can't.
      * Your directionality should match your plan in [DisjoinEvent]
      */
     val joinAggregateObservable: Publisher<JoinedAggregateT>

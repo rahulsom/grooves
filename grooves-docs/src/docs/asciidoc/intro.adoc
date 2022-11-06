@@ -23,7 +23,7 @@ Most events can be applied while only looking ahead.
 When there is a `revert` event or a `merge` (which is represented as a `deprecates` and a `deprecatedBy` events), that doesn't hold true.
 
 We will not be modifying the aggregate in our data store.
-We will however, store the event in the data store so we know when we read to read it a certain way.
+We will however, store the event in the data store, so we know when we read to read it a certain way.
 
 === Snapshot
 
@@ -83,7 +83,7 @@ Above the box is a description of the aggregate.
 The circles with numbers represent events that are applied on the aggregate.
 They are reasonably spaced apart to show the flow of time.
 The spacing is not necessarily linear.
-However when there are multiple aggregates shown together, the time lines will be in sync.
+However, when there are multiple aggregates shown together, the timelines will be in sync.
 
 Creation events will have a dotted circle around them.
 It doesn't mean anything special.

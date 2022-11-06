@@ -122,7 +122,7 @@ public interface TemporalQuerySupport<
      * @param redirect  If there has been a deprecation, redirect to the current aggregate's
      *                  snapshot. Defaults to true.
      *
-     * @return An Optional SnapshotType. Empty if cannot be computed.
+     * @return An Optional SnapshotType. Empty if it cannot be computed.
      */
     @NotNull default Publisher<SnapshotT> computeSnapshot(
             @NotNull AggregateT aggregate, @NotNull Date moment, boolean redirect) {

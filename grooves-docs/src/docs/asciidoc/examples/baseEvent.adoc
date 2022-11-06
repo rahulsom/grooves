@@ -35,7 +35,7 @@ include::{sourcedir}/grooves-example-springboot-jpa/src/main/groovy/grooves/boot
 include::{sourcedir}/grooves-example-springboot-kotlin/src/main/kotlin/grooves/boot/kotlin/domain/PatientEvent.kt[tags=patientEvent]
 ----
 <1> We're using sealed classes in Kotlin.
-  We'll add more classes inside of it as we progress.
+  We'll add more classes inside it as we progress.
   This helps us achieve completeness without the need to customize the compilation.
 <2> You'll have to extend `BaseEvent`.
 <3> This is transient from a persistence perspective.

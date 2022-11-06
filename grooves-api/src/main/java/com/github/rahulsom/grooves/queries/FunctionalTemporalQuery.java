@@ -3,7 +3,6 @@ package com.github.rahulsom.grooves.queries;
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
-import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
 import com.github.rahulsom.grooves.queries.internal.SimpleExecutor;
 import com.github.rahulsom.grooves.queries.internal.SimpleQuery;
 import lombok.Builder;

@@ -24,7 +24,7 @@ public class GroovyEventsDsl<
         EventsDsl<AggregateT, EventIdT, EventT> {
 
     /**
-     * Allows executing a consumer with some context to setup events.
+     * Allows executing a consumer with some context to set up events.
      *
      * @param aggregate         The aggregate on which the consumer must operate
      * @param entityConsumer    A Consumer that decides what happens when apply is called on an
@@ -51,7 +51,7 @@ public class GroovyEventsDsl<
     }
 
     /**
-     * Allows executing a consumer with some context to setup events.
+     * Allows executing a consumer with some context to set up events.
      * Defaults the timestamp to current time.
      * Defaults the user to "anonymous".
      *
@@ -71,7 +71,7 @@ public class GroovyEventsDsl<
     }
 
     /**
-     * Allows executing a consumer with some context to setup events.
+     * Allows executing a consumer with some context to set up events.
      * Defaults the timestamp to current time.
      * Defaults the user to "anonymous".
      * Defaults the position to a monotonically increasing number.

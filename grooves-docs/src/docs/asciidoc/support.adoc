@@ -1,6 +1,6 @@
 = Support
 
-If you're having trouble using this, head over to https://github.com/rahulsom/grooves/issues[Github Issues] and raise a question.
+If you're having trouble using this, head over to https://github.com/rahulsom/grooves/issues[GitHub Issues] and raise a question.
 Our aim is to document things here rather than answering individual questions on the issue tracker.
 
 If you run into a bug, feel free to create a Pull Request complete with tests, or open an issue with a detailed test description.

@@ -67,7 +67,7 @@ public class QueryExecutor<
      * Applies all revert events from a list and returns the list with only valid forward events.
      *
      * @param events The list of events
-     * @return An Flowable of forward only events
+     * @return A Flowable of forward only events
      */
     @NotNull
     @Override

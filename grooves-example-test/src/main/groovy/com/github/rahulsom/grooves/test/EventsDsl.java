@@ -30,7 +30,7 @@ public class EventsDsl<
     }
 
     /**
-     * Allows executing a consumer with some context to setup events.
+     * Allows executing a consumer with some context to set up events.
      *
      * @param <SnapshotIdT>     The type of SnapshotT's id
      * @param <SnapshotT>       The type of Snapshot Generated

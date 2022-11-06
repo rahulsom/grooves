@@ -130,7 +130,7 @@ public interface VersionedQuerySupport<
      * @param aggregate The aggregate
      * @param version   The version number, starting at 1
      *
-     * @return An Flowable that returns at most one Snapshot
+     * @return A Flowable that returns at most one Snapshot
      */
     @NotNull
     default Publisher<SnapshotT> computeSnapshot(@NotNull AggregateT aggregate, long version) {
@@ -145,7 +145,7 @@ public interface VersionedQuerySupport<
      * @param redirect  If there has been a deprecation, redirect to the current aggregate's
      *                  snapshot. Defaults to true.
      *
-     * @return An Flowable that returns at most one Snapshot
+     * @return A Flowable that returns at most one Snapshot
      */
     @NotNull
     default Publisher<SnapshotT> computeSnapshot(

@@ -22,7 +22,7 @@ interface Deprecates<AggregateT, EventIdT, EventT> :
      * An Observable of the converse of this event.
      * The converse of a [Deprecates] is a [DeprecatedBy] event that does the exact opposite of this event.
      * It tells you that the aggregate on which you apply the [DeprecatedBy] has been deprecated by this event's aggregate.
-     * That gives Grooves an opportunity to redirect if asked to this event's aggregate.
+     * That gives Grooves an opportunity to redirect if asked this event's aggregate.
      */
     fun getConverseObservable(): Publisher<out DeprecatedBy<AggregateT, EventIdT, EventT>>
 

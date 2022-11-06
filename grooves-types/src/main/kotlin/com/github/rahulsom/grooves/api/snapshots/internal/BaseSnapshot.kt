@@ -41,7 +41,7 @@ interface BaseSnapshot<
 
     /**
      * An Observable of the aggregate that deprecated this snapshot's aggregate.
-     * Grooves will use this to perform a redirect if asked to.
+     * Grooves will use this to perform a redirect if asked.
      */
     fun getDeprecatedByObservable(): Publisher<AggregateT>
 

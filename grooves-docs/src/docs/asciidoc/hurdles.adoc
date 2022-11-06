@@ -16,7 +16,7 @@ There are some special kinds of Events that require a lot of complex handling:
 
 == Reverting Events
 
-Some times events are entered into an aggregate's timeline in error.
+Sometimes events are entered into an aggregate's timeline in error.
 This could be a system error, or a human error.
 When this happens, for the business logic to make sense, the system should behave as if that event never occurred.
 However, for auditing purposes, and for preserving a reasonable system, the original event as well as the moment the error was detected need to be tracked.
@@ -112,14 +112,14 @@ While reading this, we would treat it as if it was like this.
 4 is grayed out because it's a creation event, and, this is the second creation event for the aggregate.
 We will read that event, but not apply it in any meaningful way.
 
-Typically we cannot apply any new events after 6 on Aggregate 5.
+Typically, we cannot apply any new events after 6 on Aggregate 5.
 The exception to the rule is when we're reverting the merge.
 That might not always be true.
 Some systems might choose to continue adding events on an aggregate like 5.
 
 == Reverting Merges
 
-Lets assume we got confused with a pair of aggregates like these and performed a merge like this.
+Let's assume we got confused with a pair of aggregates like these and performed a merge like this.
 
 [esdiag,RevertMergeBefore]
 ....
