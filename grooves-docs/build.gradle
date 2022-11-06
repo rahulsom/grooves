@@ -5,7 +5,7 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
+    maven { url 'https://repo.spring.io/release' }
 }
 
 configurations {
@@ -14,7 +14,7 @@ configurations {
 
 dependencies {
     asciidoctorExt project(':grooves-diagrams')
-    asciidoctorExt 'com.github.spring-io:spring-asciidoctor-extensions:0.6.0'
+    asciidoctorExt 'io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch:0.6.0'
 }
 
 project.version = rootProject.version.toString()
