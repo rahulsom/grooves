@@ -11,10 +11,10 @@ import java.util.Date
 import java.util.UUID
 
 class Application @Inject constructor(
-    val eventBus: EventBus,
-    val eventService: EventService,
-    val database: Database,
-    val dslContext: DSLContext
+    private val eventBus: EventBus,
+    private val eventService: EventService,
+    private val database: Database,
+    private val dslContext: DSLContext
 ) : AbstractService() {
 
     public override fun doStop() {

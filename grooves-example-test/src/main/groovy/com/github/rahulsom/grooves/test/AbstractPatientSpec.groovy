@@ -21,7 +21,7 @@ abstract class AbstractPatientSpec extends Specification {
     @SuppressWarnings(['Instanceof', 'MethodParameterTypeRequired', 'AbstractPatientSpec',])
     static Date getDate(def ts) {
         if (ts instanceof String) {
-            Date.parse('yyyy-MM-dd', ts[0..10])
+            new SimpleDateFormat('yyyy-MM-dd').parse(ts[0..10])
         } else if (ts instanceof Long) {
             new Date(ts)
         } else {

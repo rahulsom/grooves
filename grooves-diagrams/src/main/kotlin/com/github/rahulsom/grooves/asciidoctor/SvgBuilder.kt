@@ -79,22 +79,19 @@ class SvgBuilder(private val input: String) {
     }
 
     private fun toAggregate(it: String): Aggregate {
-        val lastAggregate: Aggregate
         val (type, id, description) = it.replaceFirst(Regex("\\|"), "").split(",")
-        lastAggregate = Aggregate(counter.getAndIncrement(), type, id, description)
-        return lastAggregate
+        return Aggregate(counter.getAndIncrement(), type, id, description)
     }
 
-    private fun computeEventType(description: String): EventType {
+    private fun computeEventType(description: String) =
         when (description) {
-            in Regex(".*revert.*") -> return EventType.Revert
-            in Regex(".*deprecates.*") -> return EventType.Deprecates
-            in Regex(".*deprecated.*") -> return EventType.DeprecatedBy
-            in Regex(".*disjoin.*") -> return EventType.Disjoin
-            in Regex(".*join.*") -> return EventType.Join
-            else -> return EventType.Normal
+            in Regex(".*revert.*") -> EventType.Revert
+            in Regex(".*deprecates.*") -> EventType.Deprecates
+            in Regex(".*deprecated.*") -> EventType.DeprecatedBy
+            in Regex(".*disjoin.*") -> EventType.Disjoin
+            in Regex(".*join.*") -> EventType.Join
+            else -> EventType.Normal
         }
-    }
 
     fun write(file: File) {
         init()
@@ -104,7 +101,7 @@ class SvgBuilder(private val input: String) {
 
         svg.withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
             ObjectFactory().createStyle(
-                SVGStyleClass().withContent("/* <![CDATA[ */" + CSS + "/* ]]> */")
+                SVGStyleClass().withContent("/* <![CDATA[ */$CSS/* ]]> */")
             )
         )
 

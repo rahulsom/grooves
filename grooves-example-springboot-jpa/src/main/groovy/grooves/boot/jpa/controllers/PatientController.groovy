@@ -33,7 +33,7 @@ class PatientController {
 
     @GetMapping('/patient/show/{id}')
     Patient show(@PathVariable Long id) {
-        patientRepository.getOne(id)
+        patientRepository.getById(id)
     }
 
     @GetMapping('/patient/account/{id}')
@@ -41,7 +41,7 @@ class PatientController {
             @PathVariable Long id,
             @RequestParam(required = false) Long version,
             @RequestParam(required = false) @DateTimeFormat(pattern = 'yyyy-MM-dd') Date date) {
-        def patient = patientRepository.getOne(id)
+        def patient = patientRepository.getById(id)
         def computation = version ?
                 patientAccountQuery.computeSnapshot(patient, version) :
                 date ?
@@ -60,7 +60,7 @@ class PatientController {
             @PathVariable Long id,
             @RequestParam(required = false) Long version,
             @RequestParam(required = false) @DateTimeFormat(pattern = 'yyyy-MM-dd') Date date) {
-        def patient = patientRepository.getOne(id)
+        def patient = patientRepository.getById(id)
         def computation = version ?
                 patientHealthQuery.computeSnapshot(patient, version) :
                 date ?

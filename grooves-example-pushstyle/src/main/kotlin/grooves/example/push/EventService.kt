@@ -4,7 +4,6 @@ import com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 import com.github.rahulsom.grooves.queries.Grooves
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
-import io.reactivex.Flowable
 import io.reactivex.Flowable.empty
 import io.reactivex.Flowable.just
 import io.reactivex.Maybe
@@ -24,7 +23,7 @@ class EventService {
     // Suppress warnings since this is a documented fragment and having variable names is better
     @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     // tag::documented[]
-    val query =
+    private val query =
         Grooves.versioned<Account, String, Transaction, String, Balance>() // <1>
             .withSnapshot { version, account ->
                 // <2>
@@ -70,7 +69,7 @@ class EventService {
     @Subscribe
     fun onTransaction(transaction: Transaction) {
         log.info("Received $transaction")
-        Flowable.just(mapOf("transaction" to transaction))
+        just(mapOf("transaction" to transaction))
             .observeOn(ContextAwareScheduler)
             .doOnNext { ContextManager.set(it) }
             .flatMap { query.computeSnapshot(transaction.aggregate!!, transaction.position) }

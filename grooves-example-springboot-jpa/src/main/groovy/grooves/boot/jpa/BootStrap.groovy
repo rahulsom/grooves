@@ -60,7 +60,7 @@ class BootStrap implements InitializingBean {
         linkZipcodesAndPatients(campbell, santanaRow)
     }
 
-    Date currDate = Date.parse('yyyy-MM-dd', START_DATE)
+    Date currDate = new SimpleDateFormat('yyyy-MM-dd', Locale.ROOT).parse(START_DATE)
 
     Zipcode on(Zipcode zipcode, @DelegatesTo(OnSpec) Closure closure) {
         def eventSaver = { zipcodeEventRepository.save(it) } as Consumer

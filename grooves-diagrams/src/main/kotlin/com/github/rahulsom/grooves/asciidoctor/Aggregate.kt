@@ -15,7 +15,7 @@ import java.util.Date
  *
  * @author Rahul Somasunderam
  */
-class Aggregate(val counter: Int, var type: String, var id: String, var description: String) {
+class Aggregate(private val counter: Int, var type: String, var id: String, var description: String) {
     var events: MutableList<Event> = mutableListOf()
 
     var index: Int = 0

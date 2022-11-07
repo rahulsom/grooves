@@ -23,7 +23,7 @@ sealed class Transaction(
     BaseEvent<Account, String, Transaction> {
 
     override fun getAggregateObservable(): Publisher<Account> =
-        Flowable.fromIterable(listOf(aggregate).filter { it != null })
+        Flowable.fromIterable(listOfNotNull(aggregate))
 
     override var revertedBy: RevertEvent<Account, String, Transaction>?
         get() = revertedBy
@@ -90,13 +90,13 @@ class Balance() : Snapshot<Account, String, String, Transaction> {
     }
 
     override fun getAggregateObservable(): Publisher<Account> =
-        Flowable.fromIterable(listOf(aggregate).filter { it != null })
+        Flowable.fromIterable(listOfNotNull(aggregate))
 
     override fun getDeprecatesObservable() =
         Flowable.fromIterable(deprecates)
 
     override fun getDeprecatedByObservable(): Publisher<Account> =
-        Flowable.fromIterable(listOf(deprecatedBy).filter { it != null })
+        Flowable.fromIterable(listOfNotNull(deprecatedBy))
 
     override fun setAggregate(aggregate: Account) {
         this.aggregate = aggregate

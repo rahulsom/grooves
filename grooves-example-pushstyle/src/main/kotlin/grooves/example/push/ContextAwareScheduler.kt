@@ -19,11 +19,11 @@ object ContextAwareScheduler : Scheduler() {
 
     private val worker = NewThreadWorker(RxThreadFactory("ContextAwareScheduler"))
 
-    override fun createWorker(): Scheduler.Worker = ContextAwareWorker(worker)
+    override fun createWorker(): Worker = ContextAwareWorker(worker)
 
-    internal class ContextAwareWorker(val worker: NewThreadWorker) : Scheduler.Worker() {
+    internal class ContextAwareWorker(private val worker: NewThreadWorker) : Worker() {
 
-        val tracking = CompositeDisposable()
+        private val tracking = CompositeDisposable()
 
         override fun schedule(runnable: Runnable, delay: Long, unit: TimeUnit): Disposable {
             if (isDisposed) {

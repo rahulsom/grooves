@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit.SECONDS
 
 class PushTest {
 
-    val injector = Guice.createInjector(BankingModule)
-    val application = injector.getInstance(Application::class.java)
+    private val injector = Guice.createInjector(BankingModule)
+    private val application = injector.getInstance(Application::class.java)
 
     @BeforeEach
     fun before() {

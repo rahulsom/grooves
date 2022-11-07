@@ -28,7 +28,7 @@ class ZipcodePatients implements Join<Zipcode, Long, Patient, Long, ZipcodeEvent
 
     Long aggregateId
 
-    Zipcode getAggregate() { RepositoryProvider.zipcodeRepository.getOne(aggregateId) }
+    Zipcode getAggregate() { RepositoryProvider.zipcodeRepository.getById(aggregateId) }
 
     @Override
     @JsonIgnore
@@ -45,7 +45,7 @@ class ZipcodePatients implements Join<Zipcode, Long, Patient, Long, ZipcodeEvent
     }
     Long deprecatedById
 
-    Zipcode getDeprecatedBy() { deprecatedById ? RepositoryProvider.zipcodeRepository.getOne(deprecatedById) : null }
+    Zipcode getDeprecatedBy() { deprecatedById ? RepositoryProvider.zipcodeRepository.getById(deprecatedById) : null }
 
     void setDeprecatedBy(Zipcode aggregate) { deprecatedById = aggregate.id }
 
@@ -58,7 +58,7 @@ class ZipcodePatients implements Join<Zipcode, Long, Patient, Long, ZipcodeEvent
 
     Set<Zipcode> getDeprecates() {
         deprecatesIds.split(',').findAll { it }
-            .collect { RepositoryProvider.zipcodeRepository.findOne(it.toLong()) }.toSet()
+            .collect { RepositoryProvider.zipcodeRepository.getById(it.toLong()) }.toSet()
     }
 
     void setDeprecates(Set<Zipcode> deprecates) { deprecatesIds = deprecates*.id.join(',') }

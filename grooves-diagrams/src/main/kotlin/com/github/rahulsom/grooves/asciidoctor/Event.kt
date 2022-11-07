@@ -10,13 +10,15 @@ import com.github.rahulsom.svg.G
 import com.github.rahulsom.svg.ObjectFactory
 import java.text.SimpleDateFormat
 import java.util.Date
+import kotlin.math.abs
+import kotlin.math.sqrt
 
 /**
  * Represents an event while rendering in asciidoctor.
  *
  * @author Rahul Somasunderam
  */
-class Event(val counter: Int, var id: String, var date: Date, var description: String, var type: EventType) {
+class Event(private val counter: Int, var id: String, var date: Date, var description: String, var type: EventType) {
 
     override fun toString(): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd")
@@ -42,7 +44,7 @@ class Event(val counter: Int, var id: String, var date: Date, var description: S
         var y = index * eventLineHeight + offset + aggregateHeight / 2
 
         while (svgBuilder.allEvents.find { it.x == x && it.y == y } != null) {
-            y -= (20 * Math.sqrt(3.0) / 2).toInt()
+            y -= (20 * sqrt(3.0) / 2).toInt()
             x += 10
         }
         this.x = x
@@ -67,7 +69,7 @@ class Event(val counter: Int, var id: String, var date: Date, var description: S
 
             if (other.x > 0 && other.y > 0) {
 
-                val x1 = (if (type == EventType.Disjoin) -30 else 30) * Math.abs(other.y - y) / eventLineHeight
+                val x1 = (if (type == EventType.Disjoin) -30 else 30) * abs(other.y - y) / eventLineHeight
                 val xContactOffset = if (type == EventType.Disjoin) -10 else 10
                 val y1 = (y + other.y) / 2
 

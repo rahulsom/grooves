@@ -6,7 +6,6 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import grooves.boot.kotlin.repositories.PatientRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Configurable
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Flux.empty
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
@@ -34,7 +33,7 @@ class PatientAccount : Snapshot<Patient, String, String, PatientEvent> { // <1>
 
     @JsonIgnore
     override fun getAggregateObservable() = // <4>
-        aggregateId?.let { patientRepository!!.findAllById(just(it)) } ?: Flux.empty()
+        aggregateId?.let { patientRepository!!.findAllById(just(it)) } ?: empty()
 
     override fun setAggregate(aggregate: Patient) {
         this.aggregateId = aggregate.id

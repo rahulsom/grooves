@@ -32,8 +32,7 @@ class EventsBlock(name: String) :
             "format" to "svg"
         )
 
-        val block = createBlock(parent, "image", input, newAttributes, attributes?.mapKeys { it })
-        return block
+        return createBlock(parent, "image", input, newAttributes, attributes?.mapKeys { it })
     }
 
     private fun md5(input: String) =
