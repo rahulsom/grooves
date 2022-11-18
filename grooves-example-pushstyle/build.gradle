@@ -52,7 +52,7 @@ dependencies {
 
     jooqGenerator 'com.h2database:h2:1.4.200'
 
-    runtimeOnly 'ch.qos.logback:logback-classic:1.4.4'
+    runtimeOnly 'ch.qos.logback:logback-classic:1.4.5'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
     testImplementation 'org.awaitility:awaitility:4.2.0'
