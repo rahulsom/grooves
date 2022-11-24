@@ -34,7 +34,7 @@ fun DependencyHandlerScope.configureLogging() {
     testRuntimeOnly("org.slf4j:slf4j-simple:2.0.3")
     testRuntimeOnly("org.apache.logging.log4j:log4j-core:2.19.0")
     testRuntimeOnly("org.apache.logging.log4j:log4j-slf4j-impl:2.19.0")
-    testRuntimeOnly("ch.qos.logback:logback-classic:1.4.4")
+    testRuntimeOnly("ch.qos.logback:logback-classic:1.4.5")
 }
 
 fun DependencyHandlerScope.configureJUnit() {
