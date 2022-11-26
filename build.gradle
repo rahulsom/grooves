@@ -29,7 +29,7 @@ subprojects {
 
     checkstyle {
         configFile = rootProject.file('gradle/checkstyle/checkstyle.xml')
-        toolVersion = "7.6.1"
+        toolVersion = "10.3.3"
         showViolations = false
         maxWarnings = 0
         maxErrors = 0

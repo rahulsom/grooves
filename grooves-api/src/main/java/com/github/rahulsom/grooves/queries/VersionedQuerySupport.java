@@ -64,7 +64,7 @@ public interface VersionedQuerySupport<
                                     it.getLastEventPosition() == 0 ? "<none>" :
                                             it.toString();
                     LoggerFactory.getLogger(getClass())
-                        .debug("  -> Last Usable Snapshot: {}", snapshotAsString);
+                            .debug("  -> Last Usable Snapshot: {}", snapshotAsString);
                     it.setAggregate(aggregate);
                 });
     }
@@ -159,7 +159,7 @@ public interface VersionedQuerySupport<
             SnapshotT lastUsableSnapshot = seTuple2.getFirst();
 
             LoggerFactory.getLogger(getClass())
-                .info("     Events including redirects: {}", Utils.stringify(events));
+                    .info("     Events including redirects: {}", Utils.stringify(events));
 
             if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
                 return fromPublisher(lastUsableSnapshot.getAggregateObservable())

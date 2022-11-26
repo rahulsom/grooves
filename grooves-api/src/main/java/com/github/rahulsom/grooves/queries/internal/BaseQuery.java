@@ -73,7 +73,7 @@ public interface BaseQuery<
             @NotNull Exception e, @NotNull SnapshotT snapshot, @NotNull EventT event);
 
     /**
-     * Provide an executor to execute the query
+     * Provide an executor to execute the query.
      *
      * @return An executor that applies events.
      */

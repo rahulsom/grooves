@@ -136,7 +136,7 @@ public interface TemporalQuerySupport<
             SnapshotT snapshot = seTuple2.getFirst();
 
             LoggerFactory.getLogger(getClass())
-                .info("     Events including redirects: {}", Utils.stringify(events));
+                    .info("     Events including redirects: {}", Utils.stringify(events));
 
             if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
                 return fromPublisher(snapshot.getAggregateObservable())

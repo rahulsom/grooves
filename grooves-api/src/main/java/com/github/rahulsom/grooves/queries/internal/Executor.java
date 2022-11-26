@@ -36,7 +36,7 @@ public interface Executor<
     @NotNull Flowable<EventT> applyReverts(@NotNull Flowable<EventT> events);
 
     /**
-     * Applies forward events on a snapshot
+     * Applies forward events on a snapshot.
      *
      * @param query           The query that demands the events to be applied.
      * @param initialSnapshot The snapshot to be mutated

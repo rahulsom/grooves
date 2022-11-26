@@ -1,6 +1,6 @@
 package grooves.example.javaee.domain;
-//tag::documented[]
 
+//tag::documented[]
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @GroovyASTTransformationClass(classes = EventASTTransformation.class)
 public @interface Event {
     /**
-     * Aggregates to which this event can be applied
+     * Aggregates to which this event can be applied.
      *
      * @return The type of the Aggregate
      */
