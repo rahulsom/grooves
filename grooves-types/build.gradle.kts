@@ -13,7 +13,7 @@ description = "Types that are used by Grooves to build an Event Sourcing system"
 
 dependencies {
     api("org.reactivestreams:reactive-streams:1.0.4")
-    implementation("org.slf4j:slf4j-api:2.0.4")
+    implementation("org.slf4j:slf4j-api:2.0.5")
 
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 

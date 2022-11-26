@@ -15,7 +15,7 @@ dependencies {
     api(project(":grooves-types"))
 
     implementation("io.reactivex.rxjava2:rxjava:2.2.21")
-    implementation("org.slf4j:slf4j-api:2.0.4")
+    implementation("org.slf4j:slf4j-api:2.0.5")
 
     compileOnly("org.codehaus.groovy:groovy:3.0.13")
     compileOnly("org.jetbrains:annotations:23.0.0")

@@ -25,7 +25,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    implementation("org.slf4j:slf4j-api:2.0.4")
+    implementation("org.slf4j:slf4j-api:2.0.5")
     testRuntimeOnly("org.slf4j:slf4j-simple:2.0.5")
     testRuntimeOnly("org.apache.logging.log4j:log4j-core:2.19.0")
     testRuntimeOnly("org.apache.logging.log4j:log4j-slf4j-impl:2.19.0")
