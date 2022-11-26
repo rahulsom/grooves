@@ -17,7 +17,7 @@ dependencies {
 
     testImplementation("io.reactivex:rxjava:1.3.8")
     testImplementation("io.reactivex:rxjava-reactive-streams:1.2.1")
-    testImplementation("org.spockframework:spock-core:2.1-groovy-3.0")
+    testImplementation("org.spockframework:spock-core:2.3-groovy-4.0")
 
     testRuntimeOnly("org.jetbrains:annotations:23.0.0")
 }

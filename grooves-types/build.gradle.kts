@@ -17,7 +17,7 @@ dependencies {
 
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    testImplementation("org.spockframework:spock-core:2.1-groovy-3.0")
+    testImplementation("org.spockframework:spock-core:2.3-groovy-4.0")
 }
 
 tasks.withType<Test> {

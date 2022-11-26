@@ -29,7 +29,7 @@ dependencies {
 
     implementation("javax.xml.bind:jaxb-api:2.3.1")
 
-    testImplementation("org.spockframework:spock-core:2.1-groovy-3.0")
+    testImplementation("org.spockframework:spock-core:2.3-groovy-4.0")
 }
 
 tasks.withType<CompileSass> {

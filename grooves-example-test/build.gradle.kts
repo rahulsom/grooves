@@ -13,7 +13,7 @@ description = "Standard Tests for Grooves"
 dependencies {
     api(project(":grooves-api"))
     api("org.codehaus.groovy.modules.http-builder:http-builder:0.7.1")
-    api("org.spockframework:spock-core:2.1-groovy-3.0")
+    api("org.spockframework:spock-core:2.3-groovy-4.0")
 
     implementation("io.reactivex.rxjava2:rxjava:2.2.21")
     implementation("org.slf4j:slf4j-api:2.0.4")
