@@ -32,9 +32,7 @@ liberty {
     server {
         features {
             name = [
-                'jaxrs-2.1',
-                /*'adminCenter-1.0',*/
-                /*'restfulWS-3.0',*/
+                'jaxrs-2.1'
             ]
         }
     }
