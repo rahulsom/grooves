@@ -3,6 +3,8 @@ package com.github.rahulsom.grooves.test;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +26,14 @@ import static io.reactivex.Flowable.fromPublisher;
  *
  * @author Rahul Somasunderam
  */
+@Setter
 public class OnSpec<
         AggregateT,
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
         SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>> {
+    @Getter
     private AggregateT aggregate;
     private Consumer entityConsumer;
     private Supplier<Date> timestampSupplier;
@@ -104,23 +108,4 @@ public class OnSpec<
         });
     }
 
-    public AggregateT getAggregate() {
-        return aggregate;
-    }
-
-    public void setAggregate(@NotNull AggregateT aggregate) {
-        this.aggregate = aggregate;
-    }
-
-    public void setEntityConsumer(@NotNull Consumer entityConsumer) {
-        this.entityConsumer = entityConsumer;
-    }
-
-    public void setTimestampSupplier(@NotNull Supplier<Date> timestampSupplier) {
-        this.timestampSupplier = timestampSupplier;
-    }
-
-    public void setPositionSupplier(@NotNull Supplier<Long> positionSupplier) {
-        this.positionSupplier = positionSupplier;
-    }
 }

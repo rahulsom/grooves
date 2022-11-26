@@ -10,6 +10,9 @@ import java.util.*;
 
 import static javax.tools.Diagnostic.Kind.ERROR;
 
+/**
+ * Checks if a {@link Query} for a given {@link Aggregate} handles all {@link Event}s.
+ */
 @SuppressWarnings("unused")
 @SupportedAnnotationTypes({
         QueryProcessor.AGGREGATE_ANNOTATION,

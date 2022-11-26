@@ -21,7 +21,7 @@ class EventsBlock(name: String) :
 
         val input = reader.readLines().joinToString("\n")
 
-        var filename = (attributes ?: emptyMap()).get("2") as String? ?: md5(input)
+        var filename = (attributes ?: emptyMap()).get("2") as String? ?: hash(input)
         filename = if (filename.endsWith(".svg")) filename else "$filename.svg"
 
         SvgBuilder(input).write(File(outDir, filename))
@@ -35,10 +35,10 @@ class EventsBlock(name: String) :
         return createBlock(parent, "image", input, newAttributes, attributes?.mapKeys { it })
     }
 
-    private fun md5(input: String) =
-        MessageDigest.getInstance("MD5").let { md5 ->
-            md5.update(input.toByteArray())
-            val hash = BigInteger(1, md5.digest())
-            hash.toString(16)
+    private fun hash(input: String) =
+        MessageDigest.getInstance("SHA256").let { messageDigest ->
+            messageDigest.update(input.toByteArray())
+            val hash = BigInteger(1, messageDigest.digest())
+            hash.toString(16).substring(0, 15)
         }
 }
