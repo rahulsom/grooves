@@ -21,14 +21,14 @@ import java.lang.annotation.Target;
 @GroovyASTTransformationClass(classes = QueryASTTransformation.class)
 public @interface Query {
     /**
-     * The aggregate for which this query needs to be performed
+     * The aggregate for which this query needs to be performed.
      *
      * @return The aggregate for which this query needs to be performed
      */
     Class<?> aggregate();
 
     /**
-     * The snapshot that the query will return
+     * The snapshot that the query will return.
      *
      * @return The snapshot that the query will return
      */

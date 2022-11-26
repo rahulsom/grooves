@@ -115,6 +115,7 @@ public class FunctionalTemporalQuery<
             EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
             SnapshotIdT,
             SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-            > {}
+            > {
+    }
 
 }

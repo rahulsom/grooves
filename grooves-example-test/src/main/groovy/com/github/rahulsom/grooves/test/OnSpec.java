@@ -67,7 +67,7 @@ public class OnSpec<
 
     /**
      * Computes and persists a snapshot based on a QueryUtil on the aggregate that this
-     * OnSpec applies on
+     * OnSpec applies on.
      *
      * @param <QueryT>      The type of Query to be executed
      * @param query         The Query Util to compute the snapshot

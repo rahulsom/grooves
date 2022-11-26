@@ -111,6 +111,7 @@ public class FunctionalVersionedQuery<
             EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
             SnapshotIdT,
             SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-            > {}
+            > {
+    }
 
 }

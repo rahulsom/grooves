@@ -36,7 +36,7 @@ class GroovesQueryBuilderTest {
                         "deprecatedByProvider is not set",
                         "revertedEventProvider is not set",
                         "eventIdProvider is not set"
-            );
+                );
     }
 
     @Test
@@ -64,7 +64,7 @@ class GroovesQueryBuilderTest {
                         "deprecatedByProvider is not set",
                         "revertedEventProvider is not set",
                         "eventIdProvider is not set"
-            );
+                );
     }
 
     @Test

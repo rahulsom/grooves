@@ -39,17 +39,10 @@ public class QueryProcessor extends AbstractProcessor {
 
         for (TypeElement annotation : annotations) {
             switch (annotation.getSimpleName().toString()) {
-                case "Aggregate":
-                    aggregates = roundEnv.getElementsAnnotatedWith(annotation);
-                    break;
-                case "Event":
-                    eventTypes = roundEnv.getElementsAnnotatedWith(annotation);
-                    break;
-                case "Query":
-                    queryTypes = roundEnv.getElementsAnnotatedWith(annotation);
-                    break;
-                default:
-                    throw new RuntimeException("Unexpected annotation");
+                case "Aggregate" -> aggregates = roundEnv.getElementsAnnotatedWith(annotation);
+                case "Event" -> eventTypes = roundEnv.getElementsAnnotatedWith(annotation);
+                case "Query" -> queryTypes = roundEnv.getElementsAnnotatedWith(annotation);
+                default -> throw new RuntimeException("Unexpected annotation");
             }
         }
 
