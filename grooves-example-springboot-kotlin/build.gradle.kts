@@ -18,7 +18,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.allopen")
     id("org.jetbrains.kotlin.plugin.spring")
     id("groovy")
-    id("com.sourcemuse.mongo").version("1.0.7")
+    id("com.sourcemuse.mongo")
 }
 
 version = "0.0.1-SNAPSHOT"
@@ -38,14 +38,14 @@ dependencies {
     implementation(project(":grooves-api"))
     implementation(project(":grooves-example-test"))
 
-    runtimeOnly("javax.xml.bind:jaxb-api:2.3.1")
-    runtimeOnly("com.sun.xml.bind:jaxb-core:4.0.1")
-    runtimeOnly("com.sun.xml.bind:jaxb-impl:4.0.1")
+    runtimeOnly(libs.jaxb.api)
+    runtimeOnly(libs.sunjaxb.core)
+    runtimeOnly(libs.sunjaxb.impl)
     runtimeOnly("javax.activation:activation:1.1.1")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.spockframework:spock-core:2.1-groovy-3.0")
-    testImplementation("org.spockframework:spock-spring:2.1-groovy-3.0")
+    testImplementation(libs.spock.core)
+    testImplementation(libs.spock.spring)
     testImplementation("io.projectreactor.addons:reactor-test:3.0.7.RELEASE")
 }
 

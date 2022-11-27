@@ -23,13 +23,13 @@ dependencies {
     implementation("com.github.rahulsom:svg-builder:0.4.1")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    implementation("commons-beanutils:commons-beanutils:1.9.4")
+    implementation(libs.beanutils)
     implementation("org.asciidoctor:asciidoctorj:2.5.7")
-    implementation("org.slf4j:slf4j-api:2.0.5")
+    implementation(libs.slf4j.api)
 
-    implementation("javax.xml.bind:jaxb-api:2.3.1")
+    implementation(libs.jaxb.api)
 
-    testImplementation("org.spockframework:spock-core:2.1-groovy-3.0")
+    testImplementation(libs.spock.core)
 }
 
 tasks.withType<CompileSass> {

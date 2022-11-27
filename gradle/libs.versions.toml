@@ -1,0 +1,51 @@
+[versions]
+aspectj = "1.9.9.1"
+assertj = "3.23.1"
+autoservice = "1.0.1"
+awaitility = "4.2.0"
+beanutils = "1.9.4"
+groovy = "3.0.13"
+h2 = "1.4.200"
+jaxb = "2.3.1"
+jba = "23.0.0"
+junit = "5.8.1"
+kotlin = "1.7.10"
+log4j = "2.19.0"
+logback = "1.4.5"
+lombok = "1.18.24"
+rxjava = "1.2.1"
+rxjava2 = "2.2.21"
+slf4j = "2.0.5"
+spock = "2.1-groovy-3.0"
+sunjaxb = "4.0.1"
+
+[libraries]
+aspectj-rt = { module = "org.aspectj:aspectjrt", version.ref = "aspectj" }
+assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+autoservice = { module = "com.google.auto.service:auto-service", version.ref = "autoservice" }
+awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
+beanutils = { module = "commons-beanutils:commons-beanutils", version.ref = "beanutils" }
+groovy = { module = "org.codehaus.groovy:groovy", version.ref = "groovy" }
+groovy-all = { module = "org.codehaus.groovy:groovy-all", version.ref = "groovy" }
+groovy-dateutil = { module = "org.codehaus.groovy:groovy-dateutil", version.ref = "groovy" }
+groovy-json = { module = "org.codehaus.groovy:groovy-json", version.ref = "groovy" }
+groovy-xml = { module = "org.codehaus.groovy:groovy-xml", version.ref = "groovy" }
+h2 = { module = "com.h2database:h2", version.ref = "h2" }
+jaxb-api = { module = "javax.xml.bind:jaxb-api", version.ref = "jaxb" }
+junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+junit-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
+log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+log4j-slf4j = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+rxjava-core = { module = "io.reactivex:rxjava", version.ref = "rxjava" }
+rxjava-reactivestreams = { module = "io.reactivex:rxjava-reactive-streams", version.ref = "rxjava" }
+rxjava2 = { module = "io.reactivex.rxjava2:rxjava", version.ref = "rxjava2" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+spock-core = { module = "org.spockframework:spock-core", version.ref = "spock" }
+spock-spring = { module = "org.spockframework:spock-spring", version.ref = "spock" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jba" }
+sunjaxb-core = { module = "com.sun.xml.bind:jaxb-core", version.ref = "sunjaxb" }
+sunjaxb-impl = { module = "com.sun.xml.bind:jaxb-impl", version.ref = "sunjaxb" }

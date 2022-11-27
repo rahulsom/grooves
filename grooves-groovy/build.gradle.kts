@@ -13,13 +13,13 @@ description = "Support for completeness of queries in Groovy code"
 dependencies {
     api(project(":grooves-api"))
 
-    implementation("org.codehaus.groovy:groovy:3.0.13")
+    implementation(libs.groovy)
 
-    testImplementation("io.reactivex:rxjava:1.3.8")
-    testImplementation("io.reactivex:rxjava-reactive-streams:1.2.1")
-    testImplementation("org.spockframework:spock-core:2.1-groovy-3.0")
+    testImplementation(libs.rxjava.core)
+    testImplementation(libs.rxjava.reactivestreams)
+    testImplementation(libs.spock.core)
 
-    testRuntimeOnly("org.jetbrains:annotations:23.0.0")
+    testRuntimeOnly(libs.jetbrains.annotations)
 }
 
 tasks.withType<Test> {
