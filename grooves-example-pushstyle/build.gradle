@@ -6,7 +6,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath("com.h2database:h2:1.4.200")
+        classpath("com.h2database:h2:2.1.214")
 
         classpath("javax.xml.bind:jaxb-api:2.3.1")
         classpath("com.sun.xml.bind:jaxb-core:4.0.1")
@@ -36,7 +36,7 @@ dependencies {
     implementation("com.google.inject:guice:5.1.0")
     implementation("com.google.guava:guava:31.1-jre")
 
-    implementation("com.h2database:h2:1.4.200")
+    implementation("com.h2database:h2:2.1.214")
     implementation("org.jooq:jooq")
 
     implementation("javax.xml.bind:jaxb-api:2.3.1")
@@ -50,7 +50,7 @@ dependencies {
     implementation("io.reactivex.rxjava2:rxjava:2.2.21")
     implementation("org.slf4j:slf4j-api:2.0.5")
 
-    jooqGenerator("com.h2database:h2:1.4.200")
+    jooqGenerator("com.h2database:h2:2.1.214")
 
     runtimeOnly("ch.qos.logback:logback-classic:1.4.5")
 
