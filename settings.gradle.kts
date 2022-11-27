@@ -11,15 +11,6 @@ gradleEnterprise {
 
 rootProject.name = "grooves"
 
-include("grooves-core")
-include("grooves-types")
-include("grooves-api")
-include("grooves-java")
-include("grooves-groovy")
-include("grooves-diagrams")
+include("grooves-core", "grooves-types", "grooves-api", "grooves-java", "grooves-groovy", "grooves-diagrams", "grooves-example-test")
+include("grooves-example-springboot-jpa", "grooves-example-springboot-kotlin", "grooves-example-javaee", "grooves-example-pushstyle")
 include("grooves-docs")
-include("grooves-example-test")
-include("grooves-example-springboot-jpa")
-include("grooves-example-springboot-kotlin")
-include("grooves-example-javaee")
-include("grooves-example-pushstyle")

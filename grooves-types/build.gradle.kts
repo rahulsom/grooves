@@ -13,11 +13,11 @@ description = "Types that are used by Grooves to build an Event Sourcing system"
 
 dependencies {
     api("org.reactivestreams:reactive-streams:1.0.4")
-    implementation("org.slf4j:slf4j-api:2.0.5")
+    implementation(libs.slf4j.api)
 
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    testImplementation("org.spockframework:spock-core:2.1-groovy-3.0")
+    testImplementation(libs.spock.core)
 }
 
 tasks.withType<Test> {
