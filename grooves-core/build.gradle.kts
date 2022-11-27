@@ -23,7 +23,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation(libs.slf4j.api)
 
-    testImplementation(platform("org.junit:junit-bom:5.+"))
     testImplementation(libs.assertj.core)
     testImplementation(libs.junit.api)
     testImplementation(libs.junit.params)
