@@ -6,12 +6,12 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath 'com.h2database:h2:1.4.200'
+        classpath("com.h2database:h2:1.4.200")
 
-        classpath 'javax.xml.bind:jaxb-api:2.3.1'
-        classpath 'com.sun.xml.bind:jaxb-core:4.0.1'
-        classpath 'com.sun.xml.bind:jaxb-impl:4.0.1'
-        classpath 'javax.activation:activation:1.1.1'
+        classpath("javax.xml.bind:jaxb-api:2.3.1")
+        classpath("com.sun.xml.bind:jaxb-core:4.0.1")
+        classpath("com.sun.xml.bind:jaxb-impl:4.0.1")
+        classpath("javax.activation:activation:1.1.1")
     }
 }
 
@@ -22,40 +22,40 @@ plugins {
     id("org.flywaydb.flyway").version("6.5.7")
 }
 
-version = '0.0.1-SNAPSHOT'
+version = "0.0.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "org.jetbrains.kotlin:kotlin-reflect"
-    implementation 'org.codehaus.groovy:groovy-all:3.0.13'
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.codehaus.groovy:groovy-all:3.0.13")
 
-    implementation 'com.google.inject:guice:5.1.0'
-    implementation 'com.google.guava:guava:31.1-jre'
+    implementation("com.google.inject:guice:5.1.0")
+    implementation("com.google.guava:guava:31.1-jre")
 
-    implementation 'com.h2database:h2:1.4.200'
-    implementation 'org.jooq:jooq'
+    implementation("com.h2database:h2:1.4.200")
+    implementation("org.jooq:jooq")
 
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
-    implementation 'com.sun.xml.bind:jaxb-core:4.0.1'
-    implementation 'com.sun.xml.bind:jaxb-impl:4.0.1'
-    implementation 'javax.activation:activation:1.1.1'
-    compileOnly 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation("javax.xml.bind:jaxb-api:2.3.1")
+    implementation("com.sun.xml.bind:jaxb-core:4.0.1")
+    implementation("com.sun.xml.bind:jaxb-impl:4.0.1")
+    implementation("javax.activation:activation:1.1.1")
+    compileOnly("javax.annotation:javax.annotation-api:1.3.2")
 
-    implementation project(':grooves-api')
+    implementation(project(":grooves-api"))
 
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
-    implementation "org.slf4j:slf4j-api:2.0.5"
+    implementation("io.reactivex.rxjava2:rxjava:2.2.21")
+    implementation("org.slf4j:slf4j-api:2.0.5")
 
-    jooqGenerator 'com.h2database:h2:1.4.200'
+    jooqGenerator("com.h2database:h2:1.4.200")
 
-    runtimeOnly 'ch.qos.logback:logback-classic:1.4.5'
+    runtimeOnly("ch.qos.logback:logback-classic:1.4.5")
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
-    testImplementation 'org.awaitility:awaitility:4.2.0'
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1")
+    testImplementation("org.awaitility:awaitility:4.2.0")
 }
 
 jooq {
@@ -64,19 +64,19 @@ jooq {
         main {
             generationTool {
                 jdbc {
-                    driver = 'org.h2.Driver'
+                    driver = "org.h2.Driver"
                     url = "jdbc:h2:file:${buildDir}/schema"
-                    user = 'sa'
-                    password = ''
+                    user = "sa"
+                    password = ""
                 }
                 generator {
-                    name = 'org.jooq.codegen.DefaultGenerator'
+                    name = "org.jooq.codegen.DefaultGenerator"
                     strategy {
-                        name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+                        name = "org.jooq.codegen.DefaultGeneratorStrategy"
                     }
                     database {
-                        name = 'org.jooq.meta.h2.H2Database'
-                        inputSchema = 'public'
+                        name = "org.jooq.meta.h2.H2Database"
+                        inputSchema = "public"
                     }
                     generate {
                         relations = true
@@ -86,7 +86,7 @@ jooq {
                         fluentSetters = true
                     }
                     target {
-                        packageName = 'grooves.example.pushstyle'
+                        packageName = "grooves.example.pushstyle"
                     }
                 }
             }
@@ -96,20 +96,20 @@ jooq {
 
 flyway {
     url = "jdbc:h2:file:${buildDir}/schema"
-    user = 'sa'
-    password = ''
-    schemas = ['public']
+    user = "sa"
+    password = ""
+    schemas = ["public"]
 }
 
 javadoc {
-    exclude 'example/pushstyle/tables/**'
+    exclude("example/pushstyle/tables/**")
 }
 
-generateJooq.dependsOn 'flywayMigrate'
-compileKotlin.dependsOn 'generateJooq'
+generateJooq.dependsOn("flywayMigrate")
+compileKotlin.dependsOn("generateJooq")
 
-tasks.findByName('checkstyleMain')?.source = "src/main/java"
-tasks.findByName('runKtlintCheckOverMainSourceSet').dependsOn('generateJooq')
+tasks.findByName("checkstyleMain")?.source = "src/main/java"
+tasks.findByName("runKtlintCheckOverMainSourceSet").dependsOn("generateJooq")
 
 test {
     useJUnitPlatform()
