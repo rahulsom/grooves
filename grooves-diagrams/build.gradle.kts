@@ -20,11 +20,11 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.rahulsom:svg-builder:0.4.1")
+    implementation(libs.svgbuilder)
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     implementation(libs.beanutils)
-    implementation("org.asciidoctor:asciidoctorj:2.5.7")
+    implementation(libs.asciidoctorj)
     implementation(libs.slf4j.api)
 
     implementation(libs.jaxb.api)

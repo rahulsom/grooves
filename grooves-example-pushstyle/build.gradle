@@ -11,7 +11,7 @@ buildscript {
         classpath(libs.jaxb.api)
         classpath(libs.sunjaxb.core)
         classpath(libs.sunjaxb.impl)
-        classpath("javax.activation:activation:1.1.1")
+        classpath(libs.activation)
     }
 }
 
@@ -33,8 +33,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation(libs.groovy.all)
 
-    implementation("com.google.inject:guice:5.1.0")
-    implementation("com.google.guava:guava:31.1-jre")
+    implementation(libs.google.guice)
+    implementation(libs.google.guava)
 
     implementation(libs.h2)
     implementation("org.jooq:jooq")
@@ -42,8 +42,8 @@ dependencies {
     implementation(libs.jaxb.api)
     implementation(libs.sunjaxb.core)
     implementation(libs.sunjaxb.impl)
-    implementation("javax.activation:activation:1.1.1")
-    compileOnly("javax.annotation:javax.annotation-api:1.3.2")
+    implementation(libs.activation)
+    compileOnly(libs.javax.annotation.api)
 
     implementation(project(":grooves-api"))
 

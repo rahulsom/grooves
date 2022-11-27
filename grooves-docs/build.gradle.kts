@@ -14,7 +14,7 @@ val asciidoctorExt by configurations.creating
 
 dependencies {
     asciidoctorExt(project(":grooves-diagrams"))
-    asciidoctorExt("io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch:0.6.0")
+    asciidoctorExt(libs.spring.asciidoctor)
 }
 
 project.version = rootProject.version.toString()

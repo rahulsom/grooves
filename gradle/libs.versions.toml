@@ -1,44 +1,66 @@
 [versions]
+activation = "1.1.1"
+asciidoctorj = "2.5.7"
 aspectj = "1.9.9.1"
 assertj = "3.23.1"
-autoservice = "1.0.1"
 awaitility = "4.2.0"
 beanutils = "1.9.4"
+google-autoservice = "1.0.1"
+google-compiletesting = "0.19"
+google-guice = "5.1.0"
+google-guava = "31.1-jre"
 groovy = "3.0.13"
 h2 = "1.4.200"
+javaee = "8.0.1"
+javax-annotation = "1.3.2"
 jaxb = "2.3.1"
+liberty-jaxrs = "22.0.0.12"
 jba = "23.0.0"
 junit = "5.9.1"
 kotlin = "1.7.10"
+lang3 = "3.12.0"
 log4j = "2.19.0"
 logback = "1.4.5"
 lombok = "1.18.24"
+reactive-streams = "1.0.3"
 rxjava = "1.2.1"
 rxjava2 = "2.2.21"
 slf4j = "2.0.5"
 spock = "2.1-groovy-3.0"
+spring-asciidoctor = "0.6.0"
 sunjaxb = "4.0.1"
+svgbuilder = "0.4.1"
 
 [libraries]
+activation = { module = "javax.activation:activation", version.ref = "activation" }
+asciidoctorj = { module = "org.asciidoctor:asciidoctorj", version.ref = "asciidoctorj" }
 aspectj-rt = { module = "org.aspectj:aspectjrt", version.ref = "aspectj" }
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
-autoservice = { module = "com.google.auto.service:auto-service", version.ref = "autoservice" }
 awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
 beanutils = { module = "commons-beanutils:commons-beanutils", version.ref = "beanutils" }
+google-autoservice = { module = "com.google.auto.service:auto-service", version.ref = "google-autoservice" }
+google-compiletesting = { module = "com.google.testing.compile:compile-testing", version.ref = "google-compiletesting" }
+google-guice = { module = "com.google.inject:guice", version.ref = "google-guice" }
+google-guava = { module = "com.google.guava:guava", version.ref = "google-guava" }
 groovy = { module = "org.codehaus.groovy:groovy", version.ref = "groovy" }
 groovy-all = { module = "org.codehaus.groovy:groovy-all", version.ref = "groovy" }
 groovy-dateutil = { module = "org.codehaus.groovy:groovy-dateutil", version.ref = "groovy" }
 groovy-json = { module = "org.codehaus.groovy:groovy-json", version.ref = "groovy" }
 groovy-xml = { module = "org.codehaus.groovy:groovy-xml", version.ref = "groovy" }
 h2 = { module = "com.h2database:h2", version.ref = "h2" }
+javaee-api = { module = "javax:javaee-api", version.ref = "javaee" }
 jaxb-api = { module = "javax.xml.bind:jaxb-api", version.ref = "jaxb" }
+liberty-jaxrs = { module = "io.openliberty.features:jaxrs-2.1", version.ref = "liberty-jaxrs" }
+javax-annotation-api = { module = "javax.annotation:javax.annotation-api", version.ref = "javax-annotation" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 junit-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
+lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "lang3" }
 log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 log4j-slf4j = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+reactive-streams = { module = "org.reactivestreams:reactive-streams", version.ref = "reactive-streams" }
 rxjava-core = { module = "io.reactivex:rxjava", version.ref = "rxjava" }
 rxjava-reactivestreams = { module = "io.reactivex:rxjava-reactive-streams", version.ref = "rxjava" }
 rxjava2 = { module = "io.reactivex.rxjava2:rxjava", version.ref = "rxjava2" }
@@ -47,5 +69,7 @@ slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 spock-core = { module = "org.spockframework:spock-core", version.ref = "spock" }
 spock-spring = { module = "org.spockframework:spock-spring", version.ref = "spock" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jba" }
+spring-asciidoctor = { module = "io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch", version.ref = "spring-asciidoctor" }
 sunjaxb-core = { module = "com.sun.xml.bind:jaxb-core", version.ref = "sunjaxb" }
 sunjaxb-impl = { module = "com.sun.xml.bind:jaxb-impl", version.ref = "sunjaxb" }
+svgbuilder = { module = "com.github.rahulsom:svg-builder", version.ref = "svgbuilder" }

@@ -24,7 +24,7 @@ dependencies {
     runtimeOnly(libs.jaxb.api)
     runtimeOnly(libs.sunjaxb.core)
     runtimeOnly(libs.sunjaxb.impl)
-    runtimeOnly("javax.activation:activation:1.1.1")
+    runtimeOnly(libs.activation)
     runtimeOnly(libs.h2)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")

@@ -13,7 +13,7 @@ repositories {
 dependencies {
     annotationProcessor(libs.lombok)
 
-    providedCompile("javax:javaee-api:8.0.1")
+    providedCompile(libs.javaee.api)
     providedCompile(libs.jaxb.api)
 
     compileOnly(libs.lombok)
@@ -22,11 +22,11 @@ dependencies {
     implementation(project(":grooves-java"))
     implementation(project(":grooves-example-test"))
     implementation(libs.slf4j.api)
-    implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation(libs.lang3)
     implementation(libs.rxjava.core)
     implementation(libs.rxjava.reactivestreams)
 
-    libertyFeature("io.openliberty.features:jaxrs-2.1:22.0.0.12")
+    libertyFeature(libs.liberty.jaxrs)
 }
 
 liberty {
