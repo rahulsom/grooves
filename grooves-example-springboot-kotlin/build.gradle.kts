@@ -6,7 +6,7 @@ buildscript {
         maven { setUrl("https://repo.grails.org/grails/core") }
     }
     dependencies {
-        classpath("de.flapdoodle.embed:de.flapdoodle.embed.process:2.1.2")
+        classpath("de.flapdoodle.embed:de.flapdoodle.embed.process:3.2.8")
     }
 }
 
