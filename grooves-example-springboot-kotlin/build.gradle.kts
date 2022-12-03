@@ -1,15 +1,5 @@
 import com.sourcemuse.gradle.plugin.GradleMongoPluginExtension
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { setUrl("https://repo.grails.org/grails/core") }
-    }
-    dependencies {
-        classpath("de.flapdoodle.embed:de.flapdoodle.embed.process:3.2.8")
-    }
-}
-
 plugins {
     id("org.springframework.boot")
     id("io.spring.dependency-management")
@@ -22,10 +12,6 @@ plugins {
 }
 
 version = "0.0.1-SNAPSHOT"
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
