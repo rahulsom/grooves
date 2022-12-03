@@ -15,10 +15,6 @@ apply {
 
 description = "Asciidoctor Extension to generate Event Sourcing Diagrams like those on https://rahulsom.github.io/grooves"
 
-repositories {
-    google()
-}
-
 dependencies {
     implementation(libs.svgbuilder)
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")

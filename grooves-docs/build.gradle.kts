@@ -6,7 +6,6 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
     maven { setUrl("https://repo.spring.io/release") }
 }
 

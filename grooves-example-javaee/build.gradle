@@ -6,10 +6,6 @@ plugins {
 
 version = "0.1"
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     annotationProcessor(libs.lombok)
 
