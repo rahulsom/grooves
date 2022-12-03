@@ -14,8 +14,8 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.codehaus.groovy:groovy")
-    implementation("org.codehaus.groovy:groovy-dateutil")
+    implementation(libs.groovy)
+    implementation(libs.groovy.dateutil)
     implementation(libs.rxjava2)
 
     implementation(project(":grooves-groovy"))
