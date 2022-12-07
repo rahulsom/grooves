@@ -23,7 +23,7 @@ dependencies {
     implementation(libs.groovy.dateutil)
     implementation(libs.groovy.json)
     implementation(libs.groovy.xml)
-    implementation("org.apache.httpcomponents:httpclient:4.5.13")
+    implementation("org.apache.httpcomponents:httpclient:4.5.14")
     implementation(libs.beanutils)
 
     compileOnly(libs.jetbrains.annotations)
