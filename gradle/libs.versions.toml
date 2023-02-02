@@ -27,7 +27,7 @@ rxjava = "1.2.1"
 rxjava2 = "2.2.21"
 slf4j = "2.0.6"
 spock = "2.1-groovy-3.0"
-spring-asciidoctor = "0.6.0"
+spring-asciidoctor = "0.6.1"
 sunjaxb = "4.0.1"
 svgbuilder = "0.4.1"
 
