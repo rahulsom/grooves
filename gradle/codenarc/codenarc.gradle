@@ -1,6 +1,6 @@
 apply plugin: 'codenarc'
 
 codenarc {
-    toolVersion = '3.1.0'
+    toolVersion = '3.2.0'
     configFile = rootProject.file('gradle/codenarc/codenarc.groovy')
 }
