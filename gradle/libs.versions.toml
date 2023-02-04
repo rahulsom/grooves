@@ -2,7 +2,7 @@
 activation = "1.1.1"
 asciidoctorj = "2.5.7"
 aspectj = "1.9.19"
-assertj = "3.23.1"
+assertj = "3.24.2"
 awaitility = "4.2.0"
 beanutils = "1.9.4"
 google-autoservice = "1.0.1"
