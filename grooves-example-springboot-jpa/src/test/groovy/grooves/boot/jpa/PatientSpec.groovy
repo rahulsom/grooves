@@ -1,18 +1,18 @@
 package grooves.boot.jpa
 
 import com.github.rahulsom.grooves.test.AbstractPatientSpec
+import com.github.rahulsom.grooves.test.RestRequest
 import grooves.boot.jpa.domain.PatientDeprecatedBy
 import grooves.boot.jpa.domain.PatientDeprecates
 import grooves.boot.jpa.repositories.PatientEventRepository
-import groovyx.net.http.RESTClient
+import com.github.rahulsom.grooves.test.RestClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Unroll
 
-import static groovyx.net.http.ContentType.JSON
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 
 /**
@@ -28,14 +28,14 @@ class PatientSpec extends AbstractPatientSpec {
     @Autowired PatientEventRepository patientEventRepository
 
     @Override
-    RESTClient getRest() {
-        new RESTClient("http://localhost:${serverPort ?: 8080}/", JSON)
+    RestClient getRest() {
+        new RestClient("http://localhost:${serverPort ?: 8080}/")
     }
 
     @Unroll
     void "#location - current patients join works"() {
         given:
-        def resp = rest.get(path: "/zipcode/patients/${id}".toString())
+        def resp = rest.get(new RestRequest("zipcode/patients/${id}"))
 
         expect:
         with(resp) {
@@ -57,7 +57,7 @@ class PatientSpec extends AbstractPatientSpec {
     @SuppressWarnings(['CyclomaticComplexity',])
     void "#location - version #version patients join works"() {
         given:
-        def resp = rest.get(path: "/zipcode/patients/${id}", params: [version: version])
+        def resp = rest.get(new RestRequest("zipcode/patients/${id}", [version: version]))
 
         expect:
         with(resp) {

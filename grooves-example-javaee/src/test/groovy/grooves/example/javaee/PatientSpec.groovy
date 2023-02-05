@@ -1,10 +1,7 @@
 package grooves.example.javaee
 
 import com.github.rahulsom.grooves.test.AbstractPatientSpec
-import groovyx.net.http.ContentType
-import groovyx.net.http.RESTClient
-
-import static groovyx.net.http.ContentType.JSON
+import com.github.rahulsom.grooves.test.RestClient
 
 /**
  * Acceptance test that tests against Springboot with JPA
@@ -14,7 +11,7 @@ import static groovyx.net.http.ContentType.JSON
 class PatientSpec extends AbstractPatientSpec {
 
     @Override
-    RESTClient getRest() {
-        new RESTClient("http://localhost:9080/grooves-example-javaee/", JSON)
+    RestClient getRest() {
+        new RestClient("http://localhost:9080/grooves-example-javaee/")
     }
 }

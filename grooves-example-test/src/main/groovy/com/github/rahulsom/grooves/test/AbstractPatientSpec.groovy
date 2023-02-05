@@ -1,8 +1,6 @@
 package com.github.rahulsom.grooves.test
 
 import groovy.transform.CompileDynamic
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.RESTClient
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -34,20 +32,20 @@ abstract class AbstractPatientSpec extends Specification {
      *
      * @return Preconfigured RESTClient
      */
-    abstract RESTClient getRest()
+    abstract RestClient getRest()
 
     @Shared private List<String> ids
 
     void setup() {
         if (!ids) {
-            def resp = rest.get(path: 'patient') as HttpResponseDecorator
+            def resp = rest.get(new RestRequest('patient'))
             ids = resp.data*.id
         }
     }
 
     void "Patient List works"() {
         when:
-        def resp = rest.get(path: 'patient') as HttpResponseDecorator
+        def resp = rest.get(new RestRequest('patient'))
 
         then:
         with(resp) {
@@ -66,8 +64,7 @@ abstract class AbstractPatientSpec extends Specification {
         def id = ids[3 - 1]
 
         given:
-        def resp = rest.get(path: "patient/account/${id}",
-                query: [version: version,]) as HttpResponseDecorator
+        def resp = rest.get(new RestRequest("patient/account/${id}", [version: version,]))
 
         expect:
         with(resp) {
@@ -97,7 +94,7 @@ abstract class AbstractPatientSpec extends Specification {
         getRest()
         def theId = ids[id - 1]
         given:
-        def resp = rest.get(path: "patient/show/${theId}") as HttpResponseDecorator
+        def resp = rest.get(new RestRequest("patient/show/${theId}"))
 
         expect:
         with(resp) {
@@ -120,7 +117,7 @@ abstract class AbstractPatientSpec extends Specification {
         getRest()
         def theId = ids[id - 1]
         given:
-        def resp = rest.get(path: "patient/health/${theId}") as HttpResponseDecorator
+        def resp = rest.get(new RestRequest("patient/health/${theId}"))
 
         expect:
         with(resp) {
@@ -147,8 +144,7 @@ abstract class AbstractPatientSpec extends Specification {
         getRest()
         def theId = ids[id - 1]
         given:
-        def resp = rest.get(path: "patient/health/${theId}",
-                query: [version: version,]) as HttpResponseDecorator
+        def resp = rest.get(new RestRequest("patient/health/${theId}", [version: version,]))
 
         expect:
         with(resp) {
@@ -184,8 +180,7 @@ abstract class AbstractPatientSpec extends Specification {
         getRest()
         def theId = ids[id - 1]
         given:
-        def resp = rest.get(path: "patient/health/${theId}",
-                query: [date: "${date}T00:00:00.000Z",]) as HttpResponseDecorator
+        def resp = rest.get(new RestRequest("patient/health/${theId}", [date: "${date}T00:00:00.000Z",]))
 
         expect:
         with(resp) {
@@ -216,8 +211,7 @@ abstract class AbstractPatientSpec extends Specification {
         def theAggregateId = ids[aggregateId - 1]
         def theDeprecatedIds = deprecatedIds?.collect { ids[it - 1] } ?: null
         given:
-        def resp = rest.get(path: "patient/account/${theId4}",
-                query: [version: version,]) as HttpResponseDecorator
+        def resp = rest.get(new RestRequest("patient/account/${theId4}", [version: version,]))
 
         expect:
         with(resp) {
@@ -245,8 +239,7 @@ abstract class AbstractPatientSpec extends Specification {
         def theId5 = ids[5 - 1]
         def theId4 = ids[4 - 1]
         given:
-        def resp = rest.get(path: "patient/account/${theId5}",
-                query: [version: version,]) as HttpResponseDecorator
+        def resp = rest.get(new RestRequest("patient/account/${theId5}", [version: version,]))
 
         expect:
         with(resp) {
@@ -275,7 +268,7 @@ abstract class AbstractPatientSpec extends Specification {
         def theId4AsRange = [theId4]
 
         when:
-        resp = rest.get(path: "patient/account/${theId5}") as HttpResponseDecorator
+        resp = rest.get(new RestRequest("patient/account/${theId5}"))
 
         then:
         with(resp) {
@@ -293,7 +286,7 @@ abstract class AbstractPatientSpec extends Specification {
         }
 
         when:
-        resp = rest.get(path: "patient/account/${theId4}") as HttpResponseDecorator
+        resp = rest.get(new RestRequest("patient/account/${theId4}"))
 
         then:
         with(resp) {
@@ -316,8 +309,7 @@ abstract class AbstractPatientSpec extends Specification {
         getRest()
 
         given:
-        def resp = rest.get(path: "patient/account/${ids[id - 1]}",
-                query: [version: version,]) as HttpResponseDecorator
+        def resp = rest.get(new RestRequest("patient/account/${ids[id - 1]}", [version: version,]))
 
         expect:
         with(resp) {
@@ -347,8 +339,8 @@ abstract class AbstractPatientSpec extends Specification {
         getRest()
 
         given:
-        def resp = rest.get(path: "patient/account/${ids[id - 1]}",
-                query: [date: "${date}T00:00:00.000Z",]) as HttpResponseDecorator
+        def resp = rest.get(new RestRequest("patient/account/${ids[id - 1]}",
+                [date: "${date}T00:00:00.000Z",]))
 
         expect:
         with(resp) {
