@@ -8,6 +8,11 @@
       "packagePatterns": ["com.github.rahulsom.waena.*"],
       "groupName": "Waena",
       "groupSlug": "com.github.rahulsom.waena"
+    },
+    {
+      "packagePatterns": ["org.jetbrains.kotlin.*"],
+      "groupName": "Kotlin",
+      "groupSlug": "org.jetbrains.kotlin"
     }
   ]
 }
