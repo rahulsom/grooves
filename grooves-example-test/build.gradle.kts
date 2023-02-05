@@ -12,7 +12,7 @@ description = "Standard Tests for Grooves"
 
 dependencies {
     api(project(":grooves-api"))
-    api("org.codehaus.groovy.modules.http-builder:http-builder:0.7.1")
+    api(libs.okhttp)
     api(libs.spock.core)
 
     implementation(libs.rxjava2)
