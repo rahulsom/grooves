@@ -118,7 +118,7 @@
         <text x="15" y="63" class="type">Patient</text>
         <text x="15" y="81" class="id">4</text>
         <text x="10" y="40" class="description">Tina Fey</text>
-        <line x1="110" y1="65" x2="750.0" y2="65" class="eventLine" marker-end="url(#triangle)"/>
+        <line x1="110" y1="65" x2="750.0" y2="65" marker-end="url(#triangle)" class="eventLine"/>
     </g>
     <g class="event Normal " id="event_1">
         <circle cx="210" cy="65" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
@@ -151,7 +151,7 @@
         <text x="15" y="163" class="type">Patient</text>
         <text x="15" y="181" class="id">5</text>
         <text x="10" y="140" class="description">Sarah Palin</text>
-        <line x1="110" y1="165" x2="750.0" y2="165" class="eventLine" marker-end="url(#triangle)"/>
+        <line x1="110" y1="165" x2="750.0" y2="165" marker-end="url(#triangle)" class="eventLine"/>
     </g>
     <g class="event Normal " id="event_8">
         <circle cx="360" cy="165" r="14" class="eventCreated Normal" stroke-dasharray="2, 5"/>
