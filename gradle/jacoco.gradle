@@ -4,12 +4,7 @@ jacoco {
     toolVersion = '0.8.8'
 }
 
-if (project.tasks.findByName('test')) {
-    project.tasks.findByName('test').finalizedBy jacocoTestReport
-}
-if (project.tasks.findByName('integrationTest')) {
-    def integrationTestTask = project.tasks.findByName('integrationTest')
-    integrationTestTask.finalizedBy jacocoTestReport
-    integrationTest.jacoco.destinationFile = file("$buildDir/jacoco/test.exec")
-    integrationTest.jacoco.append = true
+project.tasks.withType(Test).configureEach {
+    it.finalizedBy("jacocoTestReport")
+    it.jacoco.destinationFile = file("$buildDir/jacoco/test.exec")
 }

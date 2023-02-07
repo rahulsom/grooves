@@ -35,10 +35,10 @@ dependencies {
     testImplementation("io.projectreactor.addons:reactor-test:3.0.7.RELEASE")
 }
 
-tasks.findByName("bootRun")?.dependsOn("startMongoDb")
-tasks.findByName("bootRun")?.finalizedBy("stopMongoDb")
-tasks.findByName("test")?.dependsOn("startMongoDb")
-tasks.findByName("test")?.finalizedBy("stopMongoDb")
+tasks.named("bootRun") { dependsOn("startMongoDb") }
+tasks.named("bootRun") { finalizedBy("stopMongoDb") }
+tasks.named("test") { dependsOn("startMongoDb") }
+tasks.named("test") { finalizedBy("stopMongoDb") }
 
 configure<GradleMongoPluginExtension> {
     setPort(27021)

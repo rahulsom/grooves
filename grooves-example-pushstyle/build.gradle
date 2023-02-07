@@ -100,8 +100,8 @@ javadoc {
 generateJooq.dependsOn("flywayMigrate")
 compileKotlin.dependsOn("generateJooq")
 
-tasks.findByName("checkstyleMain")?.source = "src/main/java"
-tasks.findByName("runKtlintCheckOverMainSourceSet").dependsOn("generateJooq")
+tasks.named("checkstyleMain", Checkstyle) { it.source = "src/main/java" }
+tasks.named("runKtlintCheckOverMainSourceSet") { it.dependsOn("generateJooq") }
 
 test {
     useJUnitPlatform()
