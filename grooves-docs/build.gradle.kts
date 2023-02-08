@@ -44,7 +44,7 @@ tasks.withType<AsciidoctorTask> {
     }
 }
 
-tasks.findByName("asciidoctor")?.dependsOn(":grooves-diagrams:jar")
+tasks.named("asciidoctor") { dependsOn(":grooves-diagrams:jar") }
 
 gitPublish {
     repoUri.set("https://github.com/rahulsom/grooves.git")
@@ -67,4 +67,4 @@ gitPublish {
     }
 }
 
-tasks.findByName("gitPublishPush")?.dependsOn("asciidoctor")
+tasks.named("gitPublishPush") { dependsOn("asciidoctor") }
