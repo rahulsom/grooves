@@ -45,3 +45,9 @@ tasks.getByName("sourceJar").dependsOn("compileSass")
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}

@@ -41,3 +41,9 @@ tasks.withType<Test> {
     // Configure Slf4j Simple Logger
     systemProperty("org.slf4j.simpleLogger.log.com.github.rahulsom.grooves", "DEBUG")
 }
+
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
