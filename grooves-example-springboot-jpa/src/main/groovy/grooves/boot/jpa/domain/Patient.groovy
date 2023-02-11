@@ -7,7 +7,7 @@ import com.github.rahulsom.grooves.groovy.transformations.Aggregate
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
-import javax.persistence.*
+import jakarta.persistence.*
 
 // end::documented[]
 /**

@@ -19,7 +19,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("io.reactivex:rxjava-reactive-streams")
+    implementation(libs.rxjava.reactivestreams)
     implementation("org.springframework:spring-aspects")
     implementation(project(":grooves-api"))
     implementation(project(":grooves-example-test"))
