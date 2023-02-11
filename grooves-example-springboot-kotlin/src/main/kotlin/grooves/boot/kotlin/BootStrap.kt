@@ -14,6 +14,7 @@ import grooves.boot.kotlin.repositories.PatientAccountRepository
 import grooves.boot.kotlin.repositories.PatientBlockingRepository
 import grooves.boot.kotlin.repositories.PatientEventBlockingRepository
 import grooves.boot.kotlin.repositories.PatientHealthRepository
+import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import org.springframework.stereotype.Component
@@ -21,7 +22,6 @@ import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.TimeZone
-import javax.annotation.PostConstruct
 
 @Component
 class BootStrap constructor(

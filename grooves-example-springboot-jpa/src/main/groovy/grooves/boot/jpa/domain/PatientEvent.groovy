@@ -11,7 +11,7 @@ import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import org.reactivestreams.Publisher
 
-import javax.persistence.*
+import jakarta.persistence.*
 
 import static io.reactivex.Flowable.*
 
