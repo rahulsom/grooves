@@ -58,6 +58,7 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
         // <2>
         RevertEvent<Patient, String, PatientEvent> { // <3>
         fun getAudit(): String = "$id - Revert $revertedEventId"
+
         // end::reverted[]
         override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
         // tag::reverted[]
@@ -109,6 +110,7 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
     sealed class Applicable : PatientEvent() { // <1>
         data class Created(val name: String) : Applicable() { // <2>
             fun getAudit(): String = "$id - Created '$name'"
+
             // end::created[]
             override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
             // tag::created[]

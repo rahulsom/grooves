@@ -53,10 +53,11 @@ class PatientAccount : Snapshot<Patient, String, String, PatientEvent> { // <1>
 
     @JsonIgnore
     override fun getDeprecatesObservable() = // <6>
-        if (deprecatesIds.size > 0)
+        if (deprecatesIds.size > 0) {
             patientRepository!!.findAllById(deprecatesIds)
-        else
+        } else {
             empty()
+        }
 
     // end::documented[]
     override fun toString(): String {
