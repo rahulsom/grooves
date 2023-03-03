@@ -68,7 +68,6 @@ class Event(private val counter: Int, var id: String, var date: Date, var descri
             val other = svgBuilder.allEvents.find { it.id == otherId }!!
 
             if (other.x > 0 && other.y > 0) {
-
                 val x1 = (if (type == EventType.Disjoin) -30 else 30) * abs(other.y - y) / eventLineHeight
                 val xContactOffset = if (type == EventType.Disjoin) -10 else 10
                 val y1 = (y + other.y) / 2

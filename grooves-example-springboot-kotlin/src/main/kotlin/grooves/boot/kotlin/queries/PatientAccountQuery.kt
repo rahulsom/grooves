@@ -15,8 +15,8 @@ import reactor.core.publisher.Mono.just
 import java.lang.Exception
 import java.util.Date
 
-@Component
 // tag::documented[]
+@Component
 class PatientAccountQuery constructor(
     @Autowired val patientEventRepository: PatientEventRepository,
     @Autowired val patientAccountRepository: PatientAccountRepository
@@ -33,12 +33,14 @@ class PatientAccountQuery constructor(
 
     override fun getSnapshot(maxPosition: Long, aggregate: Patient) = // <5>
         patientAccountRepository.findByAggregateIdAndLastEventPositionLessThan(
-            aggregate.id!!, maxPosition
+            aggregate.id!!,
+            maxPosition
         )
 
     override fun getSnapshot(maxTimestamp: Date?, aggregate: Patient) = // <6>
         patientAccountRepository.findByAggregateIdAndLastEventTimestampLessThan(
-            aggregate.id!!, maxTimestamp!!
+            aggregate.id!!,
+            maxTimestamp!!
         )
 
     override fun shouldEventsBeApplied(snapshot: PatientAccount) = true // <7>
@@ -57,7 +59,8 @@ class PatientAccountQuery constructor(
     ) = // <9>
         patientEventRepository.findAllByPositionRange(
             aggregate.id!!,
-            lastSnapshot?.lastEventPosition ?: 0, version
+            lastSnapshot?.lastEventPosition ?: 0,
+            version
         )
 
     override fun getUncomputedEvents(
@@ -67,10 +70,13 @@ class PatientAccountQuery constructor(
     ) = // <10>
         lastSnapshot?.lastEventTimestamp?.let {
             patientEventRepository.findAllByTimestampRange(
-                aggregate.id!!, it, snapshotTime
+                aggregate.id!!,
+                it,
+                snapshotTime
             )
         } ?: patientEventRepository.findAllByAggregateIdAndTimestampLessThan(
-            aggregate.id!!, snapshotTime
+            aggregate.id!!,
+            snapshotTime
         )
 
     override fun applyEvent(event: PatientEvent.Applicable, snapshot: PatientAccount) =

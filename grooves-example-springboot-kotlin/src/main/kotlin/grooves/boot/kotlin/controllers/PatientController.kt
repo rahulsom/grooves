@@ -44,7 +44,8 @@ class PatientController constructor(
         @PathVariable id: String,
         @RequestParam(required = false) version: Long?,
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
-        @RequestParam(required = false) date: Instant?
+        @RequestParam(required = false)
+        date: Instant?
     ) =
         patientRepository.findById(id)
             .flatMap { patient ->
@@ -52,7 +53,8 @@ class PatientController constructor(
                     version?.let { patientAccountQuery.computeSnapshot(patient, it) }
                         ?: date?.let {
                             patientAccountQuery.computeSnapshot(
-                                patient, extractDate(it)
+                                patient,
+                                extractDate(it)
                             )
                         } ?: patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE)
                 )
@@ -75,7 +77,8 @@ class PatientController constructor(
         @PathVariable id: String,
         @RequestParam(required = false) version: Long?,
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
-        @RequestParam(required = false) date: Instant?
+        @RequestParam(required = false)
+        date: Instant?
     ) =
         patientRepository.findById(id)
             .flatMap { patient ->
@@ -83,7 +86,8 @@ class PatientController constructor(
                     version?.let { patientHealthQuery.computeSnapshot(patient, version) }
                         ?: date?.let {
                             patientHealthQuery.computeSnapshot(
-                                patient, extractDate(it)
+                                patient,
+                                extractDate(it)
                             )
                         } ?: patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE)
                 )

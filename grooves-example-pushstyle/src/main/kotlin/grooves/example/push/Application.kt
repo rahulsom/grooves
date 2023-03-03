@@ -45,14 +45,24 @@ class Application @Inject constructor(
     fun deposit(accountId: String, position: Long, atmId: String, amount: Long) =
         eventBus.post(
             Transaction.Deposit(
-                UUID.randomUUID().toString(), Account(accountId), Date(), position, atmId, amount
+                UUID.randomUUID().toString(),
+                Account(accountId),
+                Date(),
+                position,
+                atmId,
+                amount
             )
         )
 
     fun withdraw(accountId: String, position: Long, atmId: String, amount: Long) =
         eventBus.post(
             Transaction.Withdraw(
-                UUID.randomUUID().toString(), Account(accountId), Date(), position, atmId, amount
+                UUID.randomUUID().toString(),
+                Account(accountId),
+                Date(),
+                position,
+                atmId,
+                amount
             )
         )
 

@@ -13,6 +13,7 @@ class IndentedLogging {
         private const val INITIAL_INDENT = 1
         fun stepIn() = indentLevel.set(indentLevel.getOrSet { INITIAL_INDENT } + 1)
         fun stepOut() = indentLevel.set(indentLevel.getOrSet { INITIAL_INDENT } - 1)
+
         @JvmStatic
         fun indent() = "".padStart(indentLevel.getOrSet { INITIAL_INDENT } * 2)
         private fun eventsToString(it: List<*>): Any = "<... ${it.size} item(s)>"
@@ -27,10 +28,11 @@ class IndentedLogging {
         val loggerName = classWithFunction.name.replace(Regex("\\\$\\\$Lambda.*$"), "")
         val log = LoggerFactory.getLogger(loggerName)
         val methodName =
-            if (signature.name == "invoke")
+            if (signature.name == "invoke") {
                 signature.declaringType.simpleName.replaceFirstChar { x -> x.lowercaseChar() }
-            else
+            } else {
                 signature.name
+            }
 
         val args = joinPoint.args.map { if (it is List<*>) eventsToString(it) else it }.joinToString(", ")
         log.trace("${indent()}$methodName($args)")

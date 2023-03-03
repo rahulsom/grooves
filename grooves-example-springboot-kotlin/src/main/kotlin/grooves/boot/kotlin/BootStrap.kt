@@ -43,7 +43,6 @@ class BootStrap constructor(
     }
 
     fun setupJohnLennon() {
-
         on(patientRepository.save(Patient("42"))) {
             it.apply(Created("John Lennon"))
             it.apply(ProcedurePerformed("FLUSHOT", BigDecimal("32.40")))
@@ -62,7 +61,6 @@ class BootStrap constructor(
     }
 
     fun setupRingoStarr() {
-
         on(patientRepository.save(Patient("43"))) {
             it.apply(Created("Ringo Starr"))
             it.apply(ProcedurePerformed("ANNUALPHYSICAL", BigDecimal("170.00")))
@@ -81,7 +79,6 @@ class BootStrap constructor(
     }
 
     fun setupPaulMcCartney() {
-
         on(patientRepository.save(Patient("44"))) {
             it.apply(Created("Paul McCartney"))
             it.apply(ProcedurePerformed("ANNUALPHYSICAL", BigDecimal("170.00")))
@@ -231,7 +228,10 @@ class BootStrap constructor(
         }
         return com.github.rahulsom.grooves.test.EventsDsl<Patient, String, PatientEvent>()
             .on<String, Snapshot<Patient, String, String, PatientEvent>>(
-                patient, eventSaver, positionSupplier, timestampSupplier,
+                patient,
+                eventSaver,
+                positionSupplier,
+                timestampSupplier,
                 closure
             )
     }

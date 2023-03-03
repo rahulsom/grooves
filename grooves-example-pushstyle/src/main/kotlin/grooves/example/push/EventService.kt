@@ -15,6 +15,7 @@ class EventService {
 
     @Inject
     lateinit var database: Database
+
     @Inject
     lateinit var dslContext: DSLContext
 
@@ -37,10 +38,11 @@ class EventService {
                 // <4>
                 val transaction =
                     ContextManager.get()?.get("transaction") as Transaction?
-                if (transaction != null)
+                if (transaction != null) {
                     just(transaction)
-                else
+                } else {
                     empty()
+                }
             }
             .withApplyEvents { balance -> true } // <5>
             .withDeprecator { balance, deprecatingAccount -> /* No op */ } // <6>
