@@ -36,3 +36,7 @@ dependencies {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+tasks.named("bootJar", Jar::class) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
