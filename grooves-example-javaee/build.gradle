@@ -1,5 +1,5 @@
 plugins {
-    id("io.openliberty.tools.gradle.Liberty").version("3.6")
+    id("io.openliberty.tools.gradle.Liberty").version("3.6.1")
     id("war")
     id("groovy")
 }
