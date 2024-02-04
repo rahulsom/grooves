@@ -7,7 +7,7 @@ plugins {
     id("io.spring.dependency-management").version("1.1.3").apply(false)
     id("org.sonarqube").version("4.4.1.3373")
     id("me.champeau.buildscan-recipes").version("0.2.3")
-    id("com.sourcemuse.mongo").version("1.0.7").apply(false)
+    id("com.sourcemuse.mongo").version("2.0.0").apply(false)
 }
 
 allprojects {
