@@ -5,7 +5,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint").version("11.6.1").apply(false)
     id("org.springframework.boot").version("3.0.4").apply(false)
     id("io.spring.dependency-management").version("1.1.4").apply(false)
-    id("org.sonarqube").version("4.4.1.3373")
+    id("org.sonarqube").version("5.0.0.4638")
     id("me.champeau.buildscan-recipes").version("0.2.3")
     id("com.sourcemuse.mongo").version("1.0.7").apply(false)
 }
