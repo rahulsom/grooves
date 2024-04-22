@@ -8,5 +8,9 @@ import com.github.rahulsom.grooves.logging.Trace
  */
 interface ExceptionHandler<Snapshot, Event> {
     @Trace
-    fun invoke(exception: Exception, snapshot: Snapshot, event: Event): EventApplyOutcome
+    fun invoke(
+        exception: Exception,
+        snapshot: Snapshot,
+        event: Event,
+    ): EventApplyOutcome
 }

@@ -10,62 +10,70 @@ import org.slf4j.LoggerFactory.getLogger
 import java.util.Date
 import java.util.UUID
 
-class Application @Inject constructor(
-    private val eventBus: EventBus,
-    private val eventService: EventService,
-    private val database: Database,
-    private val dslContext: DSLContext
-) : AbstractService() {
+class Application
+    @Inject
+    constructor(
+        private val eventBus: EventBus,
+        private val eventService: EventService,
+        private val database: Database,
+        private val dslContext: DSLContext,
+    ) : AbstractService() {
+        public override fun doStop() {
+            dslContext.dropTable(BALANCE)
+            eventBus.unregister(eventService)
+            log.error("======== Shutting down ========")
+        }
 
-    public override fun doStop() {
-        dslContext.dropTable(BALANCE)
-        eventBus.unregister(eventService)
-        log.error("======== Shutting down ========")
-    }
+        public override fun doStart() {
+            log.error("")
+            log.error("")
+            log.error("")
+            log.error("========= Starting up =========")
+            dslContext.createSchemaIfNotExists(Public.PUBLIC).execute()
+            dslContext.createTableIfNotExists(BALANCE)
+                .column(BALANCE.B_ID)
+                .column(BALANCE.B_VERSION)
+                .column(BALANCE.B_TIME)
+                .column(BALANCE.B_ACCOUNT)
+                .column(BALANCE.BALANCE_)
+                .execute()
+            eventBus.register(eventService)
+            log.error("doStart complete")
+        }
 
-    public override fun doStart() {
-        log.error("")
-        log.error("")
-        log.error("")
-        log.error("========= Starting up =========")
-        dslContext.createSchemaIfNotExists(Public.PUBLIC).execute()
-        dslContext.createTableIfNotExists(BALANCE)
-            .column(BALANCE.B_ID)
-            .column(BALANCE.B_VERSION)
-            .column(BALANCE.B_TIME)
-            .column(BALANCE.B_ACCOUNT)
-            .column(BALANCE.BALANCE_)
-            .execute()
-        eventBus.register(eventService)
-        log.error("doStart complete")
-    }
+        private val log = getLogger(this.javaClass)
 
-    private val log = getLogger(this.javaClass)
-
-    fun deposit(accountId: String, position: Long, atmId: String, amount: Long) =
-        eventBus.post(
+        fun deposit(
+            accountId: String,
+            position: Long,
+            atmId: String,
+            amount: Long,
+        ) = eventBus.post(
             Transaction.Deposit(
                 UUID.randomUUID().toString(),
                 Account(accountId),
                 Date(),
                 position,
                 atmId,
-                amount
-            )
+                amount,
+            ),
         )
 
-    fun withdraw(accountId: String, position: Long, atmId: String, amount: Long) =
-        eventBus.post(
+        fun withdraw(
+            accountId: String,
+            position: Long,
+            atmId: String,
+            amount: Long,
+        ) = eventBus.post(
             Transaction.Withdraw(
                 UUID.randomUUID().toString(),
                 Account(accountId),
                 Date(),
                 position,
                 atmId,
-                amount
-            )
+                amount,
+            ),
         )
 
-    fun getBalance(accountId: String) =
-        database.getBalance(Account(accountId), null)?.balance
-}
+        fun getBalance(accountId: String) = database.getBalance(Account(accountId), null)?.balance
+    }

@@ -17,9 +17,9 @@ interface VersionedSnapshot<
     AggregateT,
     SnapshotIdT,
     EventIdT,
-    in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
+    in EventT : BaseEvent<AggregateT, EventIdT, in EventT>,
+    > :
     BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT> {
-
     /**
      * The position of the last event that this snapshot represents.
      *

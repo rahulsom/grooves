@@ -7,5 +7,8 @@ import com.github.rahulsom.grooves.logging.Trace
  */
 interface SnapshotProvider<Aggregate, VersionOrTimestamp, Snapshot> {
     @Trace
-    fun invoke(aggregate: Aggregate, versionOrTimestamp: VersionOrTimestamp?): Snapshot?
+    fun invoke(
+        aggregate: Aggregate,
+        versionOrTimestamp: VersionOrTimestamp?,
+    ): Snapshot?
 }

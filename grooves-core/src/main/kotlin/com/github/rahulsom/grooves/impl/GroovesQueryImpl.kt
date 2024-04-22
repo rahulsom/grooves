@@ -39,13 +39,16 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
     private val snapshotVersioner: SnapshotVersioner<Snapshot, VersionOrTimestamp>,
     private val deprecatedByProvider: DeprecatedByProvider<Event, Aggregate, EventId>,
     private val revertedEventProvider: RevertedEventProvider<Event>,
-    private val eventIdProvider: EventIdProvider<Event, EventId>
+    private val eventIdProvider: EventIdProvider<Event, EventId>,
 ) : GroovesQuery<Aggregate, VersionOrTimestamp, Snapshot, Event, EventId> {
-
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Trace
-    override fun computeSnapshot(aggregate: Aggregate, at: VersionOrTimestamp?, redirect: Boolean): GroovesResult<Snapshot, Aggregate, VersionOrTimestamp> {
+    override fun computeSnapshot(
+        aggregate: Aggregate,
+        at: VersionOrTimestamp?,
+        redirect: Boolean,
+    ): GroovesResult<Snapshot, Aggregate, VersionOrTimestamp> {
         val providedSnapshot = snapshotProvider.invoke(aggregate, at)
         val snapshot = providedSnapshot ?: emptySnapshotProvider.invoke(aggregate)
         val events = eventsProvider.invoke(listOf(aggregate), at, snapshot).collect(Collectors.toList())
@@ -67,18 +70,20 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
         aggregates: List<Aggregate>,
         at: VersionOrTimestamp?,
         redirect: Boolean,
-        beforeReturn: (CallIdentifier, Snapshot?) -> Unit
+        beforeReturn: (CallIdentifier, Snapshot?) -> Unit,
     ): GroovesResult<Snapshot, Aggregate, VersionOrTimestamp> {
         val indent = IndentedLogging.indent()
 
-        val callIdentifier = CallIdentifier(
-            "${indent}computeSnapshotImpl(<... ${events.size} items>, $snapshot, $aggregates, $at)"
-        )
+        val callIdentifier =
+            CallIdentifier(
+                "${indent}computeSnapshotImpl(<... ${events.size} items>, $snapshot, $aggregates, $at)",
+            )
         log.trace(callIdentifier.data)
         IndentedLogging.stepIn()
-        val (revertEvents, forwardEvents) = events
-            .partition { eventClassifier.invoke(it) == Revert }
-            .let { it.first.toMutableList() to it.second.toMutableList() }
+        val (revertEvents, forwardEvents) =
+            events
+                .partition { eventClassifier.invoke(it) == Revert }
+                .let { it.first.toMutableList() to it.second.toMutableList() }
 
         if (revertsExistOutsideEvents(revertEvents, indent, forwardEvents)) {
             val snapshot1 = emptySnapshotProvider.invoke(aggregates[0])
@@ -110,14 +115,16 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
                         DeprecatedBy -> {
                             val ret = deprecatedByProvider.invoke(event)
                             log.debug("$indent  ...The aggregate was deprecated by ${ret.aggregate}. Recursing to compute snapshot for it...")
-                            val refEvent = eventsProvider.invoke(listOf(ret.aggregate), null, emptySnapshotProvider.invoke(ret.aggregate))
-                                .collect(Collectors.toList())
-                                .find { eventIdProvider.invoke(it) == ret.eventId }
+                            val refEvent =
+                                eventsProvider.invoke(listOf(ret.aggregate), null, emptySnapshotProvider.invoke(ret.aggregate))
+                                    .collect(Collectors.toList())
+                                    .find { eventIdProvider.invoke(it) == ret.eventId }
 
                             val redirectVersion = eventVersioner.invoke(refEvent!!)
                             val otherSnapshot = snapshotProvider.invoke(ret.aggregate, redirectVersion) ?: emptySnapshotProvider.invoke(ret.aggregate)
-                            val newEvents = eventsProvider.invoke(listOf(ret.aggregate) + aggregates, redirectVersion, otherSnapshot)
-                                .collect(Collectors.toList())
+                            val newEvents =
+                                eventsProvider.invoke(listOf(ret.aggregate) + aggregates, redirectVersion, otherSnapshot)
+                                    .collect(Collectors.toList())
                             @Suppress("LiftReturnOrAssignment")
                             if (redirect) {
                                 return computeSnapshotImpl(newEvents, otherSnapshot, aggregates + listOf(ret.aggregate), at, redirect) { c, s ->
@@ -152,7 +159,11 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
         return GroovesResult.Success(snapshot)
     }
 
-    private fun revertsExistOutsideEvents(revertEvents: MutableList<Event>, indent: String, forwardEvents: MutableList<Event>): Boolean {
+    private fun revertsExistOutsideEvents(
+        revertEvents: MutableList<Event>,
+        indent: String,
+        forwardEvents: MutableList<Event>,
+    ): Boolean {
         while (revertEvents.isNotEmpty()) {
             val mostRecentRevert = revertEvents.removeLast()
             val revertedEvent = revertedEventProvider.invoke(mostRecentRevert)
@@ -172,10 +183,13 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
         return false
     }
 
-    private inline fun tryRunning(snapshot: Snapshot, it: Event, code: () -> EventApplyOutcome) =
-        try {
-            code()
-        } catch (e: Exception) {
-            exceptionHandler.invoke(e, snapshot, it)
-        }
+    private inline fun tryRunning(
+        snapshot: Snapshot,
+        it: Event,
+        code: () -> EventApplyOutcome,
+    ) = try {
+        code()
+    } catch (e: Exception) {
+        exceptionHandler.invoke(e, snapshot, it)
+    }
 }

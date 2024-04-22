@@ -8,7 +8,6 @@ import org.jooq.impl.DSL
 import java.sql.DriverManager.getConnection
 
 object BankingModule : AbstractModule() {
-
     override fun configure() {
         bind(Application::class.java)
         bind(EventBus::class.java)
@@ -17,6 +16,5 @@ object BankingModule : AbstractModule() {
     }
 
     @Provides
-    fun dslContext() =
-        DSL.using(getConnection("jdbc:h2:mem:app", "sa", ""), H2)
+    fun dslContext() = DSL.using(getConnection("jdbc:h2:mem:app", "sa", ""), H2)
 }

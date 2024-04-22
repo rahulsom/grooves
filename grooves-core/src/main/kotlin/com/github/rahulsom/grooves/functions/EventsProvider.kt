@@ -12,6 +12,6 @@ interface EventsProvider<Aggregate, VersionOrTimestamp, Snapshot, Event> {
     fun invoke(
         aggregates: List<Aggregate>,
         versionOrTimestamp: VersionOrTimestamp?,
-        lastSnapshot: Snapshot
+        lastSnapshot: Snapshot,
     ): Stream<Event>
 }

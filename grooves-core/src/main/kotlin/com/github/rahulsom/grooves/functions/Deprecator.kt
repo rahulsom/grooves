@@ -7,5 +7,8 @@ import com.github.rahulsom.grooves.logging.Trace
  */
 interface Deprecator<Snapshot, Aggregate> {
     @Trace
-    fun invoke(snapshot: Snapshot, deprecatingAggregate: Aggregate)
+    fun invoke(
+        snapshot: Snapshot,
+        deprecatingAggregate: Aggregate,
+    )
 }

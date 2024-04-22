@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 import java.util.concurrent.TimeUnit.SECONDS
 
 class PushTest {
-
     private val injector = Guice.createInjector(BankingModule)
     private val application = injector.getInstance(Application::class.java)
 

@@ -1,9 +1,9 @@
 package com.github.rahulsom.grooves.asciidoctor
 
+import com.github.rahulsom.grooves.asciidoctor.Constants.AGGREGATE_WIDTH
 import com.github.rahulsom.grooves.asciidoctor.Constants.CSS
-import com.github.rahulsom.grooves.asciidoctor.Constants.aggregateWidth
-import com.github.rahulsom.grooves.asciidoctor.Constants.eventLineHeight
-import com.github.rahulsom.grooves.asciidoctor.Constants.eventSpace
+import com.github.rahulsom.grooves.asciidoctor.Constants.EVENT_LINE_HEIGHT
+import com.github.rahulsom.grooves.asciidoctor.Constants.EVENT_SPACE
 import com.github.rahulsom.svg.ObjectFactory
 import com.github.rahulsom.svg.Path
 import com.github.rahulsom.svg.Rect
@@ -96,20 +96,21 @@ class SvgBuilder(private val input: String) {
     fun write(file: File) {
         init()
 
-        val svg = Svg().withHeight("${aggregates.size * eventLineHeight}")
-            .withWidth("${dates.values.maxOrNull()!! * eventSpace + 4 * aggregateWidth}")
+        val svg =
+            Svg().withHeight("${aggregates.size * EVENT_LINE_HEIGHT}")
+                .withWidth("${dates.values.maxOrNull()!! * EVENT_SPACE + 4 * AGGREGATE_WIDTH}")
 
         svg.withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
             ObjectFactory().createStyle(
-                SVGStyleClass().withContent("/* <![CDATA[ */$CSS/* ]]> */")
-            )
+                SVGStyleClass().withContent("/* <![CDATA[ */$CSS/* ]]> */"),
+            ),
         )
 
         svg.withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
             ObjectFactory().createRect(
-                Rect().withX("0").withY("0").withHeight("${aggregates.size * eventLineHeight}").withWidth(
-                    "${dates.values.maxOrNull()!! * eventSpace + 4 * aggregateWidth}"
-                ).withClazz("background")
+                Rect().withX("0").withY("0").withHeight("${aggregates.size * EVENT_LINE_HEIGHT}").withWidth(
+                    "${dates.values.maxOrNull()!! * EVENT_SPACE + 4 * AGGREGATE_WIDTH}",
+                ).withClazz("background"),
             ),
             ObjectFactory().createDefs(
                 ObjectFactory().createDefs().withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
@@ -119,24 +120,24 @@ class SvgBuilder(private val input: String) {
                             .withMarkerWidth("10").withMarkerHeight("10")
                             .withOrient("auto").withMarkerUnits("userSpaceOnUse")
                             .withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
-                                ObjectFactory().createPath(Path().withD("M 0 0 L 10 5 L 0 10 z"))
-                            )
-                    )
-                )
-            )
+                                ObjectFactory().createPath(Path().withD("M 0 0 L 10 5 L 0 10 z")),
+                            ),
+                    ),
+                ),
+            ),
         )
 
         aggregates.forEach { aggregate ->
             svg.withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
                 ObjectFactory().createG(
                     aggregate.buildSvg(
-                        dates
-                    )
-                )
+                        dates,
+                    ),
+                ),
             )
             aggregate.events.forEach { event ->
                 svg.withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
-                    ObjectFactory().createG(event.buildSvg(aggregate.index, this))
+                    ObjectFactory().createG(event.buildSvg(aggregate.index, this)),
                 )
             }
         }

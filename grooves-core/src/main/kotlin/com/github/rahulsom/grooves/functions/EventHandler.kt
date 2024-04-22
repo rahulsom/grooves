@@ -8,5 +8,8 @@ import com.github.rahulsom.grooves.logging.Trace
  */
 interface EventHandler<Event, Snapshot> {
     @Trace
-    fun invoke(event: Event, snapshot: Snapshot): EventApplyOutcome
+    fun invoke(
+        event: Event,
+        snapshot: Snapshot,
+    ): EventApplyOutcome
 }

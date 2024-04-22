@@ -16,9 +16,9 @@ interface JoinEvent<
     AggregateT,
     EventIdT,
     EventT,
-    JoinedAggregateT> :
+    JoinedAggregateT,
+    > :
     BaseEvent<AggregateT, EventIdT, EventT> {
-
     /**
      * An observable that points to the aggregate to which a join is being performed.
      *

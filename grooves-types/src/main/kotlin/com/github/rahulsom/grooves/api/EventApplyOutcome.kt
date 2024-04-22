@@ -17,5 +17,5 @@ enum class EventApplyOutcome {
      * Normal processing can continue and the current value of snapshot can be passed to the
      * remainder of the computation.
      */
-    CONTINUE
+    CONTINUE,
 }

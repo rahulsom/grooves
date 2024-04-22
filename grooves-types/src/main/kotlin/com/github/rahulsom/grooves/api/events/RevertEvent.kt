@@ -11,7 +11,6 @@ package com.github.rahulsom.grooves.api.events
  */
 interface RevertEvent<AggregateT, EventIdT, EventT> :
     BaseEvent<AggregateT, EventIdT, EventT> {
-
     /**
      * [BaseEvent.id] from the event that should be reverted.
      */

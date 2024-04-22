@@ -20,24 +20,23 @@ class PatientController constructor(
     @Autowired val patientRepository: PatientRepository,
     @Autowired val patientAccountQuery: PatientAccountQuery,
     @Autowired val patientHealthQuery: PatientHealthQuery,
-    @Autowired val patientEventRepository: PatientEventRepository
+    @Autowired val patientEventRepository: PatientEventRepository,
 ) {
-
     @GetMapping("/patient")
-    fun list() =
-        patientRepository.findAllByOrderByUniqueIdAsc()
+    fun list() = patientRepository.findAllByOrderByUniqueIdAsc()
 
     @GetMapping("/patientEvent")
-    fun events() =
-        patientEventRepository.findAll()
+    fun events() = patientEventRepository.findAll()
 
     @GetMapping("/patient/show/{id}")
-    fun show(@PathVariable id: String) =
-        patientRepository.findById(id)
+    fun show(
+        @PathVariable id: String,
+    ) = patientRepository.findById(id)
 
     @GetMapping("/patient/event/{id}")
-    fun patientEvents(@PathVariable id: String) =
-        patientEventRepository.findAllByAggregateIdIn(listOf(id))
+    fun patientEvents(
+        @PathVariable id: String,
+    ) = patientEventRepository.findAllByAggregateIdIn(listOf(id))
 
     @GetMapping("/patient/account/{id}")
     fun account(
@@ -45,20 +44,19 @@ class PatientController constructor(
         @RequestParam(required = false) version: Long?,
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
         @RequestParam(required = false)
-        date: Instant?
-    ) =
-        patientRepository.findById(id)
-            .flatMap { patient ->
-                Mono.from(
-                    version?.let { patientAccountQuery.computeSnapshot(patient, it) }
-                        ?: date?.let {
-                            patientAccountQuery.computeSnapshot(
-                                patient,
-                                extractDate(it)
-                            )
-                        } ?: patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE)
-                )
-            }
+        date: Instant?,
+    ) = patientRepository.findById(id)
+        .flatMap { patient ->
+            Mono.from(
+                version?.let { patientAccountQuery.computeSnapshot(patient, it) }
+                    ?: date?.let {
+                        patientAccountQuery.computeSnapshot(
+                            patient,
+                            extractDate(it),
+                        )
+                    } ?: patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE),
+            )
+        }
 
     private fun extractDate(instant: Instant) =
         Calendar.getInstance().let {
@@ -78,18 +76,17 @@ class PatientController constructor(
         @RequestParam(required = false) version: Long?,
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
         @RequestParam(required = false)
-        date: Instant?
-    ) =
-        patientRepository.findById(id)
-            .flatMap { patient ->
-                Mono.from(
-                    version?.let { patientHealthQuery.computeSnapshot(patient, version) }
-                        ?: date?.let {
-                            patientHealthQuery.computeSnapshot(
-                                patient,
-                                extractDate(it)
-                            )
-                        } ?: patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE)
-                )
-            }
+        date: Instant?,
+    ) = patientRepository.findById(id)
+        .flatMap { patient ->
+            Mono.from(
+                version?.let { patientHealthQuery.computeSnapshot(patient, version) }
+                    ?: date?.let {
+                        patientHealthQuery.computeSnapshot(
+                            patient,
+                            extractDate(it),
+                        )
+                    } ?: patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE),
+            )
+        }
 }

@@ -30,9 +30,8 @@ class BootStrap constructor(
     @Autowired val patientAccountQuery: PatientAccountQuery,
     @Autowired val patientHealthQuery: PatientHealthQuery,
     @Autowired val patientAccountRepository: PatientAccountRepository,
-    @Autowired val patientHealthRepository: PatientHealthRepository
+    @Autowired val patientHealthRepository: PatientHealthRepository,
 ) {
-
     @PostConstruct
     fun init() {
         setupJohnLennon()
@@ -162,12 +161,19 @@ class BootStrap constructor(
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun <SnapshotT : Snapshot<Patient, String, String, PatientEvent>,
-        QueryT : QuerySupport<Patient, String, PatientEvent, String, SnapshotT>> snapshotWith(
-        it: OnSpec<Patient, String, PatientEvent, String,
-            out Snapshot<Patient, String, String, PatientEvent>>,
+    private fun <
+        SnapshotT : Snapshot<Patient, String, String, PatientEvent>,
+        QueryT : QuerySupport<Patient, String, PatientEvent, String, SnapshotT>,
+        > snapshotWith(
+        it: OnSpec<
+            Patient,
+            String,
+            PatientEvent,
+            String,
+            out Snapshot<Patient, String, String, PatientEvent>,
+            >,
         query: QueryT,
-        repository: ReactiveCrudRepository<SnapshotT, String>
+        repository: ReactiveCrudRepository<SnapshotT, String>,
     ) = null
 //            query.computeSnapshot(it.aggregate, Long.MAX_VALUE)
 //                    .flatMap { repository.save(it).toObservable() }
@@ -180,22 +186,27 @@ class BootStrap constructor(
      * @param into The aggregate to survive
      * @return
      */
-    private fun merge(self: Patient, into: Patient): PatientEvent.PatientDeprecatedBy {
-        val e2 = patientEventRepository.save(
-            PatientEvent.PatientDeprecates(self).also {
-                it.aggregate = into
-                it.timestamp = currDate.time
-                it.position = countEvents(into)
-            }
-        )
+    private fun merge(
+        self: Patient,
+        into: Patient,
+    ): PatientEvent.PatientDeprecatedBy {
+        val e2 =
+            patientEventRepository.save(
+                PatientEvent.PatientDeprecates(self).also {
+                    it.aggregate = into
+                    it.timestamp = currDate.time
+                    it.position = countEvents(into)
+                },
+            )
 
-        val e1 = patientEventRepository.save(
-            PatientEvent.PatientDeprecatedBy(into, e2.id!!).also {
-                it.aggregate = self
-                it.timestamp = currDate.time
-                it.position = countEvents(self)
-            }
-        )
+        val e1 =
+            patientEventRepository.save(
+                PatientEvent.PatientDeprecatedBy(into, e2.id!!).also {
+                    it.aggregate = self
+                    it.timestamp = currDate.time
+                    it.position = countEvents(self)
+                },
+            )
 
         e2.converseId = e1.id
 
@@ -204,17 +215,19 @@ class BootStrap constructor(
         return e1
     }
 
-    val currDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        .also {
-            it.time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX")
-                .parse("2016-01-01T00:00:00.000Z")
-        }
+    val currDate =
+        Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            .also {
+                it.time =
+                    SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX")
+                        .parse("2016-01-01T00:00:00.000Z")
+            }
 
     fun on(
         patient: Patient,
         closure: (
-            OnSpec<Patient, String, PatientEvent, String, out Snapshot<Patient, String, String, PatientEvent>>
-        ) -> Unit
+            OnSpec<Patient, String, PatientEvent, String, out Snapshot<Patient, String, String, PatientEvent>>,
+        ) -> Unit,
     ): Patient {
         val eventSaver: (Any) -> Unit = {
             when (it) {
@@ -232,11 +245,12 @@ class BootStrap constructor(
                 eventSaver,
                 positionSupplier,
                 timestampSupplier,
-                closure
+                closure,
             )
     }
 
-    private fun countEvents(patient: Patient) = patientEventRepository
-        .findAllByAggregateIdIn(listOf(patient.id!!))
-        .count() + 1L
+    private fun countEvents(patient: Patient) =
+        patientEventRepository
+            .findAllByAggregateIdIn(listOf(patient.id!!))
+            .count() + 1L
 }

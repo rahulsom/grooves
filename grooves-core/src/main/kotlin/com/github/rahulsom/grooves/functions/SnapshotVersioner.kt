@@ -7,5 +7,8 @@ import com.github.rahulsom.grooves.logging.Trace
  */
 interface SnapshotVersioner<Snapshot, VersionOrTimestamp> {
     @Trace
-    fun invoke(snapshot: Snapshot, versionOrTimestamp: VersionOrTimestamp)
+    fun invoke(
+        snapshot: Snapshot,
+        versionOrTimestamp: VersionOrTimestamp,
+    )
 }
