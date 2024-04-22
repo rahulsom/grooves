@@ -17,7 +17,6 @@ import org.reactivestreams.Publisher
  */
 interface DeprecatedBy<AggregateT, EventIdT, EventT> :
     BaseEvent<AggregateT, EventIdT, EventT> {
-
     /**
      * An Observable of the converse of this event.
      * The converse of a [DeprecatedBy] is a [Deprecates] event that does the exact opposite of this event.

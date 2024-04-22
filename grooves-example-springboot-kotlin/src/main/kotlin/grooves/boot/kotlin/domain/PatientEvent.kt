@@ -37,7 +37,8 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
     fun getType(): String = this.javaClass.simpleName
 
     @JsonIgnore
-    override fun getAggregateObservable(): Publisher<Patient> = // <6>
+    override fun getAggregateObservable(): Publisher<Patient> =
+        // <6>
         aggregateId?.let {
             BeansHolder.context?.getBean(PatientRepository::class.java)?.findById(it)
         } ?: empty()
@@ -83,13 +84,13 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
         override fun getDeprecatedObservable(): Publisher<Patient> = just(deprecated)
 
         fun getAudit(): String = "$id - Deprecates $deprecated"
+
         override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
     }
 
     data class PatientDeprecatedBy(val deprecator: Patient, val converseId: String) :
         PatientEvent(),
         DeprecatedBy<Patient, String, PatientEvent> {
-
         @JsonIgnore
         override fun getConverseObservable(): Publisher<PatientDeprecates> {
             val patientEventRepository =
@@ -103,6 +104,7 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
         override fun getDeprecatorObservable(): Publisher<Patient> = just(deprecator)
 
         fun getAudit(): String = "$id - Deprecated by $deprecator"
+
         override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
     }
 
@@ -119,11 +121,13 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
 
         data class ProcedurePerformed(val code: String, val cost: BigDecimal) : Applicable() {
             fun getAudit(): String = "$id - Performed '$code' for $cost"
+
             override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
         }
 
         data class PaymentMade(val amount: BigDecimal) : Applicable() {
             fun getAudit(): String = "$id - Paid $amount"
+
             override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
         }
         // tag::created[]

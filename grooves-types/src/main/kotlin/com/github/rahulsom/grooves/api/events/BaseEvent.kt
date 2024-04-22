@@ -14,7 +14,6 @@ import java.util.Date
  * @author Rahul Somasunderam
  */
 interface BaseEvent<AggregateT, EventIdT, EventT> {
-
     /**
      * Returns the aggregate as an Observable.
      * This can be used in a reactive way to obtain the aggregate.

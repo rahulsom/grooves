@@ -1,11 +1,11 @@
 package com.github.rahulsom.grooves.asciidoctor
 
-import com.github.rahulsom.grooves.asciidoctor.Constants.aggregateHeight
-import com.github.rahulsom.grooves.asciidoctor.Constants.aggregateWidth
-import com.github.rahulsom.grooves.asciidoctor.Constants.eventLineHeight
-import com.github.rahulsom.grooves.asciidoctor.Constants.eventSpace
-import com.github.rahulsom.grooves.asciidoctor.Constants.offset
-import com.github.rahulsom.grooves.asciidoctor.Constants.textLineHeight
+import com.github.rahulsom.grooves.asciidoctor.Constants.AGGREGATE_HEIGHT
+import com.github.rahulsom.grooves.asciidoctor.Constants.AGGREGATE_WIDTH
+import com.github.rahulsom.grooves.asciidoctor.Constants.EVENT_LINE_HEIGHT
+import com.github.rahulsom.grooves.asciidoctor.Constants.EVENT_SPACE
+import com.github.rahulsom.grooves.asciidoctor.Constants.OFFSET
+import com.github.rahulsom.grooves.asciidoctor.Constants.TEXT_LINE_HEIGHT
 import com.github.rahulsom.svg.G
 import com.github.rahulsom.svg.ObjectFactory
 import java.util.Date
@@ -25,39 +25,40 @@ class Aggregate(private val counter: Int, var type: String, var id: String, var 
     }
 
     fun buildSvg(dates: Map<Date, Double>): G {
-        val y = index * eventLineHeight + offset
-        val yMid = index * eventLineHeight + offset + aggregateHeight / 2
+        val y = index * EVENT_LINE_HEIGHT + OFFSET
+        val yMid = index * EVENT_LINE_HEIGHT + OFFSET + AGGREGATE_HEIGHT / 2
 
         val objectFactory = ObjectFactory()
-        val g = objectFactory.createG()
-            .withId("aggregate_$counter")
-            .withClazz("aggregate")
+        val g =
+            objectFactory.createG()
+                .withId("aggregate_$counter")
+                .withClazz("aggregate")
         return g.withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
             objectFactory.createRect(
                 objectFactory.createRect().withX("10").withY(y.toString())
-                    .withWidth("$aggregateWidth").withHeight("$aggregateHeight")
+                    .withWidth("$AGGREGATE_WIDTH").withHeight("$AGGREGATE_HEIGHT"),
             ),
             objectFactory.createText(
-                objectFactory.createText().withX("15").withY("${y + textLineHeight}")
+                objectFactory.createText().withX("15").withY("${y + TEXT_LINE_HEIGHT}")
                     .withClazz("type")
-                    .withContent(type)
+                    .withContent(type),
             ),
             objectFactory.createText(
-                objectFactory.createText().withX("15").withY("${y + textLineHeight * 2}")
+                objectFactory.createText().withX("15").withY("${y + TEXT_LINE_HEIGHT * 2}")
                     .withClazz("id")
-                    .withContent(id)
+                    .withContent(id),
             ),
             objectFactory.createText(
                 objectFactory.createText().withX("10").withY("${y - 5}")
                     .withClazz("description")
-                    .withContent(description)
+                    .withContent(description),
             ),
             objectFactory.createLine(
-                objectFactory.createLine().withX1("${10 + aggregateWidth}").withY1("$yMid")
-                    .withX2("${dates.values.maxOrNull()!! * eventSpace + 3 * aggregateWidth}")
+                objectFactory.createLine().withX1("${10 + AGGREGATE_WIDTH}").withY1("$yMid")
+                    .withX2("${dates.values.maxOrNull()!! * EVENT_SPACE + 3 * AGGREGATE_WIDTH}")
                     .withY2("$yMid")
-                    .withClazz("eventLine").withMarkerEnd("url(#triangle)")
-            )
+                    .withClazz("eventLine").withMarkerEnd("url(#triangle)"),
+            ),
         )
     }
 }

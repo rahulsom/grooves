@@ -14,8 +14,11 @@ import java.security.MessageDigest
  */
 class EventsBlock(name: String) :
     BlockProcessor(name, mapOf("contexts" to listOf(":literal"), "content_model" to ":simple")) {
-
-    override fun process(parent: StructuralNode, reader: Reader, attributes: MutableMap<String, Any>?): Any {
+    override fun process(
+        parent: StructuralNode,
+        reader: Reader,
+        attributes: MutableMap<String, Any>?,
+    ): Any {
         val projectDirAttr = parent.document.attributes["gradle-projectdir"] as String
         val outDir = File(projectDirAttr, "build/docs/asciidoc")
 
@@ -26,11 +29,12 @@ class EventsBlock(name: String) :
 
         SvgBuilder(input).write(File(outDir, filename))
 
-        val newAttributes = mapOf<String, Any>(
-            "type" to ":image",
-            "target" to filename,
-            "format" to "svg"
-        )
+        val newAttributes =
+            mapOf<String, Any>(
+                "type" to ":image",
+                "target" to filename,
+                "format" to "svg",
+            )
 
         return createBlock(parent, "image", input, newAttributes, attributes?.mapKeys { it })
     }

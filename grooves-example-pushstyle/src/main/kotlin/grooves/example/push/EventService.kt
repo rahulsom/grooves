@@ -12,7 +12,6 @@ import org.jooq.DSLContext
 import org.slf4j.LoggerFactory
 
 class EventService {
-
     @Inject
     lateinit var database: Database
 
@@ -45,7 +44,8 @@ class EventService {
                 }
             }
             .withApplyEvents { balance -> true } // <5>
-            .withDeprecator { balance, deprecatingAccount -> /* No op */ } // <6>
+            .withDeprecator { balance, deprecatingAccount -> // <6>
+            }
             .withExceptionHandler { exception, balance, transaction ->
                 // <7>
                 log.warn("$exception occurred")
@@ -54,17 +54,19 @@ class EventService {
             .withEventHandler(this::updateBalance) // <8>
             .build() // <9>
 
-    private fun updateBalance(transaction: Transaction, balance: Balance) =
-        when (transaction) {
-            is Transaction.Deposit -> {
-                balance.balance += transaction.amount
-                just(CONTINUE)
-            }
-            is Transaction.Withdraw -> {
-                balance.balance -= transaction.amount
-                just(CONTINUE)
-            }
+    private fun updateBalance(
+        transaction: Transaction,
+        balance: Balance,
+    ) = when (transaction) {
+        is Transaction.Deposit -> {
+            balance.balance += transaction.amount
+            just(CONTINUE)
         }
+        is Transaction.Withdraw -> {
+            balance.balance -= transaction.amount
+            just(CONTINUE)
+        }
+    }
     // end::documented[]
 
     @Suppress("unused")

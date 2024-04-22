@@ -16,16 +16,18 @@ import java.util.concurrent.TimeUnit
  * that works for RxJava even though RxJava manages threads differently.
  */
 object ContextAwareScheduler : Scheduler() {
-
     private val worker = NewThreadWorker(RxThreadFactory("ContextAwareScheduler"))
 
     override fun createWorker(): Worker = ContextAwareWorker(worker)
 
     internal class ContextAwareWorker(private val worker: NewThreadWorker) : Worker() {
-
         private val tracking = CompositeDisposable()
 
-        override fun schedule(runnable: Runnable, delay: Long, unit: TimeUnit): Disposable {
+        override fun schedule(
+            runnable: Runnable,
+            delay: Long,
+            unit: TimeUnit,
+        ): Disposable {
             if (isDisposed) {
                 return Disposables.disposed()
             }

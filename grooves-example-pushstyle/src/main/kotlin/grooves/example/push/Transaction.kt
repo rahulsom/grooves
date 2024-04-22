@@ -11,11 +11,9 @@ sealed class Transaction(
     override var aggregate: Account?,
     override var timestamp: Date,
     override var position: Long,
-    override var revertedBy: RevertEvent<Account, String, Transaction>? = null
+    override var revertedBy: RevertEvent<Account, String, Transaction>? = null,
 ) : BaseEvent<Account, String, Transaction> {
-
-    override fun getAggregateObservable(): Publisher<Account> =
-        Flowable.fromIterable(listOfNotNull(aggregate))
+    override fun getAggregateObservable(): Publisher<Account> = Flowable.fromIterable(listOfNotNull(aggregate))
 
     data class Deposit(
         override val id: String,
@@ -23,7 +21,7 @@ sealed class Transaction(
         override var timestamp: Date,
         override var position: Long,
         val atmId: String,
-        val amount: Long
+        val amount: Long,
     ) : Transaction(id, aggregate, timestamp, position)
 
     data class Withdraw(
@@ -32,6 +30,6 @@ sealed class Transaction(
         override var timestamp: Date,
         override var position: Long,
         val atmId: String,
-        val amount: Long
+        val amount: Long,
     ) : Transaction(id, aggregate, timestamp, position)
 }

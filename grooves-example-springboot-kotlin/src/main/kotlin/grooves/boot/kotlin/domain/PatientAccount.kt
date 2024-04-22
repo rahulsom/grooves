@@ -32,7 +32,8 @@ class PatientAccount : Snapshot<Patient, String, String, PatientEvent> { // <1>
     fun getDeprecatedBy() = deprecator
 
     @JsonIgnore
-    override fun getAggregateObservable() = // <4>
+    override fun getAggregateObservable() =
+        // <4>
         aggregateId?.let { patientRepository!!.findAllById(just(it)) } ?: empty()
 
     override fun setAggregate(aggregate: Patient) {
@@ -44,7 +45,8 @@ class PatientAccount : Snapshot<Patient, String, String, PatientEvent> { // <1>
     var patientRepository: PatientRepository? = null
 
     @JsonIgnore
-    override fun getDeprecatedByObservable() = // <5>
+    override fun getDeprecatedByObservable() =
+        // <5>
         deprecator?.let { just(it) } ?: Mono.empty()
 
     override fun setDeprecatedBy(deprecatingAggregate: Patient) {
@@ -52,7 +54,8 @@ class PatientAccount : Snapshot<Patient, String, String, PatientEvent> { // <1>
     }
 
     @JsonIgnore
-    override fun getDeprecatesObservable() = // <6>
+    override fun getDeprecatesObservable() =
+        // <6>
         if (deprecatesIds.size > 0) {
             patientRepository!!.findAllById(deprecatesIds)
         } else {

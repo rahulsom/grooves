@@ -19,7 +19,8 @@ interface Join<
     JoinIdT,
     in JoinedAggregateT,
     EventIdT,
-    in EventT : BaseEvent<AggregateT, EventIdT, in EventT>> :
+    in EventT : BaseEvent<AggregateT, EventIdT, in EventT>,
+    > :
     TemporalJoin<AggregateT, JoinIdT, JoinedAggregateT, EventIdT, EventT>,
     VersionedJoin<AggregateT, JoinIdT, JoinedAggregateT, EventIdT, EventT>,
     Snapshot<AggregateT, JoinIdT, EventIdT, EventT>

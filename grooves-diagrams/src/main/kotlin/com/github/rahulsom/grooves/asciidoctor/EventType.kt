@@ -6,5 +6,10 @@ package com.github.rahulsom.grooves.asciidoctor
  * @author Rahul Somasunderam
  */
 enum class EventType {
-    Normal, Revert, Deprecates, DeprecatedBy, Join, Disjoin
+    Normal,
+    Revert,
+    Deprecates,
+    DeprecatedBy,
+    Join,
+    Disjoin,
 }

@@ -14,7 +14,6 @@ import org.reactivestreams.Publisher
  */
 interface DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT> :
     BaseEvent<AggregateT, EventIdT, EventT> {
-
     /**
      * An observable that points to the aggregate to which a join is being performed.
      *
