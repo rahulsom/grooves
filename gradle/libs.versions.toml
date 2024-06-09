@@ -1,6 +1,6 @@
 [versions]
 activation = "1.1.1"
-asciidoctorj = "2.5.12"
+asciidoctorj = "2.5.13"
 aspectj = "1.9.22"
 assertj = "3.25.3"
 awaitility = "4.2.1"
