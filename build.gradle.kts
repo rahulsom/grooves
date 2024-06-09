@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.allopen").version("1.8.22").apply(false)
     id("org.jlleitschuh.gradle.ktlint").version("12.1.1").apply(false)
     id("org.springframework.boot").version("3.0.4").apply(false)
-    id("io.spring.dependency-management").version("1.1.4").apply(false)
+    id("io.spring.dependency-management").version("1.1.5").apply(false)
     id("org.sonarqube").version("5.0.0.4638")
     id("me.champeau.buildscan-recipes").version("0.2.3")
     id("com.sourcemuse.mongo").version("1.0.7").apply(false)
