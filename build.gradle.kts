@@ -1,5 +1,5 @@
 plugins {
-    id("com.github.rahulsom.waena.root").version("0.6.1")
+    id("com.github.rahulsom.waena.root").version("0.16.0")
     id("org.jetbrains.kotlin.jvm").version("1.8.22").apply(false)
     id("org.jetbrains.kotlin.plugin.allopen").version("1.8.22").apply(false)
     id("org.jlleitschuh.gradle.ktlint").version("12.3.0").apply(false)
