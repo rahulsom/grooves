@@ -30,12 +30,12 @@ dependencies {
 
 tasks.withType<CompileSass> {
     setSourceDir(project.file("$projectDir/src/main/resources"))
-    outputDir = project.file("$buildDir/generated/css")
+    outputDir = project.file("${layout.buildDirectory.get()}/generated/css")
 }
 
 sourceSets {
     main {
-        resources.srcDirs("$buildDir/generated/css")
+        resources.srcDirs("${layout.buildDirectory.get()}/generated/css")
     }
 }
 

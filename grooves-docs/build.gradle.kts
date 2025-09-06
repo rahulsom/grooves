@@ -50,11 +50,11 @@ gitPublish {
     repoUri.set("https://github.com/rahulsom/grooves.git")
     branch.set("gh-pages")
     contents {
-        from(file("$buildDir/asciidoc/html5")) {
+        from(file("${layout.buildDirectory.get()}/asciidoc/html5")) {
             into("manual/${version}")
         }
         if (System.getenv("BRANCH_NAME") == "master") {
-            from(file("$buildDir/asciidoc/html5")) {
+            from(file("${layout.buildDirectory.get()}/asciidoc/html5")) {
                 into("manual/current")
             }
             from(rootProject.file("grooves-site")) {
