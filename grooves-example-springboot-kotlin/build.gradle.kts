@@ -1,5 +1,3 @@
-import com.sourcemuse.gradle.plugin.GradleMongoPluginExtension
-
 plugins {
     id("org.springframework.boot")
     id("io.spring.dependency-management")
@@ -8,7 +6,6 @@ plugins {
     id("org.jetbrains.kotlin.plugin.allopen")
     id("org.jetbrains.kotlin.plugin.spring")
     id("groovy")
-    id("com.sourcemuse.mongo")
 }
 
 version = "0.0.1-SNAPSHOT"
@@ -29,23 +26,22 @@ dependencies {
     runtimeOnly(libs.sunjaxb.impl)
     runtimeOnly(libs.activation)
 
+    testImplementation(platform(libs.testcontainers.bom))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation(libs.testcontainers.junit.jupiter)
+    testImplementation(libs.testcontainers.mongodb)
+    testImplementation(libs.testcontainers.spock)
     testImplementation(libs.spock.core)
     testImplementation(libs.spock.spring)
     testImplementation("io.projectreactor.addons:reactor-test:3.0.7.RELEASE")
 }
 
-tasks.named("bootRun") { dependsOn("startMongoDb") }
-tasks.named("bootRun") { finalizedBy("stopMongoDb") }
-tasks.named("test") { dependsOn("startMongoDb") }
-tasks.named("test") { finalizedBy("stopMongoDb") }
-
-configure<GradleMongoPluginExtension> {
-    setPort(27021)
-}
-
 tasks.withType<Test> {
     useJUnitPlatform()
+    val isMacArm = System.getProperty("os.name").contains("Mac") && System.getProperty("os.arch") == "aarch64"
+    if (isMacArm) {
+        environment("DOCKER_HOST", "unix://${System.getenv("HOME")}/.docker/run/docker.sock")
+    }
 }
 
 kotlin {
