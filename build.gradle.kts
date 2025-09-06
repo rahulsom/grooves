@@ -6,7 +6,6 @@ plugins {
     id("org.springframework.boot").version("3.0.4").apply(false)
     id("io.spring.dependency-management").version("1.1.7").apply(false)
     id("org.sonarqube").version("6.3.1.5724")
-    id("me.champeau.buildscan-recipes").version("0.2.3")
     id("com.sourcemuse.mongo").version("1.0.7").apply(false)
 }
 
@@ -51,7 +50,3 @@ configure<nebula.plugin.contacts.ContactsExtension> {
 }
 
 tasks.named("release") { dependsOn("grooves-docs:gitPublishPush") }
-
-buildScanRecipes {
-    recipes("git-commit", "git-status", "travis-ci", "gc-stats")
-}
