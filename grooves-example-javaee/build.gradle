@@ -1,5 +1,4 @@
 plugins {
-    alias(libs.plugins.liberty)
     id("war")
     id("groovy")
 }
@@ -22,47 +21,19 @@ dependencies {
     implementation(libs.rxjava.core)
     implementation(libs.rxjava.reactivestreams)
 
-    libertyFeature(libs.liberty.jaxrs)
+    // Testcontainers support
+    testImplementation(libs.testcontainers.junit.jupiter)
+    testImplementation(libs.testcontainers.spock)
 }
-
-liberty {
-    server {
-        features {
-            name = ["jaxrs-2.1"]
-        }
-    }
-}
-
-libertyRun.dependsOn("war")
-libertyStart.dependsOn("war")
-
-int statusOfUrl(String url) {
-    int status = -1
-    try {
-        content = url.toURL().openConnection().with { conn ->
-            readTimeout = 10000
-            status = responseCode
-        }
-    } catch (Exception ignore) {
-        // ignore
-    }
-    status
-}
-
-libertyStart.doLast {
-    int attempt = 0
-    while (attempt < 20) {
-        println "Waiting (${++attempt})..."
-        if (statusOfUrl("http://localhost:9080/grooves-example-javaee/patient") == 200) {
-            break
-        }
-        sleep 5000
-    }
-}
-
-test.dependsOn("libertyStart")
-test.finalizedBy("libertyStop")
 
 test {
+    dependsOn "war"
     useJUnitPlatform()
+    systemProperty "war.file.path", war.archiveFile.get().asFile.absolutePath
+    
+    // Docker configuration for Mac ARM
+    def isMacArm = System.getProperty("os.name").contains("Mac") && System.getProperty("os.arch") == "aarch64"
+    if (isMacArm) {
+        environment "DOCKER_HOST", "unix://${System.getenv("HOME")}/.docker/run/docker.sock"
+    }
 }
