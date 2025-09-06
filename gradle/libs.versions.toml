@@ -44,6 +44,7 @@ spring-boot = "3.0.4"
 spring-dependency-management = "1.1.7"
 sunjaxb = "4.0.5"
 svgbuilder = "0.5.0"
+testcontainers = "1.17.6"
 waena = "0.6.1"
 
 [libraries]
@@ -89,6 +90,10 @@ spring-asciidoctor = { module = "io.spring.asciidoctor:spring-asciidoctor-extens
 sunjaxb-core = { module = "com.sun.xml.bind:jaxb-core", version.ref = "sunjaxb" }
 sunjaxb-impl = { module = "com.sun.xml.bind:jaxb-impl", version.ref = "sunjaxb" }
 svgbuilder = { module = "com.github.rahulsom:svg-builder", version.ref = "svgbuilder" }
+testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+testcontainers-mongodb = { module = "org.testcontainers:mongodb", version.ref = "testcontainers" }
+testcontainers-spock = { module = "org.testcontainers:spock", version.ref = "testcontainers" }
 
 [plugins]
 waena-root = { id = "com.github.rahulsom.waena.root", version.ref = "waena" }
