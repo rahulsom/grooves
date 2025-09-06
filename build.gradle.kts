@@ -6,7 +6,7 @@ plugins {
     id("org.springframework.boot").version("3.0.4").apply(false)
     id("io.spring.dependency-management").version("1.1.7").apply(false)
     id("org.sonarqube").version("6.3.1.5724")
-    id("com.sourcemuse.mongo").version("1.0.7").apply(false)
+    id("com.sourcemuse.mongo").version("2.0.0").apply(false)
 }
 
 allprojects {
