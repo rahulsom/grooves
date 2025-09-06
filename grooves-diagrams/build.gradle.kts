@@ -6,7 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm")
     id("org.jlleitschuh.gradle.ktlint")
     id("com.github.rahulsom.waena.published")
-    id("io.miret.etienne.sass").version("1.5.2")
+    alias(libs.plugins.sass)
 }
 
 apply {

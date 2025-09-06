@@ -1,12 +1,12 @@
 plugins {
-    id("com.github.rahulsom.waena.root").version("0.6.1")
-    id("org.jetbrains.kotlin.jvm").version("1.8.22").apply(false)
-    id("org.jetbrains.kotlin.plugin.allopen").version("1.8.22").apply(false)
-    id("org.jlleitschuh.gradle.ktlint").version("12.3.0").apply(false)
-    id("org.springframework.boot").version("3.0.4").apply(false)
-    id("io.spring.dependency-management").version("1.1.7").apply(false)
-    id("org.sonarqube").version("6.3.1.5724")
-    id("com.sourcemuse.mongo").version("1.0.7").apply(false)
+    alias(libs.plugins.waena.root)
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.allopen) apply false
+    alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.sonarqube)
+    alias(libs.plugins.spring.boot) apply false
+    alias(libs.plugins.spring.dependency.management) apply false
+    alias(libs.plugins.sourcemuse.mongo) apply false
 }
 
 allprojects {

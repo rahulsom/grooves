@@ -1,8 +1,8 @@
 plugins {
     id("org.jetbrains.kotlin.jvm")
     id("org.jlleitschuh.gradle.ktlint")
-    id("dev.jacomet.logging-capabilities").version("0.+")
-    id("io.freefair.aspectj.post-compile-weaving").version("8.0.1")
+    alias(libs.plugins.logging.capabilities)
+    alias(libs.plugins.post.compile.weaving)
     id("com.github.rahulsom.waena.published")
     id("java-library")
 }
