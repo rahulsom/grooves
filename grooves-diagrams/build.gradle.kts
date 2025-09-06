@@ -17,7 +17,7 @@ description = "Asciidoctor Extension to generate Event Sourcing Diagrams like th
 
 dependencies {
     implementation(libs.svgbuilder)
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation(libs.kotlin.stdlib.jdk8)
 
     implementation(libs.beanutils)
     implementation(libs.asciidoctorj)

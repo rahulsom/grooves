@@ -12,8 +12,8 @@ apply {
 dependencies {
     compileOnly(libs.jetbrains.annotations)
 
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.boot.starter.web)
     implementation(libs.groovy)
     implementation(libs.groovy.dateutil)
     implementation(libs.rxjava2)
@@ -27,7 +27,7 @@ dependencies {
     runtimeOnly(libs.activation)
     runtimeOnly(libs.h2)
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation(libs.spring.boot.starter.test)
 
     testImplementation(libs.spock.core)
     testImplementation(libs.spock.spring)

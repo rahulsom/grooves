@@ -21,15 +21,15 @@ plugins {
 version = "0.0.1-SNAPSHOT"
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation(libs.kotlin.stdlib.jdk8)
+    implementation(libs.kotlin.reflect)
     implementation(libs.groovy.all)
 
     implementation(libs.google.guice)
     implementation(libs.google.guava)
 
     implementation(libs.h2)
-    implementation("org.jooq:jooq")
+    implementation(libs.jooq.core)
 
     implementation(libs.jaxb.api)
     implementation(libs.sunjaxb.core)

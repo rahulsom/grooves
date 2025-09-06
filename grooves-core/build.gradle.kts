@@ -19,8 +19,8 @@ dependencies {
     annotationProcessor(libs.lombok)
     testAnnotationProcessor(libs.lombok)
 
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation(platform(libs.kotlin.bom))
+    implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.slf4j.api)
 
     testImplementation(libs.assertj.core)

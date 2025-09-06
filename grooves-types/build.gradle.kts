@@ -15,7 +15,7 @@ dependencies {
     api(libs.reactive.streams)
     implementation(libs.slf4j.api)
 
-    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    compileOnly(libs.kotlin.stdlib.jdk8)
 
     testImplementation(libs.spock.core)
 }

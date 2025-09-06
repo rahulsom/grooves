@@ -14,13 +14,13 @@ plugins {
 version = "0.0.1-SNAPSHOT"
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation(libs.spring.boot.starter.data.mongodb.reactive)
+    implementation(libs.spring.boot.starter.data.mongodb)
+    implementation(libs.spring.boot.starter.webflux)
+    implementation(libs.kotlin.stdlib.jdk8)
+    implementation(libs.kotlin.reflect)
     implementation(libs.rxjava.reactivestreams)
-    implementation("org.springframework:spring-aspects")
+    implementation(libs.spring.aspects)
     implementation(project(":grooves-api"))
     implementation(project(":grooves-example-test"))
 
@@ -29,10 +29,10 @@ dependencies {
     runtimeOnly(libs.sunjaxb.impl)
     runtimeOnly(libs.activation)
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.spock.core)
     testImplementation(libs.spock.spring)
-    testImplementation("io.projectreactor.addons:reactor-test:3.0.7.RELEASE")
+    testImplementation(libs.reactor.test)
 }
 
 tasks.named("bootRun") { dependsOn("startMongoDb") }

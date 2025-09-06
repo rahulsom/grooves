@@ -18,12 +18,12 @@ dependencies {
     implementation(libs.rxjava2)
     implementation(libs.slf4j.api)
 
-    implementation("xerces:xercesImpl:2.12.2")
+    implementation(libs.xerces)
     implementation(libs.groovy)
     implementation(libs.groovy.dateutil)
     implementation(libs.groovy.json)
     implementation(libs.groovy.xml)
-    implementation("org.apache.httpcomponents:httpclient:4.5.14")
+    implementation(libs.httpclient)
     implementation(libs.beanutils)
 
     compileOnly(libs.jetbrains.annotations)
