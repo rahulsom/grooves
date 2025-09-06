@@ -1,18 +1,22 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
   "packageRules": [
     {
-      "packagePatterns": ["com.github.rahulsom.waena.*"],
       "groupName": "Waena",
-      "groupSlug": "com.github.rahulsom.waena"
+      "groupSlug": "com.github.rahulsom.waena",
+      "matchPackageNames": [
+        "/com.github.rahulsom.waena.*/"
+      ]
     },
     {
-      "packagePatterns": ["org.jetbrains.kotlin.*"],
       "groupName": "Kotlin",
-      "groupSlug": "org.jetbrains.kotlin"
+      "groupSlug": "org.jetbrains.kotlin",
+      "matchPackageNames": [
+        "/org.jetbrains.kotlin.*/"
+      ]
     }
   ]
 }
