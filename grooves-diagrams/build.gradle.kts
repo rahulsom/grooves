@@ -3,10 +3,10 @@ import io.miret.etienne.gradle.sass.CompileSass
 plugins {
     id("java-library")
     id("groovy")
-    id("org.jetbrains.kotlin.jvm")
-    id("org.jlleitschuh.gradle.ktlint")
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.ktlint)
     id("com.github.rahulsom.waena.published")
-    id("io.miret.etienne.sass").version("1.5.2")
+    alias(libs.plugins.sass)
 }
 
 apply {
@@ -17,7 +17,7 @@ description = "Asciidoctor Extension to generate Event Sourcing Diagrams like th
 
 dependencies {
     implementation(libs.svgbuilder)
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation(libs.kotlin.stdlib.jdk8)
 
     implementation(libs.beanutils)
     implementation(libs.asciidoctorj)

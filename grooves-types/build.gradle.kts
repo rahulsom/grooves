@@ -1,7 +1,7 @@
 plugins {
     id("java-library")
-    id("org.jetbrains.kotlin.jvm")
-    id("org.jlleitschuh.gradle.ktlint")
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.ktlint)
     id("com.github.rahulsom.waena.published")
 }
 
@@ -15,7 +15,7 @@ dependencies {
     api(libs.reactive.streams)
     implementation(libs.slf4j.api)
 
-    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    compileOnly(libs.kotlin.stdlib.jdk8)
 
     testImplementation(libs.spock.core)
 }

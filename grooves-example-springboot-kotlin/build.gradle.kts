@@ -1,14 +1,14 @@
 import com.sourcemuse.gradle.plugin.GradleMongoPluginExtension
 
 plugins {
-    id("org.springframework.boot")
-    id("io.spring.dependency-management")
-    id("org.jetbrains.kotlin.jvm")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("org.jetbrains.kotlin.plugin.allopen")
-    id("org.jetbrains.kotlin.plugin.spring")
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.kotlin.allopen)
+    alias(libs.plugins.kotlin.spring)
     id("groovy")
-    id("com.sourcemuse.mongo")
+    alias(libs.plugins.mongo)
 }
 
 version = "0.0.1-SNAPSHOT"
@@ -17,8 +17,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation(libs.kotlin.stdlib.jdk8)
+    implementation(libs.kotlin.reflect)
     implementation(libs.rxjava.reactivestreams)
     implementation("org.springframework:spring-aspects")
     implementation(project(":grooves-api"))
@@ -32,7 +32,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.spock.core)
     testImplementation(libs.spock.spring)
-    testImplementation("io.projectreactor.addons:reactor-test:3.0.7.RELEASE")
+    testImplementation(libs.reactor.test)
 }
 
 tasks.named("bootRun") { dependsOn("startMongoDb") }

@@ -1,8 +1,8 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("dev.jacomet.logging-capabilities").version("0.+")
-    id("io.freefair.aspectj.post-compile-weaving").version("8.0.1")
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.jacomet.logging)
+    alias(libs.plugins.freefair.aspectj)
     id("com.github.rahulsom.waena.published")
     id("java-library")
 }
@@ -19,8 +19,8 @@ dependencies {
     annotationProcessor(libs.lombok)
     testAnnotationProcessor(libs.lombok)
 
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation(platform(libs.kotlin.bom))
+    implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.slf4j.api)
 
     testImplementation(libs.assertj.core)
