@@ -40,7 +40,7 @@ sourceSets {
 }
 
 tasks.getByName("processResources").dependsOn("compileSass")
-tasks.getByName("sourceJar").dependsOn("compileSass")
+tasks.findByName("sourcesJar")?.dependsOn("compileSass")
 
 tasks.withType<Test> {
     useJUnitPlatform()
