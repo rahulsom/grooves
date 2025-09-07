@@ -27,14 +27,14 @@ dependencies {
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 
-test {
-    dependsOn "war"
+tasks.test {
+    dependsOn("war")
     useJUnitPlatform()
-    systemProperty "war.file.path", war.archiveFile.get().asFile.absolutePath
+    systemProperty("war.file.path", tasks.war.get().archiveFile.get().asFile.absolutePath)
     
     // Docker configuration for Mac ARM
-    def isMacArm = System.getProperty("os.name").contains("Mac") && System.getProperty("os.arch") == "aarch64"
+    val isMacArm = System.getProperty("os.name").contains("Mac") && System.getProperty("os.arch") == "aarch64"
     if (isMacArm) {
-        environment "DOCKER_HOST", "unix://${System.getenv("HOME")}/.docker/run/docker.sock"
+        environment("DOCKER_HOST", "unix://${System.getenv("HOME")}/.docker/run/docker.sock")
     }
 }
