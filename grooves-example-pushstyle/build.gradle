@@ -108,9 +108,3 @@ tasks.named("runKtlintCheckOverMainSourceSet") { it.dependsOn("generateJooq") }
 test {
     useJUnitPlatform()
 }
-
-kotlin {
-    jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(libs.versions.jdk.get()))
-    }
-}
