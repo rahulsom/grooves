@@ -43,7 +43,7 @@ spring-boot = "3.3.8"
 spring-dependency-management = "1.1.7"
 sunjaxb = "4.0.5"
 svgbuilder = "0.5.0"
-testcontainers = "1.17.6"
+testcontainers = "1.21.3"
 waena = "0.17.0"
 
 [libraries]
