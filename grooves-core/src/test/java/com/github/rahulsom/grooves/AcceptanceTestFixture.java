@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class AcceptanceTestFixture {
     @AllArgsConstructor
@@ -22,9 +21,13 @@ public class AcceptanceTestFixture {
         }
     }
 
+    public interface Storable {
+
+    }
+
     @AllArgsConstructor
     @Getter
-    public static class Event {
+    public static class Event implements Storable {
         private int id;
         private int aggregateId;
         private EventType eventType;
@@ -46,7 +49,7 @@ public class AcceptanceTestFixture {
     @AllArgsConstructor
     @Getter
     @Setter
-    public static class Snapshot {
+    public static class Snapshot implements Storable {
         private int aggregateId;
         private int version;
         private String summary;
@@ -66,13 +69,13 @@ public class AcceptanceTestFixture {
      */
     @NotNull
     public static GroovesQuery<Aggregate, Integer, Snapshot, Event, Integer> createQuery(
-            Object... objects) {
+            Storable... objects) {
         List<Snapshot> knownSnapshots = Arrays.stream(objects)
                 .filter(it -> it instanceof Snapshot).map(it -> (Snapshot) it)
-                .collect(Collectors.toList());
+                .toList();
         List<Event> events = Arrays.stream(objects)
                 .filter(it -> it instanceof Event).map(it -> (Event) it)
-                .collect(Collectors.toList());
+                .toList();
 
         return GroovesQueryBuilder.<Aggregate, Integer, Snapshot, Event, Integer>builder()
             .snapshotProvider((aggregate, version) ->
@@ -110,7 +113,7 @@ public class AcceptanceTestFixture {
             .deprecatedByProvider(event -> {
                 List<Integer> ints = Arrays.stream(event.data.split(","))
                         .map(Integer::parseInt)
-                        .collect(Collectors.toList());
+                        .toList();
                 return new DeprecatedByResult<>(new Aggregate(ints.get(0)), ints.get(1));
             })
             .revertedEventProvider(event -> events.stream()
