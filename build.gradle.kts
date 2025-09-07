@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.sonarqube)
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.spring.dependency.management) apply false
-    alias(libs.plugins.sourcemuse.mongo) apply false
 }
 
 allprojects {
