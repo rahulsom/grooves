@@ -30,7 +30,7 @@ class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> { //
 
     @OneToOne Patient deprecatedBy
     @OneToMany @JoinTable(name = 'PatientAccountDeprecates') Set<Patient> deprecates
-    @OneToOne Patient aggregate
+    @ManyToOne Patient aggregate
 
     @Column(nullable = false) BigDecimal balance = 0.0
     @Column(nullable = false) BigDecimal moneyMade = 0.0

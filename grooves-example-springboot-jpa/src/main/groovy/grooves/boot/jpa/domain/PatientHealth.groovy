@@ -28,7 +28,7 @@ class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
 
     @OneToOne Patient deprecatedBy
     @OneToMany @JoinTable(name = 'PatientHealthDeprecates') Set<Patient> deprecates
-    @OneToOne Patient aggregate
+    @ManyToOne Patient aggregate
     @OneToMany(cascade = CascadeType.ALL) List<Procedure> procedures
     String name
 
