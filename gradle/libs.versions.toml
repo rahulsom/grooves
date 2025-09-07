@@ -110,4 +110,3 @@ asciidoctor-convert = { id = "org.asciidoctor.jvm.convert", version.ref = "ascii
 jooq = { id = "nu.studer.jooq", version.ref = "jooq" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
-sourcemuse-mongo = { id = "com.sourcemuse.mongo", version.ref = "sourcemuse-mongo" }
