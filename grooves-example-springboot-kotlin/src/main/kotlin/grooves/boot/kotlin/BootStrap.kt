@@ -164,14 +164,14 @@ class BootStrap constructor(
     private fun <
         SnapshotT : Snapshot<Patient, String, String, PatientEvent>,
         QueryT : QuerySupport<Patient, String, PatientEvent, String, SnapshotT>,
-        > snapshotWith(
+    > snapshotWith(
         it: OnSpec<
             Patient,
             String,
             PatientEvent,
             String,
             out Snapshot<Patient, String, String, PatientEvent>,
-            >,
+        >,
         query: QueryT,
         repository: ReactiveCrudRepository<SnapshotT, String>,
     ) = null
@@ -216,7 +216,8 @@ class BootStrap constructor(
     }
 
     val currDate =
-        Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        Calendar
+            .getInstance(TimeZone.getTimeZone("UTC"))
             .also {
                 it.time =
                     SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX")
@@ -239,7 +240,8 @@ class BootStrap constructor(
             currDate.add(Calendar.DATE, 1)
             currDate.time
         }
-        return com.github.rahulsom.grooves.test.EventsDsl<Patient, String, PatientEvent>()
+        return com.github.rahulsom.grooves.test
+            .EventsDsl<Patient, String, PatientEvent>()
             .on<String, Snapshot<Patient, String, String, PatientEvent>>(
                 patient,
                 eventSaver,

@@ -1,3 +1,5 @@
 package grooves.example.push
 
-data class Account(val id: String)
+data class Account(
+    val id: String,
+)

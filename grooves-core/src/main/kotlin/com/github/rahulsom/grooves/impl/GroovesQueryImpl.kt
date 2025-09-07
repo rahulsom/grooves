@@ -62,7 +62,9 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
     }
 
     @JvmInline
-    private value class CallIdentifier(val data: String)
+    private value class CallIdentifier(
+        val data: String,
+    )
 
     private tailrec fun computeSnapshotImpl(
         events: List<Event>,
@@ -116,14 +118,16 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
                             val ret = deprecatedByProvider.invoke(event)
                             log.debug("$indent  ...The aggregate was deprecated by ${ret.aggregate}. Recursing to compute snapshot for it...")
                             val refEvent =
-                                eventsProvider.invoke(listOf(ret.aggregate), null, emptySnapshotProvider.invoke(ret.aggregate))
+                                eventsProvider
+                                    .invoke(listOf(ret.aggregate), null, emptySnapshotProvider.invoke(ret.aggregate))
                                     .collect(Collectors.toList())
                                     .find { eventIdProvider.invoke(it) == ret.eventId }
 
                             val redirectVersion = eventVersioner.invoke(refEvent!!)
                             val otherSnapshot = snapshotProvider.invoke(ret.aggregate, redirectVersion) ?: emptySnapshotProvider.invoke(ret.aggregate)
                             val newEvents =
-                                eventsProvider.invoke(listOf(ret.aggregate) + aggregates, redirectVersion, otherSnapshot)
+                                eventsProvider
+                                    .invoke(listOf(ret.aggregate) + aggregates, redirectVersion, otherSnapshot)
                                     .collect(Collectors.toList())
                             @Suppress("LiftReturnOrAssignment")
                             if (redirect) {

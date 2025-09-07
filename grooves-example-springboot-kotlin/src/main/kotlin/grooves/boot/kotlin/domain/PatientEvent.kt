@@ -54,7 +54,9 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
     fun getTs() = SimpleDateFormat("yyyy-MM-dd").format(timestamp)
 
     // tag::reverted[]
-    data class Reverted(override val revertedEventId: String) : // <1>
+    data class Reverted(
+        override val revertedEventId: String,
+    ) : // <1>
         PatientEvent(),
         // <2>
         RevertEvent<Patient, String, PatientEvent> { // <3>
@@ -66,8 +68,10 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
     }
     // end::reverted[]
 
-    data class PatientDeprecates(val deprecated: Patient) :
-        PatientEvent(), Deprecates<Patient, String, PatientEvent> {
+    data class PatientDeprecates(
+        val deprecated: Patient,
+    ) : PatientEvent(),
+        Deprecates<Patient, String, PatientEvent> {
         var converseId: String? = null
 
         @JsonIgnore
@@ -88,8 +92,10 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
         override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
     }
 
-    data class PatientDeprecatedBy(val deprecator: Patient, val converseId: String) :
-        PatientEvent(),
+    data class PatientDeprecatedBy(
+        val deprecator: Patient,
+        val converseId: String,
+    ) : PatientEvent(),
         DeprecatedBy<Patient, String, PatientEvent> {
         @JsonIgnore
         override fun getConverseObservable(): Publisher<PatientDeprecates> {
@@ -110,7 +116,9 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
 
     // tag::created[]
     sealed class Applicable : PatientEvent() { // <1>
-        data class Created(val name: String) : Applicable() { // <2>
+        data class Created(
+            val name: String,
+        ) : Applicable() { // <2>
             fun getAudit(): String = "$id - Created '$name'"
 
             // end::created[]
@@ -119,13 +127,18 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
         }
         // end::created[]
 
-        data class ProcedurePerformed(val code: String, val cost: BigDecimal) : Applicable() {
+        data class ProcedurePerformed(
+            val code: String,
+            val cost: BigDecimal,
+        ) : Applicable() {
             fun getAudit(): String = "$id - Performed '$code' for $cost"
 
             override fun toString() = "[${getTs()}] #$position: ${getAudit()}"
         }
 
-        data class PaymentMade(val amount: BigDecimal) : Applicable() {
+        data class PaymentMade(
+            val amount: BigDecimal,
+        ) : Applicable() {
             fun getAudit(): String = "$id - Paid $amount"
 
             override fun toString() = "[${getTs()}] #$position: ${getAudit()}"

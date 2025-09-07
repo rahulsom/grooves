@@ -27,15 +27,15 @@ class ZipcodeController {
     }
 
     @GetMapping('/zipcode/show/{id}')
-    Zipcode show(@PathVariable Long id) {
+    Zipcode show(@PathVariable('id') Long id) {
         zipcodeRepository.getById(id)
     }
 
     @GetMapping('/zipcode/patients/{id}')
     ResponseEntity<ZipcodePatients.Representation> patients(
-        @PathVariable Long id,
-        @RequestParam(required = false) Long version,
-        @RequestParam(required = false) @DateTimeFormat(pattern = 'yyyy-MM-dd') Date date) {
+            @PathVariable('id') Long id,
+            @RequestParam(required = false, name = 'version') Long version,
+            @RequestParam(required = false, name = 'date') @DateTimeFormat(pattern = 'yyyy-MM-dd') Date date) {
         def zipcode = zipcodeRepository.getById(id)
 
         def computation = version ?

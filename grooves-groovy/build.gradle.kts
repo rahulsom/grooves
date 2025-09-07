@@ -20,6 +20,7 @@ dependencies {
     testImplementation(libs.spock.core)
 
     testRuntimeOnly(libs.jetbrains.annotations)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.withType<Test> {

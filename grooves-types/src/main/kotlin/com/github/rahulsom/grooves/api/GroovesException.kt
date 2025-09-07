@@ -5,4 +5,6 @@ package com.github.rahulsom.grooves.api
  *
  * @author Rahul Somasunderam
  */
-class GroovesException(message: String) : RuntimeException(message)
+class GroovesException(
+    message: String,
+) : RuntimeException(message)

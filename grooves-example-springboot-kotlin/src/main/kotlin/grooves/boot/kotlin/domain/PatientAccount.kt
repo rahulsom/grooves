@@ -63,10 +63,9 @@ class PatientAccount : Snapshot<Patient, String, String, PatientEvent> { // <1>
         }
 
     // end::documented[]
-    override fun toString(): String {
-        return "PatientAccount(id=$id, aggregate=$aggregateId, " +
+    override fun toString(): String =
+        "PatientAccount(id=$id, aggregate=$aggregateId, " +
             "lastEventPosition=$lastEventPosition, lastEventTimestamp=$lastEventTimestamp)"
-    }
     // tag::documented[]
 }
 // end::documented[]

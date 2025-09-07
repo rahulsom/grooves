@@ -24,15 +24,16 @@ class EventService {
     @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     // tag::documented[]
     private val query =
-        Grooves.versioned<Account, String, Transaction, String, Balance>() // <1>
+        Grooves
+            .versioned<Account, String, Transaction, String, Balance>() // <1>
             .withSnapshot { version, account ->
                 // <2>
                 log.info("getBalance($account, $version)")
-                Maybe.fromCallable { database.getBalance(account, version) }
+                Maybe
+                    .fromCallable { database.getBalance(account, version) }
                     .map { dbBalance -> Balance(dbBalance) }
                     .toFlowable()
-            }
-            .withEmptySnapshot { Balance() } // <3>
+            }.withEmptySnapshot { Balance() } // <3>
             .withEvents { account, balance, version ->
                 // <4>
                 val transaction =
@@ -42,16 +43,13 @@ class EventService {
                 } else {
                     empty()
                 }
-            }
-            .withApplyEvents { balance -> true } // <5>
+            }.withApplyEvents { balance -> true } // <5>
             .withDeprecator { balance, deprecatingAccount -> // <6>
-            }
-            .withExceptionHandler { exception, balance, transaction ->
+            }.withExceptionHandler { exception, balance, transaction ->
                 // <7>
                 log.warn("$exception occurred")
                 just(CONTINUE)
-            }
-            .withEventHandler(this::updateBalance) // <8>
+            }.withEventHandler(this::updateBalance) // <8>
             .build() // <9>
 
     private fun updateBalance(

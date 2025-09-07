@@ -14,6 +14,9 @@ object Constants {
     const val TEXT_LINE_HEIGHT: Int = 18
 
     val CSS: String by lazy {
-        Constants::class.java.getResourceAsStream("/esdiag.css").reader().readText()
+        Constants::class.java
+            .getResourceAsStream("/esdiag.css")
+            .reader()
+            .readText()
     }
 }

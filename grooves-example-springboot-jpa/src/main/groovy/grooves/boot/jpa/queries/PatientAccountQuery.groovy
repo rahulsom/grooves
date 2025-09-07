@@ -24,12 +24,12 @@ import static io.reactivex.Flowable.just
  */
 @Transactional
 @Component
-//tag::documented[]
+// tag::documented[]
 @Query(aggregate = Patient, snapshot = PatientAccount) // <1>
 class PatientAccountQuery implements
         QuerySupport<Patient, Long, PatientEvent, Long, PatientAccount> { // <2>
 
-    //end::documented[]
+    // end::documented[]
     public static final String AGGREGATE = 'aggregate'
     public static final String POSITION = 'position'
     public static final String TIMESTAMP = 'timestamp'
@@ -39,29 +39,29 @@ class PatientAccountQuery implements
     @Autowired EntityManager entityManager
     @Autowired PatientAccountRepository patientAccountRepository
 
-    //tag::documented[]
+    // tag::documented[]
     @Override
     Publisher<PatientAccount> getSnapshot(long maxPosition, Patient aggregate) { // <3>
-        //end::documented[]
+        // end::documented[]
         def snapshots = maxPosition == Long.MAX_VALUE ?
                 patientAccountRepository.findAllByAggregateId(aggregate.id) :
                 patientAccountRepository.findAllByAggregateIdAndLastEventPositionLessThan(
                         aggregate.id, maxPosition)
 
         fromIterable(snapshots).firstElement().toFlowable()
-        //tag::documented[]
+        // tag::documented[]
     }
 
     @Override
     Publisher<PatientAccount> getSnapshot(Date maxTimestamp, Patient aggregate) { // <4>
-        //end::documented[]
+        // end::documented[]
         def snapshots = maxTimestamp == null ?
                 patientAccountRepository.findAllByAggregateId(aggregate.id) :
                 patientAccountRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
                         aggregate.id, maxTimestamp)
 
         fromIterable(snapshots).firstElement().toFlowable()
-        //tag::documented[]
+        // tag::documented[]
     }
 
     @Override
@@ -79,7 +79,7 @@ class PatientAccountQuery implements
     @Override
     Publisher<PatientEvent> getUncomputedEvents(
             Patient patient, PatientAccount lastSnapshot, long version) { // <7>
-        //end::documented[]
+        // end::documented[]
         def cb = entityManager.criteriaBuilder
         def q = cb.createQuery(PatientEvent)
         def root = q.from(PatientEvent)
@@ -92,13 +92,13 @@ class PatientAccountQuery implements
                         .createQuery(criteria)
                         .setParameter(AGGREGATE, patient)
                         .resultList)
-        //tag::documented[]
+        // tag::documented[]
     }
 
     @NotNull
     @Override Publisher<PatientEvent> getUncomputedEvents(
             Patient aggregate, PatientAccount lastSnapshot, Date snapshotTime) { // <8>
-        //end::documented[]
+        // end::documented[]
         def cb = entityManager.criteriaBuilder
         def q = cb.createQuery(PatientEvent)
         def root = q.from(PatientEvent)
@@ -120,7 +120,7 @@ class PatientAccountQuery implements
         }
 
         fromIterable(query.resultList)
-        //tag::documented[]
+        // tag::documented[]
     }
 
     @NotNull
@@ -154,7 +154,7 @@ class PatientAccountQuery implements
         just(CONTINUE)
     }
 
-    //end::documented[]
+    // end::documented[]
     PatientAccount detachSnapshot(PatientAccount snapshot) {
         def retval = new PatientAccount(
                 lastEventPosition: snapshot.lastEventPosition,
@@ -169,6 +169,6 @@ class PatientAccountQuery implements
         snapshot.deprecates.each { retval.deprecates.add it }
         retval
     }
-    //tag::documented[]
+    // tag::documented[]
 }
-//end::documented[]
+// end::documented[]
