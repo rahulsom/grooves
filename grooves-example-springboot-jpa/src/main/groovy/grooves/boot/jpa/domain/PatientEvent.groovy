@@ -31,7 +31,7 @@ abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> { 
     @Transient RevertEvent<Patient, Long, PatientEvent> revertedBy // <2>
     @Column(nullable = false) Date timestamp // <3>
     @Column(nullable = false) long position //<4>
-    @OneToOne Patient aggregate
+    @ManyToOne Patient aggregate
 
     Publisher<Patient> getAggregateObservable() { // <5>
         aggregate == null ? empty() : just(aggregate)

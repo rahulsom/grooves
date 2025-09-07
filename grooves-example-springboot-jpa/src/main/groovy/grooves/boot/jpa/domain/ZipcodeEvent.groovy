@@ -16,7 +16,6 @@ import jakarta.persistence.Id
 import jakarta.persistence.Inheritance
 import jakarta.persistence.InheritanceType
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
 import jakarta.persistence.Transient
 
 import static io.reactivex.Flowable.empty
@@ -32,7 +31,7 @@ class ZipcodeEvent implements BaseEvent<Zipcode, Long, ZipcodeEvent> {
     @Transient RevertEvent<Zipcode, Long, ZipcodeEvent> revertedBy
     @Column(nullable = false) Date timestamp
     @Column(nullable = false) long position
-    @OneToOne Zipcode aggregate
+    @ManyToOne Zipcode aggregate
 
     Publisher<Zipcode> getAggregateObservable() {
         aggregate == null ? empty() : just(aggregate)
