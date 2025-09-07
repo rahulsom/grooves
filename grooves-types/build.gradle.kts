@@ -26,6 +26,6 @@ tasks.withType<Test> {
 
 kotlin {
     jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(libs.versions.jdk.get()))
     }
 }

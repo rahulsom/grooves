@@ -41,3 +41,9 @@ tasks.withType<Test> {
 tasks.named("bootJar", Jar::class) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(libs.versions.jdk.get()))
+    }
+}

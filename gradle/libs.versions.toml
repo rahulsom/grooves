@@ -1,4 +1,5 @@
 [versions]
+jdk = "17"
 activation = "1.1.1"
 asciidoctor = "4.0.5"
 asciidoctorj = "3.0.0"
