@@ -21,6 +21,14 @@ Documentation can be found https://rahulsom.github.io/grooves/[here].
 
 == Modules
 
+=== grooves-core
+
+{central-prefix}grooves-core{central-middle}grooves-core{central-suffix}
+{snapshot-prefix}grooves-core{snapshot-middle}grooves-core{snapshot-suffix}
+
+A much simplified way of building Event-Sourced queries.
+This is the newer way of building queries.
+
 === grooves-types
 
 {central-prefix}grooves-types{central-middle}grooves-types{central-suffix}
