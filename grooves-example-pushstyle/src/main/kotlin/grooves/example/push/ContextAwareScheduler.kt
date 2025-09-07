@@ -20,7 +20,9 @@ object ContextAwareScheduler : Scheduler() {
 
     override fun createWorker(): Worker = ContextAwareWorker(worker)
 
-    internal class ContextAwareWorker(private val worker: NewThreadWorker) : Worker() {
+    internal class ContextAwareWorker(
+        private val worker: NewThreadWorker,
+    ) : Worker() {
         private val tracking = CompositeDisposable()
 
         override fun schedule(

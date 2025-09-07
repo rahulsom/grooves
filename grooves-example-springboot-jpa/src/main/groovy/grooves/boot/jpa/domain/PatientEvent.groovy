@@ -41,7 +41,7 @@ abstract class PatientEvent implements BaseEvent<Patient, Long, PatientEvent> { 
 // end::abstract[]
 
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
-//tag::created[]
+// tag::created[]
 @Entity
 @Event(Patient) // <1>
 class PatientCreated extends PatientEvent { // <2>
@@ -49,7 +49,7 @@ class PatientCreated extends PatientEvent { // <2>
 
     @Override String toString() { "PatientCreated(name=$name)" }
 }
-//end::created[]
+// end::created[]
 
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
 @Entity
@@ -71,7 +71,7 @@ class PaymentMade extends PatientEvent {
 }
 
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
-//tag::reverted[]
+// tag::reverted[]
 @Entity
 class PatientEventReverted extends PatientEvent // <1>
         implements RevertEvent<Patient, Long, PatientEvent> { // <2>
@@ -79,7 +79,7 @@ class PatientEventReverted extends PatientEvent // <1>
 
     @Override String toString() { "PatientEventReverted(revertedEventId=$revertedEventId)" }
 }
-//end::reverted[]
+// end::reverted[]
 
 @Entity
 class PatientDeprecatedBy extends PatientEvent implements

@@ -12,8 +12,9 @@ import java.security.MessageDigest
  *
  * @author Rahul Somasunderam
  */
-class EventsBlock(name: String) :
-    BlockProcessor(name, mapOf("contexts" to listOf(":literal"), "content_model" to ":simple")) {
+class EventsBlock(
+    name: String,
+) : BlockProcessor(name, mapOf("contexts" to listOf(":literal"), "content_model" to ":simple")) {
     override fun process(
         parent: StructuralNode,
         reader: Reader,

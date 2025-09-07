@@ -43,15 +43,14 @@ class Balance() : Snapshot<Account, String, String, Transaction> {
             Date.from(balance.bTime.toInstant()),
         )
 
-    fun toBalanceRecord(): BalanceRecord {
-        return BalanceRecord(
+    fun toBalanceRecord(): BalanceRecord =
+        BalanceRecord(
             id,
             lastEventPosition,
             OffsetDateTime.ofInstant(lastEventTimestamp?.toInstant(), ZoneId.systemDefault()),
             aggregate?.id,
             balance,
         )
-    }
 
     override fun getAggregateObservable(): Publisher<Account> = Flowable.fromIterable(listOfNotNull(aggregate))
 

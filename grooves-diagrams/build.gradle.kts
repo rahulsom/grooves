@@ -26,6 +26,7 @@ dependencies {
     implementation(libs.jaxb.api)
 
     testImplementation(libs.spock.core)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.withType<CompileSass> {

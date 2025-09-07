@@ -45,7 +45,8 @@ class PatientController constructor(
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
         @RequestParam(required = false)
         date: Instant?,
-    ) = patientRepository.findById(id)
+    ) = patientRepository
+        .findById(id)
         .flatMap { patient ->
             Mono.from(
                 version?.let { patientAccountQuery.computeSnapshot(patient, it) }
@@ -77,7 +78,8 @@ class PatientController constructor(
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
         @RequestParam(required = false)
         date: Instant?,
-    ) = patientRepository.findById(id)
+    ) = patientRepository
+        .findById(id)
         .flatMap { patient ->
             Mono.from(
                 version?.let { patientHealthQuery.computeSnapshot(patient, version) }

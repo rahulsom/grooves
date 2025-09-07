@@ -18,7 +18,7 @@ interface BaseSnapshot<
     SnapshotIdT,
     EventIdT,
     in EventT : BaseEvent<AggregateT, EventIdT, in EventT>,
-    > {
+> {
     /**
      * A unique identifier for the Snapshot.
      * This typically maps to the primary key in a persistence mechanism.

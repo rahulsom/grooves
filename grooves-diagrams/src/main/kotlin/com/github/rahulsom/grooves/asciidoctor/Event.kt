@@ -18,7 +18,13 @@ import kotlin.math.sqrt
  *
  * @author Rahul Somasunderam
  */
-class Event(private val counter: Int, var id: String, var date: Date, var description: String, var type: EventType) {
+class Event(
+    private val counter: Int,
+    var id: String,
+    var date: Date,
+    var description: String,
+    var type: EventType,
+) {
     override fun toString(): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd")
         return "  - $id ${sdf.format(date)} $description ($type)"
@@ -40,7 +46,8 @@ class Event(private val counter: Int, var id: String, var date: Date, var descri
         // builder.mkp.comment(toString())
         val revertedClass = if (this.reverted) "reverted" else ""
         val g =
-            G().withId("event_$counter")
+            G()
+                .withId("event_$counter")
                 .withClazz("event ${this.type.name} $revertedClass")
 
         var x = (10 + AGGREGATE_WIDTH * 2 + xOffset * EVENT_SPACE).toInt()
@@ -93,7 +100,10 @@ class Event(private val counter: Int, var id: String, var date: Date, var descri
         if (description.contains("created")) {
             g.withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
                 ObjectFactory().createCircle(
-                    Circle().withCx("${this.x}").withCy("$y").withR("14")
+                    Circle()
+                        .withCx("${this.x}")
+                        .withCy("$y")
+                        .withR("14")
                         .withStrokeDasharray("2, 5")
                         .withClazz("eventCreated ${this.type.name}"),
                 ),
@@ -102,15 +112,22 @@ class Event(private val counter: Int, var id: String, var date: Date, var descri
 
         g.withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
             ObjectFactory().createCircle(
-                ObjectFactory().createCircle().withCx("${this.x}").withCy("${this.y}")
+                ObjectFactory()
+                    .createCircle()
+                    .withCx("${this.x}")
+                    .withCy("${this.y}")
                     .withR("10")
                     .withClazz("event ${this.type.name} $revertedClass"),
             ),
         )
         g.withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
             ObjectFactory().createText(
-                ObjectFactory().createText().withX("${this.x}").withY("${this.y}")
-                    .withClazz("eventId").withContent(this.id),
+                ObjectFactory()
+                    .createText()
+                    .withX("${this.x}")
+                    .withY("${this.y}")
+                    .withClazz("eventId")
+                    .withContent(this.id),
             ),
         )
         return g

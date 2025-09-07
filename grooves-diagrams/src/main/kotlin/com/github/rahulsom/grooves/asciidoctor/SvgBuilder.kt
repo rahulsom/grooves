@@ -23,10 +23,13 @@ import javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT
  *
  * @author Rahul Somasunderam
  */
-class SvgBuilder(private val input: String) {
+class SvgBuilder(
+    private val input: String,
+) {
     private fun init() {
         var lastAggregate: Aggregate? = null
-        input.split("\n")
+        input
+            .split("\n")
             .forEach {
                 if (it.startsWith("|")) {
                     lastAggregate = toAggregate(it)
@@ -40,7 +43,12 @@ class SvgBuilder(private val input: String) {
                 }
             }
 
-        val justDates = aggregates.flatMap { it.events }.map { it.date }.sorted().distinct()
+        val justDates =
+            aggregates
+                .flatMap { it.events }
+                .map { it.date }
+                .sorted()
+                .distinct()
         minInterval = justDates.windowed(2, 1, false).map { a -> a[1].time - a[0].time }.minOrNull()!!
         justDates.forEach {
             dates[it] = (it.time - justDates[0].time) * 1.0 / minInterval
@@ -97,7 +105,8 @@ class SvgBuilder(private val input: String) {
         init()
 
         val svg =
-            Svg().withHeight("${aggregates.size * EVENT_LINE_HEIGHT}")
+            Svg()
+                .withHeight("${aggregates.size * EVENT_LINE_HEIGHT}")
                 .withWidth("${dates.values.maxOrNull()!! * EVENT_SPACE + 4 * AGGREGATE_WIDTH}")
 
         svg.withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
@@ -108,17 +117,26 @@ class SvgBuilder(private val input: String) {
 
         svg.withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
             ObjectFactory().createRect(
-                Rect().withX("0").withY("0").withHeight("${aggregates.size * EVENT_LINE_HEIGHT}").withWidth(
-                    "${dates.values.maxOrNull()!! * EVENT_SPACE + 4 * AGGREGATE_WIDTH}",
-                ).withClazz("background"),
+                Rect()
+                    .withX("0")
+                    .withY("0")
+                    .withHeight("${aggregates.size * EVENT_LINE_HEIGHT}")
+                    .withWidth(
+                        "${dates.values.maxOrNull()!! * EVENT_SPACE + 4 * AGGREGATE_WIDTH}",
+                    ).withClazz("background"),
             ),
             ObjectFactory().createDefs(
                 ObjectFactory().createDefs().withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
                     ObjectFactory().createMarker(
-                        SVGMarkerClass().withId("triangle").withViewBox("0 0 10 10")
-                            .withRefX("0").withRefY("5")
-                            .withMarkerWidth("10").withMarkerHeight("10")
-                            .withOrient("auto").withMarkerUnits("userSpaceOnUse")
+                        SVGMarkerClass()
+                            .withId("triangle")
+                            .withViewBox("0 0 10 10")
+                            .withRefX("0")
+                            .withRefY("5")
+                            .withMarkerWidth("10")
+                            .withMarkerHeight("10")
+                            .withOrient("auto")
+                            .withMarkerUnits("userSpaceOnUse")
                             .withSVGDescriptionClassOrSVGAnimationClassOrSVGStructureClass(
                                 ObjectFactory().createPath(Path().withD("M 0 0 L 10 5 L 0 10 z")),
                             ),

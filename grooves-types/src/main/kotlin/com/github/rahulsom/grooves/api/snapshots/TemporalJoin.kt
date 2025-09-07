@@ -19,6 +19,6 @@ interface TemporalJoin<
     in JoinedAggregateT,
     EventIdT,
     in EventT : BaseEvent<AggregateT, EventIdT, in EventT>,
-    > :
+> :
     TemporalSnapshot<AggregateT, JoinIdT, EventIdT, EventT>,
     BaseJoin<AggregateT, JoinIdT, JoinedAggregateT, EventIdT, EventT>

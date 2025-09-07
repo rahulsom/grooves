@@ -34,6 +34,7 @@ dependencies {
     testImplementation(libs.spock.core)
     testImplementation(libs.spock.spring)
     testImplementation("io.projectreactor.addons:reactor-test:3.0.7.RELEASE")
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.withType<Test> {

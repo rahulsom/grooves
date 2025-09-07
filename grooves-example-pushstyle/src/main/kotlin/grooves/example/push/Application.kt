@@ -30,7 +30,8 @@ class Application
             log.error("")
             log.error("========= Starting up =========")
             dslContext.createSchemaIfNotExists(Public.PUBLIC).execute()
-            dslContext.createTableIfNotExists(BALANCE)
+            dslContext
+                .createTableIfNotExists(BALANCE)
                 .column(BALANCE.B_ID)
                 .column(BALANCE.B_VERSION)
                 .column(BALANCE.B_TIME)
