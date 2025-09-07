@@ -20,3 +20,9 @@ dependencies {
 
     testRuntimeOnly(libs.jetbrains.annotations)
 }
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}

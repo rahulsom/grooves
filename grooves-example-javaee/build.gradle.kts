@@ -31,10 +31,16 @@ tasks.test {
     dependsOn("war")
     useJUnitPlatform()
     systemProperty("war.file.path", tasks.war.get().archiveFile.get().asFile.absolutePath)
-    
+
     // Docker configuration for Mac ARM
     val isMacArm = System.getProperty("os.name").contains("Mac") && System.getProperty("os.arch") == "aarch64"
     if (isMacArm) {
         environment("DOCKER_HOST", "unix://${System.getenv("HOME")}/.docker/run/docker.sock")
+    }
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }

@@ -29,3 +29,9 @@ tasks.withType<Javadoc>().configureEach {
         (this as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
     }
 }
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
