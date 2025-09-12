@@ -10,13 +10,13 @@ import com.github.rahulsom.svg.Rect
 import com.github.rahulsom.svg.SVGMarkerClass
 import com.github.rahulsom.svg.SVGStyleClass
 import com.github.rahulsom.svg.Svg
+import jakarta.xml.bind.JAXBContext
+import jakarta.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT
 import java.io.File
 import java.lang.Boolean.TRUE
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.atomic.AtomicInteger
-import javax.xml.bind.JAXBContext
-import javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT
 
 /**
  * Builds an SVG from a text representation of an event sourced aggregate.

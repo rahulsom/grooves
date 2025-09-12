@@ -23,7 +23,7 @@ dependencies {
     implementation(libs.asciidoctorj)
     implementation(libs.slf4j.api)
 
-    implementation(libs.jaxb.api)
+    implementation(libs.jakarta.jaxb.api)
 
     testImplementation(libs.spock.core)
     testRuntimeOnly(libs.junit.platform.launcher)
