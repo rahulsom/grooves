@@ -11,14 +11,14 @@ import java.util.Optional;
  * Decorates a Response from OkHttp with some useful methods.
  */
 @RequiredArgsConstructor
-public class HttpResponseDecorator {
+public class HttpResponseDecorator<T> {
 
     /**
      * Returns the response body as a Map.
      * @return a map of the parsed json
      */
-    public Object getData() {
-        return Optional.ofNullable(response.body())
+    public T getData() {
+        return (T) Optional.ofNullable(response.body())
                 .map(it -> {
                     try {
                         return it.string();

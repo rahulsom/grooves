@@ -21,10 +21,15 @@ dependencies {
     implementation(libs.rxjava.core)
     implementation(libs.rxjava.reactivestreams)
 
+    // JUnit 5 support
+    testImplementation(libs.junit.api)
+    testImplementation(libs.junit.params)
+    testRuntimeOnly(libs.junit.engine)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    
     // Testcontainers support
     testImplementation(libs.testcontainers.junit.jupiter)
     testImplementation(libs.testcontainers.spock)
-    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.test {
