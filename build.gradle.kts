@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.waena.root)
+    alias(libs.plugins.waena.published) apply false
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.allopen) apply false
     alias(libs.plugins.ktlint) apply false

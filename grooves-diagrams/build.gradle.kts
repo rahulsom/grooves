@@ -5,7 +5,7 @@ plugins {
     id("groovy")
     id("org.jetbrains.kotlin.jvm")
     id("org.jlleitschuh.gradle.ktlint")
-    id("com.github.rahulsom.waena.published")
+    alias(libs.plugins.waena.published)
     alias(libs.plugins.sass)
 }
 
