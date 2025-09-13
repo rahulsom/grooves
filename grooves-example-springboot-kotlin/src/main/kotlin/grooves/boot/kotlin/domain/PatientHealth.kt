@@ -35,7 +35,7 @@ class PatientHealth : Snapshot<Patient, String, String, PatientEvent> {
     }
 
     @JsonIgnore
-    @Autowired
+    @field:Autowired
     lateinit var patientRepository: PatientRepository
 
     @JsonIgnore
@@ -55,6 +55,6 @@ class PatientHealth : Snapshot<Patient, String, String, PatientEvent> {
 
 class Procedure(
     var code: String? = null,
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    @param:JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     var date: Date? = null,
 )

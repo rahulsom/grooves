@@ -17,10 +17,10 @@ import java.util.Calendar.HOUR
 
 @RestController
 class PatientController constructor(
-    @Autowired val patientRepository: PatientRepository,
-    @Autowired val patientAccountQuery: PatientAccountQuery,
-    @Autowired val patientHealthQuery: PatientHealthQuery,
-    @Autowired val patientEventRepository: PatientEventRepository,
+    @param:Autowired val patientRepository: PatientRepository,
+    @param:Autowired val patientAccountQuery: PatientAccountQuery,
+    @param:Autowired val patientHealthQuery: PatientHealthQuery,
+    @param:Autowired val patientEventRepository: PatientEventRepository,
 ) {
     @GetMapping("/patient")
     fun list() = patientRepository.findAllByOrderByUniqueIdAsc()

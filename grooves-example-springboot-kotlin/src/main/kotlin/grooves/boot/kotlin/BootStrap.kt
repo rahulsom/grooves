@@ -25,12 +25,12 @@ import java.util.TimeZone
 
 @Component
 class BootStrap constructor(
-    @Autowired val patientRepository: PatientBlockingRepository,
-    @Autowired val patientEventRepository: PatientEventBlockingRepository,
-    @Autowired val patientAccountQuery: PatientAccountQuery,
-    @Autowired val patientHealthQuery: PatientHealthQuery,
-    @Autowired val patientAccountRepository: PatientAccountRepository,
-    @Autowired val patientHealthRepository: PatientHealthRepository,
+    @param:Autowired val patientRepository: PatientBlockingRepository,
+    @param:Autowired val patientEventRepository: PatientEventBlockingRepository,
+    @param:Autowired val patientAccountQuery: PatientAccountQuery,
+    @param:Autowired val patientHealthQuery: PatientHealthQuery,
+    @param:Autowired val patientAccountRepository: PatientAccountRepository,
+    @param:Autowired val patientHealthRepository: PatientHealthRepository,
 ) {
     @PostConstruct
     fun init() {

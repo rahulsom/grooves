@@ -18,8 +18,8 @@ import java.util.Date
 
 @Component
 class PatientHealthQuery constructor(
-    @Autowired val patientEventRepository: PatientEventRepository,
-    @Autowired val patientHealthRepository: PatientHealthRepository,
+    @param:Autowired val patientEventRepository: PatientEventRepository,
+    @param:Autowired val patientHealthRepository: PatientHealthRepository,
 ) : QuerySupport<Patient, String, PatientEvent, String, PatientHealth>,
     SimpleQuery<Patient, String, PatientEvent, PatientEvent.Applicable, String, PatientHealth> {
     override fun getExecutor() =
