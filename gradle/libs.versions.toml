@@ -46,6 +46,7 @@ spring-dependency-management = "1.1.7"
 sunjaxb = "4.0.5"
 svgbuilder = "0.6.0"
 testcontainers = "1.21.3"
+testLogger = "4.0.0"
 waena = "0.18.0"
 
 [libraries]
@@ -113,3 +114,4 @@ asciidoctor-convert = { id = "org.asciidoctor.jvm.convert", version.ref = "ascii
 jooq = { id = "nu.studer.jooq", version.ref = "jooq" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+testLogger = { id = "com.adarshr.test-logger", version.ref = "testLogger" }
