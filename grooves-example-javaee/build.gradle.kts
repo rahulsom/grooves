@@ -1,6 +1,5 @@
 plugins {
     id("war")
-    id("groovy")
 }
 
 version = "0.1"

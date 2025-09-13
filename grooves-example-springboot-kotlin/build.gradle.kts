@@ -5,7 +5,6 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
     id("org.jetbrains.kotlin.plugin.allopen")
     id("org.jetbrains.kotlin.plugin.spring")
-    id("groovy")
 }
 
 version = "0.0.1-SNAPSHOT"
