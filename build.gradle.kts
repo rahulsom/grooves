@@ -32,7 +32,7 @@ subprojects {
     }
 
     configure<TestLoggerExtension> {
-        theme = when(System.getProperty("idea.active")) {
+        theme = when (System.getProperty("idea.active")) {
             "true" -> ThemeType.PLAIN_PARALLEL
             else -> ThemeType.MOCHA_PARALLEL
         }
@@ -63,3 +63,134 @@ contacts {
 }
 
 tasks.named("release") { dependsOn("grooves-docs:gitPublishPush") }
+
+tasks.register("countTests") {
+    description = "Count total number of tests executed across all submodules"
+    group = "verification"
+
+    doLast {
+        var totalTests = 0
+        var totalFailures = 0
+        var totalErrors = 0
+        var totalSkipped = 0
+        val moduleResults = mutableMapOf<String, Int>()
+
+        // Count current tests
+        subprojects.forEach { subproject ->
+            val testResultsDir = subproject.layout.buildDirectory.dir("test-results/test").get().asFile
+            if (testResultsDir.exists()) {
+                val xmlFiles = testResultsDir.listFiles { file ->
+                    file.name.startsWith("TEST-") && file.name.endsWith(".xml")
+                }
+
+                var moduleTests = 0
+                xmlFiles?.forEach { xmlFile ->
+                    val content = xmlFile.readText()
+                    val testsMatch = Regex("""tests="(\d+)"""").find(content)
+                    val failuresMatch = Regex("""failures="(\d+)"""").find(content)
+                    val errorsMatch = Regex("""errors="(\d+)"""").find(content)
+                    val skippedMatch = Regex("""skipped="(\d+)"""").find(content)
+
+                    testsMatch?.let { moduleTests += it.groupValues[1].toInt() }
+                    failuresMatch?.let { totalFailures += it.groupValues[1].toInt() }
+                    errorsMatch?.let { totalErrors += it.groupValues[1].toInt() }
+                    skippedMatch?.let { totalSkipped += it.groupValues[1].toInt() }
+                }
+
+                if (moduleTests > 0) {
+                    moduleResults[subproject.name] = moduleTests
+                    totalTests += moduleTests
+                }
+            }
+        }
+
+        // Read previous test counts
+        val testCountsFile = file("test-counts.properties")
+        val previousCounts = mutableMapOf<String, Int>()
+        if (testCountsFile.exists()) {
+            testCountsFile.readLines().forEach { line ->
+                if (line.contains("=") && !line.startsWith("#")) {
+                    val (module, count) = line.split("=", limit = 2)
+                    previousCounts[module.trim()] = count.trim().toInt()
+                }
+            }
+        }
+
+        // Check for test count decreases
+        val decreases = mutableMapOf<String, Pair<Int, Int>>()
+        val increases = mutableMapOf<String, Pair<Int, Int>>()
+
+        moduleResults.forEach { (module, currentCount) ->
+            val previousCount = previousCounts[module] ?: 0
+            when {
+                currentCount < previousCount -> decreases[module] = Pair(previousCount, currentCount)
+                currentCount > previousCount -> increases[module] = Pair(previousCount, currentCount)
+            }
+        }
+
+        // Display results
+        println("\n=== Test Count Summary ===")
+        moduleResults.toSortedMap().forEach { (module, count) ->
+            val previous = previousCounts[module] ?: 0
+            val indicator = when {
+                count > previous -> " ↗ (+${count - previous})"
+                count < previous -> " ↘ (-${previous - count})"
+                else -> ""
+            }
+            println("  $module: $count tests$indicator")
+        }
+        println("  " + "─".repeat(40))
+        println("  Total: $totalTests tests")
+
+        if (totalFailures > 0 || totalErrors > 0 || totalSkipped > 0) {
+            println("\n=== Additional Statistics ===")
+            if (totalFailures > 0) println("  Failures: $totalFailures")
+            if (totalErrors > 0) println("  Errors: $totalErrors")
+            if (totalSkipped > 0) println("  Skipped: $totalSkipped")
+        }
+
+        // Fail build if test counts decreased
+        if (decreases.isNotEmpty()) {
+            println("\n❌ Build failed: Test count decreased in the following modules:")
+            decreases.forEach { (module, counts) ->
+                println("  $module: ${counts.first} → ${counts.second} (-${counts.first - counts.second})")
+            }
+            println("\nTest counts should never decrease. Please investigate and add missing tests.")
+            throw GradleException("Test count verification failed: ${decreases.size} module(s) have fewer tests")
+        }
+
+        // Update test counts file
+        val timestamp = java.time.LocalDateTime.now().toString()
+        testCountsFile.writeText(
+            """# Test counts per module - automatically updated
+# Last updated: $timestamp
+# Format: module.name=test.count
+
+"""
+        )
+
+        moduleResults.toSortedMap().forEach { (module, count) ->
+            testCountsFile.appendText("$module=$count\n")
+        }
+
+        if (increases.isNotEmpty()) {
+            println("\n✅ Test counts increased in ${increases.size} module(s) - file updated:")
+            increases.forEach { (module, counts) ->
+                println("  $module: ${counts.first} → ${counts.second} (+${counts.second - counts.first})")
+            }
+        }
+
+        println()
+    }
+}
+
+// Auto-run countTests when build or check tasks are executed
+tasks.named("check") { 
+    finalizedBy("countTests") 
+}
+
+// Note: build task depends on check, so it will automatically run countTests via check
+// But we can also add it directly to build for clarity
+tasks.matching { it.name == "build" }.configureEach {
+    finalizedBy("countTests")
+}
