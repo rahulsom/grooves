@@ -1,3 +1,6 @@
+import com.adarshr.gradle.testlogger.TestLoggerExtension
+import com.adarshr.gradle.testlogger.theme.ThemeType
+
 plugins {
     alias(libs.plugins.waena.root)
     alias(libs.plugins.waena.published) apply false
@@ -7,6 +10,7 @@ plugins {
     alias(libs.plugins.sonarqube)
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.spring.dependency.management) apply false
+    alias(libs.plugins.testLogger) apply false
 }
 
 allprojects {
@@ -18,12 +22,21 @@ subprojects {
         mavenCentral()
     }
     apply(plugin = "checkstyle")
+    apply(plugin = "com.adarshr.test-logger")
 
     configure<CheckstyleExtension> {
         configFile = rootProject.file("gradle/checkstyle/checkstyle.xml")
         toolVersion = "10.7.0"
         maxWarnings = 0
         maxErrors = 0
+    }
+
+    configure<TestLoggerExtension> {
+        theme = when(System.getProperty("idea.active")) {
+            "true" -> ThemeType.PLAIN_PARALLEL
+            else -> ThemeType.MOCHA_PARALLEL
+        }
+        slowThreshold = 5000
     }
 
     var theProject = project
