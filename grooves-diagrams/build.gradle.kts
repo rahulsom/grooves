@@ -2,7 +2,6 @@ import io.miret.etienne.gradle.sass.CompileSass
 
 plugins {
     id("java-library")
-    id("groovy")
     id("org.jetbrains.kotlin.jvm")
     id("org.jlleitschuh.gradle.ktlint")
     alias(libs.plugins.waena.published)
@@ -25,7 +24,9 @@ dependencies {
 
     implementation(libs.jakarta.jaxb.api)
 
-    testImplementation(libs.spock.core)
+    testImplementation(libs.junit.api)
+    testImplementation(libs.junit.params)
+    testRuntimeOnly(libs.junit.engine)
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 

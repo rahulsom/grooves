@@ -30,9 +30,6 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.testcontainers.junit.jupiter)
     testImplementation(libs.testcontainers.mongodb)
-    testImplementation(libs.testcontainers.spock)
-    testImplementation(libs.spock.core)
-    testImplementation(libs.spock.spring)
     testImplementation("io.projectreactor.addons:reactor-test:3.0.7.RELEASE")
     testRuntimeOnly(libs.junit.platform.launcher)
 }

@@ -38,8 +38,6 @@ sass = "1.5.2"
 rxjava2 = "2.2.21"
 slf4j = "2.0.17"
 sonar = "6.3.1.5724"
-sourcemuse-mongo = "1.0.7"
-spock = "2.3-groovy-4.0"
 spring-asciidoctor = "0.6.3"
 spring-boot = "3.3.8"
 spring-dependency-management = "1.1.7"
@@ -86,8 +84,6 @@ rxjava-reactivestreams = { module = "io.reactivex:rxjava-reactive-streams", vers
 rxjava2 = { module = "io.reactivex.rxjava2:rxjava", version.ref = "rxjava2" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
-spock-core = { module = "org.spockframework:spock-core", version.ref = "spock" }
-spock-spring = { module = "org.spockframework:spock-spring", version.ref = "spock" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jba" }
 spring-asciidoctor = { module = "io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch", version.ref = "spring-asciidoctor" }
 sunjaxb-core = { module = "com.sun.xml.bind:jaxb-core", version.ref = "sunjaxb" }
@@ -96,7 +92,6 @@ svgbuilder = { module = "com.github.rahulsom:svg-builder", version.ref = "svgbui
 testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers" }
 testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
 testcontainers-mongodb = { module = "org.testcontainers:mongodb", version.ref = "testcontainers" }
-testcontainers-spock = { module = "org.testcontainers:spock", version.ref = "testcontainers" }
 
 [plugins]
 waena-root = { id = "com.github.rahulsom.waena.root", version.ref = "waena" }

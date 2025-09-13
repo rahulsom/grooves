@@ -26,10 +26,9 @@ dependencies {
     testImplementation(libs.junit.params)
     testRuntimeOnly(libs.junit.engine)
     testRuntimeOnly(libs.junit.platform.launcher)
-    
+
     // Testcontainers support
     testImplementation(libs.testcontainers.junit.jupiter)
-    testImplementation(libs.testcontainers.spock)
 }
 
 tasks.test {
