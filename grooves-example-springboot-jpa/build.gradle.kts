@@ -30,6 +30,22 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     testRuntimeOnly(libs.junit.platform.launcher)
+    testRuntimeOnly(libs.junit.platform.engine)
+    testRuntimeOnly(libs.junit.platform.commons)
+}
+
+val junit = libs.versions.junit
+configurations.testRuntimeClasspath {
+    resolutionStrategy {
+        eachDependency {
+            if (requested.group == "org.junit.platform") {
+                useVersion(junit.platform.get())
+            }
+            if (requested.group == "org.junit.jupiter") {
+                useVersion(junit.core.get())
+            }
+        }
+    }
 }
 
 tasks.withType<Test> {

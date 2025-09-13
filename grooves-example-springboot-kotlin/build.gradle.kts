@@ -31,6 +31,22 @@ dependencies {
     testImplementation(libs.testcontainers.mongodb)
     testImplementation("io.projectreactor.addons:reactor-test:3.0.7.RELEASE")
     testRuntimeOnly(libs.junit.platform.launcher)
+    testRuntimeOnly(libs.junit.platform.engine)
+    testRuntimeOnly(libs.junit.platform.commons)
+}
+
+val junit = libs.versions.junit
+configurations.testRuntimeClasspath {
+    resolutionStrategy {
+        eachDependency {
+            if (requested.group == "org.junit.platform") {
+                useVersion(junit.platform.get())
+            }
+            if (requested.group == "org.junit.jupiter") {
+                useVersion(junit.core.get())
+            }
+        }
+    }
 }
 
 tasks.withType<Test> {
