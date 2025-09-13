@@ -13,7 +13,9 @@ description = "Standard Tests for Grooves"
 dependencies {
     api(project(":grooves-api"))
     api(libs.okhttp)
-    api(libs.spock.core)
+    api(libs.junit.api)
+    api(libs.junit.params)
+    api(libs.assertj.core)
 
     implementation(libs.rxjava2)
     implementation(libs.slf4j.api)

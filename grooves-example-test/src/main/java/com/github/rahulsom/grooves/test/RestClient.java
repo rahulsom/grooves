@@ -19,11 +19,12 @@ public class RestClient {
      * Performs a GET request.
      *
      * @param restRequest The parameters for the request
+     * @param <T> The type of response
      *
      * @return The response
      */
     @SneakyThrows
-    public HttpResponseDecorator get(final RestRequest restRequest) {
+    public <T> HttpResponseDecorator<T> get(final RestRequest restRequest) {
         OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 
         Map<String, Object> queryMap = Optional.ofNullable(restRequest.getQuery()).orElse(Map.of());
@@ -41,7 +42,7 @@ public class RestClient {
                 .build();
         Response response = okHttpClient.newCall(request).execute();
 
-        return new HttpResponseDecorator(response);
+        return new HttpResponseDecorator<>(response);
     }
 
     private final String baseUrl;
