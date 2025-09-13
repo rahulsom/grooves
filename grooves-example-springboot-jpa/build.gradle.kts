@@ -29,8 +29,6 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-    testImplementation(libs.spock.core)
-    testImplementation(libs.spock.spring)
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 

@@ -17,7 +17,8 @@ dependencies {
 
     testImplementation(libs.rxjava.core)
     testImplementation(libs.rxjava.reactivestreams)
-    testImplementation(libs.spock.core)
+    testImplementation(libs.junit.api)
+    testRuntimeOnly(libs.junit.engine)
 
     testRuntimeOnly(libs.jetbrains.annotations)
     testRuntimeOnly(libs.junit.platform.launcher)

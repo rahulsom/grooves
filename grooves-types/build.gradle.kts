@@ -16,8 +16,6 @@ dependencies {
     implementation(libs.slf4j.api)
 
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-    testImplementation(libs.spock.core)
 }
 
 tasks.withType<Test> {
