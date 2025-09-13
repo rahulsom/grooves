@@ -1,6 +1,6 @@
 package com.github.rahulsom.grooves.test;
 
-import groovy.json.JsonSlurper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import okhttp3.Response;
 
@@ -26,7 +26,13 @@ public class HttpResponseDecorator<T> {
                         throw new RuntimeException(e);
                     }
                 })
-                .map(it -> new JsonSlurper().parseText(it))
+                .map(it -> {
+                    try {
+                        return new ObjectMapper().readValue(it, Object.class);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .orElse(null);
     }
 

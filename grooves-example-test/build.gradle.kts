@@ -1,12 +1,8 @@
 plugins {
     id("java-library")
-    id("groovy")
     alias(libs.plugins.waena.published)
 }
 
-apply {
-    from("$rootDir/gradle/codenarc/codenarc.gradle")
-}
 
 description = "Standard Tests for Grooves"
 
@@ -21,10 +17,8 @@ dependencies {
     implementation(libs.slf4j.api)
 
     implementation("xerces:xercesImpl:2.12.2")
-    implementation(libs.groovy)
-    implementation(libs.groovy.dateutil)
-    implementation(libs.groovy.json)
-    implementation(libs.groovy.xml)
+    implementation(libs.jackson.databind)
+    implementation(libs.groovy) // for GroovyEventsDsl support
     implementation("org.apache.httpcomponents:httpclient:4.5.14")
     implementation(libs.beanutils)
 

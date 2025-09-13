@@ -15,6 +15,7 @@ google-compiletesting = "0.23.0"
 google-guice = "7.0.0"
 google-guava = "33.4.8-jre"
 groovy = "4.0.28"
+jackson = "2.16.1"
 h2 = "2.3.232"
 javaee = "8.0.1"
 javax-annotation = "1.3.2"
@@ -64,6 +65,7 @@ groovy-dateutil = { module = "org.apache.groovy:groovy-dateutil", version.ref = 
 groovy-json = { module = "org.apache.groovy:groovy-json", version.ref = "groovy" }
 groovy-xml = { module = "org.apache.groovy:groovy-xml", version.ref = "groovy" }
 h2 = { module = "com.h2database:h2", version.ref = "h2" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 javaee-api = { module = "javax:javaee-api", version.ref = "javaee" }
 jakarta-jaxb-api = { module = "jakarta.xml.bind:jakarta.xml.bind-api", version.ref = "jakarta-jaxb" }
 jaxb-api = { module = "javax.xml.bind:jaxb-api", version.ref = "jaxb" }
