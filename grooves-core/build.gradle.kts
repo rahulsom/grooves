@@ -3,7 +3,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
     alias(libs.plugins.logging.capabilities)
     alias(libs.plugins.post.compile.weaving)
-    id("com.github.rahulsom.waena.published")
+    alias(libs.plugins.waena.published)
     id("java-library")
 }
 

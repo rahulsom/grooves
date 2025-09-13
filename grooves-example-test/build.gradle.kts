@@ -1,7 +1,7 @@
 plugins {
     id("java-library")
     id("groovy")
-    id("com.github.rahulsom.waena.published")
+    alias(libs.plugins.waena.published)
 }
 
 apply {
