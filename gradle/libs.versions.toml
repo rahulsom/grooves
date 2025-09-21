@@ -47,7 +47,7 @@ sunjaxb = "4.0.5"
 svgbuilder = "0.6.0"
 testcontainers = "1.21.3"
 testLogger = "4.0.0"
-waena = "0.18.0"
+waena = "0.18.1"
 
 [libraries]
 activation = { module = "javax.activation:activation", version.ref = "activation" }
