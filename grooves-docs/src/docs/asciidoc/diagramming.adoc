@@ -44,4 +44,4 @@ The result is this
   + 4 2016-01-05 paid $ 100.25
 ....
 
-Take a look at https://github.com/rahulsom/grooves/tree/master/grooves-docs/src/docs/asciidoc[the source] for more examples of creating diagrams.
+Take a look at https://github.com/rahulsom/grooves/tree/main/grooves-docs/src/docs/asciidoc[the source] for more examples of creating diagrams.
