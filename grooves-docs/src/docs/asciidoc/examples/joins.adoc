@@ -15,7 +15,7 @@ include::{sourcedir}/grooves-example-springboot-jpa/src/main/groovy/grooves/boot
 
 The query used to compute a Join is slightly different.
 It only concerns itself with two forward events - the `JoinEvent` and the `DisjoinEvent`.
-This is a good example for such a https://github.com/rahulsom/grooves/blob/master/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/queries/ZipcodePatientsQuery.groovy[query].
+This is a good example for such a https://github.com/rahulsom/grooves/blob/main/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/queries/ZipcodePatientsQuery.groovy[query].
 
 [source,groovy]
 ----

@@ -53,7 +53,7 @@ gitPublish {
         from(file("${layout.buildDirectory.get()}/asciidoc/html5")) {
             into("manual/${version}")
         }
-        if (System.getenv("BRANCH_NAME") == "master") {
+        if (System.getenv("BRANCH_NAME") == "main") {
             from(file("${layout.buildDirectory.get()}/asciidoc/html5")) {
                 into("manual/current")
             }

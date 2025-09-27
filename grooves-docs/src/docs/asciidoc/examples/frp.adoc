@@ -30,4 +30,4 @@ include::{sourcedir}/grooves-example-pushstyle/src/main/kotlin/grooves/example/p
 <9> This returns an instance of `VersionedQuery`.
   That can be used to compute snapshots.
 
-The full source for _Push Style_ Event Sourcing with _jOOQ_ and FRP, look at https://github.com/rahulsom/grooves/tree/master/examples/pushstyle[this subproject].
+The full source for _Push Style_ Event Sourcing with _jOOQ_ and FRP, look at https://github.com/rahulsom/grooves/tree/main/examples/pushstyle[this subproject].
