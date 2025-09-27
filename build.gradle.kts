@@ -68,6 +68,10 @@ tasks.register("countTests") {
     description = "Count total number of tests executed across all submodules"
     group = "verification"
 
+    subprojects.forEach { s ->
+        dependsOn(s.tasks.withType<Test>())
+    }
+
     doLast {
         var totalTests = 0
         var totalFailures = 0
@@ -160,10 +164,8 @@ tasks.register("countTests") {
         }
 
         // Update test counts file
-        val timestamp = java.time.LocalDateTime.now().toString()
         testCountsFile.writeText(
             """# Test counts per module - automatically updated
-# Last updated: $timestamp
 # Format: module.name=test.count
 
 """
@@ -185,12 +187,12 @@ tasks.register("countTests") {
 }
 
 // Auto-run countTests when build or check tasks are executed
-tasks.named("check") { 
-    finalizedBy("countTests") 
+tasks.named("check") {
+    dependsOn("countTests")
 }
 
 // Note: build task depends on check, so it will automatically run countTests via check
 // But we can also add it directly to build for clarity
-tasks.matching { it.name == "build" }.configureEach {
-    finalizedBy("countTests")
+tasks.named("build") {
+    dependsOn("countTests")
 }
