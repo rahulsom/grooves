@@ -49,6 +49,8 @@ tasks.named("asciidoctor") { dependsOn(":grooves-diagrams:jar") }
 gitPublish {
     repoUri.set("https://github.com/rahulsom/grooves.git")
     branch.set("gh-pages")
+    username = System.getenv("GITHUB_ACTOR")
+    password = System.getenv("GITHUB_TOKEN")
     contents {
         from(file("${layout.buildDirectory.get()}/asciidoc/html5")) {
             into("manual/${version}")
