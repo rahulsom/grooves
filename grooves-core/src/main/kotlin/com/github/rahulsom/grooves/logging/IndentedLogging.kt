@@ -48,7 +48,7 @@ class IndentedLogging {
             val result = joinPoint.proceed()
             stepOut()
             val listRender = if (result is List<*>) eventsToString(result) else result
-            log.trace("${indent()}$methodName($args) --> $listRender")
+            log.trace("{}{}({}) --> {}", indent(), methodName, args, listRender)
             return result
         } catch (t: Throwable) {
             stepOut()
