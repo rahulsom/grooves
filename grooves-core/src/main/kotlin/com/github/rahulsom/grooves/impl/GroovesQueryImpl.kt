@@ -55,7 +55,7 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
 
         return computeSnapshotImpl(events, snapshot, listOf(aggregate), at, redirect) { c, s ->
             if (s != null) {
-                log.trace("${c.data} -> $s")
+                log.trace("{} -> {}", c.data, s)
             }
             IndentedLogging.stepOut()
         }
@@ -116,7 +116,7 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
                         }
                         DeprecatedBy -> {
                             val ret = deprecatedByProvider.invoke(event)
-                            log.debug("$indent  ...The aggregate was deprecated by ${ret.aggregate}. Recursing to compute snapshot for it...")
+                            log.debug("{}  ...The aggregate was deprecated by {}. Recursing to compute snapshot for it...", indent, ret.aggregate)
                             val refEvent =
                                 eventsProvider
                                     .invoke(listOf(ret.aggregate), null, emptySnapshotProvider.invoke(ret.aggregate))
@@ -129,9 +129,8 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
                                 eventsProvider
                                     .invoke(listOf(ret.aggregate) + aggregates, redirectVersion, otherSnapshot)
                                     .collect(Collectors.toList())
-                            @Suppress("LiftReturnOrAssignment")
                             if (redirect) {
-                                return computeSnapshotImpl(newEvents, otherSnapshot, aggregates + listOf(ret.aggregate), at, redirect) { c, s ->
+                                return computeSnapshotImpl(newEvents, otherSnapshot, aggregates + listOf(ret.aggregate), at, true) { c, s ->
                                     beforeReturn(c, s)
                                     IndentedLogging.stepOut()
                                 }
@@ -173,10 +172,10 @@ class GroovesQueryImpl<VersionOrTimestamp, Snapshot, Aggregate, Event, EventId>(
             val revertedEvent = revertedEventProvider.invoke(mostRecentRevert)
 
             if (revertEvents.remove(revertedEvent)) {
-                log.debug("$indent  ...Reverting $revertedEvent based on $mostRecentRevert")
+                log.debug("{}  ...Reverting revertEvent {} based on {}", indent, revertedEvent, mostRecentRevert)
             } else {
                 if (forwardEvents.remove(revertedEvent)) {
-                    log.debug("$indent  ...Reverting $revertedEvent based on $mostRecentRevert")
+                    log.debug("{}  ...Reverting forwardEvent {} based on {}", indent, revertedEvent, mostRecentRevert)
                 } else {
                     val problem = "There is an event that needs to be reverted but part of the last snapshot - $revertedEvent"
                     log.debug("$indent  ...$problem. Recursing with older snapshot...")
