@@ -13,6 +13,8 @@ jobs:
     uses: rahulsom/_/.github/workflows/gradle.yml@main
     with:
       java-version: 21
+    permissions:
+      contents: write
     secrets:
       ORG_GRADLE_PROJECT_SONATYPEUSERNAME: ${{ secrets.ORG_GRADLE_PROJECT_SONATYPEUSERNAME }}
       ORG_GRADLE_PROJECT_SONATYPEPASSWORD: ${{ secrets.ORG_GRADLE_PROJECT_SONATYPEPASSWORD }}
