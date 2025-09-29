@@ -119,8 +119,8 @@ public class GroovesAcceptanceTest {
                 groovesQuery.computeSnapshot(new Aggregate(2), 3, false);
         assertThat(result).isInstanceOf(GroovesResult.Redirect.class);
         Aggregate aggregate =
-                ((GroovesResult.Redirect<Snapshot, Aggregate, Integer>) result).getAggregate();
-        Integer version = ((GroovesResult.Redirect<Snapshot, Aggregate, Integer>) result).getAt();
+                ((GroovesResult.Redirect<Snapshot, Aggregate, Integer>) result).aggregate();
+        Integer version = ((GroovesResult.Redirect<Snapshot, Aggregate, Integer>) result).at();
 
         assertThat(aggregate.getId()).isEqualTo(1);
         assertThat(version).isEqualTo(3);

@@ -1,6 +1,4 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm")
-    id("org.jlleitschuh.gradle.ktlint")
     alias(libs.plugins.logging.capabilities)
     alias(libs.plugins.post.compile.weaving)
     alias(libs.plugins.waena.published)
@@ -19,9 +17,8 @@ dependencies {
     annotationProcessor(libs.lombok)
     testAnnotationProcessor(libs.lombok)
 
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation(libs.slf4j.api)
+    implementation(libs.jetbrains.annotations)
 
     testImplementation(libs.assertj.core)
     testImplementation(libs.junit.api)
@@ -43,8 +40,8 @@ tasks.withType<Test> {
     systemProperty("org.slf4j.simpleLogger.log.com.github.rahulsom.grooves", "DEBUG")
 }
 
-kotlin {
-    jvmToolchain {
+java {
+    toolchain {
         languageVersion.set(JavaLanguageVersion.of(libs.versions.jdk.get()))
     }
 }
