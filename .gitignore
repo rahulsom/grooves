@@ -24,6 +24,10 @@ out/
 ### Visual Studio Code
 *.code-workspace
 
+### NPM things
+node_modules/
+dist/
+
 ### Other stuff
 .gradletasknamecache
 .pid.lock
