@@ -69,7 +69,7 @@ gitPublish {
     }
 }
 
-tasks.named("configureGit") {
+tasks.register("configureGit") {
     doFirst {
         // Set git user.name and user.email in GitHub Actions environment
         if (System.getenv("GITHUB_ACTIONS") == "true") {
