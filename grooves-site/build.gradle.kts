@@ -11,7 +11,6 @@ tasks.register<Exec>("build") {
     workingDir = file(".")
 
     inputs.dir("src")
-    inputs.dir("public")
     outputs.dir("dist")
 
     dependsOn("npmInstall")
