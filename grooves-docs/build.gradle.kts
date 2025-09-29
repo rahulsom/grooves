@@ -59,7 +59,7 @@ gitPublish {
             from(file("${layout.buildDirectory.get()}/asciidoc/html5")) {
                 into("manual/current")
             }
-            from(rootProject.file("grooves-site")) {
+            from(rootProject.file("grooves-site/dist")) {
                 into(".")
             }
         }
@@ -88,7 +88,7 @@ tasks.register("configureGit") {
 }
 
 tasks.named("gitPublishCopy") {
-    dependsOn("configureGit")
+    dependsOn("configureGit", ":grooves-site:build")
 }
 
 tasks.named("gitPublishPush") { dependsOn("asciidoctor") }
