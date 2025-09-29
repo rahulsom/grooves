@@ -1,7 +1,10 @@
+@import 'bootstrap/dist/css/bootstrap.css';
+@import 'font-awesome/css/font-awesome.css';
 @import url('https://fonts.googleapis.com/css?family=Monoton|Roboto:300,700');
 #intro {
     background-color: transparent;
     text-align: center;
+    padding: 2rem 0;
 }
 #intro h1 {
     font-family: 'Monoton', cursive;
@@ -11,11 +14,17 @@
     transform: rotate(-1.5deg);
     text-shadow: 8px 8px 8px rgba(128,128,128,.5);
 }
-.btn {
-    border-color: rgb(92, 92, 92);
+.btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+    margin: 0.25rem;
 }
-a.btn {
-    color: rgb(92, 92, 92);
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+.btn-group {
+    margin: 0.25rem;
 }
 * {
     font-family: "Roboto", "Helvetica Neue", sans-serif;
