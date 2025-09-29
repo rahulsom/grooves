@@ -97,4 +97,4 @@ The events are never persisted. They are processed as they come on the EventBus.
 == Releasing
 
 * Tag to release. A GitHub action should take care of publishing.
-  Remember to update `grooves-site/versions.json` with the correct list of supported versions.
+  Remember to update `grooves-site/src/versions.json` with the correct list of supported versions.
