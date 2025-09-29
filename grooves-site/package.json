@@ -6,9 +6,14 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "test": "playwright test",
+        "test:ui": "playwright test --ui",
+        "test:headed": "playwright test --headed",
+        "test:debug": "playwright test --debug"
     },
     "devDependencies": {
+        "@playwright/test": "^1.48.0",
         "@types/bootstrap": "^5.2.10",
         "typescript": "~5.8.3",
         "vite": "npm:rolldown-vite@7.1.12"

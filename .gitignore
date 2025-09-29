@@ -27,6 +27,9 @@ out/
 ### NPM things
 node_modules/
 dist/
+.vite
+grooves-site/test-results/
+grooves-site/playwright-report/
 
 ### Other stuff
 .gradletasknamecache
