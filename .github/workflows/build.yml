@@ -1,4 +1,4 @@
-name: Gradle Build
+name: Build
 
 on:
   pull_request:
@@ -20,3 +20,25 @@ jobs:
       ORG_GRADLE_PROJECT_SONATYPEPASSWORD: ${{ secrets.ORG_GRADLE_PROJECT_SONATYPEPASSWORD }}
       ORG_GRADLE_PROJECT_SIGNINGKEY: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
       ORG_GRADLE_PROJECT_SIGNINGPASSWORD: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
+
+  test-site:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Regression test Site
+        run: |-
+          cd grooves-site
+          ./npmw ci
+          npx playwright install --with-deps
+          ./npmw run build
+          ./npmw run test
+          npx playwright test visual.spec.ts
