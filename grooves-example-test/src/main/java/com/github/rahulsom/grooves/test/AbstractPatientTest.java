@@ -325,7 +325,6 @@ public abstract class AbstractPatientTest {
                                        int aggregateIdIndex, String deprecatedIdsStr) {
         var rest = getRest();
         var theId5 = ids.get(5 - 1);
-        var theId4 = ids.get(4 - 1);
 
         var resp = rest.<Map<String, Object>>get(
                 new RestRequest("patient/account/" + theId5, Map.of("version", version)));
@@ -355,6 +354,7 @@ public abstract class AbstractPatientTest {
         assertThat(aggregateId.toString()).isEqualTo(theId5);
 
         if (deprecatedIdsStr != null && !deprecatedIdsStr.isEmpty()) {
+            var theId4 = ids.get(4 - 1);
             final var theId4AsRange = List.of(theId4);
             var deprecatesIds = data.get("deprecatesIds");
             var deprecates = data.get("deprecates");

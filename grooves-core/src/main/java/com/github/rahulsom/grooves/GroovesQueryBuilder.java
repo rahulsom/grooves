@@ -50,19 +50,19 @@ public class GroovesQueryBuilder<AggregateT, VersionOrTimestampT, SnapshotT, Eve
 
         if (exceptions.isEmpty()) {
             return new GroovesQueryImpl<>(
-                snapshotProvider,
-                emptySnapshotProvider,
-                eventsProvider,
-                applyMoreEventsPredicate,
-                eventClassifier,
-                deprecator,
-                exceptionHandler,
-                eventHandler,
-                eventVersionProvider,
-                snapshotVersionSetter,
-                deprecatedByProvider,
-                revertedEventProvider,
-                eventIdProvider
+                    snapshotProvider,
+                    emptySnapshotProvider,
+                    eventsProvider,
+                    applyMoreEventsPredicate,
+                    eventClassifier,
+                    deprecator,
+                    exceptionHandler,
+                    eventHandler,
+                    eventVersionProvider,
+                    snapshotVersionSetter,
+                    deprecatedByProvider,
+                    revertedEventProvider,
+                    eventIdProvider
             );
         } else {
             String firstException = exceptions.remove(0);
