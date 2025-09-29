@@ -86,7 +86,7 @@ public class AcceptanceTestFixture {
                     .findFirst()
                     .orElse(null))
             .emptySnapshotProvider(aggregate ->
-                new Snapshot(aggregate.getId(), 0, "", new ArrayList<>()))
+                    new Snapshot(aggregate.getId(), 0, "", new ArrayList<>()))
             .eventsProvider((aggregates, version, lastSnapshot) ->
                 events.stream()
                     .filter(it ->
