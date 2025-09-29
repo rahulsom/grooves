@@ -69,4 +69,22 @@ gitPublish {
     }
 }
 
+tasks.named("gitPublishCommit") {
+    doFirst {
+        // Set git user.name and user.email in GitHub Actions environment
+        if (System.getenv("GITHUB_ACTIONS") == "true") {
+            val execResult1 = ProcessBuilder("git", "config", "user.name", "GitHub Actions")
+                .start()
+                .waitFor()
+            val execResult2 = ProcessBuilder("git", "config", "user.email", "actions@github.com")
+                .start()
+                .waitFor()
+            
+            if (execResult1 != 0 || execResult2 != 0) {
+                println("Warning: Failed to set git config for GitHub Actions")
+            }
+        }
+    }
+}
+
 tasks.named("gitPublishPush") { dependsOn("asciidoctor") }
