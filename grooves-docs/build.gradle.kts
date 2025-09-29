@@ -73,10 +73,10 @@ tasks.register("configureGit") {
     doFirst {
         // Set git user.name and user.email in GitHub Actions environment
         if (System.getenv("GITHUB_ACTIONS") == "true") {
-            val execResult1 = ProcessBuilder("git", "config", "user.name", "GitHub Actions")
+            val execResult1 = ProcessBuilder("git", "config", "--global", "user.name", "GitHub Actions")
                 .start()
                 .waitFor()
-            val execResult2 = ProcessBuilder("git", "config", "user.email", "actions@github.com")
+            val execResult2 = ProcessBuilder("git", "config", "--global", "user.email", "actions@github.com")
                 .start()
                 .waitFor()
 
