@@ -55,7 +55,7 @@ gitPublish {
         from(file("${layout.buildDirectory.get()}/asciidoc/html5")) {
             into("manual/${version}")
         }
-        if (System.getenv("BRANCH_NAME") == "main") {
+        if (System.getenv("GITHUB_REF_NAME") == "main" || System.getenv("BRANCH_NAME") == "main") {
             from(file("${layout.buildDirectory.get()}/asciidoc/html5")) {
                 into("manual/current")
             }
