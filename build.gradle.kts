@@ -26,7 +26,7 @@ subprojects {
 
     configure<CheckstyleExtension> {
         configFile = rootProject.file("gradle/checkstyle/checkstyle.xml")
-        toolVersion = "10.7.0"
+        toolVersion = rootProject.libs.versions.checkstyle.get()
         maxWarnings = 0
         maxErrors = 0
     }

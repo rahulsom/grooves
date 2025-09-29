@@ -7,6 +7,7 @@ aspectj = "1.9.24"
 assertj = "3.27.6"
 awaitility = "4.3.0"
 beanutils = "1.11.0"
+checkstyle = "10.7.0"
 flyway = "11.13.2"
 freefair-aspectj = "9.0.0"
 git-publish = "5.1.3"
@@ -56,6 +57,7 @@ aspectj-rt = { module = "org.aspectj:aspectjrt", version.ref = "aspectj" }
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
 beanutils = { module = "commons-beanutils:commons-beanutils", version.ref = "beanutils" }
+checkstyle = { module = "com.puppycrawl.tools:checkstyle", version.ref = "checkstyle" }
 google-autoservice = { module = "com.google.auto.service:auto-service", version.ref = "google-autoservice" }
 google-compiletesting = { module = "com.google.testing.compile:compile-testing", version.ref = "google-compiletesting" }
 google-guice = { module = "com.google.inject:guice", version.ref = "google-guice" }
