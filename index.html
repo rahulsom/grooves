@@ -5,15 +5,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
-              integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
-              crossorigin="anonymous">
-
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-              integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
-              crossorigin="anonymous">
-
-        <link rel="stylesheet" href="styles/home.css">
+      <script type="module" crossorigin src="/assets/index.js"></script>
+      <link rel="stylesheet" crossorigin href="/assets/index.css">
     </head>
     <body>
         <div class="container">
@@ -24,29 +17,28 @@
                     <p class="lead">EventSourcing for JVM Languages.</p>
                 </div>
 
-                <a class="btn btn-lg dropdown-toggle"
-                   href="#" id="dropdownMenuLink"
-                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fa fa-book" aria-hidden="true"></i> &nbsp; Documentation
-                </a>
-
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="versions">
-                    <!--
-                    Content to be populated from versions.json
-                    -->
+                <div class="btn-group me-3" role="group">
+                    <button class="btn btn-outline-secondary btn-lg dropdown-toggle"
+                           id="dropdownMenuLink"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-book" aria-hidden="true"></i> &nbsp; Documentation
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="versions">
+                        <!--
+                        Content to be populated from versions.json
+                        -->
+                    </div>
                 </div>
 
                 <a href="http://github.com/rahulsom/grooves"
-                   class="btn btn-lg active"
-                   role="button"
-                   aria-pressed="true">
+                   class="btn btn-outline-secondary btn-lg me-3"
+                   role="button">
                     <i class="fa fa-github" aria-hidden="true"></i> &nbsp; Source
                 </a>
 
                 <a href="http://github.com/rahulsom/grooves/issues"
-                   class="btn btn-lg active"
-                   role="button"
-                   aria-pressed="true">
+                   class="btn btn-outline-secondary btn-lg"
+                   role="button">
                     <i class="fa fa-bug" aria-hidden="true"></i> &nbsp; Issues
                 </a>
 
@@ -83,41 +75,5 @@
 
         </div>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.js"
-                integrity="sha512-+k1pnlgt4F1H8L7t3z95o3/KO+o78INEcXTbnoJQ/F2VqDVhWoaiVml/OEHv9HsVgxUaVW+IbiZPUJQfF/YxZw=="
-                crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"
-                integrity="sha512-TPh2Oxlg1zp+kz3nFA0C5vVC6leG/6mm1z9+mA81MI5eaUVqasPLO8Cuk4gMF4gUfP5etR73rgU/8PNMsSesoQ=="
-                crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
-                integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
-                crossorigin="anonymous"></script>
-        <script>
-
-            $(function() {
-                function createVersion(name, recommended = false) {
-                    if (recommended) {
-                        return `<a class="dropdown-item" href="manual/${name}/index.html"><strong>${name}</strong></a>`;
-                    } else {
-                        return `<a class="dropdown-item" href="manual/${name}/index.html">${name}</a>`;
-                    }
-                }
-                $.getJSON('versions.json', function(data) {
-                    $('#versions').html('');
-                    for (i = 0; i < data.supported.length; i ++) {
-                        $('#versions').append(createVersion(data.supported[i], i == 0));
-                    }
-                    $('#versions').append('<div class="dropdown-divider">Upcoming</div>');
-                    for (i = 0; i < data.upcoming.length; i ++) {
-                        $('#versions').append(createVersion(data.upcoming[i]));
-                    }
-                    $('#versions').append('<div class="dropdown-divider">Old</div>');
-                    for (i = 0; i < data.old.length; i ++) {
-                        $('#versions').append(createVersion(data.old[i]));
-                    }
-                    console.log(data);
-                });
-            })
-        </script>
     </body>
 </html>
