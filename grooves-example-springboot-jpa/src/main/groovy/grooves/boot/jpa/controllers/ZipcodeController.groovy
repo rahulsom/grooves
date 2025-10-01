@@ -28,7 +28,7 @@ class ZipcodeController {
 
     @GetMapping('/zipcode/show/{id}')
     Zipcode show(@PathVariable('id') Long id) {
-        zipcodeRepository.getById(id)
+        zipcodeRepository.getReferenceById(id)
     }
 
     @GetMapping('/zipcode/patients/{id}')
@@ -36,7 +36,7 @@ class ZipcodeController {
             @PathVariable('id') Long id,
             @RequestParam(required = false, name = 'version') Long version,
             @RequestParam(required = false, name = 'date') @DateTimeFormat(pattern = 'yyyy-MM-dd') Date date) {
-        def zipcode = zipcodeRepository.getById(id)
+        def zipcode = zipcodeRepository.getReferenceById(id)
 
         def computation = version ?
             zipcodePatientsQuery.computeSnapshot(zipcode, version) :
