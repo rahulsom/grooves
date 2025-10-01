@@ -17,7 +17,7 @@ import java.util.Date
 
 // tag::documented[]
 @Component
-class PatientAccountQuery constructor(
+class PatientAccountQuery(
     @param:Autowired val patientEventRepository: PatientEventRepository,
     @param:Autowired val patientAccountRepository: PatientAccountRepository,
 ) : QuerySupport<Patient, String, PatientEvent, String, PatientAccount>,

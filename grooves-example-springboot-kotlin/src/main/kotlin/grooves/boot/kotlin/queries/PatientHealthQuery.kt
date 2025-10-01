@@ -17,7 +17,7 @@ import java.lang.Exception
 import java.util.Date
 
 @Component
-class PatientHealthQuery constructor(
+class PatientHealthQuery(
     @param:Autowired val patientEventRepository: PatientEventRepository,
     @param:Autowired val patientHealthRepository: PatientHealthRepository,
 ) : QuerySupport<Patient, String, PatientEvent, String, PatientHealth>,

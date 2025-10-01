@@ -24,7 +24,7 @@ import java.util.Calendar
 import java.util.TimeZone
 
 @Component
-class BootStrap constructor(
+class BootStrap(
     @param:Autowired val patientRepository: PatientBlockingRepository,
     @param:Autowired val patientEventRepository: PatientEventBlockingRepository,
     @param:Autowired val patientAccountQuery: PatientAccountQuery,
@@ -241,7 +241,7 @@ class BootStrap constructor(
         }
         return com.github.rahulsom.grooves.test
             .EventsDsl<Patient, String, PatientEvent>()
-            .on<String, Snapshot<Patient, String, String, PatientEvent>>(
+            .on(
                 patient,
                 eventSaver,
                 positionSupplier,
