@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -147,7 +148,7 @@ public abstract class AbstractPatientTest {
         assertThat(resp.getStatus()).isEqualTo(200);
         var data = resp.getData();
         assertThat(data).isNotNull();
-        
+
         // Check aggregate ID (could be direct or nested)
         var aggregateId = data.get("aggregateId");
         if (aggregateId == null) {
@@ -157,10 +158,10 @@ public abstract class AbstractPatientTest {
             }
         }
         assertThat(aggregateId.toString()).isEqualTo(theId);
-        
+
         assertThat(data.get("name")).isEqualTo(name);
         assertThat(data.get("lastEventPosition")).isEqualTo(lastEventPos);
-        
+
         var procedures = (List<Map<String, Object>>) data.get("procedures");
         assertThat(procedures).hasSize(codes.size());
         var procedureCodes = procedures.stream().map(p -> p.get("code").toString()).toList();
@@ -194,7 +195,7 @@ public abstract class AbstractPatientTest {
         assertThat(resp.getStatus()).isEqualTo(200);
         var data = resp.getData();
         assertThat(data).isNotNull();
-        
+
         // Check aggregate ID (could be direct or nested)
         var aggregateId = data.get("aggregateId");
         if (aggregateId == null) {
@@ -204,10 +205,10 @@ public abstract class AbstractPatientTest {
             }
         }
         assertThat(aggregateId.toString()).isEqualTo(theId);
-        
+
         assertThat(data.get("name")).isEqualTo(name);
         assertThat(data.get("lastEventPosition")).isEqualTo(version);
-        
+
         var procedures = (List<Map<String, Object>>) data.get("procedures");
         assertThat(procedures).hasSize(codes.size());
         var procedureCodes = procedures.stream().map(p -> p.get("code").toString()).toList();
@@ -229,13 +230,13 @@ public abstract class AbstractPatientTest {
         final var codes = codesStr.isEmpty() ? List.<String>of() : List.of(codesStr.split(";"));
 
         var resp = rest.<Map<String, Object>>get(
-                new RestRequest("patient/health/" + theId, 
+                new RestRequest("patient/health/" + theId,
                         Map.of("date", date + "T00:00:00.000Z")));
 
         assertThat(resp.getStatus()).isEqualTo(200);
         var data = resp.getData();
         assertThat(data).isNotNull();
-        
+
         // Check aggregate ID (could be direct or nested)
         var aggregateId = data.get("aggregateId");
         if (aggregateId == null) {
@@ -245,10 +246,10 @@ public abstract class AbstractPatientTest {
             }
         }
         assertThat(aggregateId.toString()).isEqualTo(theId);
-        
+
         assertThat(data.get("name")).isEqualTo(name);
         assertThat(data.get("lastEventPosition")).isEqualTo(lastEventPos);
-        
+
         var procedures = (List<Map<String, Object>>) data.get("procedures");
         assertThat(procedures).hasSize(codes.size());
         var procedureCodes = procedures.stream().map(p -> p.get("code").toString()).toList();
@@ -258,18 +259,18 @@ public abstract class AbstractPatientTest {
     @ParameterizedTest
     @DisplayName("Farrokh Bulsara's balance is correct at version {0}")
     @CsvSource(textBlock = """
-            1, 0.0, 0.0, 4, 
-            2, 170.0, 0.0, 4, 
-            3, 248.93, 0.0, 4, 
+            1, 0.0, 0.0, 4,
+            2, 170.0, 0.0, 4,
+            3, 248.93, 0.0, 4,
             4, 148.68, 100.25, 5, '4'
             """)
-    void farrokhBulsaraBalanceAtVersion(int version, BigDecimal balance, BigDecimal moneyMade, 
+    void farrokhBulsaraBalanceAtVersion(int version, BigDecimal balance, BigDecimal moneyMade,
                                        int aggregateIdIndex, String deprecatedIdsStr) {
         var rest = getRest();
         var theId4 = ids.get(4 - 1);
         final var theAggregateId = ids.get(aggregateIdIndex - 1);
         final var theDeprecatedIds = deprecatedIdsStr != null && !deprecatedIdsStr.isEmpty() ?
-                List.of(deprecatedIdsStr.split(";")).stream()
+                Stream.of(deprecatedIdsStr.split(";"))
                         .map(i -> ids.get(Integer.parseInt(i) - 1)).toList() :
                 null;
 
@@ -279,17 +280,17 @@ public abstract class AbstractPatientTest {
         assertThat(resp.getStatus()).isEqualTo(200);
         var data = resp.getData();
         assertThat(data).isNotNull();
-        
+
         final var actualBalance = new BigDecimal(data.get("balance").toString());
         assertThat(actualBalance)
                 .usingComparator(BigDecimal::compareTo)
                 .isEqualTo(balance);
-        
+
         final var actualMoneyMade = new BigDecimal(data.get("moneyMade").toString());
         assertThat(actualMoneyMade)
                 .usingComparator(BigDecimal::compareTo)
                 .isEqualTo(moneyMade);
-        
+
         if (theDeprecatedIds != null) {
             var deprecatesIds = data.get("deprecatesIds");
             var deprecates = data.get("deprecates");
@@ -302,7 +303,7 @@ public abstract class AbstractPatientTest {
                 assertThat(deprecatesIdsList).isEqualTo(theDeprecatedIds);
             }
         }
-        
+
         // Check aggregate ID (could be direct or nested)
         var aggregateId = data.get("aggregateId");
         if (aggregateId == null) {
@@ -317,8 +318,8 @@ public abstract class AbstractPatientTest {
     @ParameterizedTest
     @DisplayName("Freddie Mercury's balance is correct at version {0}")
     @CsvSource(textBlock = """
-            1, 0.0, 0.0, 5, 
-            2, -100.25, 100.25, 5, 
+            1, 0.0, 0.0, 5,
+            2, -100.25, 100.25, 5,
             3, 148.68, 100.25, 5, '4'
             """)
     void freddieMercuryBalanceAtVersion(int version, BigDecimal balance, BigDecimal moneyMade,
@@ -382,7 +383,7 @@ public abstract class AbstractPatientTest {
         assertThat(resp5.getStatus()).isEqualTo(200);
         var data5 = resp5.getData();
         assertThat(data5).isNotNull();
-        
+
         // Check aggregate ID (could be direct or nested)
         var aggregateId5 = data5.get("aggregateId");
         if (aggregateId5 == null) {
@@ -392,7 +393,7 @@ public abstract class AbstractPatientTest {
             }
         }
         assertThat(aggregateId5.toString()).isEqualTo(theId5);
-        
+
         // Check deprecated IDs
         var deprecatesIds5 = data5.get("deprecatesIds");
         var deprecates5 = data5.get("deprecates");
@@ -404,7 +405,7 @@ public abstract class AbstractPatientTest {
                     .toList();
             assertThat(deprecatesIdsList5).isEqualTo(theId4AsRange);
         }
-        
+
         final var balance5 = new BigDecimal(data5.get("balance").toString());
         assertThat(balance5)
                 .usingComparator(BigDecimal::compareTo)
@@ -414,7 +415,7 @@ public abstract class AbstractPatientTest {
                 .usingComparator(BigDecimal::compareTo)
                 .isEqualTo(new BigDecimal("100.25"));
         assertThat(data5.get("lastEventPosition")).isEqualTo(3);
-        
+
         var lastEventTimestamp5 = getDate(data5.get("lastEventTimestamp"));
         assertThat(lastEventTimestamp5).isNotNull();
         var dateFormat = new SimpleDateFormat("yyyyMMdd", java.util.Locale.US);
@@ -425,7 +426,7 @@ public abstract class AbstractPatientTest {
         assertThat(resp4.getStatus()).isEqualTo(200);
         var data4 = resp4.getData();
         assertThat(data4).isNotNull();
-        
+
         // Should redirect to patient 5's aggregate
         var aggregateId4 = data4.get("aggregateId");
         if (aggregateId4 == null) {
@@ -435,7 +436,7 @@ public abstract class AbstractPatientTest {
             }
         }
         assertThat(aggregateId4.toString()).isEqualTo(theId5);
-        
+
         // Should show same deprecated IDs as patient 5
         var deprecatesIds4 = data4.get("deprecatesIds");
         var deprecates4 = data4.get("deprecates");
@@ -447,7 +448,7 @@ public abstract class AbstractPatientTest {
                     .toList();
             assertThat(deprecatesIdsList4).isEqualTo(theId4AsRange);
         }
-        
+
         // Should show same balance as patient 5
         final var balance4 = new BigDecimal(data4.get("balance").toString());
         assertThat(balance4)
@@ -458,7 +459,7 @@ public abstract class AbstractPatientTest {
                 .usingComparator(BigDecimal::compareTo)
                 .isEqualTo(new BigDecimal("100.25"));
         assertThat(data4.get("lastEventPosition")).isEqualTo(3);
-        
+
         var lastEventTimestamp4 = getDate(data4.get("lastEventTimestamp"));
         assertThat(lastEventTimestamp4).isNotNull();
         assertThat(dateFormat.format(lastEventTimestamp4)).isEqualTo("20160128");
@@ -477,7 +478,7 @@ public abstract class AbstractPatientTest {
             7, 3, Sarah Palin, 148.68
             7, 4, Sarah Palin, -100.25
             """)
-    void revertingMergeWorksByVersion(int patientIndex, int version, String name, 
+    void revertingMergeWorksByVersion(int patientIndex, int version, String name,
                                      BigDecimal balance) {
         var rest = getRest();
         var patientId = ids.get(patientIndex - 1);
@@ -488,9 +489,9 @@ public abstract class AbstractPatientTest {
         assertThat(resp.getStatus()).isEqualTo(200);
         var data = resp.getData();
         assertThat(data).isNotNull();
-        
+
         assertThat(data.get("name")).isEqualTo(name);
-        
+
         final var actualBalance = new BigDecimal(data.get("balance").toString());
         assertThat(actualBalance)
                 .usingComparator(BigDecimal::compareTo)
@@ -515,15 +516,15 @@ public abstract class AbstractPatientTest {
         var patientId = ids.get(patientIndex - 1);
 
         var resp = rest.<Map<String, Object>>get(
-                new RestRequest("patient/account/" + patientId, 
+                new RestRequest("patient/account/" + patientId,
                         Map.of("date", date + "T00:00:00.000Z")));
 
         assertThat(resp.getStatus()).isEqualTo(200);
         var data = resp.getData();
         assertThat(data).isNotNull();
-        
+
         assertThat(data.get("name")).isEqualTo(name);
-        
+
         final var actualBalance = new BigDecimal(data.get("balance").toString());
         assertThat(actualBalance)
                 .usingComparator(BigDecimal::compareTo)
