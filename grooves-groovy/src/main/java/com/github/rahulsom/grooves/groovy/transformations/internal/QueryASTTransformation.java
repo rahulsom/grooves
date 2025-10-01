@@ -49,7 +49,7 @@ public class QueryASTTransformation extends AbstractASTTransformation {
                 List<MethodNode> methodsByName =
                         theClassNode.getMethods().stream()
                                 .filter(it -> it.getName().equals(methodName))
-                                .collect(Collectors.toList());
+                                .toList();
 
                 final String methodSignature = String.format("%s %s(%s event, %s snapshot)",
                         getObservableEventApplyOutcome(), methodName,
@@ -77,7 +77,7 @@ public class QueryASTTransformation extends AbstractASTTransformation {
                             })
                             .findFirst();
 
-                    if (!matchingMethod.isPresent()) {
+                    if (matchingMethod.isEmpty()) {
                         addError(String.format("Missing expected method %s. %s",
                                 methodSignatureString, "Signature was different when name matched"),
                                 annotationNode);
