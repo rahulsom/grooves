@@ -69,10 +69,7 @@ public class Utils {
         final EventT lastEvent =
                 events.isEmpty() ? null : events.get(events.size() - 1);
 
-        final boolean redirectToDeprecator =
-                lastEvent != null
-                        && lastEvent instanceof DeprecatedBy
-                        && redirect;
+        final boolean redirectToDeprecator = lastEvent instanceof DeprecatedBy && redirect;
 
         return fromPublisher(it.getDeprecatedByObservable())
                 .flatMap(deprecatedBy -> redirectToDeprecator ? redirectedSnapshot.get() : just(it))
