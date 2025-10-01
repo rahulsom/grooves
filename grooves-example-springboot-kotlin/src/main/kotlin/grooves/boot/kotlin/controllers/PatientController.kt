@@ -16,7 +16,7 @@ import java.util.Calendar
 import java.util.Calendar.HOUR
 
 @RestController
-class PatientController constructor(
+class PatientController(
     @param:Autowired val patientRepository: PatientRepository,
     @param:Autowired val patientAccountQuery: PatientAccountQuery,
     @param:Autowired val patientHealthQuery: PatientHealthQuery,
