@@ -40,8 +40,9 @@ class PatientAccountQuery implements
     @Autowired PatientAccountRepository patientAccountRepository
 
     // tag::documented[]
+    @NotNull
     @Override
-    Publisher<PatientAccount> getSnapshot(long maxPosition, Patient aggregate) { // <3>
+    Publisher<PatientAccount> getSnapshot(long maxPosition, @NotNull Patient aggregate) { // <3>
         // end::documented[]
         def snapshots = maxPosition == Long.MAX_VALUE ?
                 patientAccountRepository.findAllByAggregateId(aggregate.id) :
@@ -52,8 +53,9 @@ class PatientAccountQuery implements
         // tag::documented[]
     }
 
+    @NotNull
     @Override
-    Publisher<PatientAccount> getSnapshot(Date maxTimestamp, Patient aggregate) { // <4>
+    Publisher<PatientAccount> getSnapshot(Date maxTimestamp, @NotNull Patient aggregate) { // <4>
         // end::documented[]
         def snapshots = maxTimestamp == null ?
                 patientAccountRepository.findAllByAggregateId(aggregate.id) :
@@ -65,20 +67,22 @@ class PatientAccountQuery implements
     }
 
     @Override
-    boolean shouldEventsBeApplied(PatientAccount snapshot) { // <5>
+    boolean shouldEventsBeApplied(@NotNull PatientAccount snapshot) { // <5>
         true
     }
 
+    @NotNull
     @Override
     Publisher<EventApplyOutcome> onException(
-            Exception e, PatientAccount snapshot, PatientEvent event) { // <6>
+            @NotNull Exception e, @NotNull PatientAccount snapshot, @NotNull PatientEvent event) { // <6>
         snapshot.processingErrors++
         just(CONTINUE)
     }
 
+    @NotNull
     @Override
     Publisher<PatientEvent> getUncomputedEvents(
-            Patient patient, PatientAccount lastSnapshot, long version) { // <7>
+            @NotNull Patient patient, PatientAccount lastSnapshot, long version) { // <7>
         // end::documented[]
         def cb = entityManager.criteriaBuilder
         def q = cb.createQuery(PatientEvent)
@@ -97,7 +101,7 @@ class PatientAccountQuery implements
 
     @NotNull
     @Override Publisher<PatientEvent> getUncomputedEvents(
-            Patient aggregate, PatientAccount lastSnapshot, Date snapshotTime) { // <8>
+            @NotNull Patient aggregate, PatientAccount lastSnapshot, @NotNull Date snapshotTime) { // <8>
         // end::documented[]
         def cb = entityManager.criteriaBuilder
         def q = cb.createQuery(PatientEvent)
@@ -129,7 +133,7 @@ class PatientAccountQuery implements
     }
 
     @Override
-    void addToDeprecates(@NotNull PatientAccount snapshot, Patient deprecatedAggregate) {
+    void addToDeprecates(@NotNull PatientAccount snapshot, @NotNull Patient deprecatedAggregate) {
         snapshot.deprecates << deprecatedAggregate
     }
 

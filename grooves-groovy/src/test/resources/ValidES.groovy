@@ -13,7 +13,7 @@ import static rx.RxReactiveStreams.toPublisher
 @CompileStatic @Query(aggregate = Account, snapshot = Balance)
 class ValidESQuery implements QuerySupport<Account, Long, Transaction, String, Balance> {
     @NotNull @Override Balance createEmptySnapshot() { new Balance() }
-    @NotNull @Override Publisher<Balance> getSnapshot(long maxPosition, Account aggregate) {
+    @NotNull @Override Publisher<Balance> getSnapshot(long maxPosition, @NotNull Account aggregate) {
         toPublisher(empty())
     }
     @NotNull @Override Publisher<Balance> getSnapshot(@NotNull Date maxTimestamp, @NotNull Account aggregate) {

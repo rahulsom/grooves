@@ -33,6 +33,7 @@ class ZipcodePatientsQuery implements JoinSupport< // <1>
     @Autowired ZipcodeEventRepository zipcodeEventRepository
     @Autowired ZipcodePatientsRepository zipcodePatientsRepository
 
+    @NotNull
     @Override
     Publisher<ZipcodeEvent> getUncomputedEvents(
         @NotNull Zipcode aggregate, @Nullable ZipcodePatients lastSnapshot, @NotNull Date snapshotTime) {
@@ -40,12 +41,14 @@ class ZipcodePatientsQuery implements JoinSupport< // <1>
             aggregate, lastSnapshot.lastEventTimestamp, snapshotTime))
     }
 
+    @NotNull
     @Override
     Publisher<ZipcodePatients> getSnapshot(@Nullable Date maxTimestamp, @NotNull Zipcode aggregate) {
         fromIterable(zipcodePatientsRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
             aggregate.id, maxTimestamp))
     }
 
+    @NotNull
     @Override
     Publisher<ZipcodeEvent> getUncomputedEvents(
         @NotNull Zipcode aggregate, @Nullable ZipcodePatients lastSnapshot, long version) {
@@ -53,12 +56,14 @@ class ZipcodePatientsQuery implements JoinSupport< // <1>
             aggregate, lastSnapshot.lastEventPosition, version))
     }
 
+    @NotNull
     @Override
     Publisher<ZipcodePatients> getSnapshot(long maxPosition, @NotNull Zipcode aggregate) {
         fromIterable(zipcodePatientsRepository.findAllByAggregateIdAndLastEventPositionLessThan(
             aggregate.id, maxPosition))
     }
 
+    @NotNull
     @Override
     ZipcodePatients createEmptySnapshot() {
         new ZipcodePatients(deprecatesIds: '', joinedIds: '')
@@ -74,6 +79,7 @@ class ZipcodePatientsQuery implements JoinSupport< // <1>
         // ignore for now
     }
 
+    @NotNull
     @Override
     Publisher<EventApplyOutcome> onException(
         @NotNull Exception e, @NotNull ZipcodePatients snapshot, @NotNull ZipcodeEvent event) {
