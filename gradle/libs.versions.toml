@@ -65,8 +65,6 @@ google-guava = { module = "com.google.guava:guava", version.ref = "google-guava"
 groovy = { module = "org.apache.groovy:groovy", version.ref = "groovy" }
 groovy-all = { module = "org.apache.groovy:groovy-all", version.ref = "groovy" }
 groovy-dateutil = { module = "org.apache.groovy:groovy-dateutil", version.ref = "groovy" }
-groovy-json = { module = "org.apache.groovy:groovy-json", version.ref = "groovy" }
-groovy-xml = { module = "org.apache.groovy:groovy-xml", version.ref = "groovy" }
 h2 = { module = "com.h2database:h2", version.ref = "h2" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 javaee-api = { module = "javax:javaee-api", version.ref = "javaee" }
