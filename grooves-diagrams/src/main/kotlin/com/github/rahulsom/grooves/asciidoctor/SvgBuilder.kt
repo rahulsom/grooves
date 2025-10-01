@@ -49,7 +49,10 @@ class SvgBuilder(
                 .map { it.date }
                 .sorted()
                 .distinct()
-        minInterval = justDates.windowed(2, 1, false).map { a -> a[1].time - a[0].time }.minOrNull()!!
+        minInterval =
+            justDates
+                .windowed(2, 1, false)
+                .minOf { a -> a[1].time - a[0].time }
         justDates.forEach {
             dates[it] = (it.time - justDates[0].time) * 1.0 / minInterval
         }
