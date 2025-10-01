@@ -38,8 +38,9 @@ class PatientHealthQuery implements
         new PatientHealth(deprecates: [], procedures: [])
     }
 
+    @NotNull
     @Override
-    Publisher<PatientHealth> getSnapshot(long maxPosition, Patient aggregate) {
+    Publisher<PatientHealth> getSnapshot(long maxPosition, @NotNull Patient aggregate) {
         def snapshots = maxPosition == Long.MAX_VALUE ?
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
                 patientHealthRepository.findAllByAggregateIdAndLastEventPositionLessThan(
@@ -48,8 +49,9 @@ class PatientHealthQuery implements
         fromIterable(snapshots).firstElement().toFlowable()
     }
 
+    @NotNull
     @Override
-    Publisher<PatientHealth> getSnapshot(Date maxTimestamp, Patient aggregate) {
+    Publisher<PatientHealth> getSnapshot(Date maxTimestamp, @NotNull Patient aggregate) {
         def snapshots = maxTimestamp == null ?
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
                 patientHealthRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
@@ -58,16 +60,17 @@ class PatientHealthQuery implements
         fromIterable(snapshots).firstElement().toFlowable()
     }
 
+    @NotNull
     @Override
     Publisher<PatientEvent> getUncomputedEvents(
-            Patient patient, PatientHealth lastSnapshot, long version) {
+            @NotNull Patient patient, PatientHealth lastSnapshot, long version) {
         fromIterable(patientEventRepository.getUncomputedEventsByVersion(
                 patient, lastSnapshot?.lastEventPosition ?: 0L, version))
     }
 
     @NotNull
     @Override Publisher<PatientEvent> getUncomputedEvents(
-            Patient patient, PatientHealth lastSnapshot, Date snapshotTime) {
+            @NotNull Patient patient, PatientHealth lastSnapshot, @NotNull Date snapshotTime) {
         fromIterable(lastSnapshot?.lastEventTimestamp ?
                 patientEventRepository.getUncomputedEventsByDateRange(
                         patient, lastSnapshot.lastEventTimestamp, snapshotTime) :
@@ -76,18 +79,19 @@ class PatientHealthQuery implements
     }
 
     @Override
-    boolean shouldEventsBeApplied(PatientHealth snapshot) {
+    boolean shouldEventsBeApplied(@NotNull PatientHealth snapshot) {
         true
     }
 
     @Override
-    void addToDeprecates(@NotNull PatientHealth snapshot, Patient deprecatedAggregate) {
+    void addToDeprecates(@NotNull PatientHealth snapshot, @NotNull Patient deprecatedAggregate) {
         snapshot.deprecates << deprecatedAggregate
     }
 
+    @NotNull
     @Override
     Publisher<EventApplyOutcome> onException(
-            Exception e, PatientHealth snapshot, PatientEvent event) {
+            @NotNull Exception e, @NotNull PatientHealth snapshot, @NotNull PatientEvent event) {
         snapshot.processingErrors++
         just(CONTINUE)
     }
