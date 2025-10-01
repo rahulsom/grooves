@@ -3,9 +3,13 @@ package invalid;
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.java.Query;
 import com.github.rahulsom.grooves.queries.QuerySupport;
-import domains.*;
-import org.reactivestreams.Publisher;
+import domains.Account;
+import domains.Balance;
+import domains.CashDeposit;
+import domains.CashWithdrawal;
+import domains.Transaction;
 import org.jetbrains.annotations.NotNull;
+import org.reactivestreams.Publisher;
 
 import java.util.Date;
 
