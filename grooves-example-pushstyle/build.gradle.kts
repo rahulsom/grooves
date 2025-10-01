@@ -1,4 +1,5 @@
 import nu.studer.gradle.jooq.JooqEdition
+import org.jooq.meta.kotlin.*
 
 buildscript {
     dependencies {
@@ -53,13 +54,13 @@ dependencies {
 }
 
 jooq {
-    edition = JooqEdition.OSS
+    edition.set(JooqEdition.OSS)
     configurations {
-        main {
-            generationTool {
+        create("main") {
+            jooqConfiguration {
                 jdbc {
                     driver = "org.h2.Driver"
-                    url = "jdbc:h2:file:${buildDir}/schema"
+                    url = "jdbc:h2:file:${project.layout.buildDirectory.dir("schema").get().asFile}"
                     user = "sa"
                     password = ""
                 }
@@ -73,11 +74,11 @@ jooq {
                         inputSchema = "public"
                     }
                     generate {
-                        relations = true
-                        deprecated = false
-                        records = true
-                        immutablePojos = true
-                        fluentSetters = true
+                        isRelations = true
+                        isDeprecated = false
+                        isRecords = true
+                        isImmutablePojos = true
+                        isFluentSetters = true
                     }
                     target {
                         packageName = "grooves.example.pushstyle"
@@ -92,19 +93,17 @@ flyway {
     url = "jdbc:h2:file:${layout.buildDirectory.dir("schema").get().asFile}"
     user = "sa"
     password = ""
-    schemas = ["public"]
+    schemas = arrayOf("public")
 }
 
-javadoc {
-    exclude("example/pushstyle/tables/**")
-}
+tasks.withType<Javadoc> { exclude("example/pushstyle/tables/**") }
 
-generateJooq.dependsOn("flywayMigrate")
-compileKotlin.dependsOn("generateJooq")
+tasks.named("generateJooq") { dependsOn("flywayMigrate") }
+tasks.named("compileKotlin") { dependsOn("generateJooq") }
 
-tasks.named("checkstyleMain", Checkstyle) { it.source = "src/main/java" }
-tasks.named("runKtlintCheckOverMainSourceSet") { it.dependsOn("generateJooq") }
+tasks.named<Checkstyle>("checkstyleMain") { source = fileTree("src/main/java") }
+tasks.named("runKtlintCheckOverMainSourceSet") { dependsOn("generateJooq") }
 
-test {
+tasks.withType<Test> {
     useJUnitPlatform()
 }
