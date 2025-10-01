@@ -275,10 +275,8 @@ public class QueryExecutor<
         } catch (Exception e2) {
             String description = String.format(
                     "{Snapshot: %s; Event: %s; method: %s; originalException: %s}",
-                    String.valueOf(snapshot), String.valueOf(event), methodName,
-                    String.valueOf(e1));
-            log.error(String.format("Exception thrown while calling exception handler. %s",
-                    description), e2);
+                    snapshot, event, methodName, e1);
+            log.error("Exception thrown while calling exception handler. {}", description, e2);
             return just(RETURN);
         }
     }
