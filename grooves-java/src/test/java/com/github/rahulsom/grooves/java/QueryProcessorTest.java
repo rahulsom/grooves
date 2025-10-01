@@ -50,9 +50,8 @@ public class QueryProcessorTest {
                 .atColumn(1);
     }
 
-    /*
     @Test
-    public void testIncorrectReturnType() throws Exception {
+    public void testIncorrectReturnType() {
         JavaFileObject balanceQuery = forResource("invalid/IncorrectReturnType.java");
         Compilation compilation =
                 javac()
@@ -62,10 +61,9 @@ public class QueryProcessorTest {
         assertThat(compilation).failed();
         assertThat(compilation)
                 .hadErrorContaining("incompatible types: no instance(s) of type variable(s) T "
-                        + "exist so that rx.Observable<T> conforms to " + EAC_CLASS)
+                        + "exist so that rx.Observable<T> conforms to ")
                 .inFile(balanceQuery)
-                .onLine(15)
-                .atColumn(1);
+                .onLine(45)
+                .atColumn(21);
     }
-    */
 }
