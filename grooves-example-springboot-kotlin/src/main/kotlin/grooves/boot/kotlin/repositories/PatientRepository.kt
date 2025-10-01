@@ -24,14 +24,14 @@ interface PatientRepository : ReactiveCrudRepository<Patient, String> {
 interface PatientEventRepository : ReactiveCrudRepository<PatientEvent, String> {
     fun findAllByAggregateIdIn(aggregateIds: List<String>): Flux<PatientEvent>
 
-    @Query("{'aggregateId':?0, 'position':{'\$gt':?1, '\$lte':?2}}")
+    @Query($$"{'aggregateId':?0, 'position':{'$gt':?1, '$lte':?2}}")
     fun findAllByPositionRange(
         aggregateId: String,
         lowerBoundExclusive: Long,
         upperBoundInclusive: Long,
     ): Flux<PatientEvent>
 
-    @Query("{'aggregateId':?0, 'timestamp':{'\$gt':?1, '\$lte':?2}}")
+    @Query($$"{'aggregateId':?0, 'timestamp':{'$gt':?1, '$lte':?2}}")
     fun findAllByTimestampRange(
         aggregateId: String,
         lowerBoundExclusive: Date,
