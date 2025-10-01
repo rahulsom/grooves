@@ -60,7 +60,7 @@ public class IndentedLogging {
      * @throws Throwable any exception thrown by the intercepted method
      */
     @SuppressWarnings({"unused", "UnusedParameters"})
-    @Around(value = "@annotation(trace)", argNames = "trace")
+    @Around(value = "@annotation(trace)", argNames = "joinPoint,trace")
     public Object around(ProceedingJoinPoint joinPoint, Trace trace) throws Throwable {
         var signature = joinPoint.getSignature();
         var classWithFunction = joinPoint.getTarget().getClass();
