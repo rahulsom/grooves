@@ -160,20 +160,19 @@ class BootStrap constructor(
         }
     }
 
-    @Suppress("UNUSED_PARAMETER")
     private fun <
         SnapshotT : Snapshot<Patient, String, String, PatientEvent>,
         QueryT : QuerySupport<Patient, String, PatientEvent, String, SnapshotT>,
     > snapshotWith(
-        it: OnSpec<
+        @Suppress("unused") it: OnSpec<
             Patient,
             String,
             PatientEvent,
             String,
             out Snapshot<Patient, String, String, PatientEvent>,
         >,
-        query: QueryT,
-        repository: ReactiveCrudRepository<SnapshotT, String>,
+        @Suppress("unused") query: QueryT,
+        @Suppress("unused") repository: ReactiveCrudRepository<SnapshotT, String>,
     ) = null
 //            query.computeSnapshot(it.aggregate, Long.MAX_VALUE)
 //                    .flatMap { repository.save(it).toObservable() }
