@@ -158,16 +158,13 @@ public class QueryExecutor<
     private Flowable<? extends SnapshotT> handleMethodResponse(
             AtomicBoolean stopApplyingEvents, SnapshotT snapshot, String methodName,
             EventApplyOutcome retval) {
-        switch (retval) {
-            case RETURN:
+        return switch (retval) {
+            case RETURN -> {
                 stopApplyingEvents.set(true);
-                return just(snapshot);
-            case CONTINUE:
-                return just(snapshot);
-            default:
-                throw new GroovesException(
-                        String.format("Unexpected value from calling '%s'", methodName));
-        }
+                yield just(snapshot);
+            }
+            case CONTINUE -> just(snapshot);
+        };
     }
 
     /**
