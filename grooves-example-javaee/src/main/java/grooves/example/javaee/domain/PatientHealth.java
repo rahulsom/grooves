@@ -73,15 +73,10 @@ public class PatientHealth
                 id, aggregate, lastEventPosition, lastEventTimestamp);
     }
 
-    @Data
-    public static class Procedure implements Serializable {
-        /**
-         * The code for the procedure.
-         */
-        private final String code;
-        /**
-         * The date of the procedure.
-         */
-        private final Date date;
+    /**
+     * @param code The code for the procedure.
+     * @param date The date of the procedure.
+     */
+    public record Procedure(String code, Date date) implements Serializable {
     }
 }

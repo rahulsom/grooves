@@ -1,16 +1,11 @@
 package com.github.rahulsom.grooves.test;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import java.util.Map;
 
 /**
  * A request to the REST API.
  */
-@RequiredArgsConstructor
-@Getter
-public class RestRequest {
+public record RestRequest(String path, Map<String, Object> query) {
     /**
      * Creates a new RestRequest.
      *
@@ -20,6 +15,4 @@ public class RestRequest {
         this(path, Map.of());
     }
 
-    private final String path;
-    private final Map<String, Object> query;
 }
