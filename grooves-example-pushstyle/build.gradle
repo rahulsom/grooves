@@ -89,7 +89,7 @@ jooq {
 }
 
 flyway {
-    url = "jdbc:h2:file:${buildDir}/schema"
+    url = "jdbc:h2:file:${layout.buildDirectory.dir("schema").get().asFile}"
     user = "sa"
     password = ""
     schemas = ["public"]
