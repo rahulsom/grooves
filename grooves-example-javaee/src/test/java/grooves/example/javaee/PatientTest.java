@@ -65,8 +65,10 @@ class PatientTest extends AbstractPatientTest {
         return new RestClient("http://" + host + ":" + port + "/grooves-example-javaee/");
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Test
     public void contextLoads() {
+        // Test to ensure Spring context loads
     }
 
 }

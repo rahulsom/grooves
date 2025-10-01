@@ -37,7 +37,9 @@ public class PatientTest extends AbstractPatientTest {
         return new RestClient("http://localhost:" + serverPort + "/");
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Test
     public void contextLoads() {
+        // Test to ensure Spring context loads
     }
 }
