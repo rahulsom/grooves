@@ -1,16 +1,16 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test.describe('Responsive Behavior Tests', () => {
+test.describe("Responsive Behavior Tests", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
   });
 
-  test('should stack columns on mobile devices', async ({ page }) => {
+  test("should stack columns on mobile devices", async ({ page }) => {
     // Test mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
 
-    const columns = page.locator('.col-sm');
+    const columns = page.locator(".col-sm");
 
     // On mobile, columns should stack vertically
     const firstColumn = columns.nth(0);
@@ -23,11 +23,11 @@ test.describe('Responsive Behavior Tests', () => {
     expect(secondBox?.y).toBeGreaterThan(firstBox?.y || 0);
   });
 
-  test('should show columns side by side on desktop', async ({ page }) => {
+  test("should show columns side by side on desktop", async ({ page }) => {
     // Test desktop viewport
     await page.setViewportSize({ width: 1200, height: 800 });
 
-    const columns = page.locator('.col-sm');
+    const columns = page.locator(".col-sm");
 
     // On desktop, columns should be side by side
     const firstColumn = columns.nth(0);
@@ -41,10 +41,10 @@ test.describe('Responsive Behavior Tests', () => {
     expect(yDifference).toBeLessThan(50); // Allow small differences due to text wrapping
   });
 
-  test('should adapt button layout on mobile', async ({ page }) => {
+  test("should adapt button layout on mobile", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
 
-    const buttons = page.locator('#intro .btn, #intro .btn-group');
+    const buttons = page.locator("#intro .btn, #intro .btn-group");
 
     // Buttons should be visible and properly spaced on mobile
     for (const button of await buttons.all()) {
@@ -52,15 +52,19 @@ test.describe('Responsive Behavior Tests', () => {
 
       // Check that buttons don't overflow container
       const buttonBox = await button.boundingBox();
-      const containerBox = await page.locator('.container').boundingBox();
+      const containerBox = await page.locator(".container").boundingBox();
 
       if (buttonBox && containerBox) {
-        expect(buttonBox.x + buttonBox.width).toBeLessThanOrEqual(containerBox.x + containerBox.width + 10); // Small tolerance
+        expect(buttonBox.x + buttonBox.width).toBeLessThanOrEqual(
+          containerBox.x + containerBox.width + 10
+        ); // Small tolerance
       }
     }
   });
 
-  test('should maintain readable text at all viewport sizes', async ({ page }) => {
+  test("should maintain readable text at all viewport sizes", async ({
+    page,
+  }) => {
     const viewports = [
       { width: 320, height: 568 }, // iPhone SE
       { width: 375, height: 667 }, // iPhone 6/7/8
@@ -74,7 +78,7 @@ test.describe('Responsive Behavior Tests', () => {
       await page.setViewportSize(viewport);
 
       // Check that text is not cut off
-      const paragraphs = page.locator('p');
+      const paragraphs = page.locator("p");
       for (const paragraph of await paragraphs.all()) {
         await expect(paragraph).toBeVisible();
 
@@ -85,24 +89,24 @@ test.describe('Responsive Behavior Tests', () => {
       }
 
       // Check that headings are visible
-      const headings = page.locator('h1, h3');
+      const headings = page.locator("h1, h3");
       for (const heading of await headings.all()) {
         await expect(heading).toBeVisible();
       }
     }
   });
 
-  test('should handle dropdown on mobile devices', async ({ page }) => {
+  test("should handle dropdown on mobile devices", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
 
     // Wait for dropdown to be populated
     await page.waitForFunction(() => {
-      const dropdown = document.getElementById('versions');
+      const dropdown = document.getElementById("versions");
       return dropdown && dropdown.children.length > 0;
     });
 
-    const docButton = page.locator('#dropdownMenuLink');
-    const dropdown = page.locator('#versions');
+    const docButton = page.locator("#dropdownMenuLink");
+    const dropdown = page.locator("#versions");
 
     // Should be able to open dropdown on mobile
     await docButton.click();
@@ -113,23 +117,27 @@ test.describe('Responsive Behavior Tests', () => {
     const viewportSize = page.viewportSize();
 
     if (dropdownBox && viewportSize) {
-      expect(dropdownBox.x + dropdownBox.width).toBeLessThanOrEqual(viewportSize.width);
+      expect(dropdownBox.x + dropdownBox.width).toBeLessThanOrEqual(
+        viewportSize.width
+      );
     }
   });
 
-  test('should maintain proper spacing at different screen sizes', async ({ page }) => {
+  test("should maintain proper spacing at different screen sizes", async ({
+    page,
+  }) => {
     const viewports = [
-      { width: 375, height: 667, name: 'mobile' },
-      { width: 768, height: 1024, name: 'tablet' },
-      { width: 1200, height: 800, name: 'desktop' },
+      { width: 375, height: 667, name: "mobile" },
+      { width: 768, height: 1024, name: "tablet" },
+      { width: 1200, height: 800, name: "desktop" },
     ];
 
     for (const viewport of viewports) {
       await page.setViewportSize(viewport);
 
       // Check intro section padding
-      const intro = page.locator('#intro');
-      const introPadding = await intro.evaluate(el => {
+      const intro = page.locator("#intro");
+      const introPadding = await intro.evaluate((el) => {
         const styles = getComputedStyle(el);
         return {
           top: parseInt(styles.paddingTop),
@@ -142,7 +150,7 @@ test.describe('Responsive Behavior Tests', () => {
       expect(introPadding.bottom).toBeGreaterThan(10);
 
       // Check container margins
-      const container = page.locator('.container');
+      const container = page.locator(".container");
       const containerBox = await container.boundingBox();
       const viewportSize = page.viewportSize();
 
@@ -155,16 +163,18 @@ test.describe('Responsive Behavior Tests', () => {
     }
   });
 
-  test('should maintain accessibility at all viewport sizes', async ({ page }) => {
-    const viewports = [
-      { width: 1200, height: 800 },
-    ];
+  test("should maintain accessibility at all viewport sizes", async ({
+    page,
+  }) => {
+    const viewports = [{ width: 1200, height: 800 }];
 
     for (const viewport of viewports) {
       await page.setViewportSize(viewport);
 
       // Check that all visible interactive elements are focusable
-      const interactiveElements = page.locator('a, button').filter({ hasNot: page.locator('.dropdown-menu:not(.show) .dropdown-item') });
+      const interactiveElements = page.locator("a, button").filter({
+        hasNot: page.locator(".dropdown-menu:not(.show) .dropdown-item"),
+      });
 
       for (const element of await interactiveElements.all()) {
         // Skip hidden elements
@@ -188,19 +198,21 @@ test.describe('Responsive Behavior Tests', () => {
     }
   });
 
-  test('should handle landscape and portrait orientations on mobile', async ({ page }) => {
+  test("should handle landscape and portrait orientations on mobile", async ({
+    page,
+  }) => {
     // Test portrait
     await page.setViewportSize({ width: 375, height: 667 });
-    await expect(page.locator('#intro')).toBeVisible();
-    await expect(page.locator('.row')).toBeVisible();
+    await expect(page.locator("#intro")).toBeVisible();
+    await expect(page.locator(".row")).toBeVisible();
 
     // Test landscape
     await page.setViewportSize({ width: 667, height: 375 });
-    await expect(page.locator('#intro')).toBeVisible();
-    await expect(page.locator('.row')).toBeVisible();
+    await expect(page.locator("#intro")).toBeVisible();
+    await expect(page.locator(".row")).toBeVisible();
 
     // Content should still be readable and accessible
-    const columns = page.locator('.col-sm');
+    const columns = page.locator(".col-sm");
     await expect(columns.nth(0)).toBeVisible();
     await expect(columns.nth(1)).toBeVisible();
     await expect(columns.nth(2)).toBeVisible();
