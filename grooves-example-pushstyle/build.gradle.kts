@@ -14,7 +14,6 @@ buildscript {
 
 plugins {
     id("org.jetbrains.kotlin.jvm")
-    id("org.jlleitschuh.gradle.ktlint")
     alias(libs.plugins.jooq)
     alias(libs.plugins.flyway)
 }
@@ -102,7 +101,6 @@ tasks.named("generateJooq") { dependsOn("flywayMigrate") }
 tasks.named("compileKotlin") { dependsOn("generateJooq") }
 
 tasks.named<Checkstyle>("checkstyleMain") { source = fileTree("src/main/java") }
-tasks.named("runKtlintCheckOverMainSourceSet") { dependsOn("generateJooq") }
 
 tasks.withType<Test> {
     useJUnitPlatform()

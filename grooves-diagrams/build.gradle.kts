@@ -3,7 +3,6 @@ import io.miret.etienne.gradle.sass.CompileSass
 plugins {
     id("java-library")
     id("org.jetbrains.kotlin.jvm")
-    id("org.jlleitschuh.gradle.ktlint")
     alias(libs.plugins.waena.published)
     alias(libs.plugins.sass)
 }
