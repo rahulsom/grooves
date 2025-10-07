@@ -132,8 +132,8 @@ public interface TemporalQuerySupport<
         }
 
         return fromPublisher(getSnapshotAndEventsSince(aggregate, moment)).flatMap(seTuple2 -> {
-            List<EventT> events = seTuple2.getSecond();
-            SnapshotT snapshot = seTuple2.getFirst();
+            List<EventT> events = seTuple2.second();
+            SnapshotT snapshot = seTuple2.first();
 
             LoggerFactory.getLogger(getClass())
                     .info("     Events including redirects: {}", Utils.stringify(events));

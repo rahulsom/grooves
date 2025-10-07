@@ -64,9 +64,9 @@ public interface CustomQuerySupport<
         return toPublisher(from(stream::iterator)
                 .flatMap(it -> just(it).zipWith(
                         toObservable(it.getAggregateObservable()), Pair::new))
-                .filter(it -> it.getSecond().equals(aggregate)
-                        && it.getFirst().getLastEventPosition() < maxPosition)
-                .map(Pair::getFirst)
+                .filter(it -> it.second().equals(aggregate)
+                        && it.first().getLastEventPosition() < maxPosition)
+                .map(Pair::first)
                 .sorted((x, y) -> (int) (x.getLastEventPosition() - y.getLastEventPosition()))
                 .takeFirst(it -> true)
                 .map(this::copy));
@@ -82,9 +82,9 @@ public interface CustomQuerySupport<
         return toPublisher(from(stream::iterator)
                 .flatMap(it -> just(it).zipWith(
                         toObservable(it.getAggregateObservable()), Pair::new))
-                .filter(it -> it.getSecond().equals(aggregate)
-                        && it.getFirst().getLastEventTimestamp().compareTo(maxTimestamp) < 1)
-                .map(Pair::getFirst)
+                .filter(it -> it.second().equals(aggregate)
+                        && it.first().getLastEventTimestamp().compareTo(maxTimestamp) < 1)
+                .map(Pair::first)
                 .sorted((x, y) -> (int) (x.getLastEventPosition() - y.getLastEventPosition()))
                 .takeFirst(it -> true)
                 .map(this::copy));

@@ -155,8 +155,8 @@ public interface VersionedQuerySupport<
                 aggregate, version == Long.MAX_VALUE ? "<LATEST>" : version);
 
         return fromPublisher(getSnapshotAndEventsSince(aggregate, version)).flatMap(seTuple2 -> {
-            List<EventT> events = seTuple2.getSecond();
-            SnapshotT lastUsableSnapshot = seTuple2.getFirst();
+            List<EventT> events = seTuple2.second();
+            SnapshotT lastUsableSnapshot = seTuple2.first();
 
             LoggerFactory.getLogger(getClass())
                     .info("     Events including redirects: {}", Utils.stringify(events));

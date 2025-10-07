@@ -1,7 +1,6 @@
 package com.github.rahulsom.grooves.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import okhttp3.Response;
 
 import java.io.IOException;
@@ -10,11 +9,11 @@ import java.util.Optional;
 /**
  * Decorates a Response from OkHttp with some useful methods.
  */
-@RequiredArgsConstructor
-public class HttpResponseDecorator<T> {
+public record HttpResponseDecorator<T>(Response response) {
 
     /**
      * Returns the response body as a Map.
+     *
      * @return a map of the parsed json
      */
     public T getData() {
@@ -38,11 +37,11 @@ public class HttpResponseDecorator<T> {
 
     /**
      * Returns the status code of the response.
+     *
      * @return the status code
      */
     public int getStatus() {
         return response.code();
     }
 
-    private final Response response;
 }
