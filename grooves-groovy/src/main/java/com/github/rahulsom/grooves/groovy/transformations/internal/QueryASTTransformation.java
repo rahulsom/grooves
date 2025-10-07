@@ -32,10 +32,10 @@ public class QueryASTTransformation extends AbstractASTTransformation {
         AnnotatedNode annotatedNode = (AnnotatedNode) nodes[1];
         final AnnotationNode annotationNode = (AnnotationNode) nodes[0];
 
-        if (MY_TYPE.equals(annotationNode.getClassNode()) && annotatedNode instanceof ClassNode) {
+        if (MY_TYPE.equals(annotationNode.getClassNode())
+                && annotatedNode instanceof ClassNode theClassNode) {
             final Expression theSnapshot = annotationNode.getMember("snapshot");
             Expression theAggregate = annotationNode.getMember("aggregate");
-            final ClassNode theClassNode = (ClassNode) annotatedNode;
             log.fine("Checking " + theClassNode.getNameWithoutPackage() + " for methods");
             List<ClassNode> eventClasses =
                     AggregateASTTransformation.getEventsForAggregate(

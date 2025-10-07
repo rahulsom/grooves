@@ -48,8 +48,8 @@ public class AggregateASTTransformation extends AbstractASTTransformation {
         AnnotatedNode annotatedNode = (AnnotatedNode) nodes[1];
         AnnotationNode annotationNode = (AnnotationNode) nodes[0];
 
-        if (MY_TYPE.equals(annotationNode.getClassNode()) && annotatedNode instanceof ClassNode) {
-            final ClassNode theClassNode = (ClassNode) annotatedNode;
+        if (MY_TYPE.equals(annotationNode.getClassNode())
+                && annotatedNode instanceof ClassNode theClassNode) {
             log.fine(() -> MessageFormat.format("Storing entry for aggregate {0}",
                     theClassNode.getName()));
             getEventsForAggregate(theClassNode.getName());
