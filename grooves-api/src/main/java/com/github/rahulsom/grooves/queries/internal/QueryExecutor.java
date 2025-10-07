@@ -91,7 +91,7 @@ public class QueryExecutor<
                     } else {
                         throw new GroovesException(String.format(
                                 "Cannot revert event that does not exist in unapplied list - %s",
-                                String.valueOf(revertedEventId)));
+                                revertedEventId));
                     }
 
                 } else {

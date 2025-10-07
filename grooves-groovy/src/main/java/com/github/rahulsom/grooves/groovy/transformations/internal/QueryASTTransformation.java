@@ -55,10 +55,9 @@ public class QueryASTTransformation extends AbstractASTTransformation {
                         getObservableEventApplyOutcome(), methodName,
                         eventClass.getName(), theSnapshot.getType().getName());
 
-                final String methodSignatureString = String.valueOf(methodSignature);
                 if (methodsByName.isEmpty()) {
                     addError(
-                            String.format("Missing expected method %s", methodSignatureString),
+                            String.format("Missing expected method %s", methodSignature),
                             annotationNode);
                 } else {
                     Optional<MethodNode> matchingMethod = methodsByName.stream()
@@ -79,7 +78,7 @@ public class QueryASTTransformation extends AbstractASTTransformation {
 
                     if (matchingMethod.isEmpty()) {
                         addError(String.format("Missing expected method %s. %s",
-                                methodSignatureString, "Signature was different when name matched"),
+                                methodSignature, "Signature was different when name matched"),
                                 annotationNode);
                     }
                 }
