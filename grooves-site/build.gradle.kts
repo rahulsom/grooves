@@ -4,6 +4,7 @@ tasks.register<Exec>("npmInstall") {
     inputs.file("package.json")
     inputs.file("package-lock.json")
     outputs.dir("node_modules")
+    dependsOn(rootProject.tasks.named("spotlessTypescript"))
 }
 
 tasks.register<Exec>("build") {
