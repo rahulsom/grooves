@@ -4,6 +4,7 @@ import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.java.Query;
 import grooves.example.javaee.Database;
 import grooves.example.javaee.domain.*;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
@@ -15,6 +16,7 @@ import static rx.Observable.just;
 import static rx.RxReactiveStreams.toPublisher;
 
 // tag::documented[]
+@Getter
 @Query(aggregate = Patient.class, snapshot = PatientAccount.class) // <9>
 public class PatientAccountQuery
         implements CustomQuerySupport<PatientAccount> { // <10>
@@ -22,10 +24,6 @@ public class PatientAccountQuery
     // end::documented[]
     @Inject
     private Database database;
-
-    public Database getDatabase() {
-        return database;
-    }
 
     @Override
     public Class<PatientAccount> getSnapshotClass() {
