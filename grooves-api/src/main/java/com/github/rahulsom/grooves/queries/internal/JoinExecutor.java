@@ -1,14 +1,13 @@
 package com.github.rahulsom.grooves.queries.internal;
 
+import static io.reactivex.Flowable.fromPublisher;
+import static io.reactivex.Flowable.just;
+
 import com.github.rahulsom.grooves.api.events.*;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseJoin;
 import io.reactivex.Flowable;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
-
-import static io.reactivex.Flowable.fromPublisher;
-import static io.reactivex.Flowable.just;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Executes a query as a Join.
@@ -25,18 +24,16 @@ import static io.reactivex.Flowable.just;
  * @author Rahul Somasunderam
  */
 public class JoinExecutor<
-        AggregateT,
-        EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-        JoinedAggregateT,
-        SnapshotIdT,
-        SnapshotT extends BaseJoin<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT, EventT>,
-        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
-        >
-        extends
-        QueryExecutor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
+                AggregateT,
+                EventIdT,
+                EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+                JoinedAggregateT,
+                SnapshotIdT,
+                SnapshotT extends BaseJoin<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT, EventT>,
+                JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
+                DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
+                QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>>
+        extends QueryExecutor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT, QueryT> {
 
     private final Class<JoinEventT> classJoinE;
     private final Class<DisjoinEventT> classDisjoinE;
@@ -47,8 +44,7 @@ public class JoinExecutor<
      * @param classJoinE the class representing join events
      * @param classDisjoinE the class representing disjoin events
      */
-    public JoinExecutor(
-            @NotNull Class<JoinEventT> classJoinE, @NotNull Class<DisjoinEventT> classDisjoinE) {
+    public JoinExecutor(@NotNull Class<JoinEventT> classJoinE, @NotNull Class<DisjoinEventT> classDisjoinE) {
         this.classJoinE = classJoinE;
         this.classDisjoinE = classDisjoinE;
     }
@@ -63,40 +59,42 @@ public class JoinExecutor<
             @NotNull AggregateT aggregate) {
 
         // s -> snapshotObservable
-        return events.reduce(just(initialSnapshot), (s, event) -> s.flatMap(snapshot -> {
-            if (!query.shouldEventsBeApplied(snapshot)) {
-                return just(snapshot);
-            } else {
-                log.debug("     -> Applying Event: {}", event);
+        return events.reduce(
+                        just(initialSnapshot),
+                        (s, event) -> s.flatMap(snapshot -> {
+                            if (!query.shouldEventsBeApplied(snapshot)) {
+                                return just(snapshot);
+                            } else {
+                                log.debug("     -> Applying Event: {}", event);
 
-                if (event instanceof Deprecates) {
-                    Deprecates<AggregateT, EventIdT, EventT> deprecatesEvent =
-                            (Deprecates<AggregateT, EventIdT, EventT>) event;
-                    return applyDeprecates(
-                            deprecatesEvent, query, events, deprecatesList, aggregate);
-                } else if (event instanceof DeprecatedBy) {
-                    DeprecatedBy<AggregateT, EventIdT, EventT> deprecatedByEvent =
-                            (DeprecatedBy<AggregateT, EventIdT, EventT>) event;
-                    return applyDeprecatedBy(deprecatedByEvent, initialSnapshot);
-                } else if (classJoinE.isAssignableFrom(event.getClass())) {
-                    JoinEventT joinEvent = (JoinEventT) event;
-                    return fromPublisher(joinEvent.getJoinAggregateObservable())
-                            .map(joinedAggregate -> {
-                                initialSnapshot.addJoinedAggregate(joinedAggregate);
-                                return initialSnapshot;
-                            });
-                } else if (classDisjoinE.isAssignableFrom(event.getClass())) {
-                    DisjoinEventT disjoinEvent = (DisjoinEventT) event;
-                    return fromPublisher(disjoinEvent.getJoinAggregateObservable())
-                            .map(joinedAggregate -> {
-                                initialSnapshot.removeJoinedAggregate(joinedAggregate);
-                                return initialSnapshot;
-                            });
-                } else {
-                    return just(initialSnapshot);
-                }
-            }
-        })).toFlowable().flatMap(it -> it);
-
+                                if (event instanceof Deprecates) {
+                                    Deprecates<AggregateT, EventIdT, EventT> deprecatesEvent =
+                                            (Deprecates<AggregateT, EventIdT, EventT>) event;
+                                    return applyDeprecates(deprecatesEvent, query, events, deprecatesList, aggregate);
+                                } else if (event instanceof DeprecatedBy) {
+                                    DeprecatedBy<AggregateT, EventIdT, EventT> deprecatedByEvent =
+                                            (DeprecatedBy<AggregateT, EventIdT, EventT>) event;
+                                    return applyDeprecatedBy(deprecatedByEvent, initialSnapshot);
+                                } else if (classJoinE.isAssignableFrom(event.getClass())) {
+                                    JoinEventT joinEvent = (JoinEventT) event;
+                                    return fromPublisher(joinEvent.getJoinAggregateObservable())
+                                            .map(joinedAggregate -> {
+                                                initialSnapshot.addJoinedAggregate(joinedAggregate);
+                                                return initialSnapshot;
+                                            });
+                                } else if (classDisjoinE.isAssignableFrom(event.getClass())) {
+                                    DisjoinEventT disjoinEvent = (DisjoinEventT) event;
+                                    return fromPublisher(disjoinEvent.getJoinAggregateObservable())
+                                            .map(joinedAggregate -> {
+                                                initialSnapshot.removeJoinedAggregate(joinedAggregate);
+                                                return initialSnapshot;
+                                            });
+                                } else {
+                                    return just(initialSnapshot);
+                                }
+                            }
+                        }))
+                .toFlowable()
+                .flatMap(it -> it);
     }
 }

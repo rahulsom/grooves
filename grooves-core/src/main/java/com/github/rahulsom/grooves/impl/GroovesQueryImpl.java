@@ -19,17 +19,16 @@ import com.github.rahulsom.grooves.functions.SnapshotProvider;
 import com.github.rahulsom.grooves.functions.SnapshotVersioner;
 import com.github.rahulsom.grooves.logging.IndentedLogging;
 import com.github.rahulsom.grooves.logging.Trace;
-import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of the GroovesQuery interface that provides snapshot computation.
@@ -66,26 +65,20 @@ public class GroovesQueryImpl<VersionOrTimestampT, SnapshotT, AggregateT, EventT
     @Trace
     @Override
     public GroovesResult<SnapshotT, AggregateT, VersionOrTimestampT> computeSnapshot(
-            AggregateT aggregate,
-            VersionOrTimestampT at,
-            boolean redirect) {
+            AggregateT aggregate, VersionOrTimestampT at, boolean redirect) {
         var providedSnapshot = snapshotProvider.invoke(aggregate, at);
-        var snapshot = providedSnapshot != null ? providedSnapshot :
-                emptySnapshotProvider.invoke(aggregate);
-        var events = eventsProvider.invoke(List.of(aggregate), at, snapshot)
-                .collect(Collectors.toList());
+        var snapshot = providedSnapshot != null ? providedSnapshot : emptySnapshotProvider.invoke(aggregate);
+        var events = eventsProvider.invoke(List.of(aggregate), at, snapshot).collect(Collectors.toList());
 
-        return computeSnapshotImpl(events, snapshot, List.of(aggregate), at, redirect,
-                (c, s) -> {
-                    if (s != null) {
-                        log.trace("{} -> {}", c.data, s);
-                    }
-                    IndentedLogging.stepOut();
-                });
+        return computeSnapshotImpl(events, snapshot, List.of(aggregate), at, redirect, (c, s) -> {
+            if (s != null) {
+                log.trace("{} -> {}", c.data, s);
+            }
+            IndentedLogging.stepOut();
+        });
     }
 
-    private record CallIdentifier(String data) {
-    }
+    private record CallIdentifier(String data) {}
 
     private GroovesResult<SnapshotT, AggregateT, VersionOrTimestampT> computeSnapshotImpl(
             List<EventT> events,
@@ -96,10 +89,8 @@ public class GroovesQueryImpl<VersionOrTimestampT, SnapshotT, AggregateT, EventT
             BiConsumer<CallIdentifier, SnapshotT> beforeReturn) {
         var indent = IndentedLogging.indent();
 
-        var callIdentifier = new CallIdentifier(
-                indent + "computeSnapshotImpl(<... " + events.size() + " items>, "
-                        + snapshot + ", " + aggregates + ", " + at + ")"
-        );
+        var callIdentifier = new CallIdentifier(indent + "computeSnapshotImpl(<... " + events.size() + " items>, "
+                + snapshot + ", " + aggregates + ", " + at + ")");
         log.trace(callIdentifier.data);
         IndentedLogging.stepIn();
 
@@ -115,13 +106,11 @@ public class GroovesQueryImpl<VersionOrTimestampT, SnapshotT, AggregateT, EventT
 
         if (revertsExistOutsideEvents(revertEvents, indent, forwardEvents)) {
             var snapshot1 = emptySnapshotProvider.invoke(aggregates.get(0));
-            var events1 = eventsProvider.invoke(aggregates, at, snapshot1)
-                    .collect(Collectors.toList());
-            return computeSnapshotImpl(events1, snapshot1, aggregates, at, redirect,
-                    (c, s) -> {
-                        beforeReturn.accept(c, s);
-                        IndentedLogging.stepOut();
-                    });
+            var events1 = eventsProvider.invoke(aggregates, at, snapshot1).collect(Collectors.toList());
+            return computeSnapshotImpl(events1, snapshot1, aggregates, at, redirect, (c, s) -> {
+                beforeReturn.accept(c, s);
+                IndentedLogging.stepOut();
+            });
         }
 
         var deprecatesEvents = forwardEvents.stream()
@@ -139,31 +128,28 @@ public class GroovesQueryImpl<VersionOrTimestampT, SnapshotT, AggregateT, EventT
             if (applyMoreEventsPredicate.invoke(snapshot)) {
                 EventApplyOutcome outcome;
                 switch (eventClassifier.invoke(event)) {
-                    case Normal -> outcome = tryRunning(snapshot, event,
-                            () -> eventHandler.invoke(event, snapshot));
+                    case Normal -> outcome = tryRunning(snapshot, event, () -> eventHandler.invoke(event, snapshot));
                     case Deprecates -> {
                         beforeReturn.accept(callIdentifier, null);
-                        throw new IllegalStateException(
-                                "Shouldn't have found Deprecates event here - " + event);
+                        throw new IllegalStateException("Shouldn't have found Deprecates event here - " + event);
                     }
                     case DeprecatedBy -> {
                         var ret = deprecatedByProvider.invoke(event);
-                        log.debug("{}  ...The aggregate was deprecated by {}. "
-                                + "Recursing to compute snapshot for it...",
-                                indent, ret.aggregate());
+                        log.debug(
+                                "{}  ...The aggregate was deprecated by {}. "
+                                        + "Recursing to compute snapshot for it...",
+                                indent,
+                                ret.aggregate());
                         var refEvent = eventsProvider
-                                .invoke(List.of(ret.aggregate()), null,
-                                        emptySnapshotProvider.invoke(ret.aggregate()))
+                                .invoke(List.of(ret.aggregate()), null, emptySnapshotProvider.invoke(ret.aggregate()))
                                 .toList()
                                 .stream()
-                                .filter(e -> Objects.equals(eventIdProvider.invoke(e),
-                                        ret.eventId()))
+                                .filter(e -> Objects.equals(eventIdProvider.invoke(e), ret.eventId()))
                                 .findFirst()
                                 .orElseThrow();
 
                         var redirectVersion = eventVersioner.invoke(refEvent);
-                        var otherSnapshot = snapshotProvider.invoke(ret.aggregate(),
-                                redirectVersion);
+                        var otherSnapshot = snapshotProvider.invoke(ret.aggregate(), redirectVersion);
                         if (otherSnapshot == null) {
                             otherSnapshot = emptySnapshotProvider.invoke(ret.aggregate());
                         }
@@ -175,31 +161,26 @@ public class GroovesQueryImpl<VersionOrTimestampT, SnapshotT, AggregateT, EventT
                         if (redirect) {
                             var finalAggregates = new ArrayList<>(aggregates);
                             finalAggregates.add(ret.aggregate());
-                            return computeSnapshotImpl(newEvents, otherSnapshot,
-                                    finalAggregates, at, true, (c, s) -> {
-                                        beforeReturn.accept(c, s);
-                                        IndentedLogging.stepOut();
-                                    });
+                            return computeSnapshotImpl(newEvents, otherSnapshot, finalAggregates, at, true, (c, s) -> {
+                                beforeReturn.accept(c, s);
+                                IndentedLogging.stepOut();
+                            });
                         } else {
-                            return new GroovesResult.Redirect<>(ret.aggregate(),
-                                    redirectVersion);
+                            return new GroovesResult.Redirect<>(ret.aggregate(), redirectVersion);
                         }
                     }
                     case Revert -> {
                         beforeReturn.accept(callIdentifier, null);
-                        throw new IllegalStateException(
-                                "Shouldn't have found Revert event here - " + event);
+                        throw new IllegalStateException("Shouldn't have found Revert event here - " + event);
                     }
-                    default -> throw new IllegalStateException(
-                            "Unknown event type: " + eventClassifier.invoke(event));
+                    default -> throw new IllegalStateException("Unknown event type: " + eventClassifier.invoke(event));
                 }
 
                 var versionOrTimestamp = eventVersioner.invoke(event);
                 snapshotVersioner.invoke(snapshot, versionOrTimestamp);
 
                 if (outcome == EventApplyOutcome.RETURN) {
-                    log.debug("{}  ...Event apply outcome was RETURN. "
-                            + "Returning snapshot...", indent);
+                    log.debug("{}  ...Event apply outcome was RETURN. " + "Returning snapshot...", indent);
                     beforeReturn.accept(callIdentifier, snapshot);
                     return new GroovesResult.Success<>(snapshot);
                 }
@@ -214,23 +195,19 @@ public class GroovesQueryImpl<VersionOrTimestampT, SnapshotT, AggregateT, EventT
     }
 
     private boolean revertsExistOutsideEvents(
-            ArrayList<EventT> revertEvents,
-            String indent,
-            ArrayList<EventT> forwardEvents) {
+            ArrayList<EventT> revertEvents, String indent, ArrayList<EventT> forwardEvents) {
         while (!revertEvents.isEmpty()) {
             var mostRecentRevert = revertEvents.remove(revertEvents.size() - 1);
             var revertedEvent = revertedEventProvider.invoke(mostRecentRevert);
 
             if (revertEvents.remove(revertedEvent)) {
-                log.debug("{}  ...Reverting revertEvent {} based on {}",
-                        indent, revertedEvent, mostRecentRevert);
+                log.debug("{}  ...Reverting revertEvent {} based on {}", indent, revertedEvent, mostRecentRevert);
             } else {
                 if (forwardEvents.remove(revertedEvent)) {
-                    log.debug("{}  ...Reverting forwardEvent {} based on {}",
-                            indent, revertedEvent, mostRecentRevert);
+                    log.debug("{}  ...Reverting forwardEvent {} based on {}", indent, revertedEvent, mostRecentRevert);
                 } else {
-                    var problem = "There is an event that needs to be reverted but part of "
-                            + "the last snapshot - " + revertedEvent;
+                    var problem = "There is an event that needs to be reverted but part of " + "the last snapshot - "
+                            + revertedEvent;
                     log.debug("{}  ...{}. Recursing with older snapshot...", indent, problem);
                     return true;
                 }
@@ -239,10 +216,7 @@ public class GroovesQueryImpl<VersionOrTimestampT, SnapshotT, AggregateT, EventT
         return false;
     }
 
-    private EventApplyOutcome tryRunning(
-            SnapshotT snapshot,
-            EventT event,
-            Supplier<EventApplyOutcome> code) {
+    private EventApplyOutcome tryRunning(SnapshotT snapshot, EventT event, Supplier<EventApplyOutcome> code) {
         try {
             return code.get();
         } catch (Exception e) {

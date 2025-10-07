@@ -19,9 +19,5 @@ public interface EventsProvider<AggregateT, VersionOrTimestampT, SnapshotT, Even
      * @return a stream of events that occurred after the last snapshot up to the specified version
      */
     @Trace
-    Stream<EventT> invoke(
-            List<AggregateT> aggregates,
-            VersionOrTimestampT versionOrTimestamp,
-            SnapshotT lastSnapshot
-    );
+    Stream<EventT> invoke(List<AggregateT> aggregates, VersionOrTimestampT versionOrTimestamp, SnapshotT lastSnapshot);
 }

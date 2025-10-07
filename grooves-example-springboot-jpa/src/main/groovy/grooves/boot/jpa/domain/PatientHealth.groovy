@@ -45,5 +45,4 @@ class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent> {
     @Override @JsonIgnore Publisher<Patient> getDeprecatesObservable() {
         fromIterable(deprecates.toList())
     }
-
 }

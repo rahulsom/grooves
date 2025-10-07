@@ -1,14 +1,13 @@
 package domains;
 
-import com.github.rahulsom.grooves.api.snapshots.Snapshot;
-import org.reactivestreams.Publisher;
+import static rx.Observable.*;
+import static rx.RxReactiveStreams.toPublisher;
 
+import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
-
-import static rx.Observable.*;
-import static rx.RxReactiveStreams.toPublisher;
+import org.reactivestreams.Publisher;
 
 public class Balance implements Snapshot<Account, String, Long, Transaction> {
     private String id;

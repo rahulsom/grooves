@@ -1,5 +1,10 @@
 package invalid;
 
+import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
+import static rx.Observable.empty;
+import static rx.Observable.just;
+import static rx.RxReactiveStreams.toPublisher;
+
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.java.Query;
 import com.github.rahulsom.grooves.queries.QuerySupport;
@@ -7,15 +12,9 @@ import domains.Account;
 import domains.Balance;
 import domains.CashWithdrawal;
 import domains.Transaction;
+import java.util.Date;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
-
-import java.util.Date;
-
-import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
-import static rx.Observable.empty;
-import static rx.Observable.just;
-import static rx.RxReactiveStreams.toPublisher;
 
 @Query(aggregate = Account.class, snapshot = Balance.class)
 class MethodMissing implements QuerySupport<Account, Long, Transaction, String, Balance> {
@@ -59,8 +58,7 @@ class MethodMissing implements QuerySupport<Account, Long, Transaction, String, 
 
     @NotNull
     @Override
-    public void addToDeprecates(@NotNull Balance snapshot, @NotNull Account deprecatedAggregate) {
-    }
+    public void addToDeprecates(@NotNull Balance snapshot, @NotNull Account deprecatedAggregate) {}
 
     @NotNull
     @Override
@@ -70,8 +68,7 @@ class MethodMissing implements QuerySupport<Account, Long, Transaction, String, 
     }
 
     @NotNull
-    public Publisher<EventApplyOutcome> applyCashWithdrawal(
-            CashWithdrawal event, Balance snapshot) {
+    public Publisher<EventApplyOutcome> applyCashWithdrawal(CashWithdrawal event, Balance snapshot) {
         return toPublisher(just(CONTINUE));
     }
 }

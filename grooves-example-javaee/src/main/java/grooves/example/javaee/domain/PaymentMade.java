@@ -1,9 +1,8 @@
 package grooves.example.javaee.domain;
 
 import com.github.rahulsom.grooves.java.Event;
-import lombok.*;
-
 import java.math.BigDecimal;
+import lombok.*;
 
 @Event(Patient.class)
 @EqualsAndHashCode(callSuper = true)

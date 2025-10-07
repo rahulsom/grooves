@@ -2,16 +2,15 @@ package com.github.rahulsom.grooves.groovy.transformations.internal;
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.groovy.transformations.Query;
+import java.util.List;
+import java.util.Optional;
+import java.util.logging.Logger;
 import org.codehaus.groovy.ast.*;
 import org.codehaus.groovy.ast.expr.Expression;
 import org.codehaus.groovy.control.SourceUnit;
 import org.codehaus.groovy.transform.AbstractASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformation;
 import org.reactivestreams.Publisher;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.logging.Logger;
 
 /**
  * Verifies that a Query interface implementation has all the extra methods it needs to process
@@ -32,59 +31,61 @@ public class QueryASTTransformation extends AbstractASTTransformation {
         AnnotatedNode annotatedNode = (AnnotatedNode) nodes[1];
         final AnnotationNode annotationNode = (AnnotationNode) nodes[0];
 
-        if (MY_TYPE.equals(annotationNode.getClassNode())
-                && annotatedNode instanceof ClassNode theClassNode) {
+        if (MY_TYPE.equals(annotationNode.getClassNode()) && annotatedNode instanceof ClassNode theClassNode) {
             final Expression theSnapshot = annotationNode.getMember("snapshot");
             Expression theAggregate = annotationNode.getMember("aggregate");
             log.fine("Checking " + theClassNode.getNameWithoutPackage() + " for methods");
-            List<ClassNode> eventClasses =
-                    AggregateASTTransformation.getEventsForAggregate(
-                            theAggregate.getType().getName());
+            List<ClassNode> eventClasses = AggregateASTTransformation.getEventsForAggregate(
+                    theAggregate.getType().getName());
 
             eventClasses.forEach(eventClass -> {
                 final String methodName = "apply" + eventClass.getNameWithoutPackage();
                 log.fine("  -> Checking for " + methodName);
 
-                List<MethodNode> methodsByName =
-                        theClassNode.getMethods().stream()
-                                .filter(it -> it.getName().equals(methodName))
-                                .toList();
+                List<MethodNode> methodsByName = theClassNode.getMethods().stream()
+                        .filter(it -> it.getName().equals(methodName))
+                        .toList();
 
-                final String methodSignature = String.format("%s %s(%s event, %s snapshot)",
-                        getObservableEventApplyOutcome(), methodName,
-                        eventClass.getName(), theSnapshot.getType().getName());
+                final String methodSignature = String.format(
+                        "%s %s(%s event, %s snapshot)",
+                        getObservableEventApplyOutcome(),
+                        methodName,
+                        eventClass.getName(),
+                        theSnapshot.getType().getName());
 
                 if (methodsByName.isEmpty()) {
-                    addError(
-                            String.format("Missing expected method %s", methodSignature),
-                            annotationNode);
+                    addError(String.format("Missing expected method %s", methodSignature), annotationNode);
                 } else {
                     Optional<MethodNode> matchingMethod = methodsByName.stream()
                             .filter(implMethod -> {
                                 final Parameter[] parameters = implMethod.getParameters();
                                 final ClassNode returnType = implMethod.getReturnType();
-                                return parameters != null && parameters.length == 2
-                                        && returnType.getName()
-                                                .equals(Publisher.class.getName())
-                                        && returnType.getGenericsTypes()[0].getType().getName()
+                                return parameters != null
+                                        && parameters.length == 2
+                                        && returnType.getName().equals(Publisher.class.getName())
+                                        && returnType
+                                                .getGenericsTypes()[0]
+                                                .getType()
+                                                .getName()
                                                 .equals(EventApplyOutcome.class.getName())
-                                        && parameters[0].getType().getName()
-                                                .equals(eventClass.getName())
-                                        && parameters[1].getType().getName()
+                                        && parameters[0].getType().getName().equals(eventClass.getName())
+                                        && parameters[1]
+                                                .getType()
+                                                .getName()
                                                 .equals(theSnapshot.getType().getName());
                             })
                             .findFirst();
 
                     if (matchingMethod.isEmpty()) {
-                        addError(String.format("Missing expected method %s. %s",
-                                methodSignature, "Signature was different when name matched"),
+                        addError(
+                                String.format(
+                                        "Missing expected method %s. %s",
+                                        methodSignature, "Signature was different when name matched"),
                                 annotationNode);
                     }
                 }
             });
-
         }
-
     }
 
     private String getObservableEventApplyOutcome() {

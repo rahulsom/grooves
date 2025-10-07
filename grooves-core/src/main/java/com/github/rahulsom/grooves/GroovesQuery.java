@@ -21,9 +21,7 @@ public interface GroovesQuery<AggregateT, VersionOrTimestampT, SnapshotT, EventT
      * @return the result containing either the computed snapshot or redirect information
      */
     GroovesResult<SnapshotT, AggregateT, VersionOrTimestampT> computeSnapshot(
-            AggregateT aggregate,
-            VersionOrTimestampT at,
-            boolean redirect);
+            AggregateT aggregate, VersionOrTimestampT at, boolean redirect);
 
     /**
      * Convenience method to compute a snapshot with redirects enabled.
@@ -33,10 +31,9 @@ public interface GroovesQuery<AggregateT, VersionOrTimestampT, SnapshotT, EventT
      * @param at the point in time (version or timestamp) to compute the snapshot at
      * @return the computed snapshot
      */
-    default SnapshotT computeSnapshot(
-            AggregateT aggregate,
-            VersionOrTimestampT at) {
+    default SnapshotT computeSnapshot(AggregateT aggregate, VersionOrTimestampT at) {
         return ((GroovesResult.Success<SnapshotT, AggregateT, VersionOrTimestampT>)
-                computeSnapshot(aggregate, at, true)).snapshot();
+                        computeSnapshot(aggregate, at, true))
+                .snapshot();
     }
 }

@@ -27,7 +27,7 @@ import static io.reactivex.Flowable.just
 @Component
 @Query(aggregate = Patient, snapshot = PatientHealth)
 class PatientHealthQuery implements
-        QuerySupport<Patient, Long, PatientEvent, Long, PatientHealth> {
+QuerySupport<Patient, Long, PatientEvent, Long, PatientHealth> {
 
     @Autowired EntityManager entityManager
     @Autowired PatientHealthRepository patientHealthRepository
@@ -44,7 +44,7 @@ class PatientHealthQuery implements
         def snapshots = maxPosition == Long.MAX_VALUE ?
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
                 patientHealthRepository.findAllByAggregateIdAndLastEventPositionLessThan(
-                        aggregate.id, maxPosition)
+                aggregate.id, maxPosition)
 
         fromIterable(snapshots).firstElement().toFlowable()
     }
@@ -55,7 +55,7 @@ class PatientHealthQuery implements
         def snapshots = maxTimestamp == null ?
                 patientHealthRepository.findAllByAggregateId(aggregate.id) :
                 patientHealthRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
-                        aggregate.id, maxTimestamp)
+                aggregate.id, maxTimestamp)
 
         fromIterable(snapshots).firstElement().toFlowable()
     }
@@ -73,9 +73,9 @@ class PatientHealthQuery implements
             @NotNull Patient patient, PatientHealth lastSnapshot, @NotNull Date snapshotTime) {
         fromIterable(lastSnapshot?.lastEventTimestamp ?
                 patientEventRepository.getUncomputedEventsByDateRange(
-                        patient, lastSnapshot.lastEventTimestamp, snapshotTime) :
+                patient, lastSnapshot.lastEventTimestamp, snapshotTime) :
                 patientEventRepository.getUncomputedEventsUntilDate(
-                        patient, snapshotTime))
+                patient, snapshotTime))
     }
 
     @Override
@@ -127,7 +127,7 @@ class PatientHealthQuery implements
                 name: snapshot.name,
                 procedures: [],
                 deprecates: [],
-        )
+                )
         snapshot.deprecates.each { retval.deprecates.add it }
         snapshot.procedures.each {
             retval.procedures.add(new Procedure(code: it.code, date: it.date))

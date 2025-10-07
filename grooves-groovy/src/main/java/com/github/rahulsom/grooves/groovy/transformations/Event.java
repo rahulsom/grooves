@@ -1,12 +1,11 @@
 package com.github.rahulsom.grooves.groovy.transformations;
 
 import com.github.rahulsom.grooves.groovy.transformations.internal.EventASTTransformation;
-import org.codehaus.groovy.transform.GroovyASTTransformationClass;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.codehaus.groovy.transform.GroovyASTTransformationClass;
 
 /**
  * Marks a class as an Event.

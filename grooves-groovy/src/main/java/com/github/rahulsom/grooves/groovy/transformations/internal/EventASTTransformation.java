@@ -2,14 +2,13 @@ package com.github.rahulsom.grooves.groovy.transformations.internal;
 
 import com.github.rahulsom.grooves.groovy.transformations.Event;
 import com.github.rahulsom.grooves.groovy.transformations.Query;
+import java.text.MessageFormat;
+import java.util.logging.Logger;
 import org.codehaus.groovy.ast.*;
 import org.codehaus.groovy.ast.expr.Expression;
 import org.codehaus.groovy.control.SourceUnit;
 import org.codehaus.groovy.transform.AbstractASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformation;
-
-import java.text.MessageFormat;
-import java.util.logging.Logger;
 
 /**
  * Adds methods corresponding to the {@link Event} into the list of methods that a {@link Query}
@@ -30,14 +29,12 @@ public class EventASTTransformation extends AbstractASTTransformation {
         AnnotatedNode annotatedNode = (AnnotatedNode) nodes[1];
         AnnotationNode annotationNode = (AnnotationNode) nodes[0];
 
-        if (MY_TYPE.equals(annotationNode.getClassNode())
-                && annotatedNode instanceof ClassNode theClassNode) {
+        if (MY_TYPE.equals(annotationNode.getClassNode()) && annotatedNode instanceof ClassNode theClassNode) {
             final Expression theAggregate = annotationNode.getMember("value");
             final String aggregateClassName = theAggregate.getType().getName();
-            log.fine(() -> MessageFormat.format("Adding event {0} to aggregate {1}",
-                    theClassNode.getNameWithoutPackage(), aggregateClassName));
+            log.fine(() -> MessageFormat.format(
+                    "Adding event {0} to aggregate {1}", theClassNode.getNameWithoutPackage(), aggregateClassName));
             AggregateASTTransformation.addEventToAggregate(aggregateClassName, theClassNode);
         }
-
     }
 }

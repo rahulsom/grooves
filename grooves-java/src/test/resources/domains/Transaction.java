@@ -1,14 +1,13 @@
 package domains;
 
-import com.github.rahulsom.grooves.api.events.BaseEvent;
-import com.github.rahulsom.grooves.api.events.RevertEvent;
-import org.reactivestreams.Publisher;
-
-import java.util.Date;
-
 import static rx.Observable.empty;
 import static rx.Observable.just;
 import static rx.RxReactiveStreams.toPublisher;
+
+import com.github.rahulsom.grooves.api.events.BaseEvent;
+import com.github.rahulsom.grooves.api.events.RevertEvent;
+import java.util.Date;
+import org.reactivestreams.Publisher;
 
 public abstract class Transaction implements BaseEvent<Account, Long, Transaction> {
     private Account aggregate;

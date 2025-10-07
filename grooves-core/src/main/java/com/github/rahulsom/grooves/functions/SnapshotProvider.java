@@ -16,8 +16,5 @@ public interface SnapshotProvider<AggregateT, VersionOrTimestampT, SnapshotT> {
      * @return the most recent snapshot at or before the specified version, or null if none exists
      */
     @Trace
-    SnapshotT invoke(
-            AggregateT aggregate,
-            VersionOrTimestampT versionOrTimestamp
-    );
+    SnapshotT invoke(AggregateT aggregate, VersionOrTimestampT versionOrTimestamp);
 }

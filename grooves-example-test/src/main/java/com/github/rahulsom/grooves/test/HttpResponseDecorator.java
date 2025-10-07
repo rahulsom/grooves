@@ -1,10 +1,9 @@
 package com.github.rahulsom.grooves.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import okhttp3.Response;
-
 import java.io.IOException;
 import java.util.Optional;
+import okhttp3.Response;
 
 /**
  * Decorates a Response from OkHttp with some useful methods.
@@ -43,5 +42,4 @@ public record HttpResponseDecorator<T>(Response response) {
     public int getStatus() {
         return response.code();
     }
-
 }

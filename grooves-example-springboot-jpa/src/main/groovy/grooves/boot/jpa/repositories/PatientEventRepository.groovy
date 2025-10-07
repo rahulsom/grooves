@@ -15,7 +15,7 @@ interface PatientEventRepository extends JpaRepository<PatientEvent, Long> {
 
     @Query('from PatientEvent e where e.aggregate = ?1 and e.position > ?2 and e.position <= ?3')
     List<PatientEvent> getUncomputedEventsByVersion(
-            Patient patient, Long startPosition, Long endPosition)
+    Patient patient, Long startPosition, Long endPosition)
 
     List<PatientEvent> findAllByAggregateIn(List<Patient> patients)
 

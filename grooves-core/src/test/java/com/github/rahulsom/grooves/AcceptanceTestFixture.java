@@ -1,13 +1,12 @@
 package com.github.rahulsom.grooves;
 
-import lombok.*;
-import org.jetbrains.annotations.NotNull;
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import lombok.*;
+import org.jetbrains.annotations.NotNull;
 
 public class AcceptanceTestFixture {
     @AllArgsConstructor
@@ -21,9 +20,7 @@ public class AcceptanceTestFixture {
         }
     }
 
-    public interface Storable {
-
-    }
+    public interface Storable {}
 
     @AllArgsConstructor
     @Getter
@@ -68,60 +65,55 @@ public class AcceptanceTestFixture {
      * @return The {@link GroovesQuery} to use for testing
      */
     @NotNull
-    public static GroovesQuery<Aggregate, Integer, Snapshot, Event, Integer> createQuery(
-            Storable... objects) {
+    public static GroovesQuery<Aggregate, Integer, Snapshot, Event, Integer> createQuery(Storable... objects) {
         List<Snapshot> knownSnapshots = Arrays.stream(objects)
-                .filter(it -> it instanceof Snapshot).map(it -> (Snapshot) it)
+                .filter(it -> it instanceof Snapshot)
+                .map(it -> (Snapshot) it)
                 .toList();
         List<Event> events = Arrays.stream(objects)
-                .filter(it -> it instanceof Event).map(it -> (Event) it)
+                .filter(it -> it instanceof Event)
+                .map(it -> (Event) it)
                 .toList();
 
         return GroovesQueryBuilder.<Aggregate, Integer, Snapshot, Event, Integer>builder()
-            .snapshotProvider((aggregate, version) ->
-                knownSnapshots.stream()
-                    .filter(it -> it.getAggregateId() == aggregate.getId())
-                    .sorted(Comparator.comparing(Snapshot::getVersion).reversed())
-                    .filter(it -> version == null || it.getVersion() <= version)
-                    .findFirst()
-                    .orElse(null))
-            .emptySnapshotProvider(aggregate ->
-                    new Snapshot(aggregate.getId(), 0, "", new ArrayList<>()))
-            .eventsProvider((aggregates, version, lastSnapshot) ->
-                events.stream()
-                    .filter(it ->
-                        aggregates.stream().anyMatch(x -> it.getAggregateId() == x.getId())
+                .snapshotProvider((aggregate, version) -> knownSnapshots.stream()
+                        .filter(it -> it.getAggregateId() == aggregate.getId())
+                        .sorted(Comparator.comparing(Snapshot::getVersion).reversed())
+                        .filter(it -> version == null || it.getVersion() <= version)
+                        .findFirst()
+                        .orElse(null))
+                .emptySnapshotProvider(aggregate -> new Snapshot(aggregate.getId(), 0, "", new ArrayList<>()))
+                .eventsProvider((aggregates, version, lastSnapshot) -> events.stream()
+                        .filter(it -> aggregates.stream().anyMatch(x -> it.getAggregateId() == x.getId())
                                 && (version == null || it.getVersion() <= version)
-                                && it.getVersion() > lastSnapshot.getVersion()
-                    )
-                    .sorted(Comparator.comparing(Event::getVersion))
-            )
-            .exceptionHandler((exception, snapshot, event) -> {
-                snapshot.setSummary(snapshot.getSummary() + exception.getMessage() + ",");
-                return EventApplyOutcome.CONTINUE;
-            })
-            .eventHandler((event, snapshot) -> {
-                snapshot.setSummary(snapshot.getSummary() + event.getData() + ",");
-                return EventApplyOutcome.CONTINUE;
-            })
-            .eventClassifier(Event::getEventType)
-            .eventVersionProvider(Event::getVersion)
-            .applyMoreEventsPredicate(snapshot -> true)
-            .deprecator((snapshot, event) ->
-                snapshot.getDeprecatedAggregates().add(event.getData().split(",")[0]))
-            .snapshotVersionSetter(Snapshot::setVersion)
-            .deprecatedByProvider(event -> {
-                List<Integer> ints = Arrays.stream(event.data.split(","))
-                        .map(Integer::parseInt)
-                        .toList();
-                return new DeprecatedByResult<>(new Aggregate(ints.get(0)), ints.get(1));
-            })
-            .revertedEventProvider(event -> events.stream()
-                .filter(it -> it.getId() == Integer.parseInt(event.data))
-                .findAny()
-                .orElse(null))
-            .eventIdProvider(Event::getId)
-            .build()
-            .toQuery();
+                                && it.getVersion() > lastSnapshot.getVersion())
+                        .sorted(Comparator.comparing(Event::getVersion)))
+                .exceptionHandler((exception, snapshot, event) -> {
+                    snapshot.setSummary(snapshot.getSummary() + exception.getMessage() + ",");
+                    return EventApplyOutcome.CONTINUE;
+                })
+                .eventHandler((event, snapshot) -> {
+                    snapshot.setSummary(snapshot.getSummary() + event.getData() + ",");
+                    return EventApplyOutcome.CONTINUE;
+                })
+                .eventClassifier(Event::getEventType)
+                .eventVersionProvider(Event::getVersion)
+                .applyMoreEventsPredicate(snapshot -> true)
+                .deprecator((snapshot, event) ->
+                        snapshot.getDeprecatedAggregates().add(event.getData().split(",")[0]))
+                .snapshotVersionSetter(Snapshot::setVersion)
+                .deprecatedByProvider(event -> {
+                    List<Integer> ints = Arrays.stream(event.data.split(","))
+                            .map(Integer::parseInt)
+                            .toList();
+                    return new DeprecatedByResult<>(new Aggregate(ints.get(0)), ints.get(1));
+                })
+                .revertedEventProvider(event -> events.stream()
+                        .filter(it -> it.getId() == Integer.parseInt(event.data))
+                        .findAny()
+                        .orElse(null))
+                .eventIdProvider(Event::getId)
+                .build()
+                .toQuery();
     }
 }

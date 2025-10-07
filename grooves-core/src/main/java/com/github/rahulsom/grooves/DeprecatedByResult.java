@@ -8,7 +8,4 @@ package com.github.rahulsom.grooves;
  * @param aggregate the aggregate that is being deprecated
  * @param eventId the ID of the event that serves as the converse of the deprecation
  */
-public record DeprecatedByResult<AggregateT, EventIdT>(
-        AggregateT aggregate,
-        EventIdT eventId
-) {}
+public record DeprecatedByResult<AggregateT, EventIdT>(AggregateT aggregate, EventIdT eventId) {}

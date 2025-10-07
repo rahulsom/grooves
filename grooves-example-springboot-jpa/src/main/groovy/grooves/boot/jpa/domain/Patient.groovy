@@ -19,7 +19,7 @@ import jakarta.persistence.*
 // tag::documented[]
 @Entity
 @Table(uniqueConstraints = [
-        @UniqueConstraint(name = 'UK_PATIENT_UNIQUEID', columnNames = ['uniqueId']),
+    @UniqueConstraint(name = 'UK_PATIENT_UNIQUEID', columnNames = ['uniqueId']),
 ])
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
 @JsonIgnoreProperties(['hibernateLazyInitializer', 'handler'])

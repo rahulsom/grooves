@@ -15,7 +15,7 @@ interface ZipcodeEventRepository extends JpaRepository<ZipcodeEvent, Long> {
 
     @Query('from ZipcodeEvent e where e.aggregate = ?1 and e.position > ?2 and e.position <= ?3')
     List<ZipcodeEvent> getUncomputedEventsByVersion(
-            Zipcode zipcode, Long startPosition, Long endPosition)
+    Zipcode zipcode, Long startPosition, Long endPosition)
 
     List<ZipcodeEvent> findAllByAggregateIn(List<Zipcode> patients)
 

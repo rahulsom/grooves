@@ -1,13 +1,12 @@
 package com.github.rahulsom.grooves.test;
 
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * A simple REST client that uses OkHttp.
@@ -46,5 +45,4 @@ public class RestClient {
     }
 
     private final String baseUrl;
-
 }

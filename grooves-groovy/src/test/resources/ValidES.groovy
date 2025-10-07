@@ -12,7 +12,9 @@ import static rx.RxReactiveStreams.toPublisher
 
 @CompileStatic @Query(aggregate = Account, snapshot = Balance)
 class ValidESQuery implements QuerySupport<Account, Long, Transaction, String, Balance> {
-    @NotNull @Override Balance createEmptySnapshot() { new Balance() }
+    @NotNull @Override Balance createEmptySnapshot() {
+        new Balance()
+    }
     @NotNull @Override Publisher<Balance> getSnapshot(long maxPosition, @NotNull Account aggregate) {
         toPublisher(empty())
     }
@@ -25,7 +27,9 @@ class ValidESQuery implements QuerySupport<Account, Long, Transaction, String, B
     @NotNull @Override Publisher<Transaction> getUncomputedEvents(@NotNull Account aggregate, @NotNull Balance lastSnapshot, @NotNull Date snapshotTime) {
         toPublisher(empty())
     }
-    @NotNull @Override boolean shouldEventsBeApplied(@NotNull Balance snapshot) { true }
+    @NotNull @Override boolean shouldEventsBeApplied(@NotNull Balance snapshot) {
+        true
+    }
     @NotNull @Override void addToDeprecates(@NotNull Balance snapshot, @NotNull Account deprecatedAggregate) {}
 
     @NotNull @Override Publisher<EventApplyOutcome> onException(@NotNull Exception e, @NotNull Balance snapshot, @NotNull Transaction event) {

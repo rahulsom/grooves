@@ -1,11 +1,17 @@
 package grooves.boot.jpa;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
 import com.github.rahulsom.grooves.test.AbstractPatientTest;
 import com.github.rahulsom.grooves.test.RestClient;
 import com.github.rahulsom.grooves.test.RestRequest;
 import grooves.boot.jpa.domain.PatientDeprecatedBy;
 import grooves.boot.jpa.domain.PatientDeprecates;
 import grooves.boot.jpa.repositories.PatientEventRepository;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,13 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * Acceptance test that tests against Springboot with JPA.
@@ -46,39 +45,36 @@ public class PatientTest extends AbstractPatientTest {
 
     @ParameterizedTest
     @DisplayName("{1} - current patients join works")
-    @CsvSource(textBlock = """
+    @CsvSource(
+            textBlock =
+                    """
             1, Campbell, 1|2|3|5|6|7|8|10, 33
             2, 'Santana Row', 4|9, 37
             """)
-    void currentPatientsJoinWorks(long id, String location, String patientsStr, 
-                                  int lastEventPosition) {
+    void currentPatientsJoinWorks(long id, String location, String patientsStr, int lastEventPosition) {
         var patients = Arrays.stream(patientsStr.split("\\|"))
                 .mapToLong(Long::parseLong)
                 .boxed()
                 .toList();
-        var expectedJoinedIds = patients.stream()
-                .map(p -> p + 7)
-                .sorted()
-                .toList();
+        var expectedJoinedIds = patients.stream().map(p -> p + 7).sorted().toList();
 
         var resp = getRest().<Map<String, Object>>get(new RestRequest("zipcode/patients/" + id));
 
         assertThat(resp.getStatus()).isEqualTo(200);
         var data = resp.getData();
         assertThat(data.get("aggregateId").toString()).isEqualTo(String.valueOf(id));
-        
+
         @SuppressWarnings("unchecked")
         var joinedIds = (List<Number>) data.get("joinedIds");
-        var actualJoinedIds = joinedIds.stream()
-                .map(Number::longValue)
-                .sorted()
-                .toList();
+        var actualJoinedIds = joinedIds.stream().map(Number::longValue).sorted().toList();
         assertThat(actualJoinedIds).isEqualTo(expectedJoinedIds);
     }
 
     @ParameterizedTest
     @DisplayName("{1} - version {2} patients join works")
-    @CsvSource(textBlock = """
+    @CsvSource(
+            textBlock =
+                    """
             1, Campbell, 1, ''
             1, Campbell, 2, '1'
             1, Campbell, 3, '1|2'
@@ -118,25 +114,19 @@ public class PatientTest extends AbstractPatientTest {
                     .boxed()
                     .toList();
         }
-        var expectedJoinedIds = patients.stream()
-                .map(p -> p + 7)
-                .sorted()
-                .toList();
+        var expectedJoinedIds = patients.stream().map(p -> p + 7).sorted().toList();
 
-        var resp = getRest().<Map<String, Object>>get(
-                new RestRequest("zipcode/patients/" + id, Map.of("version", version)));
+        var resp = getRest()
+                .<Map<String, Object>>get(new RestRequest("zipcode/patients/" + id, Map.of("version", version)));
 
         assertThat(resp.getStatus()).isEqualTo(200);
         var data = resp.getData();
         assertThat(data.get("aggregateId").toString()).isEqualTo(String.valueOf(id));
         assertThat(data.get("lastEventPosition")).isEqualTo(version);
-        
+
         @SuppressWarnings("unchecked")
         var joinedIds = (List<Number>) data.get("joinedIds");
-        var actualJoinedIds = joinedIds.stream()
-                .map(Number::longValue)
-                .sorted()
-                .toList();
+        var actualJoinedIds = joinedIds.stream().map(Number::longValue).sorted().toList();
         assertThat(actualJoinedIds).isEqualTo(expectedJoinedIds);
     }
 
@@ -145,12 +135,12 @@ public class PatientTest extends AbstractPatientTest {
     @Transactional
     void deprecationsAreCorrectlyStored() {
         var allEvents = patientEventRepository.findAll();
-        
+
         var deprecatedByEvents = allEvents.stream()
                 .filter(event -> event instanceof PatientDeprecatedBy)
                 .map(event -> (PatientDeprecatedBy) event)
                 .toList();
-        
+
         var deprecatesEvents = allEvents.stream()
                 .filter(event -> event instanceof PatientDeprecates)
                 .map(event -> (PatientDeprecates) event)

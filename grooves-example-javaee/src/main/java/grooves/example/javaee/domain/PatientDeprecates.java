@@ -1,21 +1,20 @@
 package grooves.example.javaee.domain;
 
+import static rx.Observable.just;
+import static rx.RxReactiveStreams.toPublisher;
+
 import com.github.rahulsom.grooves.api.events.Deprecates;
+import javax.xml.bind.annotation.XmlTransient;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
-import javax.xml.bind.annotation.XmlTransient;
-
-import static rx.Observable.just;
-import static rx.RxReactiveStreams.toPublisher;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class PatientDeprecates extends PatientEvent
-        implements Deprecates<Patient, Long, PatientEvent> {
+public class PatientDeprecates extends PatientEvent implements Deprecates<Patient, Long, PatientEvent> {
     @XmlTransient
     private final PatientDeprecatedBy converse;
+
     private final Patient deprecated;
 
     @NotNull
@@ -34,7 +33,6 @@ public class PatientDeprecates extends PatientEvent
 
     @Override
     public String toString() {
-        return String.format("PatientDeprecates{converse=%d, deprecated=%d}",
-                converse.getId(), deprecated.getId());
+        return String.format("PatientDeprecates{converse=%d, deprecated=%d}", converse.getId(), deprecated.getId());
     }
 }

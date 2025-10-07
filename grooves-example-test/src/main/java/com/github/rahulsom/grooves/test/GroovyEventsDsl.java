@@ -3,7 +3,6 @@ package com.github.rahulsom.grooves.test;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
-
 import java.util.Date;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -17,11 +16,8 @@ import java.util.function.Supplier;
  *
  * @author Rahul Somasunderam
  */
-public class GroovyEventsDsl<
-        AggregateT,
-        EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>> extends
-        EventsDsl<AggregateT, EventIdT, EventT> {
+public class GroovyEventsDsl<AggregateT, EventIdT, EventT extends BaseEvent<AggregateT, EventIdT, EventT>>
+        extends EventsDsl<AggregateT, EventIdT, EventT> {
 
     /**
      * Allows executing a consumer with some context to set up events.
@@ -37,8 +33,11 @@ public class GroovyEventsDsl<
      * @return The aggregate after all the code has been executed
      */
     public AggregateT on(
-            AggregateT aggregate, Consumer entityConsumer, Supplier<Long> positionSupplier,
-            Supplier<Date> timestampSupplier, @DelegatesTo(OnSpec.class) Closure closure) {
+            AggregateT aggregate,
+            Consumer entityConsumer,
+            Supplier<Long> positionSupplier,
+            Supplier<Date> timestampSupplier,
+            @DelegatesTo(OnSpec.class) Closure closure) {
 
         OnSpec<AggregateT, EventIdT, EventT, ?, ?> spec = new OnSpec<>();
         spec.setAggregate(aggregate);
@@ -65,7 +64,9 @@ public class GroovyEventsDsl<
      * @return The aggregate after all the code has been executed
      */
     public AggregateT on(
-            AggregateT aggregate, Consumer entityConsumer, Supplier<Long> positionSupplier,
+            AggregateT aggregate,
+            Consumer entityConsumer,
+            Supplier<Long> positionSupplier,
             @DelegatesTo(OnSpec.class) Closure closure) {
         return on(aggregate, entityConsumer, positionSupplier, Date::new, closure);
     }
@@ -83,10 +84,7 @@ public class GroovyEventsDsl<
      *
      * @return The aggregate after all the code has been executed
      */
-    public AggregateT on(AggregateT aggregate, Consumer entityConsumer,
-                         @DelegatesTo(OnSpec.class) Closure closure) {
-        return on(aggregate, entityConsumer, () -> getDefaultPositionSupplier().incrementAndGet(),
-                Date::new, closure);
+    public AggregateT on(AggregateT aggregate, Consumer entityConsumer, @DelegatesTo(OnSpec.class) Closure closure) {
+        return on(aggregate, entityConsumer, () -> getDefaultPositionSupplier().incrementAndGet(), Date::new, closure);
     }
-
 }

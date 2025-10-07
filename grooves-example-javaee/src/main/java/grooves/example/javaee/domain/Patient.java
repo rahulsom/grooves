@@ -2,8 +2,8 @@ package grooves.example.javaee.domain;
 
 // tag::documented[]
 import com.github.rahulsom.grooves.java.Aggregate;
-import lombok.Data;
 import java.io.Serializable;
+import lombok.Data;
 
 @Data
 @Aggregate // <1>

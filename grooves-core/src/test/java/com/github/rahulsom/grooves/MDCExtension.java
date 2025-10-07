@@ -12,16 +12,16 @@ public class MDCExtension implements BeforeEachCallback, AfterEachCallback {
 
     @Override
     public void afterEach(@NotNull ExtensionContext context) {
-        LoggerFactory.getLogger(getLoggerName(context)).info(
-                "End test - {}.{}\n\n", getTestClass(context), getTestMethod(context));
+        LoggerFactory.getLogger(getLoggerName(context))
+                .info("End test - {}.{}\n\n", getTestClass(context), getTestMethod(context));
         MDC.remove("test");
     }
 
     @Override
     public void beforeEach(@NotNull ExtensionContext context) {
         MDC.put("test", getTestClass(context) + "." + getTestMethod(context));
-        LoggerFactory.getLogger(getLoggerName(context)).info(
-                "Begin test - {}.{}", getTestClass(context), getTestMethod(context));
+        LoggerFactory.getLogger(getLoggerName(context))
+                .info("Begin test - {}.{}", getTestClass(context), getTestMethod(context));
     }
 
     private String getTestMethod(ExtensionContext context) {

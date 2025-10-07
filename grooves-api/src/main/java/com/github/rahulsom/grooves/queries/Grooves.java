@@ -35,13 +35,12 @@ public class Grooves {
      */
     @NotNull
     public static <
-            AggregateT,
-            EventIdT,
-            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-            SnapshotIdT,
-            SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-            > FunctionalVersionedQuery.Builder<AggregateT, EventIdT, EventT,
-            SnapshotIdT, SnapshotT> versioned() {
+                    AggregateT,
+                    EventIdT,
+                    EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+                    SnapshotIdT,
+                    SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>>
+            FunctionalVersionedQuery.Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> versioned() {
         return FunctionalVersionedQuery.newBuilder();
     }
 
@@ -68,13 +67,12 @@ public class Grooves {
      */
     @NotNull
     public static <
-            AggregateT,
-            EventIdT,
-            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-            SnapshotIdT,
-            SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-            > FunctionalTemporalQuery.Builder<AggregateT, EventIdT, EventT,
-            SnapshotIdT, SnapshotT> temporal() {
+                    AggregateT,
+                    EventIdT,
+                    EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+                    SnapshotIdT,
+                    SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>>
+            FunctionalTemporalQuery.Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> temporal() {
         return FunctionalTemporalQuery.newBuilder();
     }
 }

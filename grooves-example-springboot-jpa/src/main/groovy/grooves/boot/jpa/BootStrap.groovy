@@ -69,7 +69,7 @@ class BootStrap implements InitializingBean {
         } as Supplier<Long>
         def dateSupplier = { currDate += 1; currDate }
         new GroovyEventsDsl<Zipcode, Long, ZipcodeEvent>().on(
-            zipcode, eventSaver, positionSupplier, dateSupplier, closure)
+                zipcode, eventSaver, positionSupplier, dateSupplier, closure)
     }
 
     Patient on(Patient patient, @DelegatesTo(OnSpec) Closure closure) {
@@ -79,10 +79,12 @@ class BootStrap implements InitializingBean {
         } as Supplier<Long>
         def dateSupplier = { currDate += 1; currDate }
         new GroovyEventsDsl<Patient, Long, PatientEvent>().on(
-            patient, eventSaver, positionSupplier, dateSupplier, closure)
+                patient, eventSaver, positionSupplier, dateSupplier, closure)
     }
 
-    @SuppressWarnings(['SimpleDateFormatMissingLocale'])
+    @SuppressWarnings([
+        'SimpleDateFormatMissingLocale'
+    ])
     private static Date d(String input) {
         new SimpleDateFormat('yyyy-MM-dd HH:mm:ss').parse(input)
     }
@@ -93,7 +95,7 @@ class BootStrap implements InitializingBean {
             apply new PatientCreated(timestamp: d('2016-01-02 02:56:02'), name: 'LISA BAKER')
             apply new ProcedurePerformed(timestamp: d('2016-01-04 02:56:02'), code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(timestamp: d('2016-01-05 02:56:02'), code: 'ANNUALPHYSICAL',
-                cost: 170.00)
+            cost: 170.00)
             apply new ProcedurePerformed(timestamp: d('2016-01-07 02:56:02'), code: 'GLUCOSETEST', cost: 78.93)
         }
         join(i1, campbell, d('2016-01-04 12:14:20'))
@@ -102,7 +104,7 @@ class BootStrap implements InitializingBean {
             apply new PatientCreated(timestamp: d('2016-01-02 09:45:28'), name: 'CAROL BENNETT')
             apply new ProcedurePerformed(timestamp: d('2016-01-03 09:45:28'), code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(timestamp: d('2016-01-04 09:45:28'), code: 'ANNUALPHYSICAL',
-                cost: 170.00)
+            cost: 170.00)
             apply new ProcedurePerformed(timestamp: d('2016-01-07 09:45:28'), code: 'GLUCOSETEST', cost: 78.93)
         }
         join(i2, campbell, d('2016-01-12 19:52:05'))
@@ -115,7 +117,7 @@ class BootStrap implements InitializingBean {
             apply new PatientCreated(timestamp: d('2016-01-02 17:53:55'), name: 'JESSICA TUCKER')
             apply new ProcedurePerformed(timestamp: d('2016-01-07 17:53:55'), code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(timestamp: d('2016-01-10 17:53:55'), code: 'ANNUALPHYSICAL',
-                cost: 170.00)
+            cost: 170.00)
             apply new ProcedurePerformed(timestamp: d('2016-01-12 17:53:55'), code: 'GLUCOSETEST', cost: 78.93)
             apply new ProcedurePerformed(timestamp: d('2016-01-15 17:53:55'), code: 'LIPIDTEST', cost: 102.55)
         }
@@ -131,7 +133,7 @@ class BootStrap implements InitializingBean {
             apply new PatientCreated(timestamp: d('2016-01-02 02:06:56'), name: 'ANN ZIMMERMAN')
             apply new ProcedurePerformed(timestamp: d('2016-01-04 02:06:56'), code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(timestamp: d('2016-01-05 02:06:56'), code: 'ANNUALPHYSICAL',
-                cost: 170.00)
+            cost: 170.00)
             apply new ProcedurePerformed(timestamp: d('2016-01-06 02:06:56'), code: 'GLUCOSETEST', cost: 78.93)
             apply new ProcedurePerformed(timestamp: d('2016-01-07 02:06:56'), code: 'LIPIDTEST', cost: 102.55)
             apply new ProcedurePerformed(timestamp: d('2016-01-09 02:06:56'), code: 'XRAY_WRIST', cost: 70.42)
@@ -144,7 +146,7 @@ class BootStrap implements InitializingBean {
             apply new PatientCreated(timestamp: d('2016-01-02 02:56:02'), name: 'KATHERINE CARDENAS')
             apply new ProcedurePerformed(timestamp: d('2016-01-04 02:56:02'), code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(timestamp: d('2016-01-05 02:56:02'), code: 'ANNUALPHYSICAL',
-                cost: 170.00)
+            cost: 170.00)
             apply new ProcedurePerformed(timestamp: d('2016-01-07 02:56:02'), code: 'GLUCOSETEST', cost: 78.93)
         }
         join(i6, campbell, d('2016-01-04 12:14:20'))
@@ -163,7 +165,7 @@ class BootStrap implements InitializingBean {
             apply new PatientCreated(timestamp: d('2016-01-02 17:53:55'), name: 'ANNIE NIEVES')
             apply new ProcedurePerformed(timestamp: d('2016-01-07 17:53:55'), code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(timestamp: d('2016-01-10 17:53:55'), code: 'ANNUALPHYSICAL',
-                cost: 170.00)
+            cost: 170.00)
             apply new ProcedurePerformed(timestamp: d('2016-01-12 17:53:55'), code: 'GLUCOSETEST', cost: 78.93)
             apply new ProcedurePerformed(timestamp: d('2016-01-15 17:53:55'), code: 'LIPIDTEST', cost: 102.55)
         }
@@ -179,7 +181,7 @@ class BootStrap implements InitializingBean {
             apply new PatientCreated(timestamp: d('2016-01-02 01:57:19'), name: 'JOANNE KELSEY')
             apply new ProcedurePerformed(timestamp: d('2016-01-04 01:57:19'), code: 'FLUSHOT', cost: 32.40)
             apply new ProcedurePerformed(timestamp: d('2016-01-05 01:57:19'), code: 'ANNUALPHYSICAL',
-                cost: 170.00)
+            cost: 170.00)
             apply new ProcedurePerformed(timestamp: d('2016-01-10 01:57:19'), code: 'GLUCOSETEST', cost: 78.93)
         }
         join(i10, santanaRow, d('2016-01-12 23:33:09'))
@@ -342,16 +344,16 @@ class BootStrap implements InitializingBean {
      */
     private PatientDeprecatedBy merge(Patient self, Patient into) {
         def e1 = new PatientDeprecatedBy(
-            aggregate: self,
-            deprecator: into,
-            timestamp: currDate,
-            position: patientEventRepository.countByAggregateId(self.id) + 1,)
+                aggregate: self,
+                deprecator: into,
+                timestamp: currDate,
+                position: patientEventRepository.countByAggregateId(self.id) + 1,)
         def e2 = new PatientDeprecates(
-            aggregate: into,
-            deprecated: self,
-            timestamp: currDate,
-            converse: e1,
-            position: patientEventRepository.countByAggregateId(into.id) + 1,)
+                aggregate: into,
+                deprecated: self,
+                timestamp: currDate,
+                converse: e1,
+                position: patientEventRepository.countByAggregateId(into.id) + 1,)
         e1.converse = e2
         patientEventRepository.saveAll([e1, e2,])
         e2.converse

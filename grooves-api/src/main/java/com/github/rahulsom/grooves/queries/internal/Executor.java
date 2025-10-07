@@ -4,9 +4,8 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
 import io.reactivex.Flowable;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Executes a query by controlling how events are applied.
@@ -24,8 +23,7 @@ public interface Executor<
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-        > {
+        SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>> {
     /**
      * Applies reverts to a list of events and then returns forward events.
      *
@@ -33,7 +31,8 @@ public interface Executor<
      *
      * @return a list of events after the reverts have been applied
      */
-    @NotNull Flowable<EventT> applyReverts(@NotNull Flowable<EventT> events);
+    @NotNull
+    Flowable<EventT> applyReverts(@NotNull Flowable<EventT> events);
 
     /**
      * Applies forward events on a snapshot.
@@ -46,7 +45,8 @@ public interface Executor<
      *
      * @return The Snapshot that has been mutated
      */
-    @NotNull Flowable<SnapshotT> applyEvents(
+    @NotNull
+    Flowable<SnapshotT> applyEvents(
             @NotNull BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> query,
             @NotNull SnapshotT initialSnapshot,
             @NotNull Flowable<EventT> events,

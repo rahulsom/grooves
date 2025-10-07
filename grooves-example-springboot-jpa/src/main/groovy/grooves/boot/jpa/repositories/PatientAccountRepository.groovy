@@ -12,8 +12,8 @@ interface PatientAccountRepository extends JpaRepository<PatientAccount, Long> {
     List<PatientAccount> findAllByAggregateId(Long aggregateId)
 
     List<PatientAccount> findAllByAggregateIdAndLastEventPositionLessThan(
-            Long aggregateId, Long lastEventPosition)
+    Long aggregateId, Long lastEventPosition)
 
     List<PatientAccount> findAllByAggregateIdAndLastEventTimestampLessThan(
-            Long aggregateId, Date date)
+    Long aggregateId, Date date)
 }

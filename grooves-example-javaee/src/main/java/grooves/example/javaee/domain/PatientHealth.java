@@ -1,26 +1,25 @@
 package grooves.example.javaee.domain;
 
-import com.github.rahulsom.grooves.api.snapshots.Snapshot;
-import lombok.Data;
-import org.jetbrains.annotations.NotNull;
-import org.reactivestreams.Publisher;
+import static rx.Observable.*;
+import static rx.RxReactiveStreams.toPublisher;
 
-import javax.xml.bind.annotation.XmlTransient;
+import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static rx.Observable.*;
-import static rx.RxReactiveStreams.toPublisher;
+import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
+import org.jetbrains.annotations.NotNull;
+import org.reactivestreams.Publisher;
 
 @Data
-public class PatientHealth
-        implements Snapshot<Patient, Long, Long, PatientEvent>, Serializable {
+public class PatientHealth implements Snapshot<Patient, Long, Long, PatientEvent>, Serializable {
     /**
      * The procedures performed on this patient.
      */
     private List<Procedure> procedures = new ArrayList<>();
+
     private Long id;
     /**
      * The patient corresponding to this snapshot.
@@ -30,6 +29,7 @@ public class PatientHealth
      * The patient that deprecated the patient of this snapshot.
      */
     private Patient deprecatedBy;
+
     private List<Patient> deprecates = new ArrayList<>();
     /**
      * The position of the last event in the snapshot.

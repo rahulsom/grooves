@@ -19,7 +19,8 @@ import static io.reactivex.Flowable.*
 @ToString(includeSuperProperties = true, includeNames = true, includePackage = false)
 @SuppressWarnings(['DuplicateNumberLiteral'])
 // tag::documented[]
-class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> { // <1>
+class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> {
+    // <1>
 
     @GeneratedValue @Id Long id
 
@@ -38,15 +39,18 @@ class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent> { //
 
     int processingErrors = 0
 
-    @Override @JsonIgnore Publisher<Patient> getAggregateObservable() { // <4>
+    @Override @JsonIgnore Publisher<Patient> getAggregateObservable() {
+        // <4>
         aggregate == null ? empty() : just(aggregate)
     }
 
-    @Override @JsonIgnore Publisher<Patient> getDeprecatedByObservable() { // <5>
+    @Override @JsonIgnore Publisher<Patient> getDeprecatedByObservable() {
+        // <5>
         deprecatedBy == null ? empty() : just(deprecatedBy)
     }
 
-    @Override @JsonIgnore Publisher<Patient> getDeprecatesObservable() { // <6>
+    @Override @JsonIgnore Publisher<Patient> getDeprecatesObservable() {
+        // <6>
         fromIterable(deprecates.toList())
     }
 }

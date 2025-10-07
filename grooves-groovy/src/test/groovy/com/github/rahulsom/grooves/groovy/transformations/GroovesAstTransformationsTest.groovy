@@ -44,5 +44,4 @@ class GroovesAstTransformationsTest {
                 this.class.getResource('/domains.groovy').text +
                 this.class.getResource(name).text
     }
-
 }

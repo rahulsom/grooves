@@ -1,18 +1,17 @@
 package valid;
 
-import com.github.rahulsom.grooves.api.EventApplyOutcome;
-import com.github.rahulsom.grooves.java.Query;
-import com.github.rahulsom.grooves.queries.QuerySupport;
-import domains.*;
-import org.reactivestreams.Publisher;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Date;
-
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
 import static rx.Observable.empty;
 import static rx.Observable.just;
 import static rx.RxReactiveStreams.toPublisher;
+
+import com.github.rahulsom.grooves.api.EventApplyOutcome;
+import com.github.rahulsom.grooves.java.Query;
+import com.github.rahulsom.grooves.queries.QuerySupport;
+import domains.*;
+import java.util.Date;
+import org.jetbrains.annotations.NotNull;
+import org.reactivestreams.Publisher;
 
 @Query(aggregate = Account.class, snapshot = Balance.class)
 class ValidESQuery implements QuerySupport<Account, Long, Transaction, String, Balance> {
@@ -36,8 +35,7 @@ class ValidESQuery implements QuerySupport<Account, Long, Transaction, String, B
 
     @NotNull
     @Override
-    public Publisher<Transaction> getUncomputedEvents(
-            @NotNull Account aggregate, Balance lastSnapshot, long version) {
+    public Publisher<Transaction> getUncomputedEvents(@NotNull Account aggregate, Balance lastSnapshot, long version) {
         return toPublisher(empty());
     }
 
@@ -56,13 +54,11 @@ class ValidESQuery implements QuerySupport<Account, Long, Transaction, String, B
 
     @NotNull
     @Override
-    public void addToDeprecates(@NotNull Balance snapshot, Account deprecatedAggregate) {
-    }
+    public void addToDeprecates(@NotNull Balance snapshot, Account deprecatedAggregate) {}
 
     @NotNull
     @Override
-    public Publisher<EventApplyOutcome> onException(
-            Exception e, Balance snapshot, Transaction event) {
+    public Publisher<EventApplyOutcome> onException(Exception e, Balance snapshot, Transaction event) {
         return toPublisher(just(CONTINUE));
     }
 
@@ -70,8 +66,7 @@ class ValidESQuery implements QuerySupport<Account, Long, Transaction, String, B
         return toPublisher(just(CONTINUE));
     }
 
-    public Publisher<EventApplyOutcome> applyCashWithdrawal(
-            CashWithdrawal event, Balance snapshot) {
+    public Publisher<EventApplyOutcome> applyCashWithdrawal(CashWithdrawal event, Balance snapshot) {
         return toPublisher(just(CONTINUE));
     }
 }

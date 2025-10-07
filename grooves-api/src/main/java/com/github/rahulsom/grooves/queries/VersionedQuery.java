@@ -28,8 +28,8 @@ public interface VersionedQuery<
      * @param version   The version number, starting at 1
      * @return A Publisher that returns at most one Snapshot
      */
-    @NotNull Publisher<SnapshotT> computeSnapshot(
-            @NotNull AggregateT aggregate, long version);
+    @NotNull
+    Publisher<SnapshotT> computeSnapshot(@NotNull AggregateT aggregate, long version);
 
     /**
      * Computes a snapshot for specified version of an aggregate.
@@ -40,7 +40,6 @@ public interface VersionedQuery<
      *                  snapshot. Defaults to true.
      * @return A Publisher that returns at most one Snapshot
      */
-    @NotNull Publisher<SnapshotT> computeSnapshot(
-            @NotNull AggregateT aggregate, long version, boolean redirect);
-
+    @NotNull
+    Publisher<SnapshotT> computeSnapshot(@NotNull AggregateT aggregate, long version, boolean redirect);
 }

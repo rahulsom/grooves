@@ -15,8 +15,5 @@ public interface EventHandler<EventT, SnapshotT> {
      * @return the outcome indicating whether to continue processing or return the snapshot
      */
     @Trace
-    EventApplyOutcome invoke(
-            EventT event,
-            SnapshotT snapshot
-    );
+    EventApplyOutcome invoke(EventT event, SnapshotT snapshot);
 }
