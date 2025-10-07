@@ -40,6 +40,7 @@ sass = "1.5.2"
 rxjava2 = "2.2.21"
 slf4j = "2.0.17"
 sonar = "6.3.1.5724"
+spotless = "8.0.0"
 spring-asciidoctor = "0.6.3"
 spring-boot = "3.5.6"
 spring-dependency-management = "1.1.7"
@@ -111,5 +112,6 @@ git-publish = { id = "org.ajoberstar.git-publish", version.ref = "git-publish" }
 asciidoctor-convert = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctor" }
 jooq = { id = "nu.studer.jooq", version.ref = "jooq" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
 testLogger = { id = "com.adarshr.test-logger", version.ref = "testLogger" }
