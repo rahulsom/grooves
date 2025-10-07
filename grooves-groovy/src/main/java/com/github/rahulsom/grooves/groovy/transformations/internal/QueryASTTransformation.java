@@ -12,7 +12,6 @@ import org.reactivestreams.Publisher;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * Verifies that a Query interface implementation has all the extra methods it needs to process
