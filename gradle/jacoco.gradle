@@ -6,5 +6,5 @@ jacoco {
 
 project.tasks.withType(Test).configureEach {
     it.finalizedBy("jacocoTestReport")
-    it.jacoco.destinationFile = file("$buildDir/jacoco/test.exec")
+    it.jacoco.destinationFile = file("${layout.buildDirectory.get().asFile}/jacoco/test.exec")
 }
