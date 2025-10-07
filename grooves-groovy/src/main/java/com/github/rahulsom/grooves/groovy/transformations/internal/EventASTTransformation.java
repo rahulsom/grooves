@@ -30,9 +30,9 @@ public class EventASTTransformation extends AbstractASTTransformation {
         AnnotatedNode annotatedNode = (AnnotatedNode) nodes[1];
         AnnotationNode annotationNode = (AnnotationNode) nodes[0];
 
-        if (MY_TYPE.equals(annotationNode.getClassNode()) && annotatedNode instanceof ClassNode) {
+        if (MY_TYPE.equals(annotationNode.getClassNode())
+                && annotatedNode instanceof ClassNode theClassNode) {
             final Expression theAggregate = annotationNode.getMember("value");
-            final ClassNode theClassNode = (ClassNode) annotatedNode;
             final String aggregateClassName = theAggregate.getType().getName();
             log.fine(() -> MessageFormat.format("Adding event {0} to aggregate {1}",
                     theClassNode.getNameWithoutPackage(), aggregateClassName));
