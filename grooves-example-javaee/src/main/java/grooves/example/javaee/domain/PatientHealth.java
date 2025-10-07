@@ -2,11 +2,9 @@ package grooves.example.javaee.domain;
 
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import lombok.Data;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 
-import javax.json.bind.annotation.JsonbProperty;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.ArrayList;
