@@ -12,5 +12,5 @@ max_line_length=160
 [*.kts]
 ktlint_standard_no-wildcard-imports = disabled
 
-[*.yml]
+[{*.yml,*.json,*.ts}]
 indent_size=2

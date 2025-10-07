@@ -1,2 +1,5 @@
-# Spotless reformat
+# Spotless reformat .java, .groovy, .kt
 a67ba2b12a8ab4471ebd55d7bc07730434825cf6
+
+# Spotless reformat .json, .yml, .ts
+6660b63982c00bdc876614301e1b4390994f6e5b

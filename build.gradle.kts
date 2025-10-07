@@ -217,4 +217,19 @@ spotless {
         target("**/*.groovy")
         targetExclude("**/build/**/*.groovy")
     }
+    yaml {
+        prettier()
+        target("**/*.yml")
+        targetExclude("**/build/**/*.yml")
+    }
+    json {
+        prettier()
+        target("**/*.json")
+        targetExclude("**/build/**/*.json", "**/package-lock.json")
+    }
+    typescript {
+        prettier()
+        target("**/*.ts")
+        targetExclude("**/build/**/*.ts", "node_modules/**/*.ts")
+    }
 }
