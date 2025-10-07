@@ -28,7 +28,7 @@ class PatientHealth : Snapshot<Patient, String, String, PatientEvent> {
     fun getDeprecatedBy() = deprecator
 
     @JsonIgnore
-    override fun getAggregateObservable() = aggregateId?.let { patientRepository.findAllById(just(it)) } ?: Flux.empty()
+    override fun getAggregateObservable(): Flux<Patient> = aggregateId?.let { patientRepository.findAllById(just(it)) } ?: Flux.empty()
 
     override fun setAggregate(aggregate: Patient) {
         this.aggregateId = aggregate.id
@@ -39,14 +39,14 @@ class PatientHealth : Snapshot<Patient, String, String, PatientEvent> {
     lateinit var patientRepository: PatientRepository
 
     @JsonIgnore
-    override fun getDeprecatedByObservable() = deprecator?.let { just(it) } ?: Mono.empty()
+    override fun getDeprecatedByObservable(): Mono<Patient> = deprecator?.let { just(it) } ?: Mono.empty()
 
     override fun setDeprecatedBy(deprecatingAggregate: Patient) {
         deprecator = deprecatingAggregate
     }
 
     @JsonIgnore
-    override fun getDeprecatesObservable() = patientRepository.findAllById(deprecatesIds)
+    override fun getDeprecatesObservable(): Flux<Patient> = patientRepository.findAllById(deprecatesIds)
 
     override fun toString() =
         "PatientAccount(id=$id, aggregate=$aggregateId, " +

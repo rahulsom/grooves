@@ -9,7 +9,7 @@ package grooves.example.push
 object ContextManager {
     private val ctx = ThreadLocal<Map<String, Any>>()
 
-    fun get() = ctx.get()
+    fun get(): Map<String, Any> = ctx.get()
 
     fun set(context: Map<String, Any>) = ctx.set(context)
 }

@@ -1,5 +1,9 @@
 package grooves.boot.kotlin.controllers
 
+import grooves.boot.kotlin.domain.Patient
+import grooves.boot.kotlin.domain.PatientAccount
+import grooves.boot.kotlin.domain.PatientEvent
+import grooves.boot.kotlin.domain.PatientHealth
 import grooves.boot.kotlin.queries.PatientAccountQuery
 import grooves.boot.kotlin.queries.PatientHealthQuery
 import grooves.boot.kotlin.repositories.PatientEventRepository
@@ -10,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.Instant
 import java.util.Calendar
@@ -26,12 +31,12 @@ class PatientController(
     fun list() = patientRepository.findAllByOrderByUniqueIdAsc()
 
     @GetMapping("/patientEvent")
-    fun events() = patientEventRepository.findAll()
+    fun events(): Flux<PatientEvent> = patientEventRepository.findAll()
 
     @GetMapping("/patient/show/{id}")
     fun show(
         @PathVariable id: String,
-    ) = patientRepository.findById(id)
+    ): Mono<Patient> = patientRepository.findById(id)
 
     @GetMapping("/patient/event/{id}")
     fun patientEvents(
@@ -45,7 +50,7 @@ class PatientController(
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
         @RequestParam(required = false)
         date: Instant?,
-    ) = patientRepository
+    ): Mono<PatientAccount> = patientRepository
         .findById(id)
         .flatMap { patient ->
             Mono.from(
@@ -78,7 +83,7 @@ class PatientController(
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
         @RequestParam(required = false)
         date: Instant?,
-    ) = patientRepository
+    ): Mono<PatientHealth> = patientRepository
         .findById(id)
         .flatMap { patient ->
             Mono.from(

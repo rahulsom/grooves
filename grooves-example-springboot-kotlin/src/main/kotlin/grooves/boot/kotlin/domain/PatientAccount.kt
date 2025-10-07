@@ -6,6 +6,7 @@ import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import grooves.boot.kotlin.repositories.PatientRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Configurable
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Flux.empty
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
@@ -32,7 +33,7 @@ class PatientAccount : Snapshot<Patient, String, String, PatientEvent> { // <1>
     fun getDeprecatedBy() = deprecator
 
     @JsonIgnore
-    override fun getAggregateObservable() =
+    override fun getAggregateObservable(): Flux<Patient> =
         // <4>
         aggregateId?.let { patientRepository!!.findAllById(just(it)) } ?: empty()
 
@@ -45,7 +46,7 @@ class PatientAccount : Snapshot<Patient, String, String, PatientEvent> { // <1>
     var patientRepository: PatientRepository? = null
 
     @JsonIgnore
-    override fun getDeprecatedByObservable() =
+    override fun getDeprecatedByObservable(): Mono<Patient> =
         // <5>
         deprecator?.let { just(it) } ?: Mono.empty()
 
@@ -54,9 +55,9 @@ class PatientAccount : Snapshot<Patient, String, String, PatientEvent> { // <1>
     }
 
     @JsonIgnore
-    override fun getDeprecatesObservable() =
+    override fun getDeprecatesObservable(): Flux<Patient> =
         // <6>
-        if (deprecatesIds.size > 0) {
+        if (deprecatesIds.isNotEmpty()) {
             patientRepository!!.findAllById(deprecatesIds)
         } else {
             empty()

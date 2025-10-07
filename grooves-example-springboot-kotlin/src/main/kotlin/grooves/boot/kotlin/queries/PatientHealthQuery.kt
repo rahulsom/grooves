@@ -1,5 +1,6 @@
 package grooves.boot.kotlin.queries
 
+import com.github.rahulsom.grooves.api.EventApplyOutcome
 import com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE
 import com.github.rahulsom.grooves.queries.QuerySupport
 import com.github.rahulsom.grooves.queries.internal.SimpleExecutor
@@ -12,6 +13,7 @@ import grooves.boot.kotlin.repositories.PatientEventRepository
 import grooves.boot.kotlin.repositories.PatientHealthRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.just
 import java.lang.Exception
 import java.util.Date
@@ -64,7 +66,7 @@ class PatientHealthQuery(
         e: Exception,
         snapshot: PatientHealth,
         event: PatientEvent,
-    ) = just(CONTINUE)
+    ): Mono<EventApplyOutcome> = just(CONTINUE)
 
     override fun getUncomputedEvents(
         aggregate: Patient,
@@ -94,7 +96,7 @@ class PatientHealthQuery(
     override fun applyEvent(
         event: PatientEvent.Applicable,
         snapshot: PatientHealth,
-    ) = when (event) {
+    ): Mono<EventApplyOutcome> = when (event) {
         is PatientEvent.Applicable.Created -> {
             if (event.aggregateId == snapshot.aggregateId) {
                 snapshot.name = event.name

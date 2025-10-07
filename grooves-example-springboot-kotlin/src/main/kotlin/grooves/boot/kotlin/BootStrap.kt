@@ -2,6 +2,7 @@ package grooves.boot.kotlin
 
 import com.github.rahulsom.grooves.api.snapshots.Snapshot
 import com.github.rahulsom.grooves.queries.QuerySupport
+import com.github.rahulsom.grooves.test.EventsDsl
 import com.github.rahulsom.grooves.test.OnSpec
 import grooves.boot.kotlin.domain.Patient
 import grooves.boot.kotlin.domain.PatientEvent
@@ -214,7 +215,7 @@ class BootStrap(
         return e1
     }
 
-    val currDate =
+    val currDate: Calendar =
         Calendar
             .getInstance(TimeZone.getTimeZone("UTC"))
             .also {
@@ -239,8 +240,7 @@ class BootStrap(
             currDate.add(Calendar.DATE, 1)
             currDate.time
         }
-        return com.github.rahulsom.grooves.test
-            .EventsDsl<Patient, String, PatientEvent>()
+        return EventsDsl<Patient, String, PatientEvent>()
             .on(
                 patient,
                 eventSaver,

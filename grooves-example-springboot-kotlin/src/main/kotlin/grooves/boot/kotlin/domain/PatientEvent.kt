@@ -51,7 +51,7 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
         }
     // end::patientEvent[]
 
-    fun getTs() = SimpleDateFormat("yyyy-MM-dd").format(timestamp)
+    fun getTs(): String = SimpleDateFormat("yyyy-MM-dd").format(timestamp)
 
     // tag::reverted[]
     data class Reverted(
