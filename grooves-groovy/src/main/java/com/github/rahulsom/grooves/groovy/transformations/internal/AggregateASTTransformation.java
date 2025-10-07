@@ -1,17 +1,16 @@
 package com.github.rahulsom.grooves.groovy.transformations.internal;
 
 import com.github.rahulsom.grooves.groovy.transformations.Aggregate;
-import org.codehaus.groovy.ast.*;
-import org.codehaus.groovy.control.SourceUnit;
-import org.codehaus.groovy.transform.AbstractASTTransformation;
-import org.codehaus.groovy.transform.GroovyASTTransformation;
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import org.codehaus.groovy.ast.*;
+import org.codehaus.groovy.control.SourceUnit;
+import org.codehaus.groovy.transform.AbstractASTTransformation;
+import org.codehaus.groovy.transform.GroovyASTTransformation;
 
 /**
  * Registers an aggregate as something that could later be used for computing one or more
@@ -48,12 +47,9 @@ public class AggregateASTTransformation extends AbstractASTTransformation {
         AnnotatedNode annotatedNode = (AnnotatedNode) nodes[1];
         AnnotationNode annotationNode = (AnnotationNode) nodes[0];
 
-        if (MY_TYPE.equals(annotationNode.getClassNode())
-                && annotatedNode instanceof ClassNode theClassNode) {
-            log.fine(() -> MessageFormat.format("Storing entry for aggregate {0}",
-                    theClassNode.getName()));
+        if (MY_TYPE.equals(annotationNode.getClassNode()) && annotatedNode instanceof ClassNode theClassNode) {
+            log.fine(() -> MessageFormat.format("Storing entry for aggregate {0}", theClassNode.getName()));
             getEventsForAggregate(theClassNode.getName());
         }
-
     }
 }

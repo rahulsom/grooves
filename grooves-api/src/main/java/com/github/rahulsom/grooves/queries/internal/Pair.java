@@ -9,5 +9,4 @@ import org.jetbrains.annotations.NotNull;
  * @param <SecondT> Type of second object
  * @author Rahul Somasunderam
  */
-public record Pair<FirstT, SecondT>(@NotNull FirstT first, @NotNull SecondT second) {
-}
+public record Pair<FirstT, SecondT>(@NotNull FirstT first, @NotNull SecondT second) {}

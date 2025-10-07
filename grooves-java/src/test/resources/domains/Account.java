@@ -9,5 +9,4 @@ public class Account {
     public Long getId() {
         return id;
     }
-
 }

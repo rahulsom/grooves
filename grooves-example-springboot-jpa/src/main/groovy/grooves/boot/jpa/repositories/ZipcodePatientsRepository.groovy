@@ -12,8 +12,8 @@ interface ZipcodePatientsRepository extends JpaRepository<ZipcodePatients, Long>
     List<ZipcodePatients> findAllByAggregateId(Long aggregateId)
 
     List<ZipcodePatients> findAllByAggregateIdAndLastEventPositionLessThan(
-            Long aggregateId, Long lastEventPosition)
+    Long aggregateId, Long lastEventPosition)
 
     List<ZipcodePatients> findAllByAggregateIdAndLastEventTimestampLessThan(
-            Long aggregateId, Date date)
+    Long aggregateId, Date date)
 }

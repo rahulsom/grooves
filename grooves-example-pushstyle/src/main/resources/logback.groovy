@@ -6,10 +6,10 @@ appender('STDOUT', ConsoleAppender) {
 
         pattern =
                 '%d{HH:mm:ss.SSS} ' + // Date
-                        '%5p ' + // Log level
-                        '--- [%15.15t] ' + // Thread
-                        '%-40.40logger{39} : ' + // Logger
-                        '%m%n' // Message
+                '%5p ' + // Log level
+                '--- [%15.15t] ' + // Thread
+                '%-40.40logger{39} : ' + // Logger
+                '%m%n' // Message
     }
 }
 

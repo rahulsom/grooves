@@ -14,5 +14,4 @@ public record RestRequest(String path, Map<String, Object> query) {
     public RestRequest(String path) {
         this(path, Map.of());
     }
-
 }

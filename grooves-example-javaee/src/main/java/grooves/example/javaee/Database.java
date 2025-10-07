@@ -3,13 +3,12 @@ package grooves.example.javaee;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import grooves.example.javaee.domain.Patient;
 import grooves.example.javaee.domain.PatientEvent;
-import org.jetbrains.annotations.NotNull;
-
-import javax.ejb.Singleton;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
+import javax.ejb.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton
 public class Database {
@@ -46,9 +45,7 @@ public class Database {
      */
     @NotNull
     public <T extends Snapshot<?, ?, ?, ?>> Stream<T> snapshots(Class<T> clazz) {
-        return (Stream<T>) snapshotList
-                .stream()
-                .filter(it -> clazz.isAssignableFrom(it.getClass()));
+        return (Stream<T>) snapshotList.stream().filter(it -> clazz.isAssignableFrom(it.getClass()));
     }
 
     /**
@@ -86,10 +83,8 @@ public class Database {
      * @param upperBoundInclusive the upper bound of the range
      * @return true if the timestamp is in the range, false otherwise
      */
-    public static boolean isTimestampInRange(
-            Date lowerBoundExclusive, Date timestamp, Date upperBoundInclusive) {
+    public static boolean isTimestampInRange(Date lowerBoundExclusive, Date timestamp, Date upperBoundInclusive) {
         return (lowerBoundExclusive == null || timestamp.compareTo(lowerBoundExclusive) > 0)
                 && timestamp.compareTo(upperBoundInclusive) <= 0;
     }
-
 }

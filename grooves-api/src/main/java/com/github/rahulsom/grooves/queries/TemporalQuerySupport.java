@@ -1,5 +1,9 @@
 package com.github.rahulsom.grooves.queries;
 
+import static com.github.rahulsom.grooves.queries.internal.Utils.*;
+import static io.reactivex.Flowable.empty;
+import static io.reactivex.Flowable.fromPublisher;
+
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
@@ -8,19 +12,14 @@ import com.github.rahulsom.grooves.queries.internal.Pair;
 import com.github.rahulsom.grooves.queries.internal.QueryExecutor;
 import com.github.rahulsom.grooves.queries.internal.Utils;
 import io.reactivex.Flowable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.reactivestreams.Publisher;
-import org.slf4j.LoggerFactory;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static com.github.rahulsom.grooves.queries.internal.Utils.*;
-import static io.reactivex.Flowable.empty;
-import static io.reactivex.Flowable.fromPublisher;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.reactivestreams.Publisher;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default interface to help in building temporal snapshots.
@@ -34,15 +33,13 @@ import static io.reactivex.Flowable.fromPublisher;
  * @author Rahul Somasunderam
  */
 public interface TemporalQuerySupport<
-        AggregateT,
-        EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-        SnapshotIdT,
-        SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-        >
-        extends
-        BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        TemporalQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+                AggregateT,
+                EventIdT,
+                EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+                SnapshotIdT,
+                SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>>
+        extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+                TemporalQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     /**
      * Finds the last usable snapshot. For a given maxTimestamp, finds a snapshot whose last event
@@ -53,13 +50,16 @@ public interface TemporalQuerySupport<
      *
      * @return A Publisher that returns at most one snapshot
      */
-    @NotNull default Publisher<SnapshotT> getLastUsableSnapshot(
+    @NotNull
+    default Publisher<SnapshotT> getLastUsableSnapshot(
             @NotNull final AggregateT aggregate, @NotNull Date maxTimestamp) {
         return fromPublisher(getSnapshot(maxTimestamp, aggregate))
                 .defaultIfEmpty(createEmptySnapshot())
                 .doOnNext(it -> {
-                    LoggerFactory.getLogger(getClass()).debug("  -> Last Usable Snapshot: {}",
-                            it.getLastEventTimestamp() == null ? "<none>" : it.toString());
+                    LoggerFactory.getLogger(getClass())
+                            .debug(
+                                    "  -> Last Usable Snapshot: {}",
+                                    it.getLastEventTimestamp() == null ? "<none>" : it.toString());
                     it.setAggregate(aggregate);
                 });
     }
@@ -73,7 +73,8 @@ public interface TemporalQuerySupport<
      *
      * @return A Tuple containing the snapshot and the events
      */
-    @NotNull default Publisher<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
+    @NotNull
+    default Publisher<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
             @NotNull AggregateT aggregate, @NotNull Date moment) {
         return getSnapshotAndEventsSince(aggregate, moment, true);
     }
@@ -90,15 +91,15 @@ public interface TemporalQuerySupport<
      *
      * @return A Tuple containing the snapshot and the events
      */
-    @NotNull default Publisher<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
+    @NotNull
+    default Publisher<Pair<SnapshotT, List<EventT>>> getSnapshotAndEventsSince(
             @NotNull AggregateT aggregate, @NotNull Date moment, boolean reuseEarlierSnapshot) {
         return Utils.getSnapshotsWithReuse(
                 reuseEarlierSnapshot,
                 () -> fromPublisher(getLastUsableSnapshot(aggregate, moment)),
                 lastSnapshot -> getUncomputedEvents(aggregate, lastSnapshot, moment),
                 () -> fromPublisher(getSnapshotAndEventsSince(aggregate, moment, false)),
-                this::createEmptySnapshot
-        );
+                this::createEmptySnapshot);
     }
 
     /**
@@ -109,8 +110,8 @@ public interface TemporalQuerySupport<
      *
      * @return A Publisher that returns at most one Snapshot
      */
-    @NotNull default Publisher<SnapshotT> computeSnapshot(
-            @NotNull AggregateT aggregate, @NotNull Date moment) {
+    @NotNull
+    default Publisher<SnapshotT> computeSnapshot(@NotNull AggregateT aggregate, @NotNull Date moment) {
         return computeSnapshot(aggregate, moment, true);
     }
 
@@ -124,37 +125,36 @@ public interface TemporalQuerySupport<
      *
      * @return An Optional SnapshotType. Empty if it cannot be computed.
      */
-    @NotNull default Publisher<SnapshotT> computeSnapshot(
+    @NotNull
+    default Publisher<SnapshotT> computeSnapshot(
             @NotNull AggregateT aggregate, @NotNull Date moment, boolean redirect) {
         if (LoggerFactory.getLogger(getClass()).isInfoEnabled()) {
-            LoggerFactory.getLogger(getClass()).info("Computing snapshot for {} at {}", aggregate,
-                    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(moment));
+            LoggerFactory.getLogger(getClass())
+                    .info(
+                            "Computing snapshot for {} at {}",
+                            aggregate,
+                            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(moment));
         }
 
         return fromPublisher(getSnapshotAndEventsSince(aggregate, moment)).flatMap(seTuple2 -> {
             List<EventT> events = seTuple2.second();
             SnapshotT snapshot = seTuple2.first();
 
-            LoggerFactory.getLogger(getClass())
-                    .info("     Events including redirects: {}", Utils.stringify(events));
+            LoggerFactory.getLogger(getClass()).info("     Events including redirects: {}", Utils.stringify(events));
 
             if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
                 return fromPublisher(snapshot.getAggregateObservable())
-                        .flatMap(aggregate1 ->
-                                aggregate1 == null ?
-                                        computeSnapshotAndEvents(
-                                                aggregate, moment, redirect, events, snapshot) :
-                                        empty())
+                        .flatMap(aggregate1 -> aggregate1 == null
+                                ? computeSnapshotAndEvents(aggregate, moment, redirect, events, snapshot)
+                                : empty())
                         .map(Flowable::just)
-                        .defaultIfEmpty(fromPublisher(computeSnapshotAndEvents(
-                                aggregate, moment, redirect, events, snapshot)))
+                        .defaultIfEmpty(
+                                fromPublisher(computeSnapshotAndEvents(aggregate, moment, redirect, events, snapshot)))
                         .flatMap(it -> it);
             } else {
                 return computeSnapshotAndEvents(aggregate, moment, redirect, events, snapshot);
             }
-
         });
-
     }
 
     /**
@@ -169,7 +169,8 @@ public interface TemporalQuerySupport<
      *
      * @return An observable of the snapshot
      */
-    @NotNull default Publisher<SnapshotT> computeSnapshotAndEvents(
+    @NotNull
+    default Publisher<SnapshotT> computeSnapshotAndEvents(
             @NotNull AggregateT aggregate,
             @NotNull Date moment,
             boolean redirect,
@@ -177,17 +178,16 @@ public interface TemporalQuerySupport<
             @NotNull SnapshotT lastUsableSnapshot) {
         lastUsableSnapshot.setAggregate(aggregate);
 
-        Flowable<EventT> forwardOnlyEvents = getForwardOnlyEvents(events, getExecutor(),
+        Flowable<EventT> forwardOnlyEvents = getForwardOnlyEvents(
+                events, getExecutor(), () -> fromPublisher(getSnapshotAndEventsSince(aggregate, moment, false)));
+
+        Flowable<EventT> applicableEvents = getApplicableEvents(
+                forwardOnlyEvents,
+                getExecutor(),
                 () -> fromPublisher(getSnapshotAndEventsSince(aggregate, moment, false)));
 
-        Flowable<EventT> applicableEvents =
-                getApplicableEvents(forwardOnlyEvents, getExecutor(), () ->
-                        fromPublisher(getSnapshotAndEventsSince(aggregate, moment, false))
-                );
-
         final Flowable<SnapshotT> snapshotTypeObservable =
-                getExecutor().applyEvents(this, lastUsableSnapshot, applicableEvents,
-                        new ArrayList<>(), aggregate);
+                getExecutor().applyEvents(this, lastUsableSnapshot, applicableEvents, new ArrayList<>(), aggregate);
         return snapshotTypeObservable
                 .doOnNext(snapshot -> {
                     if (!events.isEmpty()) {
@@ -195,10 +195,9 @@ public interface TemporalQuerySupport<
                     }
                     LoggerFactory.getLogger(getClass()).info("  --> Computed: {}", snapshot);
                 })
-                .flatMap(it -> returnOrRedirect(redirect, events, it,
-                        () -> fromPublisher(it.getDeprecatedByObservable())
-                                .flatMap(x -> fromPublisher(computeSnapshot(x, moment)))
-                ));
+                .flatMap(
+                        it -> returnOrRedirect(redirect, events, it, () -> fromPublisher(it.getDeprecatedByObservable())
+                                .flatMap(x -> fromPublisher(computeSnapshot(x, moment)))));
     }
 
     @NotNull
@@ -211,8 +210,7 @@ public interface TemporalQuerySupport<
     @Override
     default Publisher<EventT> findEventsBefore(@NotNull EventT event) {
         return fromPublisher(event.getAggregateObservable())
-                .flatMap(aggregate ->
-                        fromPublisher(getUncomputedEvents(aggregate, null, event.getTimestamp())));
+                .flatMap(aggregate -> fromPublisher(getUncomputedEvents(aggregate, null, event.getTimestamp())));
     }
 
     /**
@@ -224,9 +222,9 @@ public interface TemporalQuerySupport<
      * @param snapshotTime The time for which we need a snapshot
      * @return A list of events
      */
-    @NotNull Publisher<EventT> getUncomputedEvents(
-            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot,
-            @NotNull Date snapshotTime);
+    @NotNull
+    Publisher<EventT> getUncomputedEvents(
+            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot, @NotNull Date snapshotTime);
 
     /**
      * Gets the last snapshot before given timestamp. Is responsible for discarding attached entity.
@@ -236,7 +234,6 @@ public interface TemporalQuerySupport<
      *
      * @return An observable that returns at most one Snapshot
      */
-    @NotNull Publisher<SnapshotT> getSnapshot(
-            @Nullable Date maxTimestamp, @NotNull AggregateT aggregate);
-
+    @NotNull
+    Publisher<SnapshotT> getSnapshot(@Nullable Date maxTimestamp, @NotNull AggregateT aggregate);
 }

@@ -22,8 +22,7 @@ public interface BaseQuery<
         EventIdT,
         EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
         SnapshotIdT,
-        SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-        > {
+        SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>> {
 
     /**
      * When no snapshot is found in the database, the query has to create the zero of the snapshot.
@@ -31,7 +30,8 @@ public interface BaseQuery<
      *
      * @return The empty snapshot
      */
-    @NotNull SnapshotT createEmptySnapshot();
+    @NotNull
+    SnapshotT createEmptySnapshot();
 
     /**
      * Decides whether applying more events is permitted on a snapshot.
@@ -49,7 +49,8 @@ public interface BaseQuery<
      *
      * @return The list of events
      */
-    @NotNull Publisher<EventT> findEventsBefore(@NotNull EventT event);
+    @NotNull
+    Publisher<EventT> findEventsBefore(@NotNull EventT event);
 
     /**
      * Adds an aggregate to the list of aggregates that are deprecated by the aggregate of a
@@ -69,13 +70,14 @@ public interface BaseQuery<
      *
      * @return The outcome of handling the exception
      */
-    @NotNull Publisher<EventApplyOutcome> onException(
-            @NotNull Exception e, @NotNull SnapshotT snapshot, @NotNull EventT event);
+    @NotNull
+    Publisher<EventApplyOutcome> onException(@NotNull Exception e, @NotNull SnapshotT snapshot, @NotNull EventT event);
 
     /**
      * Provide an executor to execute the query.
      *
      * @return An executor that applies events.
      */
-    @NotNull Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> getExecutor();
+    @NotNull
+    Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> getExecutor();
 }

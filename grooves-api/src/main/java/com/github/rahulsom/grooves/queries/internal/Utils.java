@@ -1,5 +1,8 @@
 package com.github.rahulsom.grooves.queries.internal;
 
+import static io.reactivex.Flowable.*;
+import static java.util.stream.Collectors.toList;
+
 import com.github.rahulsom.grooves.api.GroovesException;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.events.DeprecatedBy;
@@ -9,19 +12,15 @@ import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
 import io.reactivex.Flowable;
-import org.jetbrains.annotations.NotNull;
-import org.reactivestreams.Publisher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
-import static io.reactivex.Flowable.*;
-import static java.util.stream.Collectors.toList;
+import org.jetbrains.annotations.NotNull;
+import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility objects and methods to help with Queries.
@@ -30,14 +29,12 @@ import static java.util.stream.Collectors.toList;
  */
 public class Utils {
 
-    private static final Collector<CharSequence, ?, String> JOIN_EVENT_IDS =
-            Collectors.joining(", ");
+    private static final Collector<CharSequence, ?, String> JOIN_EVENT_IDS = Collectors.joining(", ");
 
     private static final Collector<CharSequence, ?, String> JOIN_EVENTS =
             Collectors.joining(",\n    ", "[\n    ", "\n]");
 
-    private Utils() {
-    }
+    private Utils() {}
 
     /**
      * Returns a snapshot or redirects to its deprecator.
@@ -56,25 +53,23 @@ public class Utils {
      */
     @NotNull
     public static <
-            AggregateT,
-            EventIdT,
-            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-            SnapshotIdT,
-            SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-            > Flowable<SnapshotT> returnOrRedirect(
-            boolean redirect,
-            @NotNull List<EventT> events,
-            @NotNull SnapshotT it,
-            @NotNull Supplier<Flowable<SnapshotT>> redirectedSnapshot) {
-        final EventT lastEvent =
-                events.isEmpty() ? null : events.get(events.size() - 1);
+                    AggregateT,
+                    EventIdT,
+                    EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+                    SnapshotIdT,
+                    SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>>
+            Flowable<SnapshotT> returnOrRedirect(
+                    boolean redirect,
+                    @NotNull List<EventT> events,
+                    @NotNull SnapshotT it,
+                    @NotNull Supplier<Flowable<SnapshotT>> redirectedSnapshot) {
+        final EventT lastEvent = events.isEmpty() ? null : events.get(events.size() - 1);
 
         final boolean redirectToDeprecator = lastEvent instanceof DeprecatedBy && redirect;
 
         return fromPublisher(it.getDeprecatedByObservable())
                 .flatMap(deprecatedBy -> redirectToDeprecator ? redirectedSnapshot.get() : just(it))
                 .defaultIfEmpty(it);
-
     }
 
     /**
@@ -96,27 +91,24 @@ public class Utils {
      */
     @NotNull
     public static <
-            AggregateT,
-            EventIdT,
-            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-            SnapshotIdT,
-            SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
-            QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-            ExecutorT extends Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
-            > Flowable<EventT> getForwardOnlyEvents(
-            @NotNull List<EventT> events,
-            @NotNull ExecutorT executor,
-            @NotNull Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> fallbackSnapshotAndEvents) {
+                    AggregateT,
+                    EventIdT,
+                    EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+                    SnapshotIdT,
+                    SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
+                    QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+                    ExecutorT extends Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>>
+            Flowable<EventT> getForwardOnlyEvents(
+                    @NotNull List<EventT> events,
+                    @NotNull ExecutorT executor,
+                    @NotNull Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> fallbackSnapshotAndEvents) {
         return executor.applyReverts(fromIterable(events))
                 .toList()
                 .map(Flowable::just)
-                .onErrorReturn(throwable -> executor
-                        .applyReverts(
-                                fallbackSnapshotAndEvents.get()
-                                        .flatMap(it -> fromIterable(it.second()))
-                        )
-                        .toList().toFlowable()
-                )
+                .onErrorReturn(throwable -> executor.applyReverts(
+                                fallbackSnapshotAndEvents.get().flatMap(it -> fromIterable(it.second())))
+                        .toList()
+                        .toFlowable())
                 .toFlowable()
                 .flatMap(it -> it)
                 .flatMap(Flowable::fromIterable);
@@ -131,11 +123,8 @@ public class Utils {
      * @return A String representation of events
      */
     @NotNull
-    public static <EventT extends BaseEvent> String stringify(
-            @NotNull List<EventT> events) {
-        return events.stream()
-                .map(EventT::toString)
-                .collect(JOIN_EVENTS);
+    public static <EventT extends BaseEvent> String stringify(@NotNull List<EventT> events) {
+        return events.stream().map(EventT::toString).collect(JOIN_EVENTS);
     }
 
     /**
@@ -147,11 +136,8 @@ public class Utils {
      * @return A String representation of events
      */
     @NotNull
-    public static <EventT extends BaseEvent> String ids(
-            @NotNull List<EventT> events) {
-        return events.stream()
-                .map(i -> String.valueOf(i.getId()))
-                .collect(JOIN_EVENT_IDS);
+    public static <EventT extends BaseEvent> String ids(@NotNull List<EventT> events) {
+        return events.stream().map(i -> String.valueOf(i.getId())).collect(JOIN_EVENT_IDS);
     }
 
     /**
@@ -185,26 +171,27 @@ public class Utils {
      * @return events that can be applied.
      */
     public static <
-            AggregateT,
-            EventIdT,
-            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-            SnapshotIdT,
-            SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-            > Flowable<EventT> getApplicableEvents(
-            @NotNull Flowable<EventT> forwardOnlyEvents,
-            @NotNull Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> executor,
-            @NotNull Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> snapshotAndEventsSince) {
+                    AggregateT,
+                    EventIdT,
+                    EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+                    SnapshotIdT,
+                    SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>>
+            Flowable<EventT> getApplicableEvents(
+                    @NotNull Flowable<EventT> forwardOnlyEvents,
+                    @NotNull Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> executor,
+                    @NotNull Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> snapshotAndEventsSince) {
         return forwardOnlyEvents
                 .filter(e -> e instanceof Deprecates)
                 .toList()
                 .toFlowable()
-                .flatMap(list -> list.isEmpty() ?
-                        forwardOnlyEvents :
-                        snapshotAndEventsSince.get().flatMap(p ->
-                                getForwardOnlyEvents(p.second(), executor, () ->
-                                        error(new GroovesException(
-                                                "Couldn't apply deprecates events")))
-                        ));
+                .flatMap(list -> list.isEmpty()
+                        ? forwardOnlyEvents
+                        : snapshotAndEventsSince
+                                .get()
+                                .flatMap(p -> getForwardOnlyEvents(
+                                        p.second(),
+                                        executor,
+                                        () -> error(new GroovesException("Couldn't apply deprecates events")))));
     }
 
     private static final Logger logger = LoggerFactory.getLogger(Utils.class);
@@ -228,50 +215,44 @@ public class Utils {
      *
      * @return A flowable with one pair of snapshot and list of events.
      */
-    @NotNull public static <
-            AggregateT,
-            EventIdT,
-            EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-            SnapshotIdT,
-            SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-            > Flowable<Pair<SnapshotT, List<EventT>>> getSnapshotsWithReuse(
-            boolean reuseEarlierSnapshot,
-            @NotNull Supplier<Flowable<SnapshotT>> lastUsableSnapshot,
-            @NotNull Function<SnapshotT, Publisher<EventT>> uncomputedEvents,
-            @NotNull Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> nonReusableSnapshotAndEvents,
-            @NotNull Supplier<SnapshotT> emptySnapshot
-    ) {
+    @NotNull
+    public static <
+                    AggregateT,
+                    EventIdT,
+                    EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+                    SnapshotIdT,
+                    SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>>
+            Flowable<Pair<SnapshotT, List<EventT>>> getSnapshotsWithReuse(
+                    boolean reuseEarlierSnapshot,
+                    @NotNull Supplier<Flowable<SnapshotT>> lastUsableSnapshot,
+                    @NotNull Function<SnapshotT, Publisher<EventT>> uncomputedEvents,
+                    @NotNull Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> nonReusableSnapshotAndEvents,
+                    @NotNull Supplier<SnapshotT> emptySnapshot) {
         if (reuseEarlierSnapshot) {
-            return lastUsableSnapshot.get().flatMap(lastSnapshot ->
-                    fromPublisher(uncomputedEvents.apply(lastSnapshot))
-                            .toList()
-                            .toFlowable()
-                            .flatMap(events -> {
-                                if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
-                                    List<EventT> reverts = events.stream()
-                                            .filter(it -> it instanceof RevertEvent)
-                                            .collect(toList());
-                                    logger.info("     Uncomputed reverts exist: {}",
-                                            stringify(reverts));
-                                    return nonReusableSnapshotAndEvents.get();
-                                } else {
-                                    logger.debug("     Events since last snapshot: {}",
-                                            stringify(events));
-                                    return just(new Pair<>(lastSnapshot, events));
-                                }
-                            }));
+            return lastUsableSnapshot.get().flatMap(lastSnapshot -> fromPublisher(uncomputedEvents.apply(lastSnapshot))
+                    .toList()
+                    .toFlowable()
+                    .flatMap(events -> {
+                        if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
+                            List<EventT> reverts = events.stream()
+                                    .filter(it -> it instanceof RevertEvent)
+                                    .collect(toList());
+                            logger.info("     Uncomputed reverts exist: {}", stringify(reverts));
+                            return nonReusableSnapshotAndEvents.get();
+                        } else {
+                            logger.debug("     Events since last snapshot: {}", stringify(events));
+                            return just(new Pair<>(lastSnapshot, events));
+                        }
+                    }));
         } else {
             SnapshotT lastSnapshot = emptySnapshot.get();
 
             final Flowable<List<EventT>> uncomputedEventsF =
-                    fromPublisher(uncomputedEvents.apply(lastSnapshot))
-                            .toList()
-                            .toFlowable();
+                    fromPublisher(uncomputedEvents.apply(lastSnapshot)).toList().toFlowable();
 
             return uncomputedEventsF
                     .doOnNext(ue -> logger.debug("     Events since origin: {}", stringify(ue)))
                     .map(ue -> new Pair<>(lastSnapshot, ue));
         }
-
     }
 }

@@ -12,8 +12,8 @@ interface PatientHealthRepository extends JpaRepository<PatientHealth, Long> {
     List<PatientHealth> findAllByAggregateId(Long aggregateId)
 
     List<PatientHealth> findAllByAggregateIdAndLastEventPositionLessThan(
-            Long aggregateId, Long lastEventPosition)
+    Long aggregateId, Long lastEventPosition)
 
     List<PatientHealth> findAllByAggregateIdAndLastEventTimestampLessThan(
-            Long aggregateId, Date date)
+    Long aggregateId, Date date)
 }

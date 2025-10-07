@@ -6,8 +6,8 @@ plugins {
     alias(libs.plugins.waena.published) apply false
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.allopen) apply false
-    alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.sonarqube)
+    alias(libs.plugins.spotless)
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.spring.dependency.management) apply false
     alias(libs.plugins.testLogger) apply false
@@ -15,6 +15,10 @@ plugins {
 
 allprojects {
     group = "com.github.rahulsom"
+}
+
+repositories {
+    mavenCentral()
 }
 
 subprojects {
@@ -195,4 +199,22 @@ tasks.named("check") {
 // But we can also add it directly to build for clarity
 tasks.named("build") {
     dependsOn("countTests")
+}
+
+spotless {
+    java {
+        palantirJavaFormat()
+        target("**/*.java")
+        targetExclude("**/build/**/*.java")
+    }
+    kotlin {
+        ktlint()
+        target("**/*.kt")
+        targetExclude("**/build/**/*.kt")
+    }
+    groovy {
+        greclipse().configProperties("org.eclipse.jdt.core.formatter.tabulation.char=space")
+        target("**/*.groovy")
+        targetExclude("**/build/**/*.groovy")
+    }
 }

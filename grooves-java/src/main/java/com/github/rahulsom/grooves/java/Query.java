@@ -1,7 +1,6 @@
 package com.github.rahulsom.grooves.java;
 
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

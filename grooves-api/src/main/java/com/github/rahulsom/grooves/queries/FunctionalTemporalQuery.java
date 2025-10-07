@@ -5,16 +5,15 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.queries.internal.SimpleExecutor;
 import com.github.rahulsom.grooves.queries.internal.SimpleQuery;
-import lombok.Builder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.reactivestreams.Publisher;
-
 import java.util.Date;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import lombok.Builder;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.reactivestreams.Publisher;
 
 /**
  * Util class to build Temporal Queries in a Functional Style.
@@ -29,35 +28,31 @@ import java.util.function.Supplier;
  */
 @Builder(builderClassName = "Builder", builderMethodName = "newBuilder", setterPrefix = "with")
 public class FunctionalTemporalQuery<
-        AggregateT,
-        EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-        SnapshotIdT,
-        SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-        > implements
-        TemporalQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        SimpleQuery<AggregateT, EventIdT, EventT, EventT, SnapshotIdT, SnapshotT> {
+                AggregateT,
+                EventIdT,
+                EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+                SnapshotIdT,
+                SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>>
+        implements TemporalQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+                SimpleQuery<AggregateT, EventIdT, EventT, EventT, SnapshotIdT, SnapshotT> {
 
     private BiFunction<Date, AggregateT, Publisher<SnapshotT>> snapshot;
     private Supplier<SnapshotT> emptySnapshot;
     private TriFunction<AggregateT, SnapshotT, Date, Publisher<EventT>> events;
     private Predicate<SnapshotT> applyEvents;
     private BiConsumer<SnapshotT, AggregateT> deprecator;
-    private TriFunction<Exception, SnapshotT, EventT,
-            Publisher<EventApplyOutcome>> exceptionHandler;
+    private TriFunction<Exception, SnapshotT, EventT, Publisher<EventApplyOutcome>> exceptionHandler;
     private BiFunction<EventT, SnapshotT, Publisher<EventApplyOutcome>> eventHandler;
 
     @NotNull
     @Override
-    public SimpleExecutor<AggregateT, EventIdT, EventT, ?, SnapshotIdT, SnapshotT,
-            ?> getExecutor() {
+    public SimpleExecutor<AggregateT, EventIdT, EventT, ?, SnapshotIdT, SnapshotT, ?> getExecutor() {
         return new SimpleExecutor<>();
     }
 
     @NotNull
     @Override
-    public Publisher<SnapshotT> getSnapshot(
-            @Nullable Date maxTimestamp, @NotNull AggregateT aggregate) {
+    public Publisher<SnapshotT> getSnapshot(@Nullable Date maxTimestamp, @NotNull AggregateT aggregate) {
         return snapshot.apply(maxTimestamp, aggregate);
     }
 
@@ -70,8 +65,7 @@ public class FunctionalTemporalQuery<
     @NotNull
     @Override
     public Publisher<EventT> getUncomputedEvents(
-            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot,
-            @NotNull Date snapshotTime) {
+            @NotNull AggregateT aggregate, @Nullable SnapshotT lastSnapshot, @NotNull Date snapshotTime) {
         return events.apply(aggregate, lastSnapshot, snapshotTime);
     }
 
@@ -81,8 +75,7 @@ public class FunctionalTemporalQuery<
     }
 
     @Override
-    public void addToDeprecates(
-            @NotNull SnapshotT snapshot, @NotNull AggregateT deprecatedAggregate) {
+    public void addToDeprecates(@NotNull SnapshotT snapshot, @NotNull AggregateT deprecatedAggregate) {
         deprecator.accept(snapshot, deprecatedAggregate);
     }
 
@@ -95,8 +88,7 @@ public class FunctionalTemporalQuery<
 
     @NotNull
     @Override
-    public Publisher<EventApplyOutcome> applyEvent(
-            @NotNull EventT event, @NotNull SnapshotT snapshot) {
+    public Publisher<EventApplyOutcome> applyEvent(@NotNull EventT event, @NotNull SnapshotT snapshot) {
         return eventHandler.apply(event, snapshot);
     }
 
@@ -114,8 +106,5 @@ public class FunctionalTemporalQuery<
             EventIdT,
             EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
             SnapshotIdT,
-            SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-            > {
-    }
-
+            SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>> {}
 }

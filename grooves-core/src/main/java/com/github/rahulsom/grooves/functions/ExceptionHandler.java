@@ -17,9 +17,5 @@ public interface ExceptionHandler<SnapshotT, EventT> {
      * @return the outcome indicating how to proceed after handling the exception
      */
     @Trace
-    EventApplyOutcome invoke(
-            Exception exception,
-            SnapshotT snapshot,
-            EventT event
-    );
+    EventApplyOutcome invoke(Exception exception, SnapshotT snapshot, EventT event);
 }

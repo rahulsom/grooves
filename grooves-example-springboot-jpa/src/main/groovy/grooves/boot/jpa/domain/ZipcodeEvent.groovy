@@ -43,19 +43,26 @@ class ZipcodeEvent implements BaseEvent<Zipcode, Long, ZipcodeEvent> {
 class ZipcodeCreated extends ZipcodeEvent {
     String name
 
-    @Override String toString() { "${aggregate} was created" }
+    @Override String toString() {
+        "${aggregate} was created"
+    }
 }
 
 @Event(Zipcode)
 @Entity
 // tag::joins[]
 class ZipcodeGotPatient extends ZipcodeEvent // <1>
-    implements JoinEvent<Zipcode, Long, ZipcodeEvent, Patient> { // <2>
+implements JoinEvent<Zipcode, Long, ZipcodeEvent, Patient> {
+    // <2>
     @ManyToOne Patient patient
-    @Override Publisher<Patient> getJoinAggregateObservable() { just(patient) }
-// end::joins[]
-    @Override String toString() { "${aggregate} got ${patient}" }
-// tag::joins[]
+    @Override Publisher<Patient> getJoinAggregateObservable() {
+        just(patient)
+    }
+    // end::joins[]
+    @Override String toString() {
+        "${aggregate} got ${patient}"
+    }
+    // tag::joins[]
 }
 // end::joins[]
 
@@ -63,12 +70,17 @@ class ZipcodeGotPatient extends ZipcodeEvent // <1>
 @Entity
 // tag::joins[]
 class ZipcodeLostPatient extends ZipcodeEvent implements
-    DisjoinEvent<Zipcode, Long, ZipcodeEvent, Patient> { // <3>
+DisjoinEvent<Zipcode, Long, ZipcodeEvent, Patient> {
+    // <3>
     @ManyToOne Patient patient
-    @Override Publisher<Patient> getJoinAggregateObservable() { just(patient) } // <4>
-// end::joins[]
+    @Override Publisher<Patient> getJoinAggregateObservable() {
+        just(patient)
+    } // <4>
+    // end::joins[]
 
-    @Override String toString() { "${aggregate} lost ${patient}" }
-// tag::joins[]
+    @Override String toString() {
+        "${aggregate} lost ${patient}"
+    }
+    // tag::joins[]
 }
 // end::joins[]

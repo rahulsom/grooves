@@ -15,8 +15,5 @@ public interface SnapshotVersioner<SnapshotT, VersionOrTimestampT> {
      * @param versionOrTimestamp the version or timestamp to set on the snapshot
      */
     @Trace
-    void invoke(
-            SnapshotT snapshot,
-            VersionOrTimestampT versionOrTimestamp
-    );
+    void invoke(SnapshotT snapshot, VersionOrTimestampT versionOrTimestamp);
 }

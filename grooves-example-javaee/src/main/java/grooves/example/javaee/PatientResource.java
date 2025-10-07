@@ -1,21 +1,20 @@
 package grooves.example.javaee;
 
+import static java.util.stream.Collectors.toList;
+import static rx.RxReactiveStreams.toObservable;
+
 import grooves.example.javaee.domain.Patient;
 import grooves.example.javaee.domain.PatientAccount;
 import grooves.example.javaee.domain.PatientHealth;
 import grooves.example.javaee.queries.PatientAccountQuery;
 import grooves.example.javaee.queries.PatientHealthQuery;
-import org.reactivestreams.Publisher;
-
-import javax.inject.Inject;
-import javax.ws.rs.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.toList;
-import static rx.RxReactiveStreams.toObservable;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import org.reactivestreams.Publisher;
 
 @Path("/patient")
 public class PatientResource {
@@ -69,23 +68,21 @@ public class PatientResource {
     @Path("health/{id}")
     @Produces("application/json")
     public PatientHealth health(
-            @PathParam("id") Long id,
-            @QueryParam("version") Long version,
-            @QueryParam("date") Date date) {
+            @PathParam("id") Long id, @QueryParam("version") Long version, @QueryParam("date") Date date) {
 
         final Patient patient = database.patients()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
                 .orElse(null);
 
-        Publisher<PatientHealth> computation =
-                version != null ?
-                        patientHealthQuery.computeSnapshot(patient, version) :
-                        date != null ?
-                                patientHealthQuery.computeSnapshot(patient, date) :
-                                patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE);
+        Publisher<PatientHealth> computation = version != null
+                ? patientHealthQuery.computeSnapshot(patient, version)
+                : date != null
+                        ? patientHealthQuery.computeSnapshot(patient, date)
+                        : patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE);
 
-        final PatientHealth patientHealth = toObservable(computation).toBlocking().first();
+        final PatientHealth patientHealth =
+                toObservable(computation).toBlocking().first();
 
         if (patientHealth == null) {
             throw new RuntimeException("Could not compute account snapshot");
@@ -107,23 +104,21 @@ public class PatientResource {
     @Path("account/{id}")
     @Produces("application/json")
     public PatientAccount account(
-            @PathParam("id") Long id,
-            @QueryParam("version") Long version,
-            @QueryParam("date") Date date) {
+            @PathParam("id") Long id, @QueryParam("version") Long version, @QueryParam("date") Date date) {
 
         final Patient patient = database.patients()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
                 .orElse(null);
 
-        Publisher<PatientAccount> computation =
-                version != null ?
-                        patientAccountQuery.computeSnapshot(patient, version) :
-                        date != null ?
-                                patientAccountQuery.computeSnapshot(patient, date) :
-                                patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE);
+        Publisher<PatientAccount> computation = version != null
+                ? patientAccountQuery.computeSnapshot(patient, version)
+                : date != null
+                        ? patientAccountQuery.computeSnapshot(patient, date)
+                        : patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE);
 
-        final PatientAccount patientAccount = toObservable(computation).toBlocking().first();
+        final PatientAccount patientAccount =
+                toObservable(computation).toBlocking().first();
 
         if (patientAccount == null) {
             throw new RuntimeException("Could not compute account snapshot");

@@ -45,8 +45,8 @@ class PatientController {
         def computation = version ?
                 patientAccountQuery.computeSnapshot(patient, version) :
                 date ?
-                        patientAccountQuery.computeSnapshot(patient, date) :
-                        patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE)
+                patientAccountQuery.computeSnapshot(patient, date) :
+                patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE)
 
         def resp = Flowable.fromPublisher(computation).blockingFirst()
         if (!resp) {
@@ -64,8 +64,8 @@ class PatientController {
         def computation = version ?
                 patientHealthQuery.computeSnapshot(patient, version) :
                 date ?
-                        patientHealthQuery.computeSnapshot(patient, date) :
-                        patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE)
+                patientHealthQuery.computeSnapshot(patient, date) :
+                patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE)
 
         def resp = Flowable.fromPublisher(computation).blockingFirst()
         if (!resp) {

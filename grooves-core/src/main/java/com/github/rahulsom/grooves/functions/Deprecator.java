@@ -14,8 +14,5 @@ public interface Deprecator<SnapshotT, AggregateT> {
      * @param deprecatingAggregate the aggregate that is causing the deprecation
      */
     @Trace
-    void invoke(
-            SnapshotT snapshot,
-            AggregateT deprecatingAggregate
-    );
+    void invoke(SnapshotT snapshot, AggregateT deprecatingAggregate);
 }

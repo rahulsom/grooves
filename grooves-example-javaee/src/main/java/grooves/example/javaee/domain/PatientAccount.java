@@ -1,24 +1,24 @@
 package grooves.example.javaee.domain;
 
-import com.github.rahulsom.grooves.api.snapshots.Snapshot;
-import lombok.Data;
-import org.jetbrains.annotations.NotNull;
-import org.reactivestreams.Publisher;
+import static rx.Observable.*;
+import static rx.RxReactiveStreams.toPublisher;
 
-import javax.xml.bind.annotation.XmlTransient;
+import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static rx.Observable.*;
-import static rx.RxReactiveStreams.toPublisher;
+import javax.xml.bind.annotation.XmlTransient;
+import lombok.Data;
+import org.jetbrains.annotations.NotNull;
+import org.reactivestreams.Publisher;
 
 // tag::documented[]
 @Data
-public class PatientAccount implements Snapshot<Patient, Long, Long, PatientEvent>, // <1>
-        Serializable {
+public class PatientAccount
+        implements Snapshot<Patient, Long, Long, PatientEvent>, // <1>
+                Serializable {
     private Long id;
     private Patient aggregate;
     private Patient deprecatedBy;

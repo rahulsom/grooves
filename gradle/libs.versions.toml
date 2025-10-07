@@ -27,7 +27,6 @@ jooq = "10.1.1"
 junit-core = "6.0.0"
 junit-platform = "6.0.0"
 kotlin = "2.2.20"
-ktlint = "13.1.0"
 lang3 = "3.19.0"
 log4j = "2.25.2"
 logback = "1.5.19"
@@ -41,6 +40,7 @@ sass = "1.5.2"
 rxjava2 = "2.2.21"
 slf4j = "2.0.17"
 sonar = "6.3.1.5724"
+spotless = "8.0.0"
 spring-asciidoctor = "0.6.3"
 spring-boot = "3.5.6"
 spring-dependency-management = "1.1.7"
@@ -103,7 +103,6 @@ waena-root = { id = "com.github.rahulsom.waena.root", version.ref = "waena" }
 waena-published = { id = "com.github.rahulsom.waena.published", version.ref = "waena" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 sonarqube = { id = "org.sonarqube", version.ref = "sonar" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 post-compile-weaving = { id = "io.freefair.aspectj.post-compile-weaving", version.ref = "freefair-aspectj" }
@@ -113,5 +112,6 @@ git-publish = { id = "org.ajoberstar.git-publish", version.ref = "git-publish" }
 asciidoctor-convert = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctor" }
 jooq = { id = "nu.studer.jooq", version.ref = "jooq" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
 testLogger = { id = "com.adarshr.test-logger", version.ref = "testLogger" }

@@ -1,5 +1,10 @@
 package invalid;
 
+import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
+import static rx.Observable.empty;
+import static rx.Observable.just;
+import static rx.RxReactiveStreams.toPublisher;
+
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.java.Query;
 import com.github.rahulsom.grooves.queries.QuerySupport;
@@ -8,15 +13,9 @@ import domains.Balance;
 import domains.CashDeposit;
 import domains.CashWithdrawal;
 import domains.Transaction;
+import java.util.Date;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
-
-import java.util.Date;
-
-import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
-import static rx.Observable.empty;
-import static rx.Observable.just;
-import static rx.RxReactiveStreams.toPublisher;
 
 @Query(aggregate = Account.class, snapshot = Balance.class)
 class IncorrectReturnType implements QuerySupport<Account, Long, Transaction, String, Balance> {
@@ -40,8 +39,7 @@ class IncorrectReturnType implements QuerySupport<Account, Long, Transaction, St
 
     @NotNull
     @Override
-    public Publisher<Transaction> getUncomputedEvents(
-            @NotNull Account aggregate, Balance lastSnapshot, long version) {
+    public Publisher<Transaction> getUncomputedEvents(@NotNull Account aggregate, Balance lastSnapshot, long version) {
         return empty();
     }
 
@@ -60,8 +58,7 @@ class IncorrectReturnType implements QuerySupport<Account, Long, Transaction, St
 
     @NotNull
     @Override
-    public void addToDeprecates(@NotNull Balance snapshot, @NotNull Account deprecatedAggregate) {
-    }
+    public void addToDeprecates(@NotNull Balance snapshot, @NotNull Account deprecatedAggregate) {}
 
     @NotNull
     @Override

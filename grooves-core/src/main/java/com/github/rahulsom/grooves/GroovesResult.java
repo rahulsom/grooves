@@ -9,7 +9,7 @@ package com.github.rahulsom.grooves;
  * @param <VersionOrTimestampT> the type used for versioning
  */
 public sealed interface GroovesResult<SnapshotT, AggregateT, VersionOrTimestampT> {
-    
+
     /**
      * Represents a successful snapshot computation.
      *
@@ -18,9 +18,8 @@ public sealed interface GroovesResult<SnapshotT, AggregateT, VersionOrTimestampT
      * @param <VersionOrTimestampT> the type used for versioning
      * @param snapshot the computed snapshot
      */
-    record Success<SnapshotT, AggregateT, VersionOrTimestampT>(
-            SnapshotT snapshot
-    ) implements GroovesResult<SnapshotT, AggregateT, VersionOrTimestampT> {}
+    record Success<SnapshotT, AggregateT, VersionOrTimestampT>(SnapshotT snapshot)
+            implements GroovesResult<SnapshotT, AggregateT, VersionOrTimestampT> {}
 
     /**
      * Represents a redirect to another aggregate/version during snapshot computation.
@@ -31,8 +30,6 @@ public sealed interface GroovesResult<SnapshotT, AggregateT, VersionOrTimestampT
      * @param aggregate the aggregate to redirect to
      * @param at the version/timestamp to redirect to
      */
-    record Redirect<SnapshotT, AggregateT, VersionOrTimestampT>(
-            AggregateT aggregate,
-            VersionOrTimestampT at
-    ) implements GroovesResult<SnapshotT, AggregateT, VersionOrTimestampT> {}
+    record Redirect<SnapshotT, AggregateT, VersionOrTimestampT>(AggregateT aggregate, VersionOrTimestampT at)
+            implements GroovesResult<SnapshotT, AggregateT, VersionOrTimestampT> {}
 }

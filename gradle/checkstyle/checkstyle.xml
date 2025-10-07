@@ -27,11 +27,6 @@
         <property name="eachLine" value="true"/>
     </module>
 
-    <module name="LineLength">
-        <property name="max" value="100"/>
-        <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
-    </module>
-
     <module name="TreeWalker">
         <module name="OuterTypeFilename"/>
         <module name="IllegalTokenText">
@@ -46,33 +41,6 @@
         </module>
         <!--<module name="AvoidStarImport"/>-->
         <module name="OneTopLevelClass"/>
-        <module name="NoLineWrap"/>
-        <module name="EmptyBlock">
-            <property name="option" value="TEXT"/>
-            <property name="tokens" value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
-        </module>
-        <module name="NeedBraces"/>
-        <module name="LeftCurly"/>
-        <module name="RightCurly">
-            <property name="id" value="RightCurlySame"/>
-            <property name="tokens" value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_DO"/>
-        </module>
-        <module name="RightCurly">
-            <property name="id" value="RightCurlyAlone"/>
-            <property name="option" value="alone"/>
-            <property name="tokens" value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT, INSTANCE_INIT"/>
-        </module>
-        <module name="WhitespaceAround">
-            <property name="allowEmptyConstructors" value="true"/>
-            <property name="allowEmptyMethods" value="true"/>
-            <property name="allowEmptyTypes" value="true"/>
-            <property name="allowEmptyLoops" value="true"/>
-            <message key="ws.notFollowed"
-                     value="WhitespaceAround: ''{0}'' is not followed by whitespace. Empty blocks may only be represented as '{}' when not part of a multi-block statement (4.1.3)"/>
-            <message key="ws.notPreceded"
-                     value="WhitespaceAround: ''{0}'' is not preceded with whitespace."/>
-        </module>
-        <module name="OneStatementPerLine"/>
         <module name="MultipleVariableDeclarations"/>
         <module name="ArrayTypeStyle"/>
         <module name="MissingSwitchDefault"/>
@@ -148,37 +116,17 @@
             <message key="ws.notPreceded"
                      value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
         </module>
-        <module name="Indentation">
-            <property name="basicOffset" value="4"/>
-            <property name="braceAdjustment" value="0"/>
-            <property name="caseIndent" value="4"/>
-            <property name="throwsIndent" value="8"/>
-            <property name="lineWrappingIndentation" value="8"/>
-            <property name="arrayInitIndent" value="4"/>
-        </module>
         <!--<module name="AbbreviationAsWordInName">-->
             <!--<property name="ignoreFinal" value="false"/>-->
             <!--<property name="allowedAbbreviationLength" value="1"/>-->
         <!--</module>-->
         <module name="OverloadMethodsDeclarationOrder"/>
         <module name="VariableDeclarationUsageDistance"/>
-        <module name="CustomImportOrder">
-            <property name="customImportOrderRules"
-                      value="THIRD_PARTY_PACKAGE###SPECIAL_IMPORTS###STANDARD_JAVA_PACKAGE###STATIC"/>
-            <property name="specialImportsRegExp" value="^javax\."/>
-            <property name="standardPackageRegExp" value="^java\."/>
-            <property name="sortImportsInGroupAlphabetically" value="true"/>
-            <property name="separateLineBetweenGroups" value="false"/>
-        </module>
         <module name="MethodParamPad"/>
         <module name="ParenPad"/>
         <module name="OperatorWrap">
             <property name="option" value="NL"/>
             <property name="tokens" value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, PLUS, SL, SR, STAR, METHOD_REF"/>
-        </module>
-        <module name="OperatorWrap">
-            <property name="option" value="EOL"/>
-            <property name="tokens" value="QUESTION, COLON"/>
         </module>
         <module name="AnnotationLocation">
             <property name="id" value="AnnotationLocationMostCases"/>

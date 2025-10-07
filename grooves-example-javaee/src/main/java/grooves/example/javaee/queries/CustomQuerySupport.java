@@ -1,25 +1,5 @@
 package grooves.example.javaee.queries;
 
-import com.github.rahulsom.grooves.api.EventApplyOutcome;
-import com.github.rahulsom.grooves.api.snapshots.Snapshot;
-import com.github.rahulsom.grooves.queries.QuerySupport;
-import com.github.rahulsom.grooves.queries.internal.Pair;
-import grooves.example.javaee.Database;
-import grooves.example.javaee.domain.Patient;
-import grooves.example.javaee.domain.PatientEvent;
-import org.apache.commons.lang3.SerializationUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.reactivestreams.Publisher;
-import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
 import static grooves.example.javaee.Database.isTimestampInRange;
 import static java.util.stream.Collectors.toList;
@@ -28,6 +8,25 @@ import static rx.Observable.just;
 import static rx.RxReactiveStreams.toObservable;
 import static rx.RxReactiveStreams.toPublisher;
 
+import com.github.rahulsom.grooves.api.EventApplyOutcome;
+import com.github.rahulsom.grooves.api.snapshots.Snapshot;
+import com.github.rahulsom.grooves.queries.QuerySupport;
+import com.github.rahulsom.grooves.queries.internal.Pair;
+import grooves.example.javaee.Database;
+import grooves.example.javaee.domain.Patient;
+import grooves.example.javaee.domain.PatientEvent;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+import org.apache.commons.lang3.SerializationUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.reactivestreams.Publisher;
+import org.slf4j.LoggerFactory;
+
 /**
  * A query that produces any patient snapshot from patient events.
  *
@@ -35,8 +34,9 @@ import static rx.RxReactiveStreams.toPublisher;
  */
 // tag::documented[]
 public interface CustomQuerySupport<
-        SnapshotT extends Snapshot<Patient, Long, Long, PatientEvent> & Serializable // <1>
-        > extends QuerySupport<Patient, Long, PatientEvent, Long, SnapshotT> { // <2>
+                SnapshotT extends Snapshot<Patient, Long, Long, PatientEvent> & Serializable // <1>
+                >
+        extends QuerySupport<Patient, Long, PatientEvent, Long, SnapshotT> { // <2>
 
     // end::documented[]
 
@@ -62,10 +62,8 @@ public interface CustomQuerySupport<
         // end::documented[]
         final Stream<SnapshotT> stream = getDatabase().snapshots(getSnapshotClass());
         return toPublisher(from(stream::iterator)
-                .flatMap(it -> just(it).zipWith(
-                        toObservable(it.getAggregateObservable()), Pair::new))
-                .filter(it -> it.second().equals(aggregate)
-                        && it.first().getLastEventPosition() < maxPosition)
+                .flatMap(it -> just(it).zipWith(toObservable(it.getAggregateObservable()), Pair::new))
+                .filter(it -> it.second().equals(aggregate) && it.first().getLastEventPosition() < maxPosition)
                 .map(Pair::first)
                 .sorted((x, y) -> (int) (x.getLastEventPosition() - y.getLastEventPosition()))
                 .takeFirst(it -> true)
@@ -75,13 +73,11 @@ public interface CustomQuerySupport<
 
     @NotNull
     @Override
-    default Publisher<SnapshotT> getSnapshot(
-            @Nullable Date maxTimestamp, @NotNull Patient aggregate) { // <4>
+    default Publisher<SnapshotT> getSnapshot(@Nullable Date maxTimestamp, @NotNull Patient aggregate) { // <4>
         // end::documented[]
         final Stream<SnapshotT> stream = getDatabase().snapshots(getSnapshotClass());
         return toPublisher(from(stream::iterator)
-                .flatMap(it -> just(it).zipWith(
-                        toObservable(it.getAggregateObservable()), Pair::new))
+                .flatMap(it -> just(it).zipWith(toObservable(it.getAggregateObservable()), Pair::new))
                 .filter(it -> it.second().equals(aggregate)
                         && it.first().getLastEventTimestamp().compareTo(maxTimestamp) < 1)
                 .map(Pair::first)
@@ -136,9 +132,8 @@ public interface CustomQuerySupport<
                     && eventPosition > snapshotPosition
                     && eventPosition <= version;
         };
-        final List<PatientEvent> patientEvents = getDatabase().events()
-                .filter(patientEventPredicate)
-                .collect(toList());
+        final List<PatientEvent> patientEvents =
+                getDatabase().events().filter(patientEventPredicate).collect(toList());
         return toPublisher(from(patientEvents));
         // tag::documented[]
     }
@@ -146,19 +141,16 @@ public interface CustomQuerySupport<
     @NotNull
     @Override
     default Publisher<PatientEvent> getUncomputedEvents(
-            @NotNull Patient aggregate, @Nullable SnapshotT lastSnapshot,
-            @NotNull Date snapshotTime) {
+            @NotNull Patient aggregate, @Nullable SnapshotT lastSnapshot, @NotNull Date snapshotTime) {
         // <8>
         // end::documented[]
         Predicate<PatientEvent> patientEventPredicate = it -> aggregate.equals(it.getAggregate())
-                && (lastSnapshot == null || isTimestampInRange(
-                lastSnapshot.getLastEventTimestamp(), it.getTimestamp(), snapshotTime));
-        final List<PatientEvent> patientEvents = getDatabase().events()
-                .filter(patientEventPredicate)
-                .collect(toList());
+                && (lastSnapshot == null
+                        || isTimestampInRange(lastSnapshot.getLastEventTimestamp(), it.getTimestamp(), snapshotTime));
+        final List<PatientEvent> patientEvents =
+                getDatabase().events().filter(patientEventPredicate).collect(toList());
         return toPublisher(from(patientEvents));
         // tag::documented[]
     }
-
 }
 // end::documented[]

@@ -24,6 +24,7 @@ class Zipcode {
     String uniqueId
 
     @Override
-    String toString() { "Zipcode($id, $uniqueId)" }
-
+    String toString() {
+        "Zipcode($id, $uniqueId)"
+    }
 }

@@ -1,13 +1,12 @@
 package com.github.rahulsom.grooves.logging;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * AspectJ aspect that provides indented logging for methods annotated with @Trace.
@@ -67,10 +66,10 @@ public class IndentedLogging {
         var loggerName = classWithFunction.getName().replaceAll("\\$\\$Lambda.*$", "");
         var log = LoggerFactory.getLogger(loggerName);
 
-        var methodName = signature.getName().equals("invoke") ?
-                signature.getDeclaringType().getSimpleName().substring(0, 1).toLowerCase()
-                + signature.getDeclaringType().getSimpleName().substring(1) :
-                signature.getName();
+        var methodName = signature.getName().equals("invoke")
+                ? signature.getDeclaringType().getSimpleName().substring(0, 1).toLowerCase()
+                        + signature.getDeclaringType().getSimpleName().substring(1)
+                : signature.getName();
 
         var args = Arrays.stream(joinPoint.getArgs())
                 .map(arg -> arg instanceof List<?> ? eventsToString((List<?>) arg) : arg)

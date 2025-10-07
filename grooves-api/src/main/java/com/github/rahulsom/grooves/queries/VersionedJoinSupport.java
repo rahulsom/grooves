@@ -21,17 +21,15 @@ import org.jetbrains.annotations.NotNull;
  * @author Rahul Somasunderam
  */
 public interface VersionedJoinSupport<
-        AggregateT,
-        EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-        JoinedAggregateT,
-        SnapshotIdT,
-        SnapshotT extends VersionedJoin<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT,
-                EventT>,
-        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>
-        > extends
-        VersionedQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+                AggregateT,
+                EventIdT,
+                EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+                JoinedAggregateT,
+                SnapshotIdT,
+                SnapshotT extends VersionedJoin<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT, EventT>,
+                JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
+                DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>>
+        extends VersionedQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
     /**
      * The class for join events of this query.
      *
@@ -48,9 +46,17 @@ public interface VersionedJoinSupport<
 
     @NotNull
     @Override
-    default JoinExecutor<AggregateT, EventIdT, EventT, JoinedAggregateT, SnapshotIdT,
-            SnapshotT, JoinEventT, DisjoinEventT, ?> getExecutor() {
+    default JoinExecutor<
+                    AggregateT,
+                    EventIdT,
+                    EventT,
+                    JoinedAggregateT,
+                    SnapshotIdT,
+                    SnapshotT,
+                    JoinEventT,
+                    DisjoinEventT,
+                    ?>
+            getExecutor() {
         return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
     }
-
 }

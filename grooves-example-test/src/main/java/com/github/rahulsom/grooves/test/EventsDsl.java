@@ -2,14 +2,13 @@ package com.github.rahulsom.grooves.test;
 
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
-import lombok.AccessLevel;
-import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import lombok.AccessLevel;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * DSL to simplify writing code with Events.
@@ -20,10 +19,7 @@ import java.util.function.Supplier;
  *
  * @author Rahul Somasunderam
  */
-public class EventsDsl<
-        AggregateT,
-        EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>> {
+public class EventsDsl<AggregateT, EventIdT, EventT extends BaseEvent<AggregateT, EventIdT, EventT>> {
 
     @Getter(AccessLevel.PROTECTED)
     private static final AtomicLong defaultPositionSupplier = new AtomicLong();
@@ -44,18 +40,14 @@ public class EventsDsl<
      * @return The aggregate after all the code has been executed
      */
     @NotNull
-    public <SnapshotIdT,
-            SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-            > AggregateT on(
+    public <SnapshotIdT, SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>> AggregateT on(
             @NotNull AggregateT aggregate,
             @NotNull Consumer entityConsumer,
             @NotNull Supplier<Long> positionSupplier,
             @NotNull Supplier<Date> timestampSupplier,
-            @NotNull Consumer<OnSpec<AggregateT, EventIdT, EventT, SnapshotIdT,
-                                SnapshotT>> closure) {
+            @NotNull Consumer<OnSpec<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>> closure) {
 
-        OnSpec<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> spec =
-                new OnSpec<>();
+        OnSpec<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> spec = new OnSpec<>();
         spec.setAggregate(aggregate);
         spec.setEntityConsumer(entityConsumer);
         spec.setTimestampSupplier(timestampSupplier);
@@ -79,16 +71,12 @@ public class EventsDsl<
      * @return The aggregate after all the code has been executed
      */
     @NotNull
-    public <SnapshotIdT,
-            SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT,
-                    EventT>> AggregateT on(
+    public <SnapshotIdT, SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>> AggregateT on(
             @NotNull AggregateT aggregate,
             @NotNull Consumer entityConsumer,
             @NotNull Supplier<Long> positionSupplier,
-            @NotNull Consumer<OnSpec<AggregateT, EventIdT, EventT, SnapshotIdT,
-                    SnapshotT>> closure) {
-        return on(aggregate, entityConsumer, positionSupplier, Date::new,
-                closure);
+            @NotNull Consumer<OnSpec<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>> closure) {
+        return on(aggregate, entityConsumer, positionSupplier, Date::new, closure);
     }
 
     /**
@@ -104,15 +92,10 @@ public class EventsDsl<
      * @return The aggregate after all the code has been executed
      */
     @NotNull
-    public <SnapshotIdT,
-            SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT,
-                    EventT>> AggregateT on(
+    public <SnapshotIdT, SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>> AggregateT on(
             @NotNull AggregateT aggregate,
             @NotNull Consumer entityConsumer,
-            @NotNull Consumer<OnSpec<AggregateT, EventIdT, EventT, SnapshotIdT,
-                    SnapshotT>> closure) {
-        return on(aggregate, entityConsumer, defaultPositionSupplier::incrementAndGet,
-                Date::new, closure);
+            @NotNull Consumer<OnSpec<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>> closure) {
+        return on(aggregate, entityConsumer, defaultPositionSupplier::incrementAndGet, Date::new, closure);
     }
-
 }

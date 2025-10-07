@@ -39,8 +39,8 @@ class ZipcodeController {
         def zipcode = zipcodeRepository.getReferenceById(id)
 
         def computation = version ?
-            zipcodePatientsQuery.computeSnapshot(zipcode, version) :
-            date ?
+                zipcodePatientsQuery.computeSnapshot(zipcode, version) :
+                date ?
                 zipcodePatientsQuery.computeSnapshot(zipcode, date) :
                 zipcodePatientsQuery.computeSnapshot(zipcode, Long.MAX_VALUE)
 

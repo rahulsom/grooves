@@ -1,16 +1,13 @@
 package grooves.example.javaee;
 
+import static rx.RxReactiveStreams.toObservable;
+
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.test.EventsDsl;
 import com.github.rahulsom.grooves.test.OnSpec;
 import grooves.example.javaee.domain.*;
 import grooves.example.javaee.queries.PatientAccountQuery;
 import grooves.example.javaee.queries.PatientHealthQuery;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,8 +16,10 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import static rx.RxReactiveStreams.toObservable;
+import javax.annotation.PostConstruct;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.inject.Inject;
 
 /**
  * Initializes data for app.
@@ -105,8 +104,7 @@ public class BootStrap {
             it.snapshotWith(patientAccountQuery);
             it.snapshotWith(patientHealthQuery);
 
-            it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME,
-                    new BigDecimal(ANNUAL_PHYSICAL_COST)));
+            it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME, new BigDecimal(ANNUAL_PHYSICAL_COST)));
             it.apply(new PaymentMade(new BigDecimal("180.00")));
 
             it.snapshotWith(patientAccountQuery);
@@ -119,8 +117,7 @@ public class BootStrap {
 
         return on(patient, it -> {
             it.apply(new PatientCreated("Ringo Starr"));
-            it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME,
-                    new BigDecimal(ANNUAL_PHYSICAL_COST)));
+            it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME, new BigDecimal(ANNUAL_PHYSICAL_COST)));
             it.apply(new ProcedurePerformed(GLUCOSE_TEST_NAME, new BigDecimal(GLUCOSE_TEST_COST)));
             it.apply(new PaymentMade(new BigDecimal("100.25")));
 
@@ -140,10 +137,9 @@ public class BootStrap {
 
         return on(patient, it -> {
             it.apply(new PatientCreated("Paul McCartney"));
-            it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME,
-                    new BigDecimal(ANNUAL_PHYSICAL_COST)));
-            ProcedurePerformed gluc = (ProcedurePerformed) it.apply(
-                    new ProcedurePerformed(GLUCOSE_TEST_NAME, new BigDecimal(GLUCOSE_TEST_COST)));
+            it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME, new BigDecimal(ANNUAL_PHYSICAL_COST)));
+            ProcedurePerformed gluc = (ProcedurePerformed)
+                    it.apply(new ProcedurePerformed(GLUCOSE_TEST_NAME, new BigDecimal(GLUCOSE_TEST_COST)));
             it.apply(new PaymentMade(new BigDecimal("100.25")));
             it.apply(new PatientEventReverted(gluc.getId()));
             PaymentMade pmt = (PaymentMade) it.apply(new PaymentMade(new BigDecimal("30.00")));
@@ -162,7 +158,6 @@ public class BootStrap {
             it.snapshotWith(patientAccountQuery);
             it.snapshotWith(patientHealthQuery);
         });
-
     }
 
     private Patient setupFreddieMercury() {
@@ -171,8 +166,7 @@ public class BootStrap {
 
         on(patient, it -> {
             it.apply(new PatientCreated("Farrokh Bulsara"));
-            it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME,
-                    new BigDecimal(ANNUAL_PHYSICAL_COST)));
+            it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME, new BigDecimal(ANNUAL_PHYSICAL_COST)));
             it.apply(new ProcedurePerformed(GLUCOSE_TEST_NAME, new BigDecimal(GLUCOSE_TEST_COST)));
 
             it.snapshotWith(patientAccountQuery);
@@ -202,8 +196,7 @@ public class BootStrap {
 
         on(patient, it -> {
             it.apply(new PatientCreated("Tina Fey"));
-            it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME,
-                    new BigDecimal(ANNUAL_PHYSICAL_COST)));
+            it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME, new BigDecimal(ANNUAL_PHYSICAL_COST)));
             it.apply(new ProcedurePerformed(GLUCOSE_TEST_NAME, new BigDecimal(GLUCOSE_TEST_COST)));
 
             it.snapshotWith(patientAccountQuery);
@@ -226,7 +219,9 @@ public class BootStrap {
         final PatientDeprecatedBy mergeEvent = merge(patient, patient2);
 
         on(patient, it -> it.apply(new PatientEventReverted(mergeEvent.getId())));
-        on(patient2, it -> it.apply(new PatientEventReverted(mergeEvent.getConverse().getId())));
+        on(
+                patient2,
+                it -> it.apply(new PatientEventReverted(mergeEvent.getConverse().getId())));
 
         return patient;
     }
@@ -243,16 +238,20 @@ public class BootStrap {
 
         e1.setAggregate(self);
         e1.setTimestamp(currDate);
-        e1.setPosition(database.events().filter(x -> Objects.equals(x.getAggregate(), self))
-                .count() + 1);
+        e1.setPosition(database.events()
+                        .filter(x -> Objects.equals(x.getAggregate(), self))
+                        .count()
+                + 1);
         e1.setId(database.events().count() + 1);
 
         PatientDeprecates e2 = new PatientDeprecates(e1, self);
 
         e2.setAggregate(into);
         e2.setTimestamp(currDate);
-        e2.setPosition(database.events().filter(x -> Objects.equals(x.getAggregate(), into))
-                .count() + 1);
+        e2.setPosition(database.events()
+                        .filter(x -> Objects.equals(x.getAggregate(), into))
+                        .count()
+                + 1);
         e2.setId(database.events().count() + 2);
 
         e1.setConverse(e2);
@@ -281,25 +280,23 @@ public class BootStrap {
             }
         };
 
-        Supplier<Long> positionSupplier =
-                () -> database.events()
-                    .filter(x -> toObservable(x.getAggregateObservable())
-                        .toBlocking()
-                        .single()
-                        .equals(patient))
-                    .count() + 1;
+        Supplier<Long> positionSupplier = () -> database.events()
+                        .filter(x -> toObservable(x.getAggregateObservable())
+                                .toBlocking()
+                                .single()
+                                .equals(patient))
+                        .count()
+                + 1;
 
-        Supplier<Date> dateSupplier =
-                () -> {
-                    final Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(currDate);
-                    calendar.add(Calendar.DAY_OF_MONTH, 1);
-                    currDate = calendar.getTime();
-                    return currDate;
-                };
+        Supplier<Date> dateSupplier = () -> {
+            final Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currDate);
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            currDate = calendar.getTime();
+            return currDate;
+        };
 
         EventsDsl<Patient, Long, PatientEvent> dsl = new EventsDsl<>();
         return dsl.on(patient, eventSaver, positionSupplier, dateSupplier, closure::accept);
     }
-
 }

@@ -10,7 +10,9 @@ import static rx.RxReactiveStreams.toPublisher
 
 @CompileStatic @Query(aggregate = Account, snapshot = Balance)
 class MissingEventsQuery implements QuerySupport<Account, Long, Transaction, String, Balance> {
-    @NotNull @Override Balance createEmptySnapshot() { null }
+    @NotNull @Override Balance createEmptySnapshot() {
+        null
+    }
     @NotNull @Override Publisher<Balance> getSnapshot(long maxPosition, @NotNull Account aggregate) {
         toPublisher(empty())
     }
@@ -23,7 +25,9 @@ class MissingEventsQuery implements QuerySupport<Account, Long, Transaction, Str
     @NotNull @Override Publisher<Transaction> getUncomputedEvents(@NotNull Account aggregate, @NotNull Balance lastSnapshot, @NotNull Date snapshotTime) {
         toPublisher(empty())
     }
-    @NotNull @Override boolean shouldEventsBeApplied(@NotNull Balance snapshot) { true }
+    @NotNull @Override boolean shouldEventsBeApplied(@NotNull Balance snapshot) {
+        true
+    }
 
     @NotNull @Override void addToDeprecates(@NotNull Balance snapshot, @NotNull Account deprecatedAggregate) {}
 

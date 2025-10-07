@@ -23,24 +23,46 @@ import org.reactivestreams.Publisher;
  * @author Rahul Somasunderam
  */
 public interface JoinSupport<
-        AggregateT,
-        EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-        JoinedAggregateT,
-        SnapshotIdT,
-        SnapshotT extends Join<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT, EventT>,
-        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>
-        > extends
-        VersionedJoinSupport<AggregateT, EventIdT, EventT,
-                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT>,
-        TemporalJoinSupport<AggregateT, EventIdT, EventT,
-                JoinedAggregateT, SnapshotIdT, SnapshotT, JoinEventT, DisjoinEventT> {
+                AggregateT,
+                EventIdT,
+                EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+                JoinedAggregateT,
+                SnapshotIdT,
+                SnapshotT extends Join<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT, EventT>,
+                JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
+                DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>>
+        extends VersionedJoinSupport<
+                        AggregateT,
+                        EventIdT,
+                        EventT,
+                        JoinedAggregateT,
+                        SnapshotIdT,
+                        SnapshotT,
+                        JoinEventT,
+                        DisjoinEventT>,
+                TemporalJoinSupport<
+                        AggregateT,
+                        EventIdT,
+                        EventT,
+                        JoinedAggregateT,
+                        SnapshotIdT,
+                        SnapshotT,
+                        JoinEventT,
+                        DisjoinEventT> {
 
     @NotNull
     @Override
-    default JoinExecutor<AggregateT, EventIdT, EventT, JoinedAggregateT, SnapshotIdT,
-            SnapshotT, JoinEventT, DisjoinEventT, ?> getExecutor() {
+    default JoinExecutor<
+                    AggregateT,
+                    EventIdT,
+                    EventT,
+                    JoinedAggregateT,
+                    SnapshotIdT,
+                    SnapshotT,
+                    JoinEventT,
+                    DisjoinEventT,
+                    ?>
+            getExecutor() {
         return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
     }
 

@@ -1,19 +1,18 @@
 package com.github.rahulsom.grooves.test;
 
+import static io.reactivex.Flowable.fromPublisher;
+
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;
 import com.github.rahulsom.grooves.queries.QuerySupport;
+import java.util.Date;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Date;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import static io.reactivex.Flowable.fromPublisher;
 
 /**
  * Helps configure the {@code on} method.
@@ -35,6 +34,7 @@ public class OnSpec<
         SnapshotT extends Snapshot<AggregateT, SnapshotIdT, EventIdT, EventT>> {
     @Getter
     private AggregateT aggregate;
+
     private Consumer entityConsumer;
     private Supplier<Date> timestampSupplier;
     private Supplier<Long> positionSupplier;
@@ -50,15 +50,16 @@ public class OnSpec<
      *
      * @return The event after persisting
      */
-    @NotNull public <T extends EventT> T apply(@NotNull T event) {
+    @NotNull
+    public <T extends EventT> T apply(@NotNull T event) {
         event.setAggregate(aggregate);
 
         if (event.getPosition() == 0) {
             event.setPosition(positionSupplier.get());
         }
-        //if (event.getTimestamp() == null) {
+        // if (event.getTimestamp() == null) {
         event.setTimestamp(timestampSupplier.get());
-        //}
+        // }
 
         entityConsumer.accept(event);
 
@@ -76,13 +77,11 @@ public class OnSpec<
      * @return The snapshot after persisting
      */
     @NotNull
-    public <QueryT extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT,
-            SnapshotT>> SnapshotT snapshotWith(
-                    @NotNull QueryT query,
-                    @NotNull Consumer<SnapshotT> beforePersist) {
+    public <QueryT extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>> SnapshotT snapshotWith(
+            @NotNull QueryT query, @NotNull Consumer<SnapshotT> beforePersist) {
 
-        SnapshotT snapshotT = fromPublisher(query.computeSnapshot(aggregate, Long.MAX_VALUE))
-                .blockingFirst();
+        SnapshotT snapshotT =
+                fromPublisher(query.computeSnapshot(aggregate, Long.MAX_VALUE)).blockingFirst();
 
         beforePersist.accept(snapshotT);
         entityConsumer.accept(snapshotT);
@@ -102,10 +101,8 @@ public class OnSpec<
      * @return The snapshot after persisting
      */
     @NotNull
-    public <QueryT extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT,
-            SnapshotT>> SnapshotT snapshotWith(@NotNull QueryT query) {
-        return snapshotWith(query, snapshotT -> {
-        });
+    public <QueryT extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>> SnapshotT snapshotWith(
+            @NotNull QueryT query) {
+        return snapshotWith(query, snapshotT -> {});
     }
-
 }

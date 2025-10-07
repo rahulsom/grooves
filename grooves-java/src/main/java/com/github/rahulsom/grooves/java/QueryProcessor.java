@@ -1,23 +1,22 @@
 package com.github.rahulsom.grooves.java;
 
-import com.google.auto.service.AutoService;
-import org.jetbrains.annotations.NotNull;
+import static javax.tools.Diagnostic.Kind.ERROR;
 
+import com.google.auto.service.AutoService;
+import java.util.*;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
-import java.util.*;
-
-import static javax.tools.Diagnostic.Kind.ERROR;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Checks if a {@link Query} for a given {@link Aggregate} handles all {@link Event}s.
  */
 @SuppressWarnings("unused")
 @SupportedAnnotationTypes({
-        QueryProcessor.AGGREGATE_ANNOTATION,
-        QueryProcessor.EVENT_ANNOTATION,
-        QueryProcessor.QUERY_ANNOTATION,
+    QueryProcessor.AGGREGATE_ANNOTATION,
+    QueryProcessor.EVENT_ANNOTATION,
+    QueryProcessor.QUERY_ANNOTATION,
 })
 @AutoService(Processor.class)
 public class QueryProcessor extends AbstractProcessor {
@@ -28,8 +27,7 @@ public class QueryProcessor extends AbstractProcessor {
 
     private static final String ERROR_MESSAGE = "Method not implemented";
     private static final String OBSERVABLE_TYPE = "rx.Observable";
-    private static final String EVENT_APPLY_OUTCOME_TYPE =
-            "com.github.rahulsom.grooves.api.EventApplyOutcome";
+    private static final String EVENT_APPLY_OUTCOME_TYPE = "com.github.rahulsom.grooves.api.EventApplyOutcome";
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
@@ -63,8 +61,7 @@ public class QueryProcessor extends AbstractProcessor {
             if (annotationClassName.equals(QUERY_ANNOTATION)) {
                 Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues =
                         annotationMirror.getElementValues();
-                List<String> expectedMethods =
-                        getExpectedMethods(elementValues, eventsByAggregate);
+                List<String> expectedMethods = getExpectedMethods(elementValues, eventsByAggregate);
 
                 for (String expectedMethod : expectedMethods) {
                     checkMethod(queryType, annotationMirror, expectedMethod);
@@ -73,15 +70,12 @@ public class QueryProcessor extends AbstractProcessor {
         }
     }
 
-    private void checkMethod(
-            Element queryType, AnnotationMirror annotationMirror, String expectedMethod) {
-        boolean found = queryType.getEnclosedElements()
-                .stream()
+    private void checkMethod(Element queryType, AnnotationMirror annotationMirror, String expectedMethod) {
+        boolean found = queryType.getEnclosedElements().stream()
                 .anyMatch(it -> it.toString().equals(expectedMethod));
         if (!found) {
-            String msg = String.format("%s%n  %s<%s> %s",
-                    ERROR_MESSAGE, OBSERVABLE_TYPE, EVENT_APPLY_OUTCOME_TYPE,
-                    expectedMethod);
+            String msg = String.format(
+                    "%s%n  %s<%s> %s", ERROR_MESSAGE, OBSERVABLE_TYPE, EVENT_APPLY_OUTCOME_TYPE, expectedMethod);
             Messager messager = processingEnv.getMessager();
             messager.printMessage(ERROR, msg, queryType, annotationMirror);
         }
@@ -100,8 +94,7 @@ public class QueryProcessor extends AbstractProcessor {
                                 String[] parts = event.split("\\.");
                                 String simpleClassName = parts[parts.length - 1];
                                 String methodDescription =
-                                        String.format("apply%s(%s,%s)",
-                                                simpleClassName, event, snapshotClass);
+                                        String.format("apply%s(%s,%s)", simpleClassName, event, snapshotClass);
                                 expectedMethods.add(methodDescription);
                             }
                         }));
@@ -111,21 +104,18 @@ public class QueryProcessor extends AbstractProcessor {
 
     @NotNull
     private Optional<String> getAttributeClass(
-            Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues,
-            String attributeName) {
-        return elementValues
-                .entrySet()
-                .stream()
+            Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues, String attributeName) {
+        return elementValues.entrySet().stream()
                 .filter(it -> it.getKey().toString().equals(attributeName))
                 .map(it -> it.getValue().getValue().toString())
                 .findFirst();
     }
 
-    private void loadEvents(
-            Set<? extends Element> eventTypes, Map<String, List<String>> eventsByAggregate) {
+    private void loadEvents(Set<? extends Element> eventTypes, Map<String, List<String>> eventsByAggregate) {
         for (Element eventType : eventTypes) {
             for (AnnotationMirror annotationMirror : eventType.getAnnotationMirrors()) {
-                String annotationClassName = annotationMirror.getAnnotationType().toString();
+                String annotationClassName =
+                        annotationMirror.getAnnotationType().toString();
                 if (annotationClassName.equals(EVENT_ANNOTATION)) {
                     Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues =
                             annotationMirror.getElementValues();
@@ -137,8 +127,7 @@ public class QueryProcessor extends AbstractProcessor {
         }
     }
 
-    private void loadAggregates(
-            Set<? extends Element> aggregateTypes, Map<String, List<String>> eventsByAggregate) {
+    private void loadAggregates(Set<? extends Element> aggregateTypes, Map<String, List<String>> eventsByAggregate) {
         for (Element aggregateType : aggregateTypes) {
             eventsByAggregate.put(aggregateType.toString(), new ArrayList<>());
         }

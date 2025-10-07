@@ -55,5 +55,4 @@ ruleset {
         UnnecessaryBooleanExpression(enabled: false)
     }
     ruleset('rulesets/unused.xml')
-
 }

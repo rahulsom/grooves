@@ -20,47 +20,48 @@ import static io.reactivex.Flowable.just
 @Component
 // tag::joins[]
 class ZipcodePatientsQuery implements JoinSupport< // <1>
-    Zipcode, // <2>
-    Long, ZipcodeEvent, // <3>
-    Patient, // <4>
-    Long, ZipcodePatients, // <5>
-    ZipcodeGotPatient, ZipcodeLostPatient // <6>
-    > { // <7>
+Zipcode, // <2>
+Long, ZipcodeEvent, // <3>
+Patient, // <4>
+Long, ZipcodePatients, // <5>
+ZipcodeGotPatient, ZipcodeLostPatient // <6>
+> {
+    // <7>
 
     final Class<ZipcodeGotPatient> joinEventClass = ZipcodeGotPatient // <8>
     final Class<ZipcodeLostPatient> disjoinEventClass = ZipcodeLostPatient // <9>
-// end::joins[]
+    // end::joins[]
     @Autowired ZipcodeEventRepository zipcodeEventRepository
     @Autowired ZipcodePatientsRepository zipcodePatientsRepository
 
     @NotNull
     @Override
     Publisher<ZipcodeEvent> getUncomputedEvents(
-        @NotNull Zipcode aggregate, @Nullable ZipcodePatients lastSnapshot, @NotNull Date snapshotTime) {
+            @NotNull Zipcode aggregate, @Nullable ZipcodePatients lastSnapshot, @NotNull Date snapshotTime) {
         fromIterable(zipcodeEventRepository.getUncomputedEventsByDateRange(
-            aggregate, lastSnapshot.lastEventTimestamp, snapshotTime))
+                aggregate, lastSnapshot.lastEventTimestamp, snapshotTime))
     }
 
     @NotNull
     @Override
     Publisher<ZipcodePatients> getSnapshot(@Nullable Date maxTimestamp, @NotNull Zipcode aggregate) {
         fromIterable(zipcodePatientsRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
-            aggregate.id, maxTimestamp))
+                aggregate.id, maxTimestamp))
     }
 
     @NotNull
     @Override
     Publisher<ZipcodeEvent> getUncomputedEvents(
-        @NotNull Zipcode aggregate, @Nullable ZipcodePatients lastSnapshot, long version) {
+            @NotNull Zipcode aggregate, @Nullable ZipcodePatients lastSnapshot, long version) {
         fromIterable(zipcodeEventRepository.getUncomputedEventsByVersion(
-            aggregate, lastSnapshot.lastEventPosition, version))
+                aggregate, lastSnapshot.lastEventPosition, version))
     }
 
     @NotNull
     @Override
     Publisher<ZipcodePatients> getSnapshot(long maxPosition, @NotNull Zipcode aggregate) {
         fromIterable(zipcodePatientsRepository.findAllByAggregateIdAndLastEventPositionLessThan(
-            aggregate.id, maxPosition))
+                aggregate.id, maxPosition))
     }
 
     @NotNull
@@ -82,11 +83,11 @@ class ZipcodePatientsQuery implements JoinSupport< // <1>
     @NotNull
     @Override
     Publisher<EventApplyOutcome> onException(
-        @NotNull Exception e, @NotNull ZipcodePatients snapshot, @NotNull ZipcodeEvent event) {
+            @NotNull Exception e, @NotNull ZipcodePatients snapshot, @NotNull ZipcodeEvent event) {
         just(CONTINUE)
     }
 
-// tag::joins[]
+    // tag::joins[]
     // Skipping familiar methods <10>
 }
 // end::joins[]

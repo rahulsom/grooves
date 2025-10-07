@@ -22,16 +22,15 @@ import org.jetbrains.annotations.NotNull;
  * @author Rahul Somasunderam
  */
 public interface TemporalJoinSupport<
-        AggregateT,
-        EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-        JoinedAggregateT,
-        SnapshotIdT,
-        SnapshotT extends TemporalJoin<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT, EventT>,
-        JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
-        DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>
-        > extends
-        TemporalQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+                AggregateT,
+                EventIdT,
+                EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+                JoinedAggregateT,
+                SnapshotIdT,
+                SnapshotT extends TemporalJoin<AggregateT, SnapshotIdT, JoinedAggregateT, EventIdT, EventT>,
+                JoinEventT extends JoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>,
+                DisjoinEventT extends DisjoinEvent<AggregateT, EventIdT, EventT, JoinedAggregateT>>
+        extends TemporalQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     /**
      * The class for join events of this query.
@@ -49,8 +48,17 @@ public interface TemporalJoinSupport<
 
     @NotNull
     @Override
-    default JoinExecutor<AggregateT, EventIdT, EventT, JoinedAggregateT, SnapshotIdT,
-            SnapshotT, JoinEventT, DisjoinEventT, ?> getExecutor() {
+    default JoinExecutor<
+                    AggregateT,
+                    EventIdT,
+                    EventT,
+                    JoinedAggregateT,
+                    SnapshotIdT,
+                    SnapshotT,
+                    JoinEventT,
+                    DisjoinEventT,
+                    ?>
+            getExecutor() {
         return new JoinExecutor<>(getJoinEventClass(), getDisjoinEventClass());
     }
 }

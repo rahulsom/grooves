@@ -1,10 +1,10 @@
 package grooves.example.javaee.util;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.ext.ParamConverter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.ext.ParamConverter;
 
 public class DateParameterConverter implements ParamConverter<Date> {
 
@@ -24,5 +24,4 @@ public class DateParameterConverter implements ParamConverter<Date> {
     public String toString(Date t) {
         return new SimpleDateFormat(FORMAT).format(t);
     }
-
 }

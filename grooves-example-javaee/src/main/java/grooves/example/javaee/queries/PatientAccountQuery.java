@@ -1,25 +1,23 @@
 package grooves.example.javaee.queries;
 
-import com.github.rahulsom.grooves.api.EventApplyOutcome;
-import com.github.rahulsom.grooves.java.Query;
-import grooves.example.javaee.Database;
-import grooves.example.javaee.domain.*;
-import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
-import org.reactivestreams.Publisher;
-
-import javax.inject.Inject;
-import java.math.BigDecimal;
-
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
 import static rx.Observable.just;
 import static rx.RxReactiveStreams.toPublisher;
 
+import com.github.rahulsom.grooves.api.EventApplyOutcome;
+import com.github.rahulsom.grooves.java.Query;
+import grooves.example.javaee.Database;
+import grooves.example.javaee.domain.*;
+import java.math.BigDecimal;
+import javax.inject.Inject;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.reactivestreams.Publisher;
+
 // tag::documented[]
 @Getter
 @Query(aggregate = Patient.class, snapshot = PatientAccount.class) // <9>
-public class PatientAccountQuery
-        implements CustomQuerySupport<PatientAccount> { // <10>
+public class PatientAccountQuery implements CustomQuerySupport<PatientAccount> { // <10>
 
     // end::documented[]
     @Inject
@@ -39,8 +37,7 @@ public class PatientAccountQuery
     // end::documented[]
 
     @Override
-    public void addToDeprecates(
-            @NotNull PatientAccount snapshot, @NotNull Patient deprecatedAggregate) {
+    public void addToDeprecates(@NotNull PatientAccount snapshot, @NotNull Patient deprecatedAggregate) {
         snapshot.getDeprecates().add(deprecatedAggregate);
     }
 
@@ -51,8 +48,7 @@ public class PatientAccountQuery
      * @return the result of apply
      */
     // tag::documented[]
-    public Publisher<EventApplyOutcome> applyPatientCreated(
-            PatientCreated event, PatientAccount snapshot) { // <12>
+    public Publisher<EventApplyOutcome> applyPatientCreated(PatientCreated event, PatientAccount snapshot) { // <12>
         if (snapshot.getAggregate() == event.getAggregate()) {
             snapshot.setName(event.getName());
         }
@@ -67,8 +63,7 @@ public class PatientAccountQuery
      * @return the result of apply
      */
     // tag::documented[]
-    public Publisher<EventApplyOutcome> applyProcedurePerformed(
-            ProcedurePerformed event, PatientAccount snapshot) {
+    public Publisher<EventApplyOutcome> applyProcedurePerformed(ProcedurePerformed event, PatientAccount snapshot) {
         final double cost = event.getCost().doubleValue();
         final double originalBalance = snapshot.getBalance().doubleValue();
 
@@ -85,8 +80,7 @@ public class PatientAccountQuery
      * @return the result of apply
      */
     // tag::documented[]
-    public Publisher<EventApplyOutcome> applyPaymentMade(
-            PaymentMade event, PatientAccount snapshot) {
+    public Publisher<EventApplyOutcome> applyPaymentMade(PaymentMade event, PatientAccount snapshot) {
 
         final double amount = event.getAmount().doubleValue();
         final double originalBalance = snapshot.getBalance().doubleValue();
@@ -97,6 +91,5 @@ public class PatientAccountQuery
 
         return toPublisher(just(CONTINUE));
     }
-
 }
 // end::documented[]

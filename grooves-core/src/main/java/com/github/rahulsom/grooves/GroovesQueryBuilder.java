@@ -2,10 +2,9 @@ package com.github.rahulsom.grooves;
 
 import com.github.rahulsom.grooves.functions.*;
 import com.github.rahulsom.grooves.impl.GroovesQueryImpl;
-import lombok.Builder;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
 
 /**
  * Builds a {@link GroovesQuery}.
@@ -62,13 +61,11 @@ public class GroovesQueryBuilder<AggregateT, VersionOrTimestampT, SnapshotT, Eve
                     snapshotVersionSetter,
                     deprecatedByProvider,
                     revertedEventProvider,
-                    eventIdProvider
-            );
+                    eventIdProvider);
         } else {
             String firstException = exceptions.remove(0);
             IllegalStateException illegalStateException = new IllegalStateException(firstException);
-            exceptions.stream().map(IllegalStateException::new)
-                .forEach(illegalStateException::addSuppressed);
+            exceptions.stream().map(IllegalStateException::new).forEach(illegalStateException::addSuppressed);
 
             throw illegalStateException;
         }

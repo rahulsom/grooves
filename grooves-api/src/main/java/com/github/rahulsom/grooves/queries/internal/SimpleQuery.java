@@ -18,14 +18,13 @@ import org.reactivestreams.Publisher;
  * @author Rahul Somasunderam
  */
 public interface SimpleQuery<
-        AggregateT,
-        EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-        ApplicableEventT extends EventT,
-        SnapshotIdT,
-        SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-        > extends
-        BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
+                AggregateT,
+                EventIdT,
+                EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+                ApplicableEventT extends EventT,
+                SnapshotIdT,
+                SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>>
+        extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> {
 
     /**
      * Applies an event to a snapshot.
@@ -34,8 +33,8 @@ public interface SimpleQuery<
      * @param snapshot The snapshot to apply the event to
      * @return A Publisher that returns the outcome of applying the event
      */
-    @NotNull Publisher<EventApplyOutcome> applyEvent(
-            @NotNull ApplicableEventT event, @NotNull SnapshotT snapshot);
+    @NotNull
+    Publisher<EventApplyOutcome> applyEvent(@NotNull ApplicableEventT event, @NotNull SnapshotT snapshot);
 
     /**
      * Returns the executor to use for applying events.
@@ -44,8 +43,7 @@ public interface SimpleQuery<
      */
     @NotNull
     @Override
-    default SimpleExecutor<AggregateT, EventIdT, EventT, ?, SnapshotIdT, SnapshotT,
-            ?> getExecutor() {
+    default SimpleExecutor<AggregateT, EventIdT, EventT, ?, SnapshotIdT, SnapshotT, ?> getExecutor() {
         return new SimpleExecutor<>();
     }
 }

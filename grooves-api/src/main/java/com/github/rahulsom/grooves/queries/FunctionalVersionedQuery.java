@@ -5,14 +5,13 @@ import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
 import com.github.rahulsom.grooves.queries.internal.SimpleExecutor;
 import com.github.rahulsom.grooves.queries.internal.SimpleQuery;
-import lombok.Builder;
-import org.jetbrains.annotations.NotNull;
-import org.reactivestreams.Publisher;
-
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import lombok.Builder;
+import org.jetbrains.annotations.NotNull;
+import org.reactivestreams.Publisher;
 
 /**
  * Util class to build Versioned Queries in a Functional Style.
@@ -27,28 +26,25 @@ import java.util.function.Supplier;
  */
 @Builder(builderClassName = "Builder", builderMethodName = "newBuilder", setterPrefix = "with")
 public class FunctionalVersionedQuery<
-        AggregateT,
-        EventIdT,
-        EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
-        SnapshotIdT,
-        SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-        > implements
-        VersionedQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
-        SimpleQuery<AggregateT, EventIdT, EventT, EventT, SnapshotIdT, SnapshotT> {
+                AggregateT,
+                EventIdT,
+                EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
+                SnapshotIdT,
+                SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>>
+        implements VersionedQuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
+                SimpleQuery<AggregateT, EventIdT, EventT, EventT, SnapshotIdT, SnapshotT> {
 
     private BiFunction<Long, AggregateT, Publisher<SnapshotT>> snapshot;
     private Supplier<SnapshotT> emptySnapshot;
     private TriFunction<AggregateT, SnapshotT, Long, Publisher<EventT>> events;
     private Predicate<SnapshotT> applyEvents;
     private BiConsumer<SnapshotT, AggregateT> deprecator;
-    private TriFunction<Exception, SnapshotT, EventT,
-            Publisher<EventApplyOutcome>> exceptionHandler;
+    private TriFunction<Exception, SnapshotT, EventT, Publisher<EventApplyOutcome>> exceptionHandler;
     private BiFunction<EventT, SnapshotT, Publisher<EventApplyOutcome>> eventHandler;
 
     @NotNull
     @Override
-    public SimpleExecutor<AggregateT, EventIdT, EventT, ?, SnapshotIdT, SnapshotT,
-            ?> getExecutor() {
+    public SimpleExecutor<AggregateT, EventIdT, EventT, ?, SnapshotIdT, SnapshotT, ?> getExecutor() {
         return new SimpleExecutor<>();
     }
 
@@ -66,8 +62,7 @@ public class FunctionalVersionedQuery<
 
     @NotNull
     @Override
-    public Publisher<EventT> getUncomputedEvents(
-            @NotNull AggregateT aggregate, SnapshotT lastSnapshot, long version) {
+    public Publisher<EventT> getUncomputedEvents(@NotNull AggregateT aggregate, SnapshotT lastSnapshot, long version) {
         return events.apply(aggregate, lastSnapshot, version);
     }
 
@@ -77,8 +72,7 @@ public class FunctionalVersionedQuery<
     }
 
     @Override
-    public void addToDeprecates(
-            @NotNull SnapshotT snapshot, @NotNull AggregateT deprecatedAggregate) {
+    public void addToDeprecates(@NotNull SnapshotT snapshot, @NotNull AggregateT deprecatedAggregate) {
         deprecator.accept(snapshot, deprecatedAggregate);
     }
 
@@ -91,8 +85,7 @@ public class FunctionalVersionedQuery<
 
     @NotNull
     @Override
-    public Publisher<EventApplyOutcome> applyEvent(
-            @NotNull EventT event, @NotNull SnapshotT snapshot) {
+    public Publisher<EventApplyOutcome> applyEvent(@NotNull EventT event, @NotNull SnapshotT snapshot) {
         return eventHandler.apply(event, snapshot);
     }
 
@@ -110,8 +103,5 @@ public class FunctionalVersionedQuery<
             EventIdT,
             EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
             SnapshotIdT,
-            SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>
-            > {
-    }
-
+            SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>> {}
 }

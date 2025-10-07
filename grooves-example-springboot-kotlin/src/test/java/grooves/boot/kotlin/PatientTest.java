@@ -1,5 +1,7 @@
 package grooves.boot.kotlin;
 
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
 import com.github.rahulsom.grooves.test.AbstractPatientTest;
 import com.github.rahulsom.grooves.test.RestClient;
 import org.junit.jupiter.api.Test;
@@ -11,8 +13,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @ContextConfiguration
 @SpringBootTest(webEnvironment = RANDOM_PORT)
