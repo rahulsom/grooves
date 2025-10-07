@@ -27,14 +27,14 @@ public class RestClient {
     public <T> HttpResponseDecorator<T> get(final RestRequest restRequest) {
         OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 
-        Map<String, Object> queryMap = Optional.ofNullable(restRequest.getQuery()).orElse(Map.of());
+        Map<String, Object> queryMap = Optional.ofNullable(restRequest.query()).orElse(Map.of());
 
         final String query = queryMap.entrySet().stream()
                 .map(it -> it.getKey() + "=" + it.getValue())
                 .reduce((a, b) -> a + "&" + b)
                 .orElse("");
 
-        String url = baseUrl + restRequest.getPath() + "?" + query;
+        String url = baseUrl + restRequest.path() + "?" + query;
         Request request = new Request.Builder()
                 .url(url)
                 .header("Accept", "application/json")

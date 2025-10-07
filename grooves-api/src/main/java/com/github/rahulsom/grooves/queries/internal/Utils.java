@@ -113,7 +113,7 @@ public class Utils {
                 .onErrorReturn(throwable -> executor
                         .applyReverts(
                                 fallbackSnapshotAndEvents.get()
-                                        .flatMap(it -> fromIterable(it.getSecond()))
+                                        .flatMap(it -> fromIterable(it.second()))
                         )
                         .toList().toFlowable()
                 )
@@ -201,7 +201,7 @@ public class Utils {
                 .flatMap(list -> list.isEmpty() ?
                         forwardOnlyEvents :
                         snapshotAndEventsSince.get().flatMap(p ->
-                                getForwardOnlyEvents(p.getSecond(), executor, () ->
+                                getForwardOnlyEvents(p.second(), executor, () ->
                                         error(new GroovesException(
                                                 "Couldn't apply deprecates events")))
                         ));
