@@ -225,7 +225,7 @@ spotless {
     json {
         prettier()
         target("**/*.json")
-        targetExclude("**/build/**/*.json", "**/package-lock.json")
+        targetExclude("**/build/**/*.json", "**/package-lock.json", ".github/renovate.json")
     }
     typescript {
         prettier()
