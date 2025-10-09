@@ -1,5 +1,28 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
-  "automerge": true
+  "automerge": true,
+  "customManagers": [
+    {
+      "customType": "regex",
+      "matchStrings": ["selectNode +v(?<currentValue>/*?)\n"],
+      "fileMatch": ["(^|/)(npmw|yarnw|nodew)$"],
+      "datasourceTemplate": "node",
+      "depNameTemplate": "node"
+    },
+    {
+      "customType": "regex",
+      "matchStrings": ["selectTool +npm +v(?<currentValue>/*?)\n"],
+      "fileMatch": ["(^|/)(npmw|yarnw|nodew)$"],
+      "datasourceTemplate": "npm",
+      "depNameTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "matchStrings": ["selectTool +yarn +v(?<currentValue>/*?)\n"],
+      "fileMatch": ["(^|/)(npmw|yarnw|nodew)$"],
+      "datasourceTemplate": "npm",
+      "depNameTemplate": "yarn"
+    }
+  ]
 }
