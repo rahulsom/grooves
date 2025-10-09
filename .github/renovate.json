@@ -8,7 +8,7 @@
     {
       "customType": "regex",
       "matchStrings": [
-        "selectNode +v(?<currentValue>/*?)\n"
+        "selectNode +v(?<currentValue>.+?)\n"
       ],
       "managerFilePatterns": [
         "/(^|/)(npmw|yarnw|nodew)$/"
@@ -19,7 +19,7 @@
     {
       "customType": "regex",
       "matchStrings": [
-        "selectTool +npm +v(?<currentValue>/*?)\n"
+        "selectTool +npm +(?<currentValue>.+?)\n"
       ],
       "managerFilePatterns": [
         "/(^|/)(npmw|yarnw|nodew)$/"
@@ -30,7 +30,7 @@
     {
       "customType": "regex",
       "matchStrings": [
-        "selectTool +yarn +v(?<currentValue>/*?)\n"
+        "selectTool +yarn +(?<currentValue>.+?)\n"
       ],
       "managerFilePatterns": [
         "/(^|/)(npmw|yarnw|nodew)$/"
