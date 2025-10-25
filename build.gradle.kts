@@ -59,11 +59,11 @@ subprojects {
 
 contacts {
     validateEmails = true
-    addPerson("rahulsom@noreply.github.com", delegateClosureOf<nebula.plugin.contacts.Contact> {
+    with(addPerson("rahulsom@noreply.github.com")) {
         moniker("Rahul Somasunderam")
         roles("owner")
         github("https://github.com/rahulsom")
-    })
+    }
 }
 
 tasks.named("release") { dependsOn("grooves-docs:gitPublishPush") }
