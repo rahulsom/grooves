@@ -27,6 +27,7 @@ dependencies {
     testRuntimeOnly(libs.junit.platform.launcher)
 
     // Testcontainers support
+    testImplementation(platform(libs.testcontainers.bom))
     testImplementation(libs.testcontainers.junit.jupiter)
 }
 
