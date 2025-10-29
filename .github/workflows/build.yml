@@ -35,12 +35,25 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
+          cache: "npm"
+          cache-dependency-path: "grooves-site/package-lock.json"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('grooves-site/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Regression test Site
         run: |-
           cd grooves-site
           ./npmw ci
-          npx playwright install --with-deps
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != "true" ]; then
+            npx playwright install --with-deps
+          fi
           ./npmw run build
           ./npmw run test
           npx playwright test visual.spec.ts
