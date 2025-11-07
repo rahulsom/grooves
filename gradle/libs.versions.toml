@@ -2,7 +2,7 @@
 jdk = "17"
 activation = "1.1.1"
 asciidoctor = "4.0.5"
-asciidoctorj = "3.0.0"
+asciidoctorj = "3.0.1"
 aspectj = "1.9.25"
 assertj = "3.27.6"
 awaitility = "4.3.0"
