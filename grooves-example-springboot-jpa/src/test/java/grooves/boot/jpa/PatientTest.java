@@ -45,9 +45,7 @@ public class PatientTest extends AbstractPatientTest {
 
     @ParameterizedTest
     @DisplayName("{1} - current patients join works")
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
             1, Campbell, 1|2|3|5|6|7|8|10, 33
             2, 'Santana Row', 4|9, 37
             """)
@@ -72,9 +70,7 @@ public class PatientTest extends AbstractPatientTest {
 
     @ParameterizedTest
     @DisplayName("{1} - version {2} patients join works")
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
             1, Campbell, 1, ''
             1, Campbell, 2, '1'
             1, Campbell, 3, '1|2'
