@@ -79,9 +79,7 @@ public abstract class AbstractPatientTest {
 
     @ParameterizedTest
     @DisplayName("Paul McCartney's balance is correct at version {1}")
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
             1, 0.0, 0.0
             2, 170.0, 0.0
             3, 248.93, 0.0
@@ -127,9 +125,7 @@ public abstract class AbstractPatientTest {
 
     @ParameterizedTest
     @DisplayName("{3} - Health works")
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
             1, John Lennon, 6, 'FLUSHOT;GLUCOSETEST;ANNUALPHYSICAL'
             2, Ringo Starr, 6, 'ANNUALPHYSICAL;GLUCOSETEST;FLUSHOT'
             3, Paul McCartney, 9, 'ANNUALPHYSICAL'
@@ -167,9 +163,7 @@ public abstract class AbstractPatientTest {
 
     @ParameterizedTest
     @DisplayName("{2} by Version {1} - Health works")
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
             1, John Lennon, 1, ''
             2, John Lennon, 1, 'FLUSHOT'
             3, John Lennon, 1, 'FLUSHOT;GLUCOSETEST'
@@ -217,9 +211,7 @@ public abstract class AbstractPatientTest {
 
     @ParameterizedTest
     @DisplayName("{2} by Date {1} - Health works")
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
             2016-01-03, John Lennon, 1, 2, 'FLUSHOT'
             2016-01-09, Ringo Starr, 2, 2, 'ANNUALPHYSICAL'
             2016-01-15, Paul McCartney, 3, 2, 'ANNUALPHYSICAL'
@@ -260,9 +252,7 @@ public abstract class AbstractPatientTest {
 
     @ParameterizedTest
     @DisplayName("Farrokh Bulsara's balance is correct at version {0}")
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
             1, 0.0, 0.0, 4,
             2, 170.0, 0.0, 4,
             3, 248.93, 0.0, 4,
@@ -317,9 +307,7 @@ public abstract class AbstractPatientTest {
 
     @ParameterizedTest
     @DisplayName("Freddie Mercury's balance is correct at version {0}")
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
             1, 0.0, 0.0, 5,
             2, -100.25, 100.25, 5,
             3, 148.68, 100.25, 5, '4'
@@ -454,9 +442,7 @@ public abstract class AbstractPatientTest {
 
     @ParameterizedTest
     @DisplayName("Reverting a merge works - version {1} of {0} is {2}")
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
             6, 1, Tina Fey, 0.0
             6, 2, Tina Fey, 170.00
             6, 3, Tina Fey, 248.93
@@ -486,9 +472,7 @@ public abstract class AbstractPatientTest {
 
     @ParameterizedTest
     @DisplayName("Reverting a merge works - on date {1} of {0} is {2}")
-    @CsvSource(
-            textBlock =
-                    """
+    @CsvSource(textBlock = """
             6, 2016-01-29, Tina Fey, 0.0
             6, 2016-01-30, Tina Fey, 170.00
             6, 2016-01-31, Tina Fey, 248.93
