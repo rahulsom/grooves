@@ -11,10 +11,17 @@ on:
 jobs:
   build:
     uses: rahulsom/_/.github/workflows/gradle.yml@main
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+      packages: read
     with:
       java-version: 21
-    permissions:
-      contents: write
+      codeql: false
+      codeql-actions: true
+      codeql-typescript: true
+      codeql-javascript: true
     secrets:
       ORG_GRADLE_PROJECT_SONATYPEUSERNAME: ${{ secrets.ORG_GRADLE_PROJECT_SONATYPEUSERNAME }}
       ORG_GRADLE_PROJECT_SONATYPEPASSWORD: ${{ secrets.ORG_GRADLE_PROJECT_SONATYPEPASSWORD }}
