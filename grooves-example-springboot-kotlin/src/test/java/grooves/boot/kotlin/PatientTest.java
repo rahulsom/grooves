@@ -23,7 +23,7 @@ public class PatientTest extends AbstractPatientTest {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", () -> {
+        registry.add("spring.mongodb.uri", () -> {
             mongoDBContainer.start();
             return mongoDBContainer.getReplicaSetUrl("test");
         });

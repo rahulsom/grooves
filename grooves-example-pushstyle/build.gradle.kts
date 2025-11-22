@@ -5,9 +5,8 @@ buildscript {
     dependencies {
         classpath(libs.h2)
 
-        classpath(libs.jaxb.api)
-        classpath(libs.sunjaxb.core)
-        classpath(libs.sunjaxb.impl)
+        classpath(libs.jakarta.jaxb.api)
+        classpath("com.sun.xml.bind:jaxb-impl:4.0.4") // Jakarta compatible version
         classpath(libs.activation)
     }
 }
@@ -31,11 +30,10 @@ dependencies {
     implementation(libs.h2)
     implementation("org.jooq:jooq")
 
-    implementation(libs.jaxb.api)
-    implementation(libs.sunjaxb.core)
-    implementation(libs.sunjaxb.impl)
+    implementation(libs.jakarta.jaxb.api)
+    implementation("com.sun.xml.bind:jaxb-impl:4.0.4") // Jakarta compatible version
     implementation(libs.activation)
-    compileOnly(libs.javax.annotation.api)
+    compileOnly(libs.jakarta.annotation.api)
 
     implementation(project(":grooves-api"))
 
