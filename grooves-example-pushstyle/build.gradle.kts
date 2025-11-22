@@ -6,7 +6,7 @@ buildscript {
         classpath(libs.h2)
 
         classpath(libs.jakarta.jaxb.api)
-        classpath("com.sun.xml.bind:jaxb-impl:4.0.4") // Jakarta compatible version
+        classpath("com.sun.xml.bind:jaxb-impl:4.0.6") // Jakarta compatible version
         classpath(libs.activation)
     }
 }
@@ -31,7 +31,7 @@ dependencies {
     implementation("org.jooq:jooq")
 
     implementation(libs.jakarta.jaxb.api)
-    implementation("com.sun.xml.bind:jaxb-impl:4.0.4") // Jakarta compatible version
+    implementation("com.sun.xml.bind:jaxb-impl:4.0.6") // Jakarta compatible version
     implementation(libs.activation)
     compileOnly(libs.jakarta.annotation.api)
 

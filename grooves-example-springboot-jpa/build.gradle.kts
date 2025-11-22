@@ -22,7 +22,7 @@ dependencies {
     implementation(project(":grooves-example-test"))
 
     runtimeOnly(libs.jakarta.jaxb.api)
-    runtimeOnly("com.sun.xml.bind:jaxb-impl:4.0.4") // Jakarta compatible version
+    runtimeOnly("com.sun.xml.bind:jaxb-impl:4.0.6") // Jakarta compatible version
     runtimeOnly(libs.activation)
     runtimeOnly(libs.h2)
 
