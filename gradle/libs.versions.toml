@@ -70,7 +70,7 @@ jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", ver
 javaee-api = { module = "javax:javaee-api", version = "8.0.1" }
 jakartaee-api = { module = "jakarta.platform:jakartaee-api", version = "10.0.0" }
 jakarta-jaxb-api = { module = "jakarta.xml.bind:jakarta.xml.bind-api", version.ref = "jakarta-jaxb" }
-jakarta-annotation-api = { module = "jakarta.annotation:jakarta.annotation-api", version = "2.1.1" }
+jakarta-annotation-api = { module = "jakarta.annotation:jakarta.annotation-api", version = "3.0.0" }
 jaxb-api = { module = "javax.xml.bind:jaxb-api", version.ref = "jaxb" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-core" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-core" }
