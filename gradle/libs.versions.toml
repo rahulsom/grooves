@@ -1,6 +1,6 @@
 [versions]
 jdk = "17"
-activation = "2.1.3"
+activation = "2.1.4"
 asciidoctor = "4.0.5"
 asciidoctorj = "3.0.1"
 aspectj = "1.9.25"
