@@ -48,7 +48,7 @@ sunjaxb = "4.0.6"
 svgbuilder = "0.7.0"
 testcontainers = "2.0.3"
 testLogger = "4.0.0"
-waena = "0.21.0"
+waena = "0.21.1"
 
 [libraries]
 activation = { module = "jakarta.activation:jakarta.activation-api", version.ref = "activation" }
