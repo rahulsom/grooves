@@ -16,7 +16,7 @@
     "@playwright/test": "^1.48.0",
     "@types/bootstrap": "^5.2.10",
     "typescript": "~5.9.0",
-    "vite": "npm:rolldown-vite@7.2.11"
+    "vite": "npm:rolldown-vite@7.3.0"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
@@ -26,6 +26,6 @@
     "jquery": "^3.7.1"
   },
   "overrides": {
-    "vite": "npm:rolldown-vite@7.2.11"
+    "vite": "npm:rolldown-vite@7.3.0"
   }
 }
