@@ -1,5 +1,4 @@
 [versions]
-jdk = "17"
 activation = "2.1.4"
 asciidoctor = "4.0.5"
 asciidoctorj = "3.0.1"
@@ -16,13 +15,15 @@ google-compiletesting = "0.23.0"
 google-guice = "7.0.0"
 google-guava = "33.5.0-jre"
 groovy = "5.0.3"
-jackson = "2.20.1"
 h2 = "2.4.240"
+httpcomponents = "4.5.14"
+jackson = "2.20.1"
+jakarta-jaxb = "4.0.4"
 javaee = "8.0.1"
 javax-annotation = "1.3.2"
 jaxb = "2.3.1"
 jba = "26.0.2-1"
-jakarta-jaxb = "4.0.4"
+jdk = "17"
 jooq = "10.2"
 junit-core = "6.0.1"
 junit-platform = "6.0.1"
@@ -34,12 +35,13 @@ logging-capabilities = "0.+"
 lombok = "1.18.42"
 okhttp = "5.3.2"
 reactive-streams = "1.0.4"
+reactor-test = "3.0.7.RELEASE"
 rxjava-core = "1.3.8"
 rxjava-reactivestreams = "1.2.1"
-sass = "1.6.0"
 rxjava2 = "2.2.21"
+sass = "1.6.0"
 slf4j = "2.0.17"
-sonar = "7.2.2.6593"
+sonarqube = "7.2.2.6593"
 spotless = "8.1.0"
 spring-asciidoctor = "0.6.3"
 spring-boot = "4.0.1"
@@ -49,6 +51,7 @@ svgbuilder = "0.7.0"
 testcontainers = "2.0.3"
 testLogger = "4.0.0"
 waena = "0.21.1"
+xerces = "2.12.2"
 
 [libraries]
 activation = { module = "jakarta.activation:jakarta.activation-api", version.ref = "activation" }
@@ -66,18 +69,23 @@ groovy = { module = "org.apache.groovy:groovy", version.ref = "groovy" }
 groovy-all = { module = "org.apache.groovy:groovy-all", version.ref = "groovy" }
 groovy-dateutil = { module = "org.apache.groovy:groovy-dateutil", version.ref = "groovy" }
 h2 = { module = "com.h2database:h2", version.ref = "h2" }
+httpcomponents-client = { module = "org.apache.httpcomponents:httpclient", version.ref = "httpcomponents" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
-javaee-api = { module = "javax:javaee-api", version = "8.0.1" }
-jakartaee-api = { module = "jakarta.platform:jakartaee-api", version = "10.0.0" }
-jakarta-jaxb-api = { module = "jakarta.xml.bind:jakarta.xml.bind-api", version.ref = "jakarta-jaxb" }
 jakarta-annotation-api = { module = "jakarta.annotation:jakarta.annotation-api", version = "3.0.0" }
+jakarta-jaxb-api = { module = "jakarta.xml.bind:jakarta.xml.bind-api", version.ref = "jakarta-jaxb" }
+jakartaee-api = { module = "jakarta.platform:jakartaee-api", version = "10.0.0" }
+javaee-api = { module = "javax:javaee-api", version = "8.0.1" }
 jaxb-api = { module = "javax.xml.bind:jaxb-api", version.ref = "jaxb" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jba" }
+jooq-core = { module = "org.jooq:jooq" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-core" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-core" }
 junit-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-core" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
-junit-platform-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform" }
 junit-platform-commons = { module = "org.junit.platform:junit-platform-commons", version.ref = "junit-platform" }
+junit-platform-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
 lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "lang3" }
 log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 log4j-slf4j = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
@@ -85,34 +93,43 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 reactive-streams = { module = "org.reactivestreams:reactive-streams", version.ref = "reactive-streams" }
+reactor-test = { module = "io.projectreactor.addons:reactor-test", version.ref = "reactor-test" }
 rxjava-core = { module = "io.reactivex:rxjava", version.ref = "rxjava-core" }
 rxjava-reactivestreams = { module = "io.reactivex:rxjava-reactive-streams", version.ref = "rxjava-reactivestreams" }
 rxjava2 = { module = "io.reactivex.rxjava2:rxjava", version.ref = "rxjava2" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
-jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jba" }
+spring-aspects = { module = "org.springframework:spring-aspects" }
 spring-asciidoctor = { module = "io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch", version.ref = "spring-asciidoctor" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-boot-starter-data-mongodb = { module = "org.springframework.boot:spring-boot-starter-data-mongodb" }
+spring-boot-starter-data-mongodb-reactive = { module = "org.springframework.boot:spring-boot-starter-data-mongodb-reactive" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
 sunjaxb-core = { module = "com.sun.xml.bind:jaxb-core", version.ref = "sunjaxb" }
 sunjaxb-impl = { module = "com.sun.xml.bind:jaxb-impl", version.ref = "sunjaxb" }
 svgbuilder = { module = "com.github.rahulsom:svg-builder", version.ref = "svgbuilder" }
 testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers" }
 testcontainers-junit-jupiter = { module = "org.testcontainers:testcontainers-junit-jupiter" }
 testcontainers-mongodb = { module = "org.testcontainers:testcontainers-mongodb" }
+xerces = { module = "xerces:xercesImpl", version.ref = "xerces" }
+
 
 [plugins]
-waena-root = { id = "com.github.rahulsom.waena.root", version.ref = "waena" }
-waena-published = { id = "com.github.rahulsom.waena.published", version.ref = "waena" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
-sonarqube = { id = "org.sonarqube", version.ref = "sonar" }
-spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
-post-compile-weaving = { id = "io.freefair.aspectj.post-compile-weaving", version.ref = "freefair-aspectj" }
-logging-capabilities = { id = "dev.jacomet.logging-capabilities", version.ref = "logging-capabilities" }
-sass = { id = "io.miret.etienne.sass", version.ref = "sass" }
-git-publish = { id = "org.ajoberstar.git-publish", version.ref = "git-publish" }
 asciidoctor-convert = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctor" }
-jooq = { id = "nu.studer.jooq", version.ref = "jooq" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
+git-publish = { id = "org.ajoberstar.git-publish", version.ref = "git-publish" }
+jooq = { id = "nu.studer.jooq", version.ref = "jooq" }
+kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+logging-capabilities = { id = "dev.jacomet.logging-capabilities", version.ref = "logging-capabilities" }
+post-compile-weaving = { id = "io.freefair.aspectj.post-compile-weaving", version.ref = "freefair-aspectj" }
+sass = { id = "io.miret.etienne.sass", version.ref = "sass" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
 testLogger = { id = "com.adarshr.test-logger", version.ref = "testLogger" }
+waena-published = { id = "com.github.rahulsom.waena.published", version.ref = "waena" }
+waena-root = { id = "com.github.rahulsom.waena.root", version.ref = "waena" }

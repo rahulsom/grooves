@@ -11,26 +11,21 @@ apply {
 
 dependencies {
     compileOnly(libs.jetbrains.annotations)
-
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation(project(":grooves-example-test"))
+    implementation(project(":grooves-groovy"))
     implementation(libs.groovy)
     implementation(libs.groovy.dateutil)
     implementation(libs.rxjava2)
-
-    implementation(project(":grooves-groovy"))
-    implementation(project(":grooves-example-test"))
-
-    runtimeOnly(libs.jakarta.jaxb.api)
-    runtimeOnly("com.sun.xml.bind:jaxb-impl:4.0.6") // Jakarta compatible version
+    implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.boot.starter.web)
     runtimeOnly(libs.activation)
     runtimeOnly(libs.h2)
-
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-
-    testRuntimeOnly(libs.junit.platform.launcher)
-    testRuntimeOnly(libs.junit.platform.engine)
+    runtimeOnly(libs.jakarta.jaxb.api)
+    runtimeOnly(libs.sunjaxb.impl) // Jakarta compatible version
+    testImplementation(libs.spring.boot.starter.test)
     testRuntimeOnly(libs.junit.platform.commons)
+    testRuntimeOnly(libs.junit.platform.engine)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 val junit = libs.versions.junit
