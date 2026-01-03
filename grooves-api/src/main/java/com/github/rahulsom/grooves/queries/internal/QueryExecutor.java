@@ -95,7 +95,7 @@ public class QueryExecutor<
                 }
             }
 
-            assert forwardEvents.stream().noneMatch(it -> it instanceof RevertEvent);
+            assert forwardEvents.stream().noneMatch(RevertEvent.class::isInstance);
 
             return fromIterable(forwardEvents);
         });

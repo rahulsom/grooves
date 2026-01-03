@@ -136,7 +136,7 @@ public class Utils {
      */
     @NotNull
     public static <EventT extends BaseEvent> String ids(@NotNull List<EventT> events) {
-        return events.stream().map(i -> String.valueOf(i.getId())).collect(JOIN_EVENT_IDS);
+        return events.stream().map(BaseEvent::getId).map(String::valueOf).collect(JOIN_EVENT_IDS);
     }
 
     /**
@@ -180,7 +180,7 @@ public class Utils {
                     @NotNull Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> executor,
                     @NotNull Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> snapshotAndEventsSince) {
         return forwardOnlyEvents
-                .filter(e -> e instanceof Deprecates)
+                .filter(Deprecates.class::isInstance)
                 .toList()
                 .toFlowable()
                 .flatMap(list -> list.isEmpty()

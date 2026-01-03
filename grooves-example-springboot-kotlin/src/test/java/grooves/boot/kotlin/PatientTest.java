@@ -23,10 +23,12 @@ public class PatientTest extends AbstractPatientTest {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.mongodb.uri", () -> {
-            mongoDBContainer.start();
-            return mongoDBContainer.getReplicaSetUrl("test");
-        });
+        registry.add("spring.mongodb.uri", PatientTest::getMongoDbUri);
+    }
+
+    private static String getMongoDbUri() {
+        mongoDBContainer.start();
+        return mongoDBContainer.getReplicaSetUrl("test");
     }
 
     @LocalServerPort
