@@ -16,10 +16,8 @@ import grooves.example.javaee.domain.Patient;
 import grooves.example.javaee.domain.PatientEvent;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 import org.apache.commons.lang3.SerializationUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,7 +57,7 @@ public interface CustomQuerySupport<
     default Publisher<SnapshotT> getSnapshot(long maxPosition, @NotNull Patient aggregate) {
         // <3>
         // end::documented[]
-        final Stream<SnapshotT> stream = getDatabase().snapshots(getSnapshotClass());
+        final var stream = getDatabase().snapshots(getSnapshotClass());
         return toPublisher(from(stream::iterator)
                 .flatMap(it -> just(it).zipWith(toObservable(it.getAggregateObservable()), Pair::new))
                 .filter(it -> it.second().equals(aggregate) && it.first().getLastEventPosition() < maxPosition)
@@ -74,7 +72,7 @@ public interface CustomQuerySupport<
     @Override
     default Publisher<SnapshotT> getSnapshot(@Nullable Date maxTimestamp, @NotNull Patient aggregate) { // <4>
         // end::documented[]
-        final Stream<SnapshotT> stream = getDatabase().snapshots(getSnapshotClass());
+        final var stream = getDatabase().snapshots(getSnapshotClass());
         return toPublisher(from(stream::iterator)
                 .flatMap(it -> just(it).zipWith(toObservable(it.getAggregateObservable()), Pair::new))
                 .filter(it -> it.second().equals(aggregate)
@@ -131,7 +129,7 @@ public interface CustomQuerySupport<
                     && eventPosition > snapshotPosition
                     && eventPosition <= version;
         };
-        final List<PatientEvent> patientEvents =
+        final var patientEvents =
                 getDatabase().events().filter(patientEventPredicate).toList();
         return toPublisher(from(patientEvents));
         // tag::documented[]
@@ -146,7 +144,7 @@ public interface CustomQuerySupport<
         Predicate<PatientEvent> patientEventPredicate = it -> aggregate.equals(it.getAggregate())
                 && (lastSnapshot == null
                         || isTimestampInRange(lastSnapshot.getLastEventTimestamp(), it.getTimestamp(), snapshotTime));
-        final List<PatientEvent> patientEvents =
+        final var patientEvents =
                 getDatabase().events().filter(patientEventPredicate).toList();
         return toPublisher(from(patientEvents));
         // tag::documented[]

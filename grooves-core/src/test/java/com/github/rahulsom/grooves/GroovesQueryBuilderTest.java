@@ -15,7 +15,7 @@ class GroovesQueryBuilderTest {
     @Test
     @DisplayName("Should list problems if no fields are configured")
     void shouldListProblemsIfNoFieldsAreConfigured() {
-        IllegalStateException actualException = assertThrows(
+        final var actualException = assertThrows(
                 IllegalStateException.class,
                 () -> GroovesQueryBuilder.builder().build().toQuery());
 
@@ -40,11 +40,10 @@ class GroovesQueryBuilderTest {
     @Test
     @DisplayName("Should list problems if some fields are configured")
     void shouldListProblemsIfSomeFieldsAreConfigured() {
-        IllegalStateException actualException =
-                assertThrows(IllegalStateException.class, () -> GroovesQueryBuilder.builder()
-                        .emptySnapshotProvider(o -> "Hello 0")
-                        .build()
-                        .toQuery());
+        final var actualException = assertThrows(IllegalStateException.class, () -> GroovesQueryBuilder.builder()
+                .emptySnapshotProvider(o -> "Hello 0")
+                .build()
+                .toQuery());
 
         assertThat(actualException).isNotNull();
         assertThat(actualException.getMessage()).isEqualTo("snapshotProvider is not set");
@@ -66,23 +65,22 @@ class GroovesQueryBuilderTest {
     @Test
     @DisplayName("Should create the query if all fields are configured")
     void shouldCreateQueryIfAllFieldsAreConfigured() {
-        GroovesQuery<UUID, Integer, List<String>, String, Integer> groovesQuery =
-                GroovesQueryBuilder.<UUID, Integer, List<String>, String, Integer>builder()
-                        .snapshotProvider((aggregate, version) -> null)
-                        .emptySnapshotProvider(aggregate -> emptyList())
-                        .eventsProvider((aggregate, version, lastSnapshot) -> Stream.empty())
-                        .exceptionHandler((exception, strings, s) -> EventApplyOutcome.CONTINUE)
-                        .eventHandler((s, strings) -> EventApplyOutcome.CONTINUE)
-                        .eventClassifier(s -> EventType.Normal)
-                        .applyMoreEventsPredicate(strings -> true)
-                        .deprecator((strings, deprecatingAggregate) -> {})
-                        .eventVersionProvider(e -> 1)
-                        .snapshotVersionSetter((s, v) -> {})
-                        .deprecatedByProvider(s -> new DeprecatedByResult<>(UUID.randomUUID(), 3))
-                        .revertedEventProvider(s -> s)
-                        .eventIdProvider(s -> 3)
-                        .build()
-                        .toQuery();
+        final var groovesQuery = GroovesQueryBuilder.<UUID, Integer, List<String>, String, Integer>builder()
+                .snapshotProvider((aggregate, version) -> null)
+                .emptySnapshotProvider(aggregate -> emptyList())
+                .eventsProvider((aggregate, version, lastSnapshot) -> Stream.empty())
+                .exceptionHandler((exception, strings, s) -> EventApplyOutcome.CONTINUE)
+                .eventHandler((s, strings) -> EventApplyOutcome.CONTINUE)
+                .eventClassifier(s -> EventType.Normal)
+                .applyMoreEventsPredicate(strings -> true)
+                .deprecator((strings, deprecatingAggregate) -> {})
+                .eventVersionProvider(e -> 1)
+                .snapshotVersionSetter((s, v) -> {})
+                .deprecatedByProvider(s -> new DeprecatedByResult<>(UUID.randomUUID(), 3))
+                .revertedEventProvider(s -> s)
+                .eventIdProvider(s -> 3)
+                .build()
+                .toQuery();
 
         assertThat(groovesQuery).isNotNull();
     }

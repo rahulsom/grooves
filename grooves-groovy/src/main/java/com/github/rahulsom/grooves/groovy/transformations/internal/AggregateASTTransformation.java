@@ -7,7 +7,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.codehaus.groovy.ast.*;
+import org.codehaus.groovy.ast.ASTNode;
+import org.codehaus.groovy.ast.AnnotatedNode;
+import org.codehaus.groovy.ast.AnnotationNode;
+import org.codehaus.groovy.ast.ClassHelper;
+import org.codehaus.groovy.ast.ClassNode;
 import org.codehaus.groovy.control.SourceUnit;
 import org.codehaus.groovy.transform.AbstractASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformation;
@@ -37,8 +41,8 @@ public class AggregateASTTransformation extends AbstractASTTransformation {
     @Override
     public void visit(ASTNode[] nodes, SourceUnit source) {
         init(nodes, source);
-        AnnotatedNode annotatedNode = (AnnotatedNode) nodes[1];
-        AnnotationNode annotationNode = (AnnotationNode) nodes[0];
+        final var annotatedNode = (AnnotatedNode) nodes[1];
+        final var annotationNode = (AnnotationNode) nodes[0];
 
         if (MY_TYPE.equals(annotationNode.getClassNode()) && annotatedNode instanceof ClassNode theClassNode) {
             log.fine(() -> MessageFormat.format("Storing entry for aggregate {0}", theClassNode.getName()));

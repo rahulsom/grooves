@@ -233,7 +233,7 @@ public class Utils {
                     .toFlowable()
                     .flatMap(events -> {
                         if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
-                            List<EventT> reverts = events.stream()
+                            final var reverts = events.stream()
                                     .filter(it -> it instanceof RevertEvent)
                                     .toList();
                             logger.info("     Uncomputed reverts exist: {}", stringify(reverts));
@@ -244,9 +244,9 @@ public class Utils {
                         }
                     }));
         } else {
-            SnapshotT lastSnapshot = emptySnapshot.get();
+            final var lastSnapshot = emptySnapshot.get();
 
-            final Flowable<List<EventT>> uncomputedEventsF =
+            final var uncomputedEventsF =
                     fromPublisher(uncomputedEvents.apply(lastSnapshot)).toList().toFlowable();
 
             return uncomputedEventsF

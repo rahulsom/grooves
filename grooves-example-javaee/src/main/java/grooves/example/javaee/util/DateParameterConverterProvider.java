@@ -14,7 +14,7 @@ public class DateParameterConverterProvider implements ParamConverterProvider {
     public <T> ParamConverter<T> getConverter(Class<T> type, Type type1, Annotation[] antns) {
         if (Date.class.equals(type)) {
             @SuppressWarnings("unchecked")
-            ParamConverter<T> paramConverter = (ParamConverter<T>) new DateParameterConverter();
+            final var paramConverter = (ParamConverter<T>) new DateParameterConverter();
             return paramConverter;
         }
         return null;

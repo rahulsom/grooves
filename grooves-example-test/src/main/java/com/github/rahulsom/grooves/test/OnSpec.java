@@ -80,7 +80,7 @@ public class OnSpec<
     public <QueryT extends QuerySupport<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>> SnapshotT snapshotWith(
             @NotNull QueryT query, @NotNull Consumer<SnapshotT> beforePersist) {
 
-        SnapshotT snapshotT =
+        final var snapshotT =
                 fromPublisher(query.computeSnapshot(aggregate, Long.MAX_VALUE)).blockingFirst();
 
         beforePersist.accept(snapshotT);

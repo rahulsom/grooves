@@ -93,7 +93,7 @@ public class BootStrap {
 
     private Patient setupJohnLennon() {
 
-        Patient patient = save(new Patient("42"));
+        final var patient = save(new Patient("42"));
 
         return on(patient, it -> {
             it.apply(new PatientCreated("John Lennon"));
@@ -113,7 +113,7 @@ public class BootStrap {
     }
 
     private Patient setupRingoStarr() {
-        Patient patient = save(new Patient("43"));
+        final var patient = save(new Patient("43"));
 
         return on(patient, it -> {
             it.apply(new PatientCreated("Ringo Starr"));
@@ -133,16 +133,16 @@ public class BootStrap {
     }
 
     private Patient setupPaulMcCartney() {
-        Patient patient = save(new Patient("44"));
+        final var patient = save(new Patient("44"));
 
         return on(patient, it -> {
             it.apply(new PatientCreated("Paul McCartney"));
             it.apply(new ProcedurePerformed(ANNUAL_PHYSICAL_NAME, new BigDecimal(ANNUAL_PHYSICAL_COST)));
-            ProcedurePerformed gluc = (ProcedurePerformed)
+            final var gluc = (ProcedurePerformed)
                     it.apply(new ProcedurePerformed(GLUCOSE_TEST_NAME, new BigDecimal(GLUCOSE_TEST_COST)));
             it.apply(new PaymentMade(new BigDecimal("100.25")));
             it.apply(new PatientEventReverted(gluc.getId()));
-            PaymentMade pmt = (PaymentMade) it.apply(new PaymentMade(new BigDecimal("30.00")));
+            final var pmt = (PaymentMade) it.apply(new PaymentMade(new BigDecimal("30.00")));
 
             it.snapshotWith(patientAccountQuery);
             it.snapshotWith(patientHealthQuery);
@@ -161,8 +161,8 @@ public class BootStrap {
     }
 
     private Patient setupFreddieMercury() {
-        Patient patient = save(new Patient("45"));
-        Patient patient2 = save(new Patient("46"));
+        final var patient = save(new Patient("45"));
+        final var patient2 = save(new Patient("46"));
 
         on(patient, it -> {
             it.apply(new PatientCreated("Farrokh Bulsara"));
@@ -174,7 +174,7 @@ public class BootStrap {
         });
 
         on(patient2, it -> {
-            final String name = "Freddie Mercury";
+            final var name = "Freddie Mercury";
             it.apply(new PatientCreated(name));
             it.apply(new PaymentMade(new BigDecimal("100.25")));
 
@@ -182,7 +182,7 @@ public class BootStrap {
             it.snapshotWith(patientHealthQuery);
         });
 
-        final Calendar calendar = Calendar.getInstance();
+        final var calendar = Calendar.getInstance();
         calendar.setTime(currDate);
         calendar.add(Calendar.DAY_OF_MONTH, 1);
         currDate = calendar.getTime();
@@ -191,8 +191,8 @@ public class BootStrap {
     }
 
     private Patient setupTinaFeyAndSarahPalin() {
-        Patient patient = save(new Patient("47"));
-        Patient patient2 = save(new Patient("48"));
+        final var patient = save(new Patient("47"));
+        final var patient2 = save(new Patient("48"));
 
         on(patient, it -> {
             it.apply(new PatientCreated("Tina Fey"));
@@ -204,7 +204,7 @@ public class BootStrap {
         });
 
         on(patient2, it -> {
-            final String name = "Sarah Palin";
+            final var name = "Sarah Palin";
             it.apply(new PatientCreated(name));
             it.apply(new PaymentMade(new BigDecimal("100.25")));
 
@@ -212,11 +212,11 @@ public class BootStrap {
             it.snapshotWith(patientHealthQuery);
         });
 
-        final Calendar calendar = Calendar.getInstance();
+        final var calendar = Calendar.getInstance();
         calendar.setTime(currDate);
         calendar.add(Calendar.DAY_OF_MONTH, 1);
         currDate = calendar.getTime();
-        final PatientDeprecatedBy mergeEvent = merge(patient, patient2);
+        final var mergeEvent = merge(patient, patient2);
 
         on(patient, it -> it.apply(new PatientEventReverted(mergeEvent.getId())));
         on(
@@ -234,7 +234,7 @@ public class BootStrap {
      * @return The DeprecatedBy event
      */
     private PatientDeprecatedBy merge(Patient self, Patient into) {
-        PatientDeprecatedBy e1 = new PatientDeprecatedBy(into);
+        final var e1 = new PatientDeprecatedBy(into);
 
         e1.setAggregate(self);
         e1.setTimestamp(currDate);
@@ -244,7 +244,7 @@ public class BootStrap {
                 + 1);
         e1.setId(database.events().count() + 1);
 
-        PatientDeprecates e2 = new PatientDeprecates(e1, self);
+        final var e2 = new PatientDeprecates(e1, self);
 
         e2.setAggregate(into);
         e2.setTimestamp(currDate);

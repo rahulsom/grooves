@@ -12,7 +12,7 @@ public class DateParameterConverter implements ParamConverter<Date> {
 
     @Override
     public Date fromString(String string) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT);
+        final var simpleDateFormat = new SimpleDateFormat(FORMAT);
         try {
             return simpleDateFormat.parse(string);
         } catch (ParseException ex) {

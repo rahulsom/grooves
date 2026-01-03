@@ -66,11 +66,11 @@ public class AcceptanceTestFixture {
      */
     @NotNull
     public static GroovesQuery<Aggregate, Integer, Snapshot, Event, Integer> createQuery(Storable... objects) {
-        List<Snapshot> knownSnapshots = Arrays.stream(objects)
+        final var knownSnapshots = Arrays.stream(objects)
                 .filter(Snapshot.class::isInstance)
                 .map(it -> (Snapshot) it)
                 .toList();
-        List<Event> events = Arrays.stream(objects)
+        final var events = Arrays.stream(objects)
                 .filter(Event.class::isInstance)
                 .map(it -> (Event) it)
                 .toList();
@@ -103,7 +103,7 @@ public class AcceptanceTestFixture {
                         snapshot.getDeprecatedAggregates().add(event.getData().split(",")[0]))
                 .snapshotVersionSetter(Snapshot::setVersion)
                 .deprecatedByProvider(event -> {
-                    List<Integer> ints = Arrays.stream(event.data.split(","))
+                    final var ints = Arrays.stream(event.data.split(","))
                             .map(Integer::parseInt)
                             .toList();
                     return new DeprecatedByResult<>(new Aggregate(ints.get(0)), ints.get(1));

@@ -2,11 +2,12 @@ package com.github.rahulsom.grooves.groovy.transformations.internal;
 
 import com.github.rahulsom.grooves.api.EventApplyOutcome;
 import com.github.rahulsom.grooves.groovy.transformations.Query;
-import java.util.List;
-import java.util.Optional;
 import java.util.logging.Logger;
-import org.codehaus.groovy.ast.*;
-import org.codehaus.groovy.ast.expr.Expression;
+import org.codehaus.groovy.ast.ASTNode;
+import org.codehaus.groovy.ast.AnnotatedNode;
+import org.codehaus.groovy.ast.AnnotationNode;
+import org.codehaus.groovy.ast.ClassHelper;
+import org.codehaus.groovy.ast.ClassNode;
 import org.codehaus.groovy.control.SourceUnit;
 import org.codehaus.groovy.transform.AbstractASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformation;
@@ -28,25 +29,25 @@ public class QueryASTTransformation extends AbstractASTTransformation {
     @Override
     public void visit(ASTNode[] nodes, SourceUnit source) {
         init(nodes, source);
-        AnnotatedNode annotatedNode = (AnnotatedNode) nodes[1];
-        final AnnotationNode annotationNode = (AnnotationNode) nodes[0];
+        final var annotatedNode = (AnnotatedNode) nodes[1];
+        final var annotationNode = (AnnotationNode) nodes[0];
 
         if (MY_TYPE.equals(annotationNode.getClassNode()) && annotatedNode instanceof ClassNode theClassNode) {
-            final Expression theSnapshot = annotationNode.getMember("snapshot");
-            Expression theAggregate = annotationNode.getMember("aggregate");
+            final var theSnapshot = annotationNode.getMember("snapshot");
+            final var theAggregate = annotationNode.getMember("aggregate");
             log.fine("Checking " + theClassNode.getNameWithoutPackage() + " for methods");
-            List<ClassNode> eventClasses = AggregateASTTransformation.getEventsForAggregate(
+            final var eventClasses = AggregateASTTransformation.getEventsForAggregate(
                     theAggregate.getType().getName());
 
             eventClasses.forEach(eventClass -> {
-                final String methodName = "apply" + eventClass.getNameWithoutPackage();
+                final var methodName = "apply" + eventClass.getNameWithoutPackage();
                 log.fine("  -> Checking for " + methodName);
 
-                List<MethodNode> methodsByName = theClassNode.getMethods().stream()
+                final var methodsByName = theClassNode.getMethods().stream()
                         .filter(it -> it.getName().equals(methodName))
                         .toList();
 
-                final String methodSignature = String.format(
+                final var methodSignature = String.format(
                         "%s %s(%s event, %s snapshot)",
                         getObservableEventApplyOutcome(),
                         methodName,
@@ -56,10 +57,10 @@ public class QueryASTTransformation extends AbstractASTTransformation {
                 if (methodsByName.isEmpty()) {
                     addError(String.format("Missing expected method %s", methodSignature), annotationNode);
                 } else {
-                    Optional<MethodNode> matchingMethod = methodsByName.stream()
+                    final var matchingMethod = methodsByName.stream()
                             .filter(implMethod -> {
-                                final Parameter[] parameters = implMethod.getParameters();
-                                final ClassNode returnType = implMethod.getReturnType();
+                                final var parameters = implMethod.getParameters();
+                                final var returnType = implMethod.getReturnType();
                                 return parameters != null
                                         && parameters.length == 2
                                         && returnType.getName().equals(Publisher.class.getName())

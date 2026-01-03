@@ -59,9 +59,8 @@ public class QueryProcessor extends AbstractProcessor {
         for (AnnotationMirror annotationMirror : queryType.getAnnotationMirrors()) {
             String annotationClassName = annotationMirror.getAnnotationType().toString();
             if (annotationClassName.equals(QUERY_ANNOTATION)) {
-                Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues =
-                        annotationMirror.getElementValues();
-                List<String> expectedMethods = getExpectedMethods(elementValues, eventsByAggregate);
+                final var elementValues = annotationMirror.getElementValues();
+                final var expectedMethods = getExpectedMethods(elementValues, eventsByAggregate);
 
                 for (String expectedMethod : expectedMethods) {
                     checkMethod(queryType, annotationMirror, expectedMethod);
@@ -71,7 +70,7 @@ public class QueryProcessor extends AbstractProcessor {
     }
 
     private void checkMethod(Element queryType, AnnotationMirror annotationMirror, String expectedMethod) {
-        boolean found = queryType.getEnclosedElements().stream()
+        final var found = queryType.getEnclosedElements().stream()
                 .anyMatch(it -> it.toString().equals(expectedMethod));
         if (!found) {
             String msg = String.format(
@@ -114,11 +113,10 @@ public class QueryProcessor extends AbstractProcessor {
     private void loadEvents(Set<? extends Element> eventTypes, Map<String, List<String>> eventsByAggregate) {
         for (Element eventType : eventTypes) {
             for (AnnotationMirror annotationMirror : eventType.getAnnotationMirrors()) {
-                String annotationClassName =
+                final var annotationClassName =
                         annotationMirror.getAnnotationType().toString();
                 if (annotationClassName.equals(EVENT_ANNOTATION)) {
-                    Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues =
-                            annotationMirror.getElementValues();
+                    final var elementValues = annotationMirror.getElementValues();
                     getAttributeClass(elementValues, "value()")
                             .map(eventsByAggregate::get)
                             .ifPresent(map -> map.add(eventType.toString()));
