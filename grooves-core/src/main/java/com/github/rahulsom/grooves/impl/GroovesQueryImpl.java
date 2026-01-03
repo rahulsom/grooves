@@ -68,7 +68,7 @@ public class GroovesQueryImpl<VersionOrTimestampT, SnapshotT, AggregateT, EventT
             AggregateT aggregate, VersionOrTimestampT at, boolean redirect) {
         var providedSnapshot = snapshotProvider.invoke(aggregate, at);
         var snapshot = providedSnapshot != null ? providedSnapshot : emptySnapshotProvider.invoke(aggregate);
-        var events = eventsProvider.invoke(List.of(aggregate), at, snapshot).collect(Collectors.toList());
+        var events = eventsProvider.invoke(List.of(aggregate), at, snapshot).toList();
 
         return computeSnapshotImpl(events, snapshot, List.of(aggregate), at, redirect, (c, s) -> {
             if (s != null) {
@@ -106,7 +106,7 @@ public class GroovesQueryImpl<VersionOrTimestampT, SnapshotT, AggregateT, EventT
 
         if (revertsExistOutsideEvents(revertEvents, indent, forwardEvents)) {
             var snapshot1 = emptySnapshotProvider.invoke(aggregates.get(0));
-            var events1 = eventsProvider.invoke(aggregates, at, snapshot1).collect(Collectors.toList());
+            var events1 = eventsProvider.invoke(aggregates, at, snapshot1).toList();
             return computeSnapshotImpl(events1, snapshot1, aggregates, at, redirect, (c, s) -> {
                 beforeReturn.accept(c, s);
                 IndentedLogging.stepOut();
@@ -157,7 +157,7 @@ public class GroovesQueryImpl<VersionOrTimestampT, SnapshotT, AggregateT, EventT
                         newAggregates.addAll(aggregates);
                         var newEvents = eventsProvider
                                 .invoke(newAggregates, redirectVersion, otherSnapshot)
-                                .collect(Collectors.toList());
+                                .toList();
                         if (redirect) {
                             var finalAggregates = new ArrayList<>(aggregates);
                             finalAggregates.add(ret.aggregate());
