@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 
-public class GroovesAcceptanceTest {
+class GroovesAcceptanceTest {
     @Test
     void shouldApplyEventsIfSnapshotProviderReturnsNull() {
         Aggregate queryAggregate = new Aggregate(1);
