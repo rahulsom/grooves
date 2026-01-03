@@ -53,6 +53,14 @@ public abstract class AbstractPatientTest {
         }
     }
 
+    /*
+    @TestFactory
+    public Stream<DynamicTest> testFactory() {
+        return Stream.of(
+                DynamicTest.dynamicTest("Patient List works", this::patientListWorks)
+        );
+    }*/
+
     @Test
     @DisplayName("Patient List works")
     void patientListWorks() {
@@ -136,15 +144,7 @@ public abstract class AbstractPatientTest {
         final var data = resp.getData();
         assertThat(data).isNotNull();
 
-        // Check aggregate ID (could be direct or nested)
-        var aggregateId = data.aggregateId();
-        if (aggregateId == null) {
-            var aggregate = data.aggregate();
-            if (aggregate != null) {
-                aggregateId = aggregate.id();
-            }
-        }
-        assertThat(aggregateId).hasToString(theId);
+        assertThat(data.getEffectiveAggregateId()).hasToString(theId);
 
         assertThat(data.name()).isEqualTo(name);
         assertThat(data.lastEventPosition()).isEqualTo(lastEventPos);
@@ -184,15 +184,7 @@ public abstract class AbstractPatientTest {
         final var data = resp.getData();
         assertThat(data).isNotNull();
 
-        // Check aggregate ID (could be direct or nested)
-        var aggregateId = data.aggregateId();
-        if (aggregateId == null) {
-            var aggregate = data.aggregate();
-            if (aggregate != null) {
-                aggregateId = aggregate.id();
-            }
-        }
-        assertThat(aggregateId).hasToString(theId);
+        assertThat(data.getEffectiveAggregateId()).hasToString(theId);
 
         assertThat(data.name()).isEqualTo(name);
         assertThat(data.lastEventPosition()).isEqualTo(version);
@@ -225,15 +217,7 @@ public abstract class AbstractPatientTest {
         final var data = resp.getData();
         assertThat(data).isNotNull();
 
-        // Check aggregate ID (could be direct or nested)
-        var aggregateId = data.aggregateId();
-        if (aggregateId == null) {
-            var aggregate = data.aggregate();
-            if (aggregate != null) {
-                aggregateId = aggregate.id();
-            }
-        }
-        assertThat(aggregateId).hasToString(theId);
+        assertThat(data.getEffectiveAggregateId()).hasToString(theId);
 
         assertThat(data.name()).isEqualTo(name);
         assertThat(data.lastEventPosition()).isEqualTo(lastEventPos);
@@ -278,26 +262,10 @@ public abstract class AbstractPatientTest {
         assertThat(actualMoneyMade).usingComparator(BigDecimal::compareTo).isEqualTo(moneyMade);
 
         if (theDeprecatedIds != null) {
-            final var deprecatesIds = data.deprecatesIds();
-            final var deprecates = data.deprecates();
-            if (deprecatesIds != null) {
-                assertThat(deprecatesIds).isEqualTo(theDeprecatedIds);
-            } else if (deprecates != null) {
-                final var deprecatesIdsList =
-                        deprecates.stream().map(PatientDTO::id).toList();
-                assertThat(deprecatesIdsList).isEqualTo(theDeprecatedIds);
-            }
+            assertThat(data.getEffectiveDeprecatesIds()).isEqualTo(theDeprecatedIds);
         }
 
-        // Check aggregate ID (could be direct or nested)
-        var aggregateId = data.aggregateId();
-        if (aggregateId == null) {
-            var aggregate = data.aggregate();
-            if (aggregate != null) {
-                aggregateId = aggregate.id();
-            }
-        }
-        assertThat(aggregateId).hasToString(theAggregateId);
+        assertThat(data.getEffectiveAggregateId()).hasToString(theAggregateId);
     }
 
     @ParameterizedTest
@@ -326,27 +294,12 @@ public abstract class AbstractPatientTest {
         final var actualMoneyMade = data.moneyMade();
         assertThat(actualMoneyMade).usingComparator(BigDecimal::compareTo).isEqualTo(moneyMade);
 
-        // Check aggregate ID (could be direct or nested)
-        var aggregateId = data.aggregateId();
-        if (aggregateId == null) {
-            var aggregate = data.aggregate();
-            if (aggregate != null) {
-                aggregateId = aggregate.id();
-            }
-        }
-        assertThat(aggregateId).hasToString(theId5);
+        assertThat(data.getEffectiveAggregateId()).hasToString(theId5);
 
         if (deprecatedIdsStr != null && !deprecatedIdsStr.isEmpty()) {
             final var theId4 = ids.get(4 - 1);
             final var theId4AsRange = List.of(theId4);
-            final var deprecatesIds = data.deprecatesIds();
-            final var deprecates = data.deprecates();
-            if (deprecatesIds != null) {
-                assertThat(deprecatesIds).isEqualTo(theId4AsRange);
-            } else if (deprecates != null) {
-                var deprecatesIdsList = deprecates.stream().map(PatientDTO::id).toList();
-                assertThat(deprecatesIdsList).isEqualTo(theId4AsRange);
-            }
+            assertThat(data.getEffectiveDeprecatesIds()).isEqualTo(theId4AsRange);
         }
     }
 
@@ -365,25 +318,10 @@ public abstract class AbstractPatientTest {
         final var data5 = resp5.getData();
         assertThat(data5).isNotNull();
 
-        // Check aggregate ID (could be direct or nested)
-        var aggregateId5 = data5.aggregateId();
-        if (aggregateId5 == null) {
-            var aggregate5 = data5.aggregate();
-            if (aggregate5 != null) {
-                aggregateId5 = aggregate5.id();
-            }
-        }
-        assertThat(aggregateId5).hasToString(theId5);
+        assertThat(data5.getEffectiveAggregateId()).hasToString(theId5);
 
         // Check deprecated IDs
-        final var deprecatesIds5 = data5.deprecatesIds();
-        final var deprecates5 = data5.deprecates();
-        if (deprecatesIds5 != null) {
-            assertThat(deprecatesIds5).isEqualTo(theId4AsRange);
-        } else if (deprecates5 != null) {
-            var deprecatesIdsList5 = deprecates5.stream().map(PatientDTO::id).toList();
-            assertThat(deprecatesIdsList5).isEqualTo(theId4AsRange);
-        }
+        assertThat(data5.getEffectiveDeprecatesIds()).isEqualTo(theId4AsRange);
 
         final var balance5 = data5.balance();
         assertThat(balance5).usingComparator(BigDecimal::compareTo).isEqualTo(new BigDecimal("148.68"));
@@ -404,24 +342,10 @@ public abstract class AbstractPatientTest {
         assertThat(data4).isNotNull();
 
         // Should redirect to patient 5's aggregate
-        var aggregateId4 = data4.aggregateId();
-        if (aggregateId4 == null) {
-            var aggregate4 = data4.aggregate();
-            if (aggregate4 != null) {
-                aggregateId4 = aggregate4.id();
-            }
-        }
-        assertThat(aggregateId4).hasToString(theId5);
+        assertThat(data4.getEffectiveAggregateId()).hasToString(theId5);
 
         // Should show same deprecated IDs as patient 5
-        final var deprecatesIds4 = data4.deprecatesIds();
-        final var deprecates4 = data4.deprecates();
-        if (deprecatesIds4 != null) {
-            assertThat(deprecatesIds4).isEqualTo(theId4AsRange);
-        } else if (deprecates4 != null) {
-            var deprecatesIdsList4 = deprecates4.stream().map(PatientDTO::id).toList();
-            assertThat(deprecatesIdsList4).isEqualTo(theId4AsRange);
-        }
+        assertThat(data4.getEffectiveDeprecatesIds()).isEqualTo(theId4AsRange);
 
         // Should show same balance as patient 5
         final var balance4 = data4.balance();

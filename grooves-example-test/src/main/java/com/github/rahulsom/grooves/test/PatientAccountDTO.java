@@ -14,4 +14,16 @@ public record PatientAccountDTO(
         PatientDTO aggregate,
         Long lastEventPosition,
         Object lastEventTimestamp,
-        String name) {}
+        String name) {
+    public String getEffectiveAggregateId() {
+        if (aggregateId != null) return aggregateId;
+        if (aggregate != null) return aggregate.id();
+        return null;
+    }
+
+    public List<String> getEffectiveDeprecatesIds() {
+        if (deprecatesIds != null) return deprecatesIds;
+        if (deprecates != null) return deprecates.stream().map(PatientDTO::id).toList();
+        return null;
+    }
+}
