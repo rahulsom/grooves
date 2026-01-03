@@ -27,18 +27,11 @@ public class AggregateASTTransformation extends AbstractASTTransformation {
     private final Logger log = Logger.getLogger(getClass().getName());
 
     static void addEventToAggregate(String aggregate, ClassNode event) {
-        if (!EVENTS_FOR_AGGREGATE.containsKey(aggregate)) {
-            EVENTS_FOR_AGGREGATE.put(aggregate, new ArrayList<>());
-        }
-        EVENTS_FOR_AGGREGATE.get(aggregate).add(event);
+        getEventsForAggregate(aggregate).add(event);
     }
 
     static List<ClassNode> getEventsForAggregate(String aggregate) {
-        if (!EVENTS_FOR_AGGREGATE.containsKey(aggregate)) {
-            EVENTS_FOR_AGGREGATE.put(aggregate, new ArrayList<>());
-        }
-
-        return EVENTS_FOR_AGGREGATE.get(aggregate);
+        return EVENTS_FOR_AGGREGATE.computeIfAbsent(aggregate, k -> new ArrayList<>());
     }
 
     @Override
