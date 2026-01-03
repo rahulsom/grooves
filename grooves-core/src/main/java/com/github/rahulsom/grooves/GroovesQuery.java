@@ -7,10 +7,8 @@ package com.github.rahulsom.grooves;
  * @param <AggregateT> the type of the aggregate being queried
  * @param <VersionOrTimestampT> the type used for versioning (timestamp or version number)
  * @param <SnapshotT> the type of the computed snapshot
- * @param <EventT> the type of events in the stream
- * @param <EventIdT> the type of event identifiers
  */
-public interface GroovesQuery<AggregateT, VersionOrTimestampT, SnapshotT, EventT, EventIdT> {
+public interface GroovesQuery<AggregateT, VersionOrTimestampT, SnapshotT> {
 
     /**
      * Computes a snapshot for the given aggregate at the specified point in time.

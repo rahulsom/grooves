@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  */
 @RequiredArgsConstructor
 public class GroovesQueryImpl<VersionOrTimestampT, SnapshotT, AggregateT, EventT, EventIdT>
-        implements GroovesQuery<AggregateT, VersionOrTimestampT, SnapshotT, EventT, EventIdT> {
+        implements GroovesQuery<AggregateT, VersionOrTimestampT, SnapshotT> {
 
     private final SnapshotProvider<AggregateT, VersionOrTimestampT, SnapshotT> snapshotProvider;
     private final EmptySnapshotProvider<AggregateT, SnapshotT> emptySnapshotProvider;

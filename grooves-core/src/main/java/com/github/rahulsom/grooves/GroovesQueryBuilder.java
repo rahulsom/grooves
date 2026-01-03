@@ -31,7 +31,7 @@ public class GroovesQueryBuilder<AggregateT, VersionOrTimestampT, SnapshotT, Eve
     private RevertedEventProvider<EventT> revertedEventProvider;
     private EventIdProvider<EventT, EventIdT> eventIdProvider;
 
-    GroovesQuery<AggregateT, VersionOrTimestampT, SnapshotT, EventT, EventIdT> toQuery() {
+    GroovesQuery<AggregateT, VersionOrTimestampT, SnapshotT> toQuery() {
         ArrayList<String> exceptions = new ArrayList<>();
         checkNotNull(exceptions, snapshotProvider, "snapshotProvider is not set");
         checkNotNull(exceptions, emptySnapshotProvider, "emptySnapshotProvider is not set");
