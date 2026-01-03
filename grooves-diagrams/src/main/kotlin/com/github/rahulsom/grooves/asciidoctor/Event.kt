@@ -53,7 +53,7 @@ class Event(
         var x = (10 + AGGREGATE_WIDTH * 2 + xOffset * EVENT_SPACE).toInt()
         var y = index * EVENT_LINE_HEIGHT + OFFSET + AGGREGATE_HEIGHT / 2
 
-        while (svgBuilder.allEvents.find { it.x == x && it.y == y } != null) {
+        while (svgBuilder.allEvents.any { it.x == x && it.y == y }) {
             y -= (20 * sqrt(3.0) / 2).toInt()
             x += 10
         }
