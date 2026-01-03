@@ -4,7 +4,6 @@ import static com.google.testing.compile.CompilationSubject.assertThat;
 import static com.google.testing.compile.Compiler.javac;
 import static com.google.testing.compile.JavaFileObjects.forResource;
 
-import com.google.testing.compile.Compilation;
 import javax.tools.JavaFileObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,16 +21,16 @@ public class QueryProcessorTest {
 
     @Test
     public void testValid() {
-        JavaFileObject balanceQuery = forResource("valid/ValidESQuery.java");
-        Compilation compilation = javac().withProcessors(new QueryProcessor())
+        final var balanceQuery = forResource("valid/ValidESQuery.java");
+        final var compilation = javac().withProcessors(new QueryProcessor())
                 .compile(account, transaction, cashDeposit, cashWithdrawal, balance, balanceQuery);
         assertThat(compilation).succeededWithoutWarnings();
     }
 
     @Test
     public void testMethodMissing() {
-        JavaFileObject balanceQuery = forResource("invalid/MethodMissing.java");
-        Compilation compilation = javac().withProcessors(new QueryProcessor())
+        final var balanceQuery = forResource("invalid/MethodMissing.java");
+        final var compilation = javac().withProcessors(new QueryProcessor())
                 .compile(account, transaction, cashDeposit, cashWithdrawal, balance, balanceQuery);
         assertThat(compilation).failed();
         assertThat(compilation)
@@ -44,8 +43,8 @@ public class QueryProcessorTest {
 
     @Test
     public void testIncorrectReturnType() {
-        JavaFileObject balanceQuery = forResource("invalid/IncorrectReturnType.java");
-        Compilation compilation = javac().withProcessors(new QueryProcessor())
+        final var balanceQuery = forResource("invalid/IncorrectReturnType.java");
+        final var compilation = javac().withProcessors(new QueryProcessor())
                 .compile(account, transaction, cashDeposit, cashWithdrawal, balance, balanceQuery);
         assertThat(compilation).failed();
         assertThat(compilation)

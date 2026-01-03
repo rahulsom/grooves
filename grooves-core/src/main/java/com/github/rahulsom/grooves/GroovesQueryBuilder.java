@@ -63,8 +63,8 @@ public class GroovesQueryBuilder<AggregateT, VersionOrTimestampT, SnapshotT, Eve
                     revertedEventProvider,
                     eventIdProvider);
         } else {
-            String firstException = exceptions.remove(0);
-            IllegalStateException illegalStateException = new IllegalStateException(firstException);
+            final var firstException = exceptions.remove(0);
+            final var illegalStateException = new IllegalStateException(firstException);
             exceptions.stream().map(IllegalStateException::new).forEach(illegalStateException::addSuppressed);
 
             throw illegalStateException;

@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * A simple REST client that uses OkHttp.
@@ -24,22 +23,22 @@ public class RestClient {
      */
     @SneakyThrows
     public <T> HttpResponseDecorator<T> get(final RestRequest restRequest) {
-        OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+        final var okHttpClient = new OkHttpClient.Builder().build();
 
-        Map<String, Object> queryMap = Optional.ofNullable(restRequest.query()).orElse(Map.of());
+        final var queryMap = Optional.ofNullable(restRequest.query()).orElse(Map.of());
 
         final String query = queryMap.entrySet().stream()
                 .map(it -> it.getKey() + "=" + it.getValue())
                 .reduce((a, b) -> a + "&" + b)
                 .orElse("");
 
-        String url = baseUrl + restRequest.path() + "?" + query;
-        Request request = new Request.Builder()
+        final var url = baseUrl + restRequest.path() + "?" + query;
+        final var request = new Request.Builder()
                 .url(url)
                 .header("Accept", "application/json")
                 .get()
                 .build();
-        Response response = okHttpClient.newCall(request).execute();
+        final var response = okHttpClient.newCall(request).execute();
 
         return new HttpResponseDecorator<>(response);
     }

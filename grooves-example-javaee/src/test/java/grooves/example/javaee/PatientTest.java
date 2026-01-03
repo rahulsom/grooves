@@ -22,7 +22,7 @@ class PatientTest extends AbstractPatientTest {
 
     @BeforeAll
     public static void setupSpec() {
-        var warFile = new File(System.getProperty("war.file.path", "build/libs/grooves-example-javaee-0.1.war"));
+        final var warFile = new File(System.getProperty("war.file.path", "build/libs/grooves-example-javaee-0.1.war"));
         if (!warFile.exists()) {
             throw new IllegalStateException(
                     "WAR file not found at " + warFile.getAbsolutePath() + ". Run './gradlew war' first.");
@@ -51,8 +51,8 @@ class PatientTest extends AbstractPatientTest {
 
     @Override
     public RestClient getRest() {
-        var host = libertyContainer.getHost();
-        var port = libertyContainer.getMappedPort(9080);
+        final var host = libertyContainer.getHost();
+        final var port = libertyContainer.getMappedPort(9080);
         return new RestClient("http://" + host + ":" + port + "/grooves-example-javaee/");
     }
 

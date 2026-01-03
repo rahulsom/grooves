@@ -10,10 +10,8 @@ import grooves.example.javaee.queries.PatientHealthQuery;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import org.reactivestreams.Publisher;
 
 @Path("/patient")
 public class PatientResource {
@@ -49,9 +47,10 @@ public class PatientResource {
     @Path("show/{id}")
     @Produces("application/json")
     public Patient show(@PathParam("id") Long id) {
-        final Optional<Patient> patientOptional =
-                database.patients().filter(x -> Objects.equals(x.getId(), id)).findFirst();
-        return patientOptional.orElse(null);
+        return database.patients()
+                .filter(x -> Objects.equals(x.getId(), id))
+                .findFirst()
+                .orElse(null);
     }
 
     /**
@@ -69,19 +68,18 @@ public class PatientResource {
     public PatientHealth health(
             @PathParam("id") Long id, @QueryParam("version") Long version, @QueryParam("date") Date date) {
 
-        final Patient patient = database.patients()
+        final var patient = database.patients()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
                 .orElse(null);
 
-        Publisher<PatientHealth> computation = version != null
+        final var computation = version != null
                 ? patientHealthQuery.computeSnapshot(patient, version)
                 : date != null
                         ? patientHealthQuery.computeSnapshot(patient, date)
                         : patientHealthQuery.computeSnapshot(patient, Long.MAX_VALUE);
 
-        final PatientHealth patientHealth =
-                toObservable(computation).toBlocking().first();
+        final var patientHealth = toObservable(computation).toBlocking().first();
 
         if (patientHealth == null) {
             throw new RuntimeException("Could not compute account snapshot");
@@ -105,19 +103,18 @@ public class PatientResource {
     public PatientAccount account(
             @PathParam("id") Long id, @QueryParam("version") Long version, @QueryParam("date") Date date) {
 
-        final Patient patient = database.patients()
+        final var patient = database.patients()
                 .filter(it -> Objects.equals(it.getId(), id))
                 .findFirst()
                 .orElse(null);
 
-        Publisher<PatientAccount> computation = version != null
+        final var computation = version != null
                 ? patientAccountQuery.computeSnapshot(patient, version)
                 : date != null
                         ? patientAccountQuery.computeSnapshot(patient, date)
                         : patientAccountQuery.computeSnapshot(patient, Long.MAX_VALUE);
 
-        final PatientAccount patientAccount =
-                toObservable(computation).toBlocking().first();
+        final var patientAccount = toObservable(computation).toBlocking().first();
 
         if (patientAccount == null) {
             throw new RuntimeException("Could not compute account snapshot");

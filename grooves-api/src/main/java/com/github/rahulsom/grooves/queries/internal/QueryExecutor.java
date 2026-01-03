@@ -13,7 +13,6 @@ import com.github.rahulsom.grooves.api.events.Deprecates;
 import com.github.rahulsom.grooves.api.events.RevertEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseSnapshot;
 import io.reactivex.Flowable;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.jetbrains.annotations.NotNull;
@@ -249,7 +248,7 @@ public class QueryExecutor<
     protected Flowable<EventApplyOutcome> callMethod(
             QueryT query, String methodName, final SnapshotT snapshot, final EventT event) {
         try {
-            final Method method = query.getClass().getMethod(methodName, event.getClass(), snapshot.getClass());
+            final var method = query.getClass().getMethod(methodName, event.getClass(), snapshot.getClass());
             return fromPublisher((Publisher<EventApplyOutcome>) method.invoke(query, event, snapshot));
         } catch (Exception e1) {
             return handleException(query, methodName, snapshot, event, e1);
@@ -261,7 +260,7 @@ public class QueryExecutor<
         try {
             return fromPublisher(query.onException(e1, snapshot, event));
         } catch (Exception e2) {
-            String description = String.format(
+            final var description = String.format(
                     "{Snapshot: %s; Event: %s; method: %s; originalException: %s}", snapshot, event, methodName, e1);
             log.error("Exception thrown while calling exception handler. {}", description, e2);
             return just(RETURN);
