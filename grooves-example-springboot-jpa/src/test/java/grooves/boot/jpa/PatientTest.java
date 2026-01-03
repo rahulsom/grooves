@@ -60,7 +60,7 @@ public class PatientTest extends AbstractPatientTest {
 
         assertThat(resp.getStatus()).isEqualTo(200);
         var data = resp.getData();
-        assertThat(data.get("aggregateId").toString()).isEqualTo(String.valueOf(id));
+        assertThat(data.get("aggregateId")).hasToString(String.valueOf(id));
 
         @SuppressWarnings("unchecked")
         var joinedIds = (List<Number>) data.get("joinedIds");
@@ -117,7 +117,7 @@ public class PatientTest extends AbstractPatientTest {
 
         assertThat(resp.getStatus()).isEqualTo(200);
         var data = resp.getData();
-        assertThat(data.get("aggregateId").toString()).isEqualTo(String.valueOf(id));
+        assertThat(data.get("aggregateId")).hasToString(String.valueOf(id));
         assertThat(data.get("lastEventPosition")).isEqualTo(version);
 
         @SuppressWarnings("unchecked")
