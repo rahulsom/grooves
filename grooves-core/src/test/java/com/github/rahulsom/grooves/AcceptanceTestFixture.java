@@ -65,7 +65,7 @@ public class AcceptanceTestFixture {
      * @return The {@link GroovesQuery} to use for testing
      */
     @NotNull
-    public static GroovesQuery<Aggregate, Integer, Snapshot, Event, Integer> createQuery(Storable... objects) {
+    public static GroovesQuery<Aggregate, Integer, Snapshot> createQuery(Storable... objects) {
         final var knownSnapshots = Arrays.stream(objects)
                 .filter(Snapshot.class::isInstance)
                 .map(it -> (Snapshot) it)
