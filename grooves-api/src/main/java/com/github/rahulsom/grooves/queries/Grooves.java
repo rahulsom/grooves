@@ -3,6 +3,7 @@ package com.github.rahulsom.grooves.queries;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
 import com.github.rahulsom.grooves.api.snapshots.TemporalSnapshot;
 import com.github.rahulsom.grooves.api.snapshots.VersionedSnapshot;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Rahul Somasunderam
  */
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class Grooves {
 
     /**
