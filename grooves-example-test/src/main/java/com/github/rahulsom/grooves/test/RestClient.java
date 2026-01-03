@@ -1,5 +1,6 @@
 package com.github.rahulsom.grooves.test;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,21 @@ public class RestClient {
      *
      * @return The response
      */
-    @SneakyThrows
     public <T> HttpResponseDecorator<T> get(final RestRequest restRequest) {
+        return get(restRequest, new TypeReference<>() {});
+    }
+
+    /**
+     * Performs a GET request.
+     *
+     * @param restRequest The parameters for the request
+     * @param typeReference The type reference for the response
+     * @param <T> The type of response
+     *
+     * @return The response
+     */
+    @SneakyThrows
+    public <T> HttpResponseDecorator<T> get(final RestRequest restRequest, TypeReference<T> typeReference) {
         final var okHttpClient = new OkHttpClient.Builder().build();
 
         final var queryMap = Optional.ofNullable(restRequest.query()).orElse(Map.of());
@@ -40,7 +54,7 @@ public class RestClient {
                 .build();
         final var response = okHttpClient.newCall(request).execute();
 
-        return new HttpResponseDecorator<>(response);
+        return new HttpResponseDecorator<>(response, typeReference);
     }
 
     private final String baseUrl;
