@@ -1,6 +1,5 @@
 package grooves.example.javaee;
 
-import static java.util.stream.Collectors.toList;
 import static rx.RxReactiveStreams.toObservable;
 
 import grooves.example.javaee.domain.Patient;
@@ -36,7 +35,7 @@ public class PatientResource {
     @GET
     @Produces("application/json")
     public List<Patient> list() {
-        return database.patients().collect(toList());
+        return database.patients().toList();
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.github.rahulsom.grooves.queries.internal;
 
 import static io.reactivex.Flowable.*;
-import static java.util.stream.Collectors.toList;
 
 import com.github.rahulsom.grooves.api.GroovesException;
 import com.github.rahulsom.grooves.api.events.BaseEvent;
@@ -236,7 +235,7 @@ public class Utils {
                         if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
                             List<EventT> reverts = events.stream()
                                     .filter(it -> it instanceof RevertEvent)
-                                    .collect(toList());
+                                    .toList();
                             logger.info("     Uncomputed reverts exist: {}", stringify(reverts));
                             return nonReusableSnapshotAndEvents.get();
                         } else {

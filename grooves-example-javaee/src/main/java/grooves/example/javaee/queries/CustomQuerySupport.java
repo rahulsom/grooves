@@ -2,7 +2,6 @@ package grooves.example.javaee.queries;
 
 import static com.github.rahulsom.grooves.api.EventApplyOutcome.CONTINUE;
 import static grooves.example.javaee.Database.isTimestampInRange;
-import static java.util.stream.Collectors.toList;
 import static rx.Observable.from;
 import static rx.Observable.just;
 import static rx.RxReactiveStreams.toObservable;
@@ -133,7 +132,7 @@ public interface CustomQuerySupport<
                     && eventPosition <= version;
         };
         final List<PatientEvent> patientEvents =
-                getDatabase().events().filter(patientEventPredicate).collect(toList());
+                getDatabase().events().filter(patientEventPredicate).toList();
         return toPublisher(from(patientEvents));
         // tag::documented[]
     }
@@ -148,7 +147,7 @@ public interface CustomQuerySupport<
                 && (lastSnapshot == null
                         || isTimestampInRange(lastSnapshot.getLastEventTimestamp(), it.getTimestamp(), snapshotTime));
         final List<PatientEvent> patientEvents =
-                getDatabase().events().filter(patientEventPredicate).collect(toList());
+                getDatabase().events().filter(patientEventPredicate).toList();
         return toPublisher(from(patientEvents));
         // tag::documented[]
     }

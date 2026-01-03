@@ -1,7 +1,5 @@
 package grooves.example.javaee;
 
-import static java.util.stream.Collectors.toList;
-
 import grooves.example.javaee.domain.PatientAccount;
 import grooves.example.javaee.domain.PatientEvent;
 import grooves.example.javaee.domain.PatientHealth;
@@ -28,7 +26,7 @@ public class DebugResource {
     @Produces("application/json")
     @Path("/events")
     public List<PatientEvent> list() {
-        return database.events().collect(toList());
+        return database.events().toList();
     }
 
     /**
@@ -40,7 +38,7 @@ public class DebugResource {
     @Produces("application/json")
     @Path("/account")
     public List<PatientAccount> account() {
-        return database.snapshots(PatientAccount.class).collect(toList());
+        return database.snapshots(PatientAccount.class).toList();
     }
 
     /**
@@ -52,6 +50,6 @@ public class DebugResource {
     @Produces("application/json")
     @Path("/health")
     public List<PatientHealth> health() {
-        return database.snapshots(PatientHealth.class).collect(toList());
+        return database.snapshots(PatientHealth.class).toList();
     }
 }
