@@ -96,3 +96,7 @@ tasks.named("gitPublishCopy") {
 }
 
 tasks.named("gitPublishPush") { dependsOn("asciidoctor") }
+
+tasks.named("check").configure {
+    dependsOn("asciidoctor")
+}
