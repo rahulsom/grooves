@@ -67,11 +67,11 @@ public class AcceptanceTestFixture {
     @NotNull
     public static GroovesQuery<Aggregate, Integer, Snapshot, Event, Integer> createQuery(Storable... objects) {
         List<Snapshot> knownSnapshots = Arrays.stream(objects)
-                .filter(it -> it instanceof Snapshot)
+                .filter(Snapshot.class::isInstance)
                 .map(it -> (Snapshot) it)
                 .toList();
         List<Event> events = Arrays.stream(objects)
-                .filter(it -> it instanceof Event)
+                .filter(Event.class::isInstance)
                 .map(it -> (Event) it)
                 .toList();
 
