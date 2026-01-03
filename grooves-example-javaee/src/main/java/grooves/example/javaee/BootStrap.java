@@ -273,10 +273,10 @@ public class BootStrap {
         final Consumer<?> eventSaver = object -> {
             if (object instanceof PatientEvent patientEvent) {
                 patientEvent.setId(idGenerator++);
-                database.addEvent((PatientEvent) object);
+                database.addEvent(patientEvent);
             } else if (object instanceof Snapshot snapshot) {
                 snapshot.setId(idGenerator++);
-                database.addSnapshot(object);
+                database.addSnapshot(snapshot);
             }
         };
 
