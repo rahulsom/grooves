@@ -45,7 +45,7 @@ public class Database {
      */
     @NotNull
     public <T extends Snapshot<?, ?, ?, ?>> Stream<T> snapshots(Class<T> clazz) {
-        return (Stream<T>) snapshotList.stream().filter(it -> clazz.isAssignableFrom(it.getClass()));
+        return snapshotList.stream().filter(it -> clazz.isAssignableFrom(it.getClass()));
     }
 
     /**
@@ -71,7 +71,7 @@ public class Database {
      *
      * @param snapshot the snapshot to add
      */
-    public void addSnapshot(Object snapshot) {
+    public void addSnapshot(Snapshot snapshot) {
         snapshotList.add(snapshot);
     }
 
