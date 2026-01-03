@@ -9,6 +9,10 @@ repositories {
     maven { setUrl("https://repo.spring.io/release") }
 }
 
+asciidoctorj {
+    setVersion(libs.versions.asciidoctorj.get())
+}
+
 val asciidoctorExt by configurations.creating
 
 dependencies {
