@@ -220,16 +220,29 @@ spotless {
     yaml {
         prettier()
         target("**/*.yml")
-        targetExclude("**/build/**/*.yml")
+        targetExclude(
+            "**/build/**/*.yml",
+            "**/node_modules/**",
+        )
     }
     json {
         prettier()
         target("**/*.json")
-        targetExclude("**/build/**/*.json", "**/package-lock.json", "**/.package-lock.json", ".github/renovate.json")
+        targetExclude(
+            "**/.package-lock.json",
+            "**/build/**/*.json",
+            "**/node_modules/**",
+            "**/package-lock.json",
+            ".github/renovate.json",
+        )
     }
     typescript {
         prettier()
         target("**/*.ts")
         targetExclude("**/build/**/*.ts", "node_modules/**/*.ts")
     }
+}
+
+tasks.named("spotlessYaml").configure {
+    dependsOn(":grooves-site:npmInstall")
 }
