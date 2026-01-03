@@ -18,7 +18,7 @@ dependencies {
     implementation(libs.beanutils)
     implementation(libs.groovy) // for GroovyEventsDsl support
     implementation(libs.httpcomponents.client)
-    implementation(libs.jackson.databind)
+    api(libs.jackson.databind)
     implementation(libs.rxjava2)
     implementation(libs.slf4j.api)
     implementation(libs.xerces)

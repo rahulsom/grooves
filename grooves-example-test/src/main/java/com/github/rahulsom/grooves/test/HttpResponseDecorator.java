@@ -1,5 +1,6 @@
 package com.github.rahulsom.grooves.test;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Optional;
@@ -8,7 +9,11 @@ import okhttp3.Response;
 /**
  * Decorates a Response from OkHttp with some useful methods.
  */
-public record HttpResponseDecorator<T>(Response response) {
+public record HttpResponseDecorator<T>(Response response, TypeReference<T> typeReference) {
+
+    public HttpResponseDecorator(Response response) {
+        this(response, new TypeReference<>() {});
+    }
 
     /**
      * Returns the response body as a Map.
@@ -16,7 +21,7 @@ public record HttpResponseDecorator<T>(Response response) {
      * @return a map of the parsed json
      */
     public T getData() {
-        return (T) Optional.ofNullable(response.body())
+        return Optional.ofNullable(response.body())
                 .map(it -> {
                     try {
                         return it.string();
@@ -26,7 +31,7 @@ public record HttpResponseDecorator<T>(Response response) {
                 })
                 .map(it -> {
                     try {
-                        return new ObjectMapper().readValue(it, Object.class);
+                        return new ObjectMapper().readValue(it, typeReference);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

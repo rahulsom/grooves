@@ -2,6 +2,7 @@ package com.github.rahulsom.grooves.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,8 +34,8 @@ public abstract class AbstractPatientTest {
     @BeforeEach
     void loadIds() {
         if (ids == null) {
-            var resp = getRest().<List<Map<String, Object>>>get(new RestRequest("patient"));
-            ids = resp.getData().stream().map(it -> it.get("id").toString()).toList();
+            var resp = getRest().get(new RestRequest("patient"), new TypeReference<List<PatientDTO>>() {});
+            ids = resp.getData().stream().map(PatientDTO::id).toList();
         }
     }
 
@@ -52,18 +53,10 @@ public abstract class AbstractPatientTest {
         }
     }
 
-    /*
-    @TestFactory
-    public Stream<DynamicTest> testFactory() {
-        return Stream.of(
-                DynamicTest.dynamicTest("Patient List works", this::patientListWorks)
-        );
-    }*/
-
     @Test
     @DisplayName("Patient List works")
     void patientListWorks() {
-        final var resp = getRest().<List<Map<String, String>>>get(new RestRequest("patient"));
+        final var resp = getRest().get(new RestRequest("patient"), new TypeReference<List<PatientDTO>>() {});
         assertThat(resp.getStatus()).isEqualTo(200);
 
         final var data = resp.getData();
@@ -71,10 +64,10 @@ public abstract class AbstractPatientTest {
         assertThat(data.size()).isGreaterThan(1);
 
         final var first = data.get(0);
-        assertThat(first.get("uniqueId")).isNotNull().isEqualTo("42");
+        assertThat(first.uniqueId()).isNotNull().isEqualTo("42");
 
         final var second = data.get(1);
-        assertThat(second.get("uniqueId")).isNotNull().isEqualTo("43");
+        assertThat(second.uniqueId()).isNotNull().isEqualTo("43");
     }
 
     @ParameterizedTest
@@ -93,15 +86,16 @@ public abstract class AbstractPatientTest {
     void paulBalanceAtVersion(int version, BigDecimal balance, BigDecimal moneyMade) {
         final var rest = getRest();
         final var id = ids.get(3 - 1);
-        final var resp =
-                rest.<Map<String, Object>>get(new RestRequest("patient/account/" + id, Map.of("version", version)));
+        final var resp = rest.get(
+                new RestRequest("patient/account/" + id, Map.of("version", version)),
+                new TypeReference<PatientAccountDTO>() {});
 
         assertThat(resp.getStatus()).isEqualTo(200);
         final var data = resp.getData();
         assertThat(data).isNotNull();
-        final var balance1 = new BigDecimal(data.get("balance").toString());
+        final var balance1 = data.balance();
         assertThat(balance1).usingComparator(BigDecimal::compareTo).isEqualTo(balance);
-        final var moneyMade1 = new BigDecimal(data.get("moneyMade").toString());
+        final var moneyMade1 = data.moneyMade();
         assertThat(moneyMade1).usingComparator(BigDecimal::compareTo).isEqualTo(moneyMade);
     }
 
@@ -115,13 +109,13 @@ public abstract class AbstractPatientTest {
         final var rest = getRest();
         final var theId = ids.get(index - 1);
 
-        final var resp = rest.<Map<String, Object>>get(new RestRequest("patient/show/" + theId));
+        final var resp = rest.get(new RestRequest("patient/show/" + theId), new TypeReference<PatientDTO>() {});
 
         assertThat(resp.getStatus()).isEqualTo(200);
         final var data = resp.getData();
         assertThat(data).isNotNull();
-        assertThat(data.get("uniqueId")).isEqualTo(uniqueId);
-        assertThat(data.get("id")).hasToString(theId);
+        assertThat(data.uniqueId()).isEqualTo(uniqueId);
+        assertThat(data.id()).hasToString(theId);
     }
 
     @ParameterizedTest
@@ -136,29 +130,28 @@ public abstract class AbstractPatientTest {
         final var theId = ids.get(index - 1);
         final var codes = List.of(codesStr.split(";"));
 
-        final var resp = rest.<Map<String, Object>>get(new RestRequest("patient/health/" + theId));
+        final var resp = rest.get(new RestRequest("patient/health/" + theId), new TypeReference<PatientHealthDTO>() {});
 
         assertThat(resp.getStatus()).isEqualTo(200);
         final var data = resp.getData();
         assertThat(data).isNotNull();
 
         // Check aggregate ID (could be direct or nested)
-        var aggregateId = data.get("aggregateId");
+        var aggregateId = data.aggregateId();
         if (aggregateId == null) {
-            var aggregate = (Map<String, Object>) data.get("aggregate");
+            var aggregate = data.aggregate();
             if (aggregate != null) {
-                aggregateId = aggregate.get("id");
+                aggregateId = aggregate.id();
             }
         }
         assertThat(aggregateId).hasToString(theId);
 
-        assertThat(data.get("name")).isEqualTo(name);
-        assertThat(data.get("lastEventPosition")).isEqualTo(lastEventPos);
+        assertThat(data.name()).isEqualTo(name);
+        assertThat(data.lastEventPosition()).isEqualTo(lastEventPos);
 
-        final var procedures = (List<Map<String, Object>>) data.get("procedures");
+        final var procedures = data.procedures();
         assertThat(procedures).hasSize(codes.size());
-        final var procedureCodes =
-                procedures.stream().map(p -> p.get("code").toString()).toList();
+        final var procedureCodes = procedures.stream().map(ProcedureDTO::code).toList();
         assertThat(procedureCodes).isEqualTo(codes);
     }
 
@@ -183,30 +176,30 @@ public abstract class AbstractPatientTest {
         final var theId = ids.get(index - 1);
         final var codes = codesStr.isEmpty() ? List.<String>of() : List.of(codesStr.split(";"));
 
-        var resp =
-                rest.<Map<String, Object>>get(new RestRequest("patient/health/" + theId, Map.of("version", version)));
+        var resp = rest.get(
+                new RestRequest("patient/health/" + theId, Map.of("version", version)),
+                new TypeReference<PatientHealthDTO>() {});
 
         assertThat(resp.getStatus()).isEqualTo(200);
         final var data = resp.getData();
         assertThat(data).isNotNull();
 
         // Check aggregate ID (could be direct or nested)
-        var aggregateId = data.get("aggregateId");
+        var aggregateId = data.aggregateId();
         if (aggregateId == null) {
-            var aggregate = (Map<String, Object>) data.get("aggregate");
+            var aggregate = data.aggregate();
             if (aggregate != null) {
-                aggregateId = aggregate.get("id");
+                aggregateId = aggregate.id();
             }
         }
         assertThat(aggregateId).hasToString(theId);
 
-        assertThat(data.get("name")).isEqualTo(name);
-        assertThat(data.get("lastEventPosition")).isEqualTo(version);
+        assertThat(data.name()).isEqualTo(name);
+        assertThat(data.lastEventPosition()).isEqualTo(version);
 
-        final var procedures = (List<Map<String, Object>>) data.get("procedures");
+        final var procedures = data.procedures();
         assertThat(procedures).hasSize(codes.size());
-        final var procedureCodes =
-                procedures.stream().map(p -> p.get("code").toString()).toList();
+        final var procedureCodes = procedures.stream().map(ProcedureDTO::code).toList();
         assertThat(procedureCodes).isEqualTo(codes);
     }
 
@@ -224,30 +217,30 @@ public abstract class AbstractPatientTest {
         final var theId = ids.get(index - 1);
         final var codes = codesStr.isEmpty() ? List.<String>of() : List.of(codesStr.split(";"));
 
-        final var resp = rest.<Map<String, Object>>get(
-                new RestRequest("patient/health/" + theId, Map.of("date", date + "T00:00:00.000Z")));
+        final var resp = rest.get(
+                new RestRequest("patient/health/" + theId, Map.of("date", date + "T00:00:00.000Z")),
+                new TypeReference<PatientHealthDTO>() {});
 
         assertThat(resp.getStatus()).isEqualTo(200);
         final var data = resp.getData();
         assertThat(data).isNotNull();
 
         // Check aggregate ID (could be direct or nested)
-        var aggregateId = data.get("aggregateId");
+        var aggregateId = data.aggregateId();
         if (aggregateId == null) {
-            var aggregate = (Map<String, Object>) data.get("aggregate");
+            var aggregate = data.aggregate();
             if (aggregate != null) {
-                aggregateId = aggregate.get("id");
+                aggregateId = aggregate.id();
             }
         }
         assertThat(aggregateId).hasToString(theId);
 
-        assertThat(data.get("name")).isEqualTo(name);
-        assertThat(data.get("lastEventPosition")).isEqualTo(lastEventPos);
+        assertThat(data.name()).isEqualTo(name);
+        assertThat(data.lastEventPosition()).isEqualTo(lastEventPos);
 
-        final var procedures = (List<Map<String, Object>>) data.get("procedures");
+        final var procedures = data.procedures();
         assertThat(procedures).hasSize(codes.size());
-        final var procedureCodes =
-                procedures.stream().map(p -> p.get("code").toString()).toList();
+        final var procedureCodes = procedures.stream().map(ProcedureDTO::code).toList();
         assertThat(procedureCodes).isEqualTo(codes);
     }
 
@@ -270,37 +263,38 @@ public abstract class AbstractPatientTest {
                         .toList()
                 : null;
 
-        final var resp =
-                rest.<Map<String, Object>>get(new RestRequest("patient/account/" + theId4, Map.of("version", version)));
+        final var resp = rest.get(
+                new RestRequest("patient/account/" + theId4, Map.of("version", version)),
+                new TypeReference<PatientAccountDTO>() {});
 
         assertThat(resp.getStatus()).isEqualTo(200);
         final var data = resp.getData();
         assertThat(data).isNotNull();
 
-        final var actualBalance = new BigDecimal(data.get("balance").toString());
+        final var actualBalance = data.balance();
         assertThat(actualBalance).usingComparator(BigDecimal::compareTo).isEqualTo(balance);
 
-        final var actualMoneyMade = new BigDecimal(data.get("moneyMade").toString());
+        final var actualMoneyMade = data.moneyMade();
         assertThat(actualMoneyMade).usingComparator(BigDecimal::compareTo).isEqualTo(moneyMade);
 
         if (theDeprecatedIds != null) {
-            final var deprecatesIds = data.get("deprecatesIds");
-            final var deprecates = data.get("deprecates");
+            final var deprecatesIds = data.deprecatesIds();
+            final var deprecates = data.deprecates();
             if (deprecatesIds != null) {
                 assertThat(deprecatesIds).isEqualTo(theDeprecatedIds);
             } else if (deprecates != null) {
-                final var deprecatesIdsList = ((List<Map<String, Object>>) deprecates)
-                        .stream().map(d -> d.get("id").toString()).toList();
+                final var deprecatesIdsList =
+                        deprecates.stream().map(PatientDTO::id).toList();
                 assertThat(deprecatesIdsList).isEqualTo(theDeprecatedIds);
             }
         }
 
         // Check aggregate ID (could be direct or nested)
-        var aggregateId = data.get("aggregateId");
+        var aggregateId = data.aggregateId();
         if (aggregateId == null) {
-            var aggregate = (Map<String, Object>) data.get("aggregate");
+            var aggregate = data.aggregate();
             if (aggregate != null) {
-                aggregateId = aggregate.get("id");
+                aggregateId = aggregate.id();
             }
         }
         assertThat(aggregateId).hasToString(theAggregateId);
@@ -318,25 +312,26 @@ public abstract class AbstractPatientTest {
         final var rest = getRest();
         final var theId5 = ids.get(5 - 1);
 
-        final var resp =
-                rest.<Map<String, Object>>get(new RestRequest("patient/account/" + theId5, Map.of("version", version)));
+        final var resp = rest.get(
+                new RestRequest("patient/account/" + theId5, Map.of("version", version)),
+                new TypeReference<PatientAccountDTO>() {});
 
         assertThat(resp.getStatus()).isEqualTo(200);
         final var data = resp.getData();
         assertThat(data).isNotNull();
 
-        final var actualBalance = new BigDecimal(data.get("balance").toString());
+        final var actualBalance = data.balance();
         assertThat(actualBalance).usingComparator(BigDecimal::compareTo).isEqualTo(balance);
 
-        final var actualMoneyMade = new BigDecimal(data.get("moneyMade").toString());
+        final var actualMoneyMade = data.moneyMade();
         assertThat(actualMoneyMade).usingComparator(BigDecimal::compareTo).isEqualTo(moneyMade);
 
         // Check aggregate ID (could be direct or nested)
-        var aggregateId = data.get("aggregateId");
+        var aggregateId = data.aggregateId();
         if (aggregateId == null) {
-            var aggregate = (Map<String, Object>) data.get("aggregate");
+            var aggregate = data.aggregate();
             if (aggregate != null) {
-                aggregateId = aggregate.get("id");
+                aggregateId = aggregate.id();
             }
         }
         assertThat(aggregateId).hasToString(theId5);
@@ -344,13 +339,12 @@ public abstract class AbstractPatientTest {
         if (deprecatedIdsStr != null && !deprecatedIdsStr.isEmpty()) {
             final var theId4 = ids.get(4 - 1);
             final var theId4AsRange = List.of(theId4);
-            final var deprecatesIds = data.get("deprecatesIds");
-            final var deprecates = data.get("deprecates");
+            final var deprecatesIds = data.deprecatesIds();
+            final var deprecates = data.deprecates();
             if (deprecatesIds != null) {
                 assertThat(deprecatesIds).isEqualTo(theId4AsRange);
             } else if (deprecates != null) {
-                var deprecatesIdsList = ((List<Map<String, Object>>) deprecates)
-                        .stream().map(d -> d.get("id").toString()).toList();
+                var deprecatesIdsList = deprecates.stream().map(PatientDTO::id).toList();
                 assertThat(deprecatesIdsList).isEqualTo(theId4AsRange);
             }
         }
@@ -365,78 +359,78 @@ public abstract class AbstractPatientTest {
         final var theId4AsRange = List.of(theId4);
 
         // Test Freddie Mercury (patient 5) - the target of the merge
-        final var resp5 = rest.<Map<String, Object>>get(new RestRequest("patient/account/" + theId5));
+        final var resp5 =
+                rest.get(new RestRequest("patient/account/" + theId5), new TypeReference<PatientAccountDTO>() {});
         assertThat(resp5.getStatus()).isEqualTo(200);
         final var data5 = resp5.getData();
         assertThat(data5).isNotNull();
 
         // Check aggregate ID (could be direct or nested)
-        var aggregateId5 = data5.get("aggregateId");
+        var aggregateId5 = data5.aggregateId();
         if (aggregateId5 == null) {
-            var aggregate5 = (Map<String, Object>) data5.get("aggregate");
+            var aggregate5 = data5.aggregate();
             if (aggregate5 != null) {
-                aggregateId5 = aggregate5.get("id");
+                aggregateId5 = aggregate5.id();
             }
         }
         assertThat(aggregateId5).hasToString(theId5);
 
         // Check deprecated IDs
-        final var deprecatesIds5 = data5.get("deprecatesIds");
-        final var deprecates5 = data5.get("deprecates");
+        final var deprecatesIds5 = data5.deprecatesIds();
+        final var deprecates5 = data5.deprecates();
         if (deprecatesIds5 != null) {
             assertThat(deprecatesIds5).isEqualTo(theId4AsRange);
         } else if (deprecates5 != null) {
-            var deprecatesIdsList5 = ((List<Map<String, Object>>) deprecates5)
-                    .stream().map(d -> d.get("id").toString()).toList();
+            var deprecatesIdsList5 = deprecates5.stream().map(PatientDTO::id).toList();
             assertThat(deprecatesIdsList5).isEqualTo(theId4AsRange);
         }
 
-        final var balance5 = new BigDecimal(data5.get("balance").toString());
+        final var balance5 = data5.balance();
         assertThat(balance5).usingComparator(BigDecimal::compareTo).isEqualTo(new BigDecimal("148.68"));
-        final var moneyMade5 = new BigDecimal(data5.get("moneyMade").toString());
+        final var moneyMade5 = data5.moneyMade();
         assertThat(moneyMade5).usingComparator(BigDecimal::compareTo).isEqualTo(new BigDecimal("100.25"));
-        assertThat(data5.get("lastEventPosition")).isEqualTo(3);
+        assertThat(data5.lastEventPosition()).isEqualTo(3);
 
-        final var lastEventTimestamp5 = getDate(data5.get("lastEventTimestamp"));
+        final var lastEventTimestamp5 = getDate(data5.lastEventTimestamp());
         assertThat(lastEventTimestamp5).isNotNull();
         final var dateFormat = new SimpleDateFormat("yyyyMMdd", java.util.Locale.US);
         assertThat(dateFormat.format(lastEventTimestamp5)).isEqualTo("20160128");
 
         // Test Farrokh Bulsara (patient 4) - should redirect to patient 5
-        final var resp4 = rest.<Map<String, Object>>get(new RestRequest("patient/account/" + theId4));
+        final var resp4 =
+                rest.get(new RestRequest("patient/account/" + theId4), new TypeReference<PatientAccountDTO>() {});
         assertThat(resp4.getStatus()).isEqualTo(200);
         final var data4 = resp4.getData();
         assertThat(data4).isNotNull();
 
         // Should redirect to patient 5's aggregate
-        var aggregateId4 = data4.get("aggregateId");
+        var aggregateId4 = data4.aggregateId();
         if (aggregateId4 == null) {
-            var aggregate4 = (Map<String, Object>) data4.get("aggregate");
+            var aggregate4 = data4.aggregate();
             if (aggregate4 != null) {
-                aggregateId4 = aggregate4.get("id");
+                aggregateId4 = aggregate4.id();
             }
         }
         assertThat(aggregateId4).hasToString(theId5);
 
         // Should show same deprecated IDs as patient 5
-        final var deprecatesIds4 = data4.get("deprecatesIds");
-        final var deprecates4 = data4.get("deprecates");
+        final var deprecatesIds4 = data4.deprecatesIds();
+        final var deprecates4 = data4.deprecates();
         if (deprecatesIds4 != null) {
             assertThat(deprecatesIds4).isEqualTo(theId4AsRange);
         } else if (deprecates4 != null) {
-            var deprecatesIdsList4 = ((List<Map<String, Object>>) deprecates4)
-                    .stream().map(d -> d.get("id").toString()).toList();
+            var deprecatesIdsList4 = deprecates4.stream().map(PatientDTO::id).toList();
             assertThat(deprecatesIdsList4).isEqualTo(theId4AsRange);
         }
 
         // Should show same balance as patient 5
-        final var balance4 = new BigDecimal(data4.get("balance").toString());
+        final var balance4 = data4.balance();
         assertThat(balance4).usingComparator(BigDecimal::compareTo).isEqualTo(new BigDecimal("148.68"));
-        final var moneyMade4 = new BigDecimal(data4.get("moneyMade").toString());
+        final var moneyMade4 = data4.moneyMade();
         assertThat(moneyMade4).usingComparator(BigDecimal::compareTo).isEqualTo(new BigDecimal("100.25"));
-        assertThat(data4.get("lastEventPosition")).isEqualTo(3);
+        assertThat(data4.lastEventPosition()).isEqualTo(3);
 
-        final var lastEventTimestamp4 = getDate(data4.get("lastEventTimestamp"));
+        final var lastEventTimestamp4 = getDate(data4.lastEventTimestamp());
         assertThat(lastEventTimestamp4).isNotNull();
         assertThat(dateFormat.format(lastEventTimestamp4)).isEqualTo("20160128");
     }
@@ -458,16 +452,17 @@ public abstract class AbstractPatientTest {
         final var rest = getRest();
         final var patientId = ids.get(patientIndex - 1);
 
-        final var resp = rest.<Map<String, Object>>get(
-                new RestRequest("patient/account/" + patientId, Map.of("version", version)));
+        final var resp = rest.get(
+                new RestRequest("patient/account/" + patientId, Map.of("version", version)),
+                new TypeReference<PatientAccountDTO>() {});
 
         assertThat(resp.getStatus()).isEqualTo(200);
         final var data = resp.getData();
         assertThat(data).isNotNull();
 
-        assertThat(data.get("name")).isEqualTo(name);
+        assertThat(data.name()).isEqualTo(name);
 
-        final var actualBalance = new BigDecimal(data.get("balance").toString());
+        final var actualBalance = data.balance();
         assertThat(actualBalance).usingComparator(BigDecimal::compareTo).isEqualTo(balance);
     }
 
@@ -488,16 +483,17 @@ public abstract class AbstractPatientTest {
         final var rest = getRest();
         final var patientId = ids.get(patientIndex - 1);
 
-        final var resp = rest.<Map<String, Object>>get(
-                new RestRequest("patient/account/" + patientId, Map.of("date", date + "T00:00:00.000Z")));
+        final var resp = rest.get(
+                new RestRequest("patient/account/" + patientId, Map.of("date", date + "T00:00:00.000Z")),
+                new TypeReference<PatientAccountDTO>() {});
 
         assertThat(resp.getStatus()).isEqualTo(200);
         final var data = resp.getData();
         assertThat(data).isNotNull();
 
-        assertThat(data.get("name")).isEqualTo(name);
+        assertThat(data.name()).isEqualTo(name);
 
-        final var actualBalance = new BigDecimal(data.get("balance").toString());
+        final var actualBalance = data.balance();
         assertThat(actualBalance).usingComparator(BigDecimal::compareTo).isEqualTo(balance);
     }
 }
