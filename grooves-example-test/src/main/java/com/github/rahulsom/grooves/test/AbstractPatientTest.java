@@ -121,7 +121,7 @@ public abstract class AbstractPatientTest {
         final var data = resp.getData();
         assertThat(data).isNotNull();
         assertThat(data.get("uniqueId")).isEqualTo(uniqueId);
-        assertThat(data.get("id").toString()).isEqualTo(theId);
+        assertThat(data.get("id")).hasToString(theId);
     }
 
     @ParameterizedTest
@@ -150,7 +150,7 @@ public abstract class AbstractPatientTest {
                 aggregateId = aggregate.get("id");
             }
         }
-        assertThat(aggregateId.toString()).isEqualTo(theId);
+        assertThat(aggregateId).hasToString(theId);
 
         assertThat(data.get("name")).isEqualTo(name);
         assertThat(data.get("lastEventPosition")).isEqualTo(lastEventPos);
@@ -198,7 +198,7 @@ public abstract class AbstractPatientTest {
                 aggregateId = aggregate.get("id");
             }
         }
-        assertThat(aggregateId.toString()).isEqualTo(theId);
+        assertThat(aggregateId).hasToString(theId);
 
         assertThat(data.get("name")).isEqualTo(name);
         assertThat(data.get("lastEventPosition")).isEqualTo(version);
@@ -239,7 +239,7 @@ public abstract class AbstractPatientTest {
                 aggregateId = aggregate.get("id");
             }
         }
-        assertThat(aggregateId.toString()).isEqualTo(theId);
+        assertThat(aggregateId).hasToString(theId);
 
         assertThat(data.get("name")).isEqualTo(name);
         assertThat(data.get("lastEventPosition")).isEqualTo(lastEventPos);
@@ -303,7 +303,7 @@ public abstract class AbstractPatientTest {
                 aggregateId = aggregate.get("id");
             }
         }
-        assertThat(aggregateId.toString()).isEqualTo(theAggregateId);
+        assertThat(aggregateId).hasToString(theAggregateId);
     }
 
     @ParameterizedTest
@@ -339,7 +339,7 @@ public abstract class AbstractPatientTest {
                 aggregateId = aggregate.get("id");
             }
         }
-        assertThat(aggregateId.toString()).isEqualTo(theId5);
+        assertThat(aggregateId).hasToString(theId5);
 
         if (deprecatedIdsStr != null && !deprecatedIdsStr.isEmpty()) {
             final var theId4 = ids.get(4 - 1);
@@ -378,7 +378,7 @@ public abstract class AbstractPatientTest {
                 aggregateId5 = aggregate5.get("id");
             }
         }
-        assertThat(aggregateId5.toString()).isEqualTo(theId5);
+        assertThat(aggregateId5).hasToString(theId5);
 
         // Check deprecated IDs
         final var deprecatesIds5 = data5.get("deprecatesIds");
@@ -416,7 +416,7 @@ public abstract class AbstractPatientTest {
                 aggregateId4 = aggregate4.get("id");
             }
         }
-        assertThat(aggregateId4.toString()).isEqualTo(theId5);
+        assertThat(aggregateId4).hasToString(theId5);
 
         // Should show same deprecated IDs as patient 5
         final var deprecatesIds4 = data4.get("deprecatesIds");
