@@ -270,13 +270,13 @@ public class BootStrap {
     }
 
     private Patient on(Patient patient, Consumer<OnSpec> closure) {
-        Consumer eventSaver = patientEvent -> {
-            if (patientEvent instanceof PatientEvent) {
-                ((PatientEvent) patientEvent).setId(idGenerator++);
-                database.addEvent((PatientEvent) patientEvent);
-            } else {
-                ((Snapshot) patientEvent).setId(idGenerator++);
-                database.addSnapshot(patientEvent);
+        final Consumer<?> eventSaver = object -> {
+            if (object instanceof PatientEvent patientEvent) {
+                patientEvent.setId(idGenerator++);
+                database.addEvent((PatientEvent) object);
+            } else if (object instanceof Snapshot snapshot) {
+                snapshot.setId(idGenerator++);
+                database.addSnapshot(object);
             }
         };
 
