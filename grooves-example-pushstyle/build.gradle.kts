@@ -3,49 +3,40 @@ import org.jooq.meta.kotlin.*
 
 buildscript {
     dependencies {
-        classpath(libs.h2)
-
-        classpath(libs.jakarta.jaxb.api)
-        classpath("com.sun.xml.bind:jaxb-impl:4.0.6") // Jakarta compatible version
         classpath(libs.activation)
+        classpath(libs.h2)
+        classpath(libs.jakarta.jaxb.api)
+        classpath(libs.sunjaxb.impl) // Jakarta compatible version
     }
 }
 
 plugins {
-    id("org.jetbrains.kotlin.jvm")
-    alias(libs.plugins.jooq)
     alias(libs.plugins.flyway)
+    alias(libs.plugins.jooq)
+    id("org.jetbrains.kotlin.jvm")
 }
 
 version = "0.0.1-SNAPSHOT"
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation(libs.groovy.all)
-
-    implementation(libs.google.guice)
-    implementation(libs.google.guava)
-
-    implementation(libs.h2)
-    implementation("org.jooq:jooq")
-
-    implementation(libs.jakarta.jaxb.api)
-    implementation("com.sun.xml.bind:jaxb-impl:4.0.6") // Jakarta compatible version
-    implementation(libs.activation)
     compileOnly(libs.jakarta.annotation.api)
-
     implementation(project(":grooves-api"))
-
+    implementation(libs.activation)
+    implementation(libs.google.guava)
+    implementation(libs.google.guice)
+    implementation(libs.groovy.all)
+    implementation(libs.h2)
+    implementation(libs.jakarta.jaxb.api)
+    implementation(libs.jooq.core)
+    implementation(libs.kotlin.reflect)
+    implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.rxjava2)
     implementation(libs.slf4j.api)
-
+    implementation(libs.sunjaxb.impl) // Jakarta compatible version
     jooqGenerator(libs.h2)
-
     runtimeOnly(libs.logback.classic)
-
-    testImplementation(libs.junit.api)
     testImplementation(libs.awaitility)
+    testImplementation(libs.junit.api)
     testRuntimeOnly(libs.junit.engine)
     testRuntimeOnly(libs.junit.platform.launcher)
 }

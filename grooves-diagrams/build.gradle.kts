@@ -14,15 +14,12 @@ apply {
 description = "Asciidoctor Extension to generate Event Sourcing Diagrams like those on https://rahulsom.github.io/grooves"
 
 dependencies {
-    implementation(libs.svgbuilder)
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-    implementation(libs.beanutils)
     implementation(libs.asciidoctorj)
-    implementation(libs.slf4j.api)
-
+    implementation(libs.beanutils)
     implementation(libs.jakarta.jaxb.api)
-
+    implementation(libs.kotlin.stdlib.jdk8)
+    implementation(libs.slf4j.api)
+    implementation(libs.svgbuilder)
     testImplementation(libs.junit.api)
     testImplementation(libs.junit.params)
     testRuntimeOnly(libs.junit.engine)
