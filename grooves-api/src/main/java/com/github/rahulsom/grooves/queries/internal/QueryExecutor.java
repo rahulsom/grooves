@@ -132,8 +132,8 @@ public class QueryExecutor<
                                     String methodName =
                                             "apply" + event.getClass().getSimpleName();
                                     return callMethod((QueryT) query, methodName, snapshot, event)
-                                            .flatMap(retval -> handleMethodResponse(
-                                                    stopApplyingEvents, snapshot, methodName, retval));
+                                            .flatMap(retval ->
+                                                    handleMethodResponse(stopApplyingEvents, snapshot, retval));
                                 }
                             }
                         }))
@@ -148,12 +148,11 @@ public class QueryExecutor<
      * @param stopApplyingEvents Whether a previous decision has been made to stop applying new
      *                           events
      * @param snapshot           The snapshot on which events are being added
-     * @param methodName         The name of the method that was called
      * @param retval             The outcome of calling the method
      * @return The snapshot after deciding what to do with the EventApplyOutcome
      */
     private Flowable<? extends SnapshotT> handleMethodResponse(
-            AtomicBoolean stopApplyingEvents, SnapshotT snapshot, String methodName, EventApplyOutcome retval) {
+            AtomicBoolean stopApplyingEvents, SnapshotT snapshot, EventApplyOutcome retval) {
         return switch (retval) {
             case RETURN -> {
                 stopApplyingEvents.set(true);
