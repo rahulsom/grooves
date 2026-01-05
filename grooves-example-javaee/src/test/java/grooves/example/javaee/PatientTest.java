@@ -28,7 +28,7 @@ class PatientTest extends AbstractPatientTest {
                     "WAR file not found at " + warFile.getAbsolutePath() + ". Run './gradlew war' first.");
         }
 
-        libertyContainer = new GenericContainer<>("openliberty/open-liberty:full-java17-openj9-ubi")
+        libertyContainer = new GenericContainer<>("openliberty/open-liberty:full-java21-openj9-ubi-minimal")
                 .withExposedPorts(9080)
                 .withCopyFileToContainer(
                         MountableFile.forHostPath(warFile.toPath()), "/config/dropins/grooves-example-javaee.war")
