@@ -14,7 +14,7 @@ jobs:
     permissions:
       security-events: write
       actions: read
-      contents: read
+      contents: write
       packages: read
     with:
       java-version: 21
