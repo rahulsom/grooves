@@ -23,7 +23,7 @@
     "@types/jquery": "^3.5.33",
     "bootstrap": "^5.3.8",
     "font-awesome": "^4.7.0",
-    "jquery": "^3.7.1"
+    "jquery": "^4.0.0"
   },
   "overrides": {
     "vite": "npm:rolldown-vite@7.3.1"
