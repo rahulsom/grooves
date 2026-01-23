@@ -147,11 +147,11 @@ public class Utils {
      * @param event    The last event
      */
     public static void setLastEvent(@NotNull BaseSnapshot snapshot, @NotNull BaseEvent event) {
-        if (snapshot instanceof VersionedSnapshot) {
-            ((VersionedSnapshot) snapshot).setLastEventPosition(event.getPosition());
+        if (snapshot instanceof VersionedSnapshot versionedSnapshot) {
+            versionedSnapshot.setLastEventPosition(event.getPosition());
         }
-        if (snapshot instanceof TemporalSnapshot) {
-            ((TemporalSnapshot) snapshot).setLastEventTimestamp(event.getTimestamp());
+        if (snapshot instanceof TemporalSnapshot temporalSnapshot) {
+            temporalSnapshot.setLastEventTimestamp(event.getTimestamp());
         }
     }
 
