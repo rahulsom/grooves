@@ -75,7 +75,7 @@ public class QueryExecutor<
             log.debug("     Event Ids (includes reverts that won't be applied): {}", ids(eventList));
             List<EventT> forwardEvents = new ArrayList<>();
             while (!eventList.isEmpty()) {
-                EventT head = eventList.remove(eventList.size() - 1);
+                EventT head = eventList.removeLast();
                 if (head instanceof RevertEvent) {
                     final EventIdT revertedEventId = (EventIdT) ((RevertEvent) head).getRevertedEventId();
                     final Optional<EventT> revertedEvent = eventList.stream()
@@ -90,7 +90,7 @@ public class QueryExecutor<
                     }
 
                 } else {
-                    forwardEvents.add(0, head);
+                    forwardEvents.addFirst(head);
                 }
             }
 

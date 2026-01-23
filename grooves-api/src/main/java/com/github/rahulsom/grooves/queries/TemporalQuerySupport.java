@@ -191,7 +191,7 @@ public interface TemporalQuerySupport<
         return snapshotTypeObservable
                 .doOnNext(snapshot -> {
                     if (!events.isEmpty()) {
-                        Utils.setLastEvent(snapshot, events.get(events.size() - 1));
+                        Utils.setLastEvent(snapshot, events.getLast());
                     }
                     LoggerFactory.getLogger(getClass()).info("  --> Computed: {}", snapshot);
                 })

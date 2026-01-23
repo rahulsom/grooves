@@ -62,7 +62,7 @@ public class Utils {
                     @NotNull List<EventT> events,
                     @NotNull SnapshotT it,
                     @NotNull Supplier<Flowable<SnapshotT>> redirectedSnapshot) {
-        final EventT lastEvent = events.isEmpty() ? null : events.get(events.size() - 1);
+        final EventT lastEvent = events.isEmpty() ? null : events.getLast();
 
         final boolean redirectToDeprecator = lastEvent instanceof DeprecatedBy && redirect;
 
