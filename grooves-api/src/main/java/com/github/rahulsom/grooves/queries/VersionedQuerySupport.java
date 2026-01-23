@@ -195,7 +195,7 @@ public interface VersionedQuerySupport<
         final Flowable<SnapshotT> snapshotObservable =
                 getExecutor().applyEvents(this, lastUsableSnapshot, applicableEvents, new ArrayList<>(), aggregate);
 
-        EventT lastEvent = events.isEmpty() ? null : events.get(events.size() - 1);
+        EventT lastEvent = events.isEmpty() ? null : events.getLast();
 
         Function<AggregateT, Publisher<SnapshotT>> deprecatorToSnapshot = x -> {
             DeprecatedBy deprecatedBy = (DeprecatedBy) lastEvent;
