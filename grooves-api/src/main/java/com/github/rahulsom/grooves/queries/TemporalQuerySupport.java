@@ -142,7 +142,7 @@ public interface TemporalQuerySupport<
 
             LoggerFactory.getLogger(getClass()).info("     Events including redirects: {}", Utils.stringify(events));
 
-            if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
+            if (events.stream().anyMatch(RevertEvent.class::isInstance)) {
                 return fromPublisher(snapshot.getAggregateObservable())
                         .flatMap(aggregate1 -> aggregate1 == null
                                 ? computeSnapshotAndEvents(aggregate, moment, redirect, events, snapshot)

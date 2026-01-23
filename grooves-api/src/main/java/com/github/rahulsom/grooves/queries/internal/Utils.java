@@ -232,9 +232,9 @@ public class Utils {
                     .toList()
                     .toFlowable()
                     .flatMap(events -> {
-                        if (events.stream().anyMatch(it -> it instanceof RevertEvent)) {
+                        if (events.stream().anyMatch(RevertEvent.class::isInstance)) {
                             final var reverts = events.stream()
-                                    .filter(it -> it instanceof RevertEvent)
+                                    .filter(RevertEvent.class::isInstance)
                                     .toList();
                             logger.info("     Uncomputed reverts exist: {}", stringify(reverts));
                             return nonReusableSnapshotAndEvents.get();
