@@ -1,4 +1,6 @@
 tasks.register<Exec>("npmInstall") {
+    group = "node"
+    description = "Installs node modules"
     commandLine("./npmw", "install")
     workingDir = file(".")
     inputs.file("package.json")
@@ -8,6 +10,8 @@ tasks.register<Exec>("npmInstall") {
 }
 
 tasks.register<Exec>("build") {
+    group = "build"
+    description = "Builds the site"
     commandLine("./npmw", "run", "build")
     workingDir = file(".")
 
@@ -18,5 +22,7 @@ tasks.register<Exec>("build") {
 }
 
 tasks.register("clean") {
+    group = "build"
+    description = "Cleans the site distribution"
     delete("dist")
 }
