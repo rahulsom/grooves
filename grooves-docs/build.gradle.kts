@@ -74,6 +74,8 @@ gitPublish {
 }
 
 tasks.register("configureGit") {
+    group = "publishing"
+    description = "Configures Git user for GitHub Actions"
     doFirst {
         // Set git user.name and user.email in GitHub Actions environment
         if (System.getenv("GITHUB_ACTIONS") == "true") {
