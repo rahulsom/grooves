@@ -76,14 +76,18 @@ public class IndentedLogging {
                 .map(String::valueOf)
                 .collect(Collectors.joining(", "));
 
-        log.trace("{}{}({})", indent(), methodName, args);
+        if (log.isTraceEnabled()) {
+            log.trace("{}{}({})", indent(), methodName, args);
+        }
         stepIn();
 
         try {
             var result = joinPoint.proceed();
             stepOut();
-            var listRender = result instanceof List<?> ? eventsToString((List<?>) result) : result;
-            log.trace("{}{}({}) --> {}", indent(), methodName, args, listRender);
+            if (log.isTraceEnabled()) {
+                var listRender = result instanceof List<?> ? eventsToString((List<?>) result) : result;
+                log.trace("{}{}({}) --> {}", indent(), methodName, args, listRender);
+            }
             return result;
         } catch (Throwable t) {
             stepOut();
