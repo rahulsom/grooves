@@ -53,14 +53,6 @@ public abstract class AbstractPatientTest {
         }
     }
 
-    /*
-    @TestFactory
-    public Stream<DynamicTest> testFactory() {
-        return Stream.of(
-                DynamicTest.dynamicTest("Patient List works", this::patientListWorks)
-        );
-    }*/
-
     @Test
     @DisplayName("Patient List works")
     void patientListWorks() {
