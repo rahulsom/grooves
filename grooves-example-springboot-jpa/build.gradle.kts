@@ -11,18 +11,22 @@ apply {
 
 dependencies {
     compileOnly(libs.jetbrains.annotations)
-    implementation(project(":grooves-example-test"))
-    implementation(project(":grooves-groovy"))
+
     implementation(libs.groovy)
     implementation(libs.groovy.dateutil)
     implementation(libs.rxjava2)
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.web)
+    implementation(project(":grooves-example-test"))
+    implementation(project(":grooves-groovy"))
+
     runtimeOnly(libs.activation)
     runtimeOnly(libs.h2)
     runtimeOnly(libs.jakarta.jaxb.api)
-    runtimeOnly(libs.sunjaxb.impl) // Jakarta compatible version
+    runtimeOnly(libs.sunjaxb.impl)
+
     testImplementation(libs.spring.boot.starter.test)
+
     testRuntimeOnly(libs.junit.platform.commons)
     testRuntimeOnly(libs.junit.platform.engine)
     testRuntimeOnly(libs.junit.platform.launcher)

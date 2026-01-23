@@ -20,8 +20,10 @@ dependencies {
     implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.slf4j.api)
     implementation(libs.svgbuilder)
+
     testImplementation(libs.junit.api)
     testImplementation(libs.junit.params)
+
     testRuntimeOnly(libs.junit.engine)
     testRuntimeOnly(libs.junit.platform.launcher)
 }

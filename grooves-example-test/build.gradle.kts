@@ -8,17 +8,21 @@ description = "Standard Tests for Grooves"
 
 dependencies {
     annotationProcessor(libs.lombok)
-    api(project(":grooves-api"))
+
     api(libs.assertj.core)
+    api(libs.jackson.databind)
     api(libs.junit.api)
     api(libs.junit.params)
     api(libs.okhttp)
+    api(project(":grooves-api"))
+
     compileOnly(libs.jetbrains.annotations)
     compileOnly(libs.lombok)
+
     implementation(libs.beanutils)
-    implementation(libs.groovy) // for GroovyEventsDsl support
+    implementation(libs.groovy)
     implementation(libs.httpcomponents.client)
-    api(libs.jackson.databind)
+
     implementation(libs.rxjava2)
     implementation(libs.slf4j.api)
     implementation(libs.xerces)

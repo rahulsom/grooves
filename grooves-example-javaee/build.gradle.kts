@@ -10,25 +10,23 @@ dependencies {
     providedCompile(libs.javaee.api)
     providedCompile(libs.jaxb.api)
 
-    compileOnly(libs.lombok)
     compileOnly(libs.jetbrains.annotations)
+    compileOnly(libs.lombok)
 
-    implementation(project(":grooves-java"))
-    implementation(project(":grooves-example-test"))
-    implementation(libs.slf4j.api)
     implementation(libs.lang3)
     implementation(libs.rxjava.core)
     implementation(libs.rxjava.reactivestreams)
+    implementation(libs.slf4j.api)
+    implementation(project(":grooves-example-test"))
+    implementation(project(":grooves-java"))
 
-    // JUnit 5 support
     testImplementation(libs.junit.api)
     testImplementation(libs.junit.params)
+    testImplementation(libs.testcontainers.junit.jupiter)
+    testImplementation(platform(libs.testcontainers.bom))
+
     testRuntimeOnly(libs.junit.engine)
     testRuntimeOnly(libs.junit.platform.launcher)
-
-    // Testcontainers support
-    testImplementation(platform(libs.testcontainers.bom))
-    testImplementation(libs.testcontainers.junit.jupiter)
 }
 
 tasks.test {
