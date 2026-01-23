@@ -12,25 +12,28 @@ loggingCapabilities {
 description = "Simpler implementation of Grooves"
 
 dependencies {
-    compileOnly(libs.lombok)
-    testCompileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
+
+    compileOnly(libs.lombok)
+
+    implementation(libs.aspectj.rt)
+    implementation(libs.jetbrains.annotations)
+    implementation(libs.slf4j.api)
+
     testAnnotationProcessor(libs.lombok)
 
-    implementation(libs.slf4j.api)
-    implementation(libs.jetbrains.annotations)
+    testCompileOnly(libs.lombok)
 
     testImplementation(libs.assertj.core)
     testImplementation(libs.junit.api)
     testImplementation(libs.junit.params)
+
     testRuntimeOnly(libs.junit.engine)
     testRuntimeOnly(libs.junit.platform.launcher)
-    testRuntimeOnly(libs.slf4j.simple)
     testRuntimeOnly(libs.log4j.core)
     testRuntimeOnly(libs.log4j.slf4j)
     testRuntimeOnly(libs.logback.classic)
-
-    implementation(libs.aspectj.rt)
+    testRuntimeOnly(libs.slf4j.simple)
 }
 
 tasks.withType<Test> {

@@ -9,28 +9,29 @@ plugins {
 version = "0.0.1-SNAPSHOT"
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation(libs.rxjava.reactivestreams)
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework:spring-aspects")
+    implementation(libs.rxjava.reactivestreams)
     implementation(project(":grooves-api"))
     implementation(project(":grooves-example-test"))
 
-    runtimeOnly(libs.jakarta.jaxb.api)
-    runtimeOnly("com.sun.xml.bind:jaxb-impl:4.0.6") // Jakarta compatible version
+    runtimeOnly("com.sun.xml.bind:jaxb-impl:4.0.6")
     runtimeOnly(libs.activation)
+    runtimeOnly(libs.jakarta.jaxb.api)
 
     testImplementation(platform(libs.testcontainers.bom))
+    testImplementation("io.projectreactor.addons:reactor-test:3.0.7.RELEASE")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(libs.testcontainers.junit.jupiter)
     testImplementation(libs.testcontainers.mongodb)
-    testImplementation("io.projectreactor.addons:reactor-test:3.0.7.RELEASE")
-    testRuntimeOnly(libs.junit.platform.launcher)
-    testRuntimeOnly(libs.junit.platform.engine)
+
     testRuntimeOnly(libs.junit.platform.commons)
+    testRuntimeOnly(libs.junit.platform.engine)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 val junit = libs.versions.junit

@@ -15,12 +15,12 @@ dependencies {
 
     implementation(libs.groovy)
 
+    testImplementation(libs.junit.api)
     testImplementation(libs.rxjava.core)
     testImplementation(libs.rxjava.reactivestreams)
-    testImplementation(libs.junit.api)
-    testRuntimeOnly(libs.junit.engine)
 
     testRuntimeOnly(libs.jetbrains.annotations)
+    testRuntimeOnly(libs.junit.engine)
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 

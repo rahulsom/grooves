@@ -20,7 +20,7 @@ version = "0.0.1-SNAPSHOT"
 
 dependencies {
     compileOnly(libs.jakarta.annotation.api)
-    implementation(project(":grooves-api"))
+
     implementation(libs.activation)
     implementation(libs.google.guava)
     implementation(libs.google.guice)
@@ -32,11 +32,16 @@ dependencies {
     implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.rxjava2)
     implementation(libs.slf4j.api)
-    implementation(libs.sunjaxb.impl) // Jakarta compatible version
+    implementation(libs.sunjaxb.impl)
+    implementation(project(":grooves-api"))
+
     jooqGenerator(libs.h2)
+
     runtimeOnly(libs.logback.classic)
+
     testImplementation(libs.awaitility)
     testImplementation(libs.junit.api)
+
     testRuntimeOnly(libs.junit.engine)
     testRuntimeOnly(libs.junit.platform.launcher)
 }
