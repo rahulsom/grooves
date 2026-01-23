@@ -25,7 +25,7 @@ class EventsBlock(
 
         val input = reader.readLines().joinToString("\n")
 
-        var filename = (attributes ?: emptyMap()).get("2") as String? ?: hash(input)
+        var filename = (attributes ?: emptyMap())["2"] as String? ?: hash(input)
         filename = if (filename.endsWith(".svg")) filename else "$filename.svg"
 
         SvgBuilder(input).write(File(outDir, filename))
