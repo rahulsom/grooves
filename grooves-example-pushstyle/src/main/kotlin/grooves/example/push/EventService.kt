@@ -60,6 +60,7 @@ class EventService {
             balance.balance += transaction.amount
             just(CONTINUE)
         }
+
         is Transaction.Withdraw -> {
             balance.balance -= transaction.amount
             just(CONTINUE)

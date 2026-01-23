@@ -101,10 +101,12 @@ class PatientHealthQuery(
             }
             just(CONTINUE)
         }
+
         is PatientEvent.Applicable.ProcedurePerformed -> {
             snapshot.procedures.add(Procedure(event.code, event.timestamp))
             just(CONTINUE)
         }
+
         is PatientEvent.Applicable.PaymentMade -> {
             just(CONTINUE)
         }

@@ -115,10 +115,12 @@ class PatientAccountQuery(
             }
             just(CONTINUE)
         }
+
         is PatientEvent.Applicable.ProcedurePerformed -> {
             snapshot.balance = snapshot.balance.add(event.cost)
             just(CONTINUE)
         }
+
         is PatientEvent.Applicable.PaymentMade -> {
             snapshot.balance = snapshot.balance.subtract(event.amount)
             snapshot.moneyMade = snapshot.moneyMade.add(event.amount)
