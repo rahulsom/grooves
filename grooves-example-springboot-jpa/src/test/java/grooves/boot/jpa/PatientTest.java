@@ -133,16 +133,16 @@ class PatientTest extends AbstractPatientTest {
         var allEvents = patientEventRepository.findAll();
 
         var deprecatedByEvents = allEvents.stream()
-                .filter(event -> event instanceof PatientDeprecatedBy)
-                .map(event -> (PatientDeprecatedBy) event)
+                .filter(PatientDeprecatedBy.class::isInstance)
+                .map(PatientDeprecatedBy.class::cast)
                 .toList();
 
         var deprecatesEvents = allEvents.stream()
-                .filter(event -> event instanceof PatientDeprecates)
-                .map(event -> (PatientDeprecates) event)
+                .filter(PatientDeprecates.class::isInstance)
+                .map(PatientDeprecates.class::cast)
                 .toList();
 
-        assertThat(deprecatedByEvents).allMatch(event -> event.getConverse() != null);
-        assertThat(deprecatesEvents).allMatch(event -> event.getConverse() != null);
+        assertThat(deprecatedByEvents).isNotEmpty().allMatch(event -> event.getConverse() != null);
+        assertThat(deprecatesEvents).isNotEmpty().allMatch(event -> event.getConverse() != null);
     }
 }
