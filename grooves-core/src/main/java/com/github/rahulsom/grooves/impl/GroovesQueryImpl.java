@@ -1,5 +1,6 @@
 package com.github.rahulsom.grooves.impl;
 
+import com.github.rahulsom.grooves.DeprecatedByResult;
 import com.github.rahulsom.grooves.EventApplyOutcome;
 import com.github.rahulsom.grooves.EventType;
 import com.github.rahulsom.grooves.GroovesQuery;
@@ -22,6 +23,7 @@ import com.github.rahulsom.grooves.logging.Trace;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -90,40 +92,26 @@ public class GroovesQueryImpl<VersionOrTimestampT, SnapshotT, AggregateT, EventT
             BiConsumer<CallIdentifier, SnapshotT> beforeReturn) {
         final var indent = IndentedLogging.indent();
 
-        final var callIdentifier = new CallIdentifier(indent + "computeSnapshotImpl(<... " + events.size() + " items>, "
-                + snapshot + ", " + aggregates + ", " + at + ")");
+        final var callIdentifier = new CallIdentifier("%scomputeSnapshotImpl(<... %d items>, %s, %s, %s)"
+                .formatted(indent, events.size(), snapshot, aggregates, at));
         log.trace(callIdentifier.data);
         IndentedLogging.stepIn();
 
         final var revertEvents = new ArrayList<EventT>();
         final var forwardEvents = new ArrayList<EventT>();
-        for (EventT event : events) {
-            if (eventClassifier.invoke(event) == EventType.Revert) {
-                revertEvents.add(event);
-            } else {
-                forwardEvents.add(event);
-            }
-        }
+        classifyEventsByDirection(events, revertEvents, forwardEvents);
 
+        BiConsumer<CallIdentifier, SnapshotT> beforeReturnWithLogger = (c, s) -> {
+            beforeReturn.accept(c, s);
+            IndentedLogging.stepOut();
+        };
         if (revertsExistOutsideEvents(revertEvents, indent, forwardEvents)) {
-            final var snapshot1 = emptySnapshotProvider.invoke(aggregates.get(0));
+            final var snapshot1 = emptySnapshotProvider.invoke(aggregates.getFirst());
             final var events1 = eventsProvider.invoke(aggregates, at, snapshot1).toList();
-            return computeSnapshotImpl(events1, snapshot1, aggregates, at, redirect, (c, s) -> {
-                beforeReturn.accept(c, s);
-                IndentedLogging.stepOut();
-            });
+            return computeSnapshotImpl(events1, snapshot1, aggregates, at, redirect, beforeReturnWithLogger);
         }
 
-        final var deprecatesEvents = forwardEvents.stream()
-                .filter(event -> eventClassifier.invoke(event) == EventType.Deprecates)
-                .collect(Collectors.toCollection(ArrayList::new));
-        while (!deprecatesEvents.isEmpty()) {
-            final var event = deprecatesEvents.remove(0);
-            final var converseId = deprecatedByProvider.invoke(event).eventId();
-            deprecator.invoke(snapshot, event);
-            forwardEvents.remove(event);
-            forwardEvents.removeIf(e -> Objects.equals(eventIdProvider.invoke(e), converseId));
-        }
+        removeDeprecatedForwardEvents(snapshot, forwardEvents);
 
         for (EventT event : forwardEvents) {
             if (applyMoreEventsPredicate.invoke(snapshot)) {
@@ -137,23 +125,15 @@ public class GroovesQueryImpl<VersionOrTimestampT, SnapshotT, AggregateT, EventT
                     case DeprecatedBy -> {
                         final var ret = deprecatedByProvider.invoke(event);
                         log.debug(
-                                "{}  ...The aggregate was deprecated by {}. "
-                                        + "Recursing to compute snapshot for it...",
+                                "{}  ...The aggregate was deprecated by {}. Recursing to compute snapshot for it...",
                                 indent,
                                 ret.aggregate());
-                        final var refEvent = eventsProvider
-                                .invoke(List.of(ret.aggregate()), null, emptySnapshotProvider.invoke(ret.aggregate()))
-                                .toList()
-                                .stream()
-                                .filter(e -> Objects.equals(eventIdProvider.invoke(e), ret.eventId()))
-                                .findFirst()
-                                .orElseThrow();
+                        final var refEvent = getRefEvent(ret);
 
                         final var redirectVersion = eventVersioner.invoke(refEvent);
-                        var otherSnapshot = snapshotProvider.invoke(ret.aggregate(), redirectVersion);
-                        if (otherSnapshot == null) {
-                            otherSnapshot = emptySnapshotProvider.invoke(ret.aggregate());
-                        }
+                        var otherSnapshot = Optional.ofNullable(
+                                        snapshotProvider.invoke(ret.aggregate(), redirectVersion))
+                                .orElseGet(() -> emptySnapshotProvider.invoke(ret.aggregate()));
                         final var newAggregates = new ArrayList<>(List.of(ret.aggregate()));
                         newAggregates.addAll(aggregates);
                         final var newEvents = eventsProvider
@@ -162,10 +142,8 @@ public class GroovesQueryImpl<VersionOrTimestampT, SnapshotT, AggregateT, EventT
                         if (redirect) {
                             final var finalAggregates = new ArrayList<>(aggregates);
                             finalAggregates.add(ret.aggregate());
-                            return computeSnapshotImpl(newEvents, otherSnapshot, finalAggregates, at, true, (c, s) -> {
-                                beforeReturn.accept(c, s);
-                                IndentedLogging.stepOut();
-                            });
+                            return computeSnapshotImpl(
+                                    newEvents, otherSnapshot, finalAggregates, at, true, beforeReturnWithLogger);
                         } else {
                             return new GroovesResult.Redirect<>(ret.aggregate(), redirectVersion);
                         }
@@ -188,17 +166,51 @@ public class GroovesQueryImpl<VersionOrTimestampT, SnapshotT, AggregateT, EventT
             }
         }
 
-        var versionOrTimestamp = eventVersioner.invoke(events.get(events.size() - 1));
+        var versionOrTimestamp = eventVersioner.invoke(events.getLast());
         snapshotVersioner.invoke(snapshot, versionOrTimestamp);
 
         beforeReturn.accept(callIdentifier, snapshot);
         return new GroovesResult.Success<>(snapshot);
     }
 
+    private @NotNull EventT getRefEvent(DeprecatedByResult<AggregateT, EventIdT> ret) {
+        return eventsProvider
+                .invoke(List.of(ret.aggregate()), null, emptySnapshotProvider.invoke(ret.aggregate()))
+                .toList()
+                .stream()
+                .filter(e -> Objects.equals(eventIdProvider.invoke(e), ret.eventId()))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    private void removeDeprecatedForwardEvents(SnapshotT snapshot, ArrayList<EventT> forwardEvents) {
+        final var deprecatesEvents = forwardEvents.stream()
+                .filter(event -> eventClassifier.invoke(event) == EventType.Deprecates)
+                .collect(Collectors.toCollection(ArrayList::new));
+        while (!deprecatesEvents.isEmpty()) {
+            final var event = deprecatesEvents.removeFirst();
+            final var converseId = deprecatedByProvider.invoke(event).eventId();
+            deprecator.invoke(snapshot, event);
+            forwardEvents.remove(event);
+            forwardEvents.removeIf(e -> Objects.equals(eventIdProvider.invoke(e), converseId));
+        }
+    }
+
+    private void classifyEventsByDirection(
+            List<EventT> events, ArrayList<EventT> revertEvents, ArrayList<EventT> forwardEvents) {
+        for (EventT event : events) {
+            if (eventClassifier.invoke(event) == EventType.Revert) {
+                revertEvents.add(event);
+            } else {
+                forwardEvents.add(event);
+            }
+        }
+    }
+
     private boolean revertsExistOutsideEvents(
             ArrayList<EventT> revertEvents, String indent, ArrayList<EventT> forwardEvents) {
         while (!revertEvents.isEmpty()) {
-            var mostRecentRevert = revertEvents.remove(revertEvents.size() - 1);
+            var mostRecentRevert = revertEvents.removeLast();
             var revertedEvent = revertedEventProvider.invoke(mostRecentRevert);
 
             if (revertEvents.remove(revertedEvent)) {
