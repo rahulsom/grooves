@@ -21,7 +21,7 @@ class PatientTest extends AbstractPatientTest {
     static GenericContainer<?> libertyContainer;
 
     @BeforeAll
-    public static void setupSpec() {
+    static void setupSpec() {
         final var warFile = new File(System.getProperty("war.file.path", "build/libs/grooves-example-javaee-0.1.war"));
         if (!warFile.exists()) {
             throw new IllegalStateException(
@@ -43,7 +43,7 @@ class PatientTest extends AbstractPatientTest {
     }
 
     @AfterAll
-    public static void cleanupSpec() {
+    static void cleanupSpec() {
         if (libertyContainer != null) {
             libertyContainer.stop();
         }
@@ -58,7 +58,7 @@ class PatientTest extends AbstractPatientTest {
 
     @SuppressWarnings("EmptyMethod")
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         // Test to ensure Spring context loads
     }
 }

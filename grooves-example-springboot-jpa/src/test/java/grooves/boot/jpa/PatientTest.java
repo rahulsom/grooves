@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @ContextConfiguration
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-public class PatientTest extends AbstractPatientTest {
+class PatientTest extends AbstractPatientTest {
     @Override
     public RestClient getRest() {
         final int port = serverPort;

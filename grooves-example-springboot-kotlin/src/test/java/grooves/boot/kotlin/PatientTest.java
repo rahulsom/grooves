@@ -17,7 +17,7 @@ import org.testcontainers.mongodb.MongoDBContainer;
 @ContextConfiguration
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @Testcontainers
-public class PatientTest extends AbstractPatientTest {
+class PatientTest extends AbstractPatientTest {
     @Container
     static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:4.4.0");
 
@@ -41,7 +41,7 @@ public class PatientTest extends AbstractPatientTest {
 
     @SuppressWarnings("EmptyMethod")
     @Test
-    public void contextLoads() {
+    void contextLoads() {
         // Test to ensure Spring context loads
     }
 }
