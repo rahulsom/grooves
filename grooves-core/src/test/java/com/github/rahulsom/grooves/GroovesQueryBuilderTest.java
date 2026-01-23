@@ -15,9 +15,8 @@ class GroovesQueryBuilderTest {
     @Test
     @DisplayName("Should list problems if no fields are configured")
     void shouldListProblemsIfNoFieldsAreConfigured() {
-        final var actualException = assertThrows(
-                IllegalStateException.class,
-                () -> GroovesQueryBuilder.builder().build().toQuery());
+        var queryBuilder = GroovesQueryBuilder.builder().build();
+        final var actualException = assertThrows(IllegalStateException.class, queryBuilder::toQuery);
 
         assertThat(actualException).isNotNull();
         assertThat(actualException.getMessage()).isEqualTo("snapshotProvider is not set");
@@ -40,10 +39,10 @@ class GroovesQueryBuilderTest {
     @Test
     @DisplayName("Should list problems if some fields are configured")
     void shouldListProblemsIfSomeFieldsAreConfigured() {
-        final var actualException = assertThrows(IllegalStateException.class, () -> GroovesQueryBuilder.builder()
+        var queryBuilder = GroovesQueryBuilder.builder()
                 .emptySnapshotProvider(o -> "Hello 0")
-                .build()
-                .toQuery());
+                .build();
+        final var actualException = assertThrows(IllegalStateException.class, queryBuilder::toQuery);
 
         assertThat(actualException).isNotNull();
         assertThat(actualException.getMessage()).isEqualTo("snapshotProvider is not set");
