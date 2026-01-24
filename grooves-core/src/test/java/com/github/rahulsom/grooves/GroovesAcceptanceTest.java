@@ -1,7 +1,13 @@
 package com.github.rahulsom.grooves;
 
-import static com.github.rahulsom.grooves.AcceptanceTestFixture.*;
-import static com.github.rahulsom.grooves.EventType.*;
+import static com.github.rahulsom.grooves.AcceptanceTestFixture.Aggregate;
+import static com.github.rahulsom.grooves.AcceptanceTestFixture.Event;
+import static com.github.rahulsom.grooves.AcceptanceTestFixture.Snapshot;
+import static com.github.rahulsom.grooves.AcceptanceTestFixture.createQuery;
+import static com.github.rahulsom.grooves.EventType.DeprecatedBy;
+import static com.github.rahulsom.grooves.EventType.Deprecates;
+import static com.github.rahulsom.grooves.EventType.Normal;
+import static com.github.rahulsom.grooves.EventType.Revert;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;

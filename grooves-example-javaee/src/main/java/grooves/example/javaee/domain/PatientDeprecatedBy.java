@@ -5,7 +5,8 @@ import static rx.RxReactiveStreams.toPublisher;
 
 import com.github.rahulsom.grooves.api.events.DeprecatedBy;
 import javax.xml.bind.annotation.XmlTransient;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 

@@ -1,6 +1,9 @@
 package com.github.rahulsom.grooves.queries.internal;
 
-import static io.reactivex.Flowable.*;
+import static io.reactivex.Flowable.error;
+import static io.reactivex.Flowable.fromIterable;
+import static io.reactivex.Flowable.fromPublisher;
+import static io.reactivex.Flowable.just;
 
 import com.github.rahulsom.grooves.api.GroovesException;
 import com.github.rahulsom.grooves.api.events.BaseEvent;

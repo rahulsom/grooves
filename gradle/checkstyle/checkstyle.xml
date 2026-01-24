@@ -39,7 +39,7 @@
             <property name="allowByTailComment" value="true"/>
             <property name="allowNonPrintableEscapes" value="true"/>
         </module>
-        <!--<module name="AvoidStarImport"/>-->
+        <module name="AvoidStarImport"/>
         <module name="OneTopLevelClass"/>
         <module name="MultipleVariableDeclarations"/>
         <module name="ArrayTypeStyle"/>

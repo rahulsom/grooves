@@ -1,6 +1,18 @@
 package com.github.rahulsom.grooves;
 
-import com.github.rahulsom.grooves.functions.*;
+import com.github.rahulsom.grooves.functions.ApplyMoreEventsPredicate;
+import com.github.rahulsom.grooves.functions.DeprecatedByProvider;
+import com.github.rahulsom.grooves.functions.Deprecator;
+import com.github.rahulsom.grooves.functions.EmptySnapshotProvider;
+import com.github.rahulsom.grooves.functions.EventClassifier;
+import com.github.rahulsom.grooves.functions.EventHandler;
+import com.github.rahulsom.grooves.functions.EventIdProvider;
+import com.github.rahulsom.grooves.functions.EventVersioner;
+import com.github.rahulsom.grooves.functions.EventsProvider;
+import com.github.rahulsom.grooves.functions.ExceptionHandler;
+import com.github.rahulsom.grooves.functions.RevertedEventProvider;
+import com.github.rahulsom.grooves.functions.SnapshotProvider;
+import com.github.rahulsom.grooves.functions.SnapshotVersioner;
 import com.github.rahulsom.grooves.impl.GroovesQueryImpl;
 import java.util.ArrayList;
 import java.util.List;
