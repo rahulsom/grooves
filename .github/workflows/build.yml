@@ -16,6 +16,7 @@ jobs:
       actions: read
       contents: write
       packages: read
+      pages: write
     with:
       java-version: 21
       codeql: false
