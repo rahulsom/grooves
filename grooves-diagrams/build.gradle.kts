@@ -29,7 +29,7 @@ dependencies {
 }
 
 tasks.withType<CompileSass> {
-    setSourceDir(project.file("$projectDir/src/main/resources"))
+    sourceDir = project.file("$projectDir/src/main/resources")
     outputDir = project.file("${layout.buildDirectory.get()}/generated/css")
 }
 
