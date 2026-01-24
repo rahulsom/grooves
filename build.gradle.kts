@@ -66,7 +66,7 @@ contacts {
     }
 }
 
-tasks.named("release") { dependsOn("grooves-docs:gitPublishPush") }
+
 
 tasks.register("countTests") {
     description = "Count total number of tests executed across all submodules"

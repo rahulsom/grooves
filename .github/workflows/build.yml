@@ -65,3 +65,24 @@ jobs:
           ./npmw run build
           ./npmw run test
           npx playwright test visual.spec.ts
+
+  publish-site:
+    runs-on: ubuntu-latest
+    needs: [build, test-site]
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'temurin'
+
+      - name: Publish Site
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew :grooves-docs:gitPublishPush
