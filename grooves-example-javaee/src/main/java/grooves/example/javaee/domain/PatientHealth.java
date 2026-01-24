@@ -1,6 +1,8 @@
 package grooves.example.javaee.domain;
 
-import static rx.Observable.*;
+import static rx.Observable.empty;
+import static rx.Observable.from;
+import static rx.Observable.just;
 import static rx.RxReactiveStreams.toPublisher;
 
 import com.github.rahulsom.grooves.api.snapshots.Snapshot;

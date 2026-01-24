@@ -3,7 +3,11 @@ package com.github.rahulsom.grooves.queries.internal;
 import static io.reactivex.Flowable.fromPublisher;
 import static io.reactivex.Flowable.just;
 
-import com.github.rahulsom.grooves.api.events.*;
+import com.github.rahulsom.grooves.api.events.BaseEvent;
+import com.github.rahulsom.grooves.api.events.DeprecatedBy;
+import com.github.rahulsom.grooves.api.events.Deprecates;
+import com.github.rahulsom.grooves.api.events.DisjoinEvent;
+import com.github.rahulsom.grooves.api.events.JoinEvent;
 import com.github.rahulsom.grooves.api.snapshots.internal.BaseJoin;
 import io.reactivex.Flowable;
 import java.util.List;

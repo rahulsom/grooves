@@ -1,6 +1,8 @@
 package com.github.rahulsom.grooves.queries;
 
-import static com.github.rahulsom.grooves.queries.internal.Utils.*;
+import static com.github.rahulsom.grooves.queries.internal.Utils.getApplicableEvents;
+import static com.github.rahulsom.grooves.queries.internal.Utils.getForwardOnlyEvents;
+import static com.github.rahulsom.grooves.queries.internal.Utils.returnOrRedirect;
 import static io.reactivex.Flowable.empty;
 import static io.reactivex.Flowable.fromPublisher;
 
