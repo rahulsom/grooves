@@ -81,7 +81,7 @@ sealed class PatientEvent : BaseEvent<Patient, String, PatientEvent> { // <1><2>
                     BeansHolder.context?.getBean("patientEventRepository") as PatientEventRepository?
                 patientEventRepository
                     ?.findById(it)
-                    ?.map { it as PatientDeprecatedBy } ?: empty()
+                    ?.map { event -> event as PatientDeprecatedBy } ?: empty()
             } ?: empty()
 
         @JsonIgnore
