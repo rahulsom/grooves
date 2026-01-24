@@ -7,9 +7,6 @@ version = "0.1"
 dependencies {
     annotationProcessor(libs.lombok)
 
-    providedCompile(libs.javaee.api)
-    providedCompile(libs.jaxb.api)
-
     compileOnly(libs.jetbrains.annotations)
     compileOnly(libs.lombok)
 
@@ -19,6 +16,9 @@ dependencies {
     implementation(libs.slf4j.api)
     implementation(project(":grooves-example-test"))
     implementation(project(":grooves-java"))
+
+    providedCompile(libs.javaee.api)
+    providedCompile(libs.jaxb.api)
 
     testImplementation(libs.junit.api)
     testImplementation(libs.junit.params)
