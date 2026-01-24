@@ -33,8 +33,8 @@ class SvgBuilder(
             .forEach {
                 if (it.startsWith("|")) {
                     lastAggregate = toAggregate(it)
-                    lastAggregate!!.index = aggregates.size
-                    aggregates.add(lastAggregate!!)
+                    lastAggregate.index = aggregates.size
+                    aggregates.add(lastAggregate)
                 }
                 if (it.startsWith("  - ") || it.startsWith("  + ")) {
                     val event = toEvent(it)
