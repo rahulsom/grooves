@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,15 +41,17 @@ public abstract class AbstractPatientTest {
     }
 
     static Date getDate(Object ts) {
-        if (ts instanceof String s) {
-            try {
-                return new SimpleDateFormat("yyyy-MM-dd").parse(s.substring(0, 10));
-            } catch (ParseException e) {
-                return null;
-            }
-        } else if (ts instanceof Long l) {
-            return new Date(l);
-        } else {
+        return switch (ts) {
+            case String s -> parseDate(s);
+            case Long l -> new Date(l);
+            default -> null;
+        };
+    }
+
+    private static @Nullable Date parseDate(String s) {
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd").parse(s.substring(0, 10));
+        } catch (ParseException e) {
             return null;
         }
     }
