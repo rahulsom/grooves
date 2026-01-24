@@ -10,9 +10,9 @@ description = "AspectJ Support for Java implementations of Grooves"
 dependencies {
     api(project(":grooves-api"))
 
-    implementation(libs.google.autoservice)
-
     compileOnly(libs.jetbrains.annotations)
+
+    implementation(libs.google.autoservice)
 
     testImplementation(libs.google.compiletesting)
     testImplementation(libs.rxjava.core)

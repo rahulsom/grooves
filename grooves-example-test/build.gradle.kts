@@ -22,7 +22,6 @@ dependencies {
     implementation(libs.beanutils)
     implementation(libs.groovy)
     implementation(libs.httpcomponents.client)
-
     implementation(libs.rxjava2)
     implementation(libs.slf4j.api)
     implementation(libs.xerces)

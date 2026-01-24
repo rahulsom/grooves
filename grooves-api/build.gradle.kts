@@ -11,16 +11,16 @@ apply {
 description = "APIs that help in computation of Grooves based Snapshots"
 
 dependencies {
-    api(project(":grooves-types"))
+    annotationProcessor(libs.lombok)
 
-    implementation(libs.rxjava2)
-    implementation(libs.slf4j.api)
+    api(project(":grooves-types"))
 
     compileOnly(libs.groovy)
     compileOnly(libs.jetbrains.annotations)
     compileOnly(libs.lombok)
 
-    annotationProcessor(libs.lombok)
+    implementation(libs.rxjava2)
+    implementation(libs.slf4j.api)
 }
 
 tasks.withType<Javadoc>().configureEach {
