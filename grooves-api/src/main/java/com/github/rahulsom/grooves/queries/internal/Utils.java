@@ -86,7 +86,6 @@ public class Utils {
      * @param <EventT>                  The type of Event
      * @param <SnapshotIdT>             The type of SnapshotT's id
      * @param <SnapshotT>               The type of Snapshot
-     * @param <QueryT>                  The type of Query
      * @param <ExecutorT>               The type of the query executor
      *
      * @return an observable of forward only events
@@ -98,7 +97,6 @@ public class Utils {
                     EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
                     SnapshotIdT,
                     SnapshotT extends BaseSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>,
-                    QueryT extends BaseQuery<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>,
                     ExecutorT extends Executor<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>>
             Flowable<EventT> getForwardOnlyEvents(
                     @NotNull List<EventT> events,
@@ -125,7 +123,7 @@ public class Utils {
      * @return A String representation of events
      */
     @NotNull
-    public static <EventT extends BaseEvent> String stringify(@NotNull List<EventT> events) {
+    public static <EventT extends BaseEvent<?, ?, ?>> String stringify(@NotNull List<EventT> events) {
         return events.stream().map(EventT::toString).collect(JOIN_EVENTS);
     }
 
@@ -138,7 +136,7 @@ public class Utils {
      * @return A String representation of events
      */
     @NotNull
-    public static <EventT extends BaseEvent> String ids(@NotNull List<EventT> events) {
+    public static <EventT extends BaseEvent<?, ?, ?>> String ids(@NotNull List<EventT> events) {
         return events.stream().map(BaseEvent::getId).map(String::valueOf).collect(JOIN_EVENT_IDS);
     }
 
@@ -149,11 +147,11 @@ public class Utils {
      * @param snapshot The snapshot
      * @param event    The last event
      */
-    public static void setLastEvent(@NotNull BaseSnapshot snapshot, @NotNull BaseEvent event) {
-        if (snapshot instanceof VersionedSnapshot versionedSnapshot) {
+    public static void setLastEvent(@NotNull BaseSnapshot<?, ?, ?, ?> snapshot, @NotNull BaseEvent<?, ?, ?> event) {
+        if (snapshot instanceof VersionedSnapshot<?, ?, ?, ?> versionedSnapshot) {
             versionedSnapshot.setLastEventPosition(event.getPosition());
         }
-        if (snapshot instanceof TemporalSnapshot temporalSnapshot) {
+        if (snapshot instanceof TemporalSnapshot<?, ?, ?, ?> temporalSnapshot) {
             temporalSnapshot.setLastEventTimestamp(event.getTimestamp());
         }
     }
