@@ -28,14 +28,14 @@ test.describe("Basic Layout Tests", () => {
 
     // Source button
     const sourceButton = page.locator(
-      'a[href="http://github.com/rahulsom/grooves"]'
+      'a[href="https://github.com/rahulsom/grooves"]'
     );
     await expect(sourceButton).toBeVisible();
     await expect(sourceButton).toContainText("Source");
 
     // Issues button
     const issuesButton = page.locator(
-      'a[href="http://github.com/rahulsom/grooves/issues"]'
+      'a[href="https://github.com/rahulsom/grooves/issues"]'
     );
     await expect(issuesButton).toBeVisible();
     await expect(issuesButton).toContainText("Issues");
