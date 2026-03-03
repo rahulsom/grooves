@@ -2,22 +2,26 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism.min.css');
 @import url('https://fonts.googleapis.com/css?family=Monoton|Roboto:300,700');
 
+:root {
+    --grooves-accent: #2ba6cb;
+}
+
 .switch--item:not(:first-child) {
-    border-left: #2ba6cb solid 0.1px !important;
+    border-left: var(--grooves-accent) solid 0.1px !important;
 }
 
 .switch--item.selected {
-    background-color: #2ba6cb !important;
+    background-color: var(--grooves-accent) !important;
     color: #fff !important;
     font-weight: bold;
 }
 
 .switch--item {
-    color: #2ba6cb !important;
+    color: var(--grooves-accent) !important;
 }
 
 .switch {
-    border-color: #2ba6cb !important;
+    border-color: var(--grooves-accent) !important;
 }
 
 .colist>table tr>td:first-of-type {
