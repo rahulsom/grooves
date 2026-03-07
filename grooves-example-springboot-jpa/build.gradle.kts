@@ -51,6 +51,7 @@ tasks.withType<Test> {
 }
 
 tasks.named("bootJar", Jar::class) {
+    notCompatibleWithConfigurationCache("BootJar task is not compatible with the configuration cache because of nebula.release plugin.")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 

@@ -82,6 +82,10 @@ jooq {
     }
 }
 
+tasks.named("flywayMigrate") {
+    notCompatibleWithConfigurationCache("FlywayMigrateTask is not compatible with the configuration cache.")
+}
+
 flyway {
     url = "jdbc:h2:file:${layout.buildDirectory.dir("schema").get().asFile}"
     user = "sa"
