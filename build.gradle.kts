@@ -239,7 +239,7 @@ spotless {
     typescript {
         prettier()
         target("**/*.ts")
-        targetExclude("**/build/**/*.ts", "node_modules/**/*.ts")
+        targetExclude("**/build/**/*.ts", "**/node_modules/**/*.ts")
     }
 }
 
