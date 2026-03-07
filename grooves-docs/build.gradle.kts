@@ -23,6 +23,7 @@ dependencies {
 project.version = rootProject.version.toString()
 
 tasks.withType<AsciidoctorTask> {
+    notCompatibleWithConfigurationCache("AsciidoctorTask is not compatible with the configuration cache in the current version of the plugin.")
     sourceDir(file("src/docs/asciidoc"))
     // baseDir (file("src/docs/asciidoc"))
     sources {

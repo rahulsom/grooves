@@ -29,6 +29,7 @@ dependencies {
 }
 
 tasks.withType<CompileSass> {
+    notCompatibleWithConfigurationCache("CompileSass is not compatible with the configuration cache.")
     sourceDir = project.file("$projectDir/src/main/resources")
     outputDir = project.file("${layout.buildDirectory.get()}/generated/css")
 }
