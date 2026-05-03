@@ -50,7 +50,7 @@ sunjaxb = "4.0.7"
 svgbuilder = "0.7.0"
 testcontainers = "2.0.5"
 testLogger = "4.0.0"
-waena = "0.24.0"
+waena = "0.25.0"
 xerces = "2.12.2"
 
 [libraries]
