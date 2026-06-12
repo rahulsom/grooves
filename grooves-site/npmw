@@ -3,6 +3,6 @@
 . .ntw.sh
 
 selectNode v24.16.0
-selectTool npm 11.16.0
+selectTool npm 11.17.0
 
 npm "$@"
