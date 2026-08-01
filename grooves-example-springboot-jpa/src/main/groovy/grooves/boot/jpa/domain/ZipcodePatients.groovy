@@ -67,7 +67,9 @@ class ZipcodePatients implements Join<Zipcode, Long, Patient, Long, ZipcodeEvent
 
     Set<Zipcode> getDeprecates() {
         deprecatesIds.split(',').findAll { it }
-        .collect { RepositoryProvider.zipcodeRepository.getReferenceById(it.toLong()) }.toSet()
+        .collect {
+            RepositoryProvider.zipcodeRepository.getReferenceById(it.toLong())
+        }.toSet()
     }
 
     void setDeprecates(Set<Zipcode> deprecates) {
@@ -98,7 +100,9 @@ class ZipcodePatients implements Join<Zipcode, Long, Patient, Long, ZipcodeEvent
         new Representation(
                 id,
                 aggregateId,
-                joinedIds.split(',').findAll { it != '' }.toList()*.toInteger() as Set,
+                joinedIds.split(',').findAll {
+                    it != ''
+                }.toList()*.toInteger() as Set,
                 lastEventPosition
                 )
     }

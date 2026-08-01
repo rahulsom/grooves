@@ -65,7 +65,7 @@ QuerySupport<Patient, Long, PatientEvent, Long, PatientHealth> {
     Publisher<PatientEvent> getUncomputedEvents(
             @NotNull Patient patient, PatientHealth lastSnapshot, long version) {
         fromIterable(patientEventRepository.getUncomputedEventsByVersion(
-                patient, lastSnapshot?.lastEventPosition ?: 0L, version))
+                        patient, lastSnapshot?.lastEventPosition ?: 0L, version))
     }
 
     @NotNull
@@ -73,9 +73,9 @@ QuerySupport<Patient, Long, PatientEvent, Long, PatientHealth> {
             @NotNull Patient patient, PatientHealth lastSnapshot, @NotNull Date snapshotTime) {
         fromIterable(lastSnapshot?.lastEventTimestamp ?
                 patientEventRepository.getUncomputedEventsByDateRange(
-                patient, lastSnapshot.lastEventTimestamp, snapshotTime) :
+                        patient, lastSnapshot.lastEventTimestamp, snapshotTime) :
                 patientEventRepository.getUncomputedEventsUntilDate(
-                patient, snapshotTime))
+                        patient, snapshotTime))
     }
 
     @Override
