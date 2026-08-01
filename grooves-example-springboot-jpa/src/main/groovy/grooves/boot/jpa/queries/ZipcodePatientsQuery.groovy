@@ -39,14 +39,14 @@ ZipcodeGotPatient, ZipcodeLostPatient // <6>
     Publisher<ZipcodeEvent> getUncomputedEvents(
             @NotNull Zipcode aggregate, @Nullable ZipcodePatients lastSnapshot, @NotNull Date snapshotTime) {
         fromIterable(zipcodeEventRepository.getUncomputedEventsByDateRange(
-                aggregate, lastSnapshot.lastEventTimestamp, snapshotTime))
+                        aggregate, lastSnapshot.lastEventTimestamp, snapshotTime))
     }
 
     @NotNull
     @Override
     Publisher<ZipcodePatients> getSnapshot(@Nullable Date maxTimestamp, @NotNull Zipcode aggregate) {
         fromIterable(zipcodePatientsRepository.findAllByAggregateIdAndLastEventTimestampLessThan(
-                aggregate.id, maxTimestamp))
+                        aggregate.id, maxTimestamp))
     }
 
     @NotNull
@@ -54,14 +54,14 @@ ZipcodeGotPatient, ZipcodeLostPatient // <6>
     Publisher<ZipcodeEvent> getUncomputedEvents(
             @NotNull Zipcode aggregate, @Nullable ZipcodePatients lastSnapshot, long version) {
         fromIterable(zipcodeEventRepository.getUncomputedEventsByVersion(
-                aggregate, lastSnapshot.lastEventPosition, version))
+                        aggregate, lastSnapshot.lastEventPosition, version))
     }
 
     @NotNull
     @Override
     Publisher<ZipcodePatients> getSnapshot(long maxPosition, @NotNull Zipcode aggregate) {
         fromIterable(zipcodePatientsRepository.findAllByAggregateIdAndLastEventPositionLessThan(
-                aggregate.id, maxPosition))
+                        aggregate.id, maxPosition))
     }
 
     @NotNull
