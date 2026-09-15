@@ -26,7 +26,7 @@ import org.reactivestreams.Publisher;
  *
  * @author Rahul Somasunderam
  */
-@Builder(builderClassName = "Builder", builderMethodName = "newBuilder", setterPrefix = "with")
+@Builder(builderMethodName = "newBuilder", setterPrefix = "with")
 public class FunctionalTemporalQuery<
                 AggregateT,
                 EventIdT,
@@ -101,7 +101,7 @@ public class FunctionalTemporalQuery<
      * @param <SnapshotIdT>  The type of the SnapshotT's id field
      * @param <SnapshotT>    The type of the Snapshot
      */
-    public static class Builder<
+    public static class FunctionalTemporalQueryBuilder<
             AggregateT,
             EventIdT,
             EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
