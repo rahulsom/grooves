@@ -42,7 +42,9 @@ public class Grooves {
                     EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
                     SnapshotIdT,
                     SnapshotT extends VersionedSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>>
-            FunctionalVersionedQuery.Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> versioned() {
+            FunctionalVersionedQuery.FunctionalVersionedQueryBuilder<
+                            AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
+                    versioned() {
         return FunctionalVersionedQuery.<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>newBuilder();
     }
 
@@ -74,7 +76,8 @@ public class Grooves {
                     EventT extends BaseEvent<AggregateT, EventIdT, EventT>,
                     SnapshotIdT,
                     SnapshotT extends TemporalSnapshot<AggregateT, SnapshotIdT, EventIdT, EventT>>
-            FunctionalTemporalQuery.Builder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT> temporal() {
+            FunctionalTemporalQuery.FunctionalTemporalQueryBuilder<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>
+                    temporal() {
         return FunctionalTemporalQuery.<AggregateT, EventIdT, EventT, SnapshotIdT, SnapshotT>newBuilder();
     }
 }
