@@ -229,21 +229,23 @@ public class Utils {
                     @NotNull Supplier<Flowable<Pair<SnapshotT, List<EventT>>>> nonReusableSnapshotAndEvents,
                     @NotNull Supplier<SnapshotT> emptySnapshot) {
         if (reuseEarlierSnapshot) {
-            return lastUsableSnapshot.get().flatMap(lastSnapshot -> fromPublisher(uncomputedEvents.apply(lastSnapshot))
-                    .toList()
-                    .toFlowable()
-                    .flatMap(events -> {
-                        if (events.stream().anyMatch(RevertEvent.class::isInstance)) {
-                            final var reverts = events.stream()
-                                    .filter(RevertEvent.class::isInstance)
-                                    .toList();
-                            logger.info("     Uncomputed reverts exist: {}", stringify(reverts));
-                            return nonReusableSnapshotAndEvents.get();
-                        } else {
-                            logger.debug("     Events since last snapshot: {}", stringify(events));
-                            return just(new Pair<>(lastSnapshot, events));
-                        }
-                    }));
+            return lastUsableSnapshot
+                    .get()
+                    .flatMap(lastSnapshot -> fromPublisher(uncomputedEvents.apply(lastSnapshot))
+                            .toList()
+                            .toFlowable()
+                            .flatMap(events -> {
+                                if (events.stream().anyMatch(RevertEvent.class::isInstance)) {
+                                    final var reverts = events.stream()
+                                            .filter(RevertEvent.class::isInstance)
+                                            .toList();
+                                    logger.info("     Uncomputed reverts exist: {}", stringify(reverts));
+                                    return nonReusableSnapshotAndEvents.get();
+                                } else {
+                                    logger.debug("     Events since last snapshot: {}", stringify(events));
+                                    return just(new Pair<>(lastSnapshot, events));
+                                }
+                            }));
         } else {
             final var lastSnapshot = emptySnapshot.get();
 

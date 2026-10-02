@@ -197,8 +197,11 @@ public interface TemporalQuerySupport<
                     }
                     LoggerFactory.getLogger(getClass()).info("  --> Computed: {}", snapshot);
                 })
-                .flatMap(
-                        it -> returnOrRedirect(redirect, events, it, () -> fromPublisher(it.getDeprecatedByObservable())
+                .flatMap(it -> returnOrRedirect(
+                        redirect,
+                        events,
+                        it,
+                        () -> fromPublisher(it.getDeprecatedByObservable())
                                 .flatMap(x -> fromPublisher(computeSnapshot(x, moment)))));
     }
 

@@ -215,9 +215,11 @@ public interface VersionedQuerySupport<
 
                     LoggerFactory.getLogger(getClass()).info("  --> Computed: {}", snapshot);
                 })
-                .flatMap(
-                        it -> returnOrRedirect(redirect, events, it, () -> fromPublisher(it.getDeprecatedByObservable())
-                                .flatMap(deprecatorToSnapshot)));
+                .flatMap(it -> returnOrRedirect(
+                        redirect,
+                        events,
+                        it,
+                        () -> fromPublisher(it.getDeprecatedByObservable()).flatMap(deprecatorToSnapshot)));
     }
 
     @NotNull

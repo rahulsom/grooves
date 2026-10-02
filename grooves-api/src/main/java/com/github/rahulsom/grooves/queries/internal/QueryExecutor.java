@@ -208,27 +208,30 @@ public class QueryExecutor<
         final SnapshotT newSnapshot = query.createEmptySnapshot();
         newSnapshot.setAggregate(aggregate);
 
-        return fromPublisher(event.getConverseObservable()).flatMap(converse -> fromPublisher(
-                        event.getDeprecatedObservable())
-                .flatMap(deprecatedAggregate -> {
-                    log.debug("        -> Deprecated Aggregate is: {}. Converse is: {}", deprecatedAggregate, converse);
-                    query.addToDeprecates(newSnapshot, deprecatedAggregate);
+        return fromPublisher(event.getConverseObservable())
+                .flatMap(converse -> fromPublisher(event.getDeprecatedObservable())
+                        .flatMap(deprecatedAggregate -> {
+                            log.debug(
+                                    "        -> Deprecated Aggregate is: {}. Converse is: {}",
+                                    deprecatedAggregate,
+                                    converse);
+                            query.addToDeprecates(newSnapshot, deprecatedAggregate);
 
-                    Flowable<EventT> concatenatedEvents = events.concatWith(
-                                    fromPublisher(query.findEventsBefore((EventT) converse)))
-                            .cache();
-                    return concatenatedEvents
-                            .filter(it -> !isDeprecatesOrConverse(event, converse, it))
-                            .toSortedList(Comparator.comparing(EventT::getTimestamp))
-                            .toFlowable()
-                            .doOnNext(it -> log.debug("     Reassembled Events: {}", stringify(it)))
-                            .flatMap(sortedEvents -> applyEvents(
-                                    query,
-                                    newSnapshot,
-                                    applyReverts(fromIterable(sortedEvents)),
-                                    plus(deprecatesEvents, event),
-                                    aggregate));
-                }));
+                            Flowable<EventT> concatenatedEvents = events.concatWith(
+                                            fromPublisher(query.findEventsBefore((EventT) converse)))
+                                    .cache();
+                            return concatenatedEvents
+                                    .filter(it -> !isDeprecatesOrConverse(event, converse, it))
+                                    .toSortedList(Comparator.comparing(EventT::getTimestamp))
+                                    .toFlowable()
+                                    .doOnNext(it -> log.debug("     Reassembled Events: {}", stringify(it)))
+                                    .flatMap(sortedEvents -> applyEvents(
+                                            query,
+                                            newSnapshot,
+                                            applyReverts(fromIterable(sortedEvents)),
+                                            plus(deprecatesEvents, event),
+                                            aggregate));
+                        }));
     }
 
     private boolean isDeprecatesOrConverse(
