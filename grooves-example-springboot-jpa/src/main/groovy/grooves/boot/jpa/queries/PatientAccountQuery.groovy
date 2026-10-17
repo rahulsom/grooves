@@ -97,7 +97,7 @@ QuerySupport<Patient, Long, PatientEvent, Long, PatientAccount> {
                 cb.equal(root.get(AGGREGATE), cb.parameter(Patient, AGGREGATE)),
                 cb.gt(root.get(POSITION), lastSnapshot?.lastEventPosition ?: 0L),
                 cb.le(root.get(POSITION), version),
-                )
+        )
         fromIterable(entityManager
                 .createQuery(criteria)
                 .setParameter(AGGREGATE, patient)
@@ -122,7 +122,7 @@ QuerySupport<Patient, Long, PatientEvent, Long, PatientAccount> {
                 q.select(root).where(
                 cb.equal(root.get(AGGREGATE), cb.parameter(Patient, AGGREGATE)),
                 cb.lessThanOrEqualTo(root.get(TIMESTAMP), cb.parameter(Date, UNTIL)),
-                )
+        )
 
         def query = entityManager.createQuery(criteria)
         query.setParameter(AGGREGATE, aggregate).setParameter(UNTIL, snapshotTime)
@@ -178,7 +178,7 @@ QuerySupport<Patient, Long, PatientEvent, Long, PatientAccount> {
                 name: snapshot.name,
                 balance: snapshot.balance,
                 moneyMade: snapshot.moneyMade,
-                )
+        )
         snapshot.deprecates.each { retval.deprecates.add it }
         retval
     }

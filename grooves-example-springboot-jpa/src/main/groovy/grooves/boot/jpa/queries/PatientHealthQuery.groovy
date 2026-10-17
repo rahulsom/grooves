@@ -127,7 +127,7 @@ QuerySupport<Patient, Long, PatientEvent, Long, PatientHealth> {
                 name: snapshot.name,
                 procedures: [],
                 deprecates: [],
-                )
+        )
         snapshot.deprecates.each { retval.deprecates.add it }
         snapshot.procedures.each {
             retval.procedures.add(new Procedure(code: it.code, date: it.date))
