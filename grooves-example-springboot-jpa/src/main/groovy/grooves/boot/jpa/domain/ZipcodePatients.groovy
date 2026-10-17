@@ -104,7 +104,7 @@ class ZipcodePatients implements Join<Zipcode, Long, Patient, Long, ZipcodeEvent
                     it != ''
                 }.toList()*.toInteger() as Set,
                 lastEventPosition
-                )
+        )
     }
 
     @Immutable
