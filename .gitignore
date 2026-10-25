@@ -3,7 +3,7 @@
 build/
 gradle-app.setting
 !gradle-wrapper.jar
-.kotlin/sessions
+.kotlin/
 
 ### JetBrains template
 *.iml
