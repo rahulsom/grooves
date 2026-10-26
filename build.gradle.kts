@@ -62,11 +62,19 @@ subprojects {
         slowThreshold = 5000
     }
 
+    plugins.withId("groovy") {
+        apply(plugin = "codenarc")
+    }
+
     plugins.withId("codenarc") {
         configure<CodeNarcExtension> {
             toolVersion = "4.0.0"
             configFile = rootProject.file("gradle/codenarc/codenarc.groovy")
         }
+    }
+
+    plugins.withId("java") {
+        apply(plugin = "jacoco")
     }
 
     plugins.withId("jacoco") {
