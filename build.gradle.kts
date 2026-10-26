@@ -1,6 +1,24 @@
 import com.adarshr.gradle.testlogger.TestLoggerExtension
 import com.adarshr.gradle.testlogger.theme.ThemeType
 
+buildscript {
+    dependencies {
+        components {
+            // spotless brings jgit 7.x which is incompatible with jreleaser.
+            // Removing jgit from spotless's metadata lets jreleaser be the sole provider.
+            listOf("com.diffplug.spotless:spotless-plugin-gradle", "com.diffplug.spotless:spotless-lib-extra").forEach { module ->
+                withModule(module) {
+                    allVariants {
+                        withDependencies {
+                            removeAll { dependency -> dependency.group == "org.eclipse.jgit" }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 plugins {
     alias(libs.plugins.waena.root)
     alias(libs.plugins.waena.published) apply false
