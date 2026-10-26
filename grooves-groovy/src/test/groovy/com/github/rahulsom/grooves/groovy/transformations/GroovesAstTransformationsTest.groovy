@@ -24,17 +24,21 @@ class GroovesAstTransformationsTest {
             new GroovyShell().evaluate(compose('/MissingEvents.groovy'))
         }
 
-        assertEquals(2, exception.errorCollector.errorCount)
+        assert exception.errorCollector.errorCount == 2
 
         def errors = exception.errorCollector.errors
 
-        assertInstanceOf(SyntaxErrorMessage, errors[0])
+        assert errors[0] instanceof SyntaxErrorMessage
         def message0 = (errors[0] as SyntaxErrorMessage).cause.message
-        assertTrue(message0.matches(/Missing expected method .+Publisher<.+EventApplyOutcome> applyCashDeposit\(.+CashDeposit event, .+Balance snapshot\)\n.+/))
+        def expected0 = /Missing expected method .+Publisher<.+EventApplyOutcome>/ +
+                / applyCashDeposit\(.+CashDeposit event, .+Balance snapshot\)\n.+/
+        assert message0.matches(expected0)
 
-        assertEquals(SyntaxErrorMessage, errors[1].class)
+        assert errors[1].class == SyntaxErrorMessage
         def message1 = (errors[1] as SyntaxErrorMessage).cause.message
-        assertTrue(message1.matches(/Missing expected method .+Publisher<.+EventApplyOutcome> applyCashWithdrawal\(.+CashWithdrawal event, .+Balance snapshot\)\n.+/))
+        def expected1 = /Missing expected method .+Publisher<.+EventApplyOutcome>/ +
+                / applyCashWithdrawal\(.+CashWithdrawal event, .+Balance snapshot\)\n.+/
+        assert message1.matches(expected1)
     }
 
     private static int packageId = 0

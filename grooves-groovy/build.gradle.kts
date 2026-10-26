@@ -4,9 +4,6 @@ plugins {
     alias(libs.plugins.waena.published)
 }
 
-apply {
-    from("$rootDir/gradle/jacoco.gradle")
-}
 
 description = "Support for completeness of queries in Groovy code"
 
