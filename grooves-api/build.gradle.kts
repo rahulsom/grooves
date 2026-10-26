@@ -4,9 +4,6 @@ plugins {
     alias(libs.plugins.waena.published)
 }
 
-apply {
-    from("$rootDir/gradle/jacoco.gradle")
-}
 
 description = "APIs that help in computation of Grooves based Snapshots"
 

@@ -4,10 +4,6 @@ plugins {
     id("groovy")
 }
 
-apply {
-    from("$rootDir/gradle/codenarc/codenarc.gradle")
-    from("$rootDir/gradle/jacoco.gradle")
-}
 
 dependencies {
     compileOnly(libs.jetbrains.annotations)

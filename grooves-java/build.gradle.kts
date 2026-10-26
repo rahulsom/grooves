@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.waena.published)
 }
 
-apply { from("$rootDir/gradle/jacoco.gradle") }
 
 description = "AspectJ Support for Java implementations of Grooves"
 

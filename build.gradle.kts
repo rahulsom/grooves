@@ -62,6 +62,26 @@ subprojects {
         slowThreshold = 5000
     }
 
+    plugins.withId("codenarc") {
+        configure<CodeNarcExtension> {
+            toolVersion = "4.0.0"
+            configFile = rootProject.file("gradle/codenarc/codenarc.groovy")
+        }
+    }
+
+    plugins.withId("jacoco") {
+        configure<JacocoPluginExtension> {
+            toolVersion = "0.8.15"
+        }
+
+        tasks.withType<Test>().configureEach {
+            finalizedBy("jacocoTestReport")
+            configure<JacocoTaskExtension> {
+                destinationFile = file("${layout.buildDirectory.get().asFile}/jacoco/test.exec")
+            }
+        }
+    }
+
     var theProject = project
     var projectPath = theProject.name
     while (theProject.parent != rootProject) {

@@ -7,9 +7,6 @@ plugins {
     alias(libs.plugins.sass)
 }
 
-apply {
-    from("$rootDir/gradle/jacoco.gradle")
-}
 
 description = "Asciidoctor Extension to generate Event Sourcing Diagrams like those on https://rahulsom.github.io/grooves"
 

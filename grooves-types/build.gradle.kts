@@ -4,9 +4,6 @@ plugins {
     alias(libs.plugins.waena.published)
 }
 
-apply {
-    from("$rootDir/gradle/jacoco.gradle")
-}
 
 description = "Types that are used by Grooves to build an Event Sourcing system"
 
