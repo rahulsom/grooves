@@ -20,7 +20,9 @@ test.describe("Basic Layout Tests", () => {
     await expect(page).toHaveTitle("Grooves");
   });
 
-  test("should have animated favicon link and serve favicon.svg", async ({ page }) => {
+  test("should have animated favicon link and serve favicon.svg", async ({
+    page,
+  }) => {
     const favicon = page.locator('link[rel="icon"][type="image/svg+xml"]');
     await expect(favicon).toHaveAttribute("href", "favicon.svg");
 
