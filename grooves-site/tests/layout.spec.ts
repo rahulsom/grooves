@@ -20,6 +20,22 @@ test.describe("Basic Layout Tests", () => {
     await expect(page).toHaveTitle("Grooves");
   });
 
+  test("should have animated favicon link and serve favicon.svg", async ({ page }) => {
+    const favicon = page.locator('link[rel="icon"][type="image/svg+xml"]');
+    await expect(favicon).toHaveAttribute("href", "favicon.svg");
+
+    const response = await page.request.get("/favicon.svg");
+    expect(response.status()).toBe(200);
+
+    const svgText = await response.text();
+    expect(svgText).toContain("<svg");
+    expect(svgText).toContain("@keyframes example");
+    expect(svgText).toContain("fill: red");
+    expect(svgText).toContain("fill: darkgoldenrod");
+    expect(svgText).toContain("fill: blue");
+    expect(svgText).toContain("fill: green");
+  });
+
   test("should have all three main buttons", async ({ page }) => {
     // Documentation button (as dropdown toggle)
     const docButton = page.locator("#dropdownMenuLink");
