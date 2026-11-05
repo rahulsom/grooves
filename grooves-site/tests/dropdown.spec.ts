@@ -1,4 +1,9 @@
 import { test, expect } from "@playwright/test";
+import { readFileSync } from "node:fs";
+
+const versions: Record<string, string[]> = JSON.parse(
+  readFileSync(new URL("../src/versions.json", import.meta.url), "utf-8")
+);
 
 test.describe("Dropdown Functionality Tests", () => {
   test.beforeEach(async ({ page }) => {
@@ -35,25 +40,22 @@ test.describe("Dropdown Functionality Tests", () => {
     const dropdown = page.locator("#versions");
     await expect(dropdown).toBeVisible();
 
-    // Check for supported versions (should be bold for recommended)
-    await expect(dropdown.locator('a[href*="0.7.0"]')).toBeVisible();
-    await expect(dropdown.locator('a[href*="0.6.1"]')).toBeVisible();
+    // Every entry in the generated menu must be present with its exact URL.
+    for (const version of Object.values(versions).flat()) {
+      await expect(
+        dropdown.locator(`a[href="manual/${version}/index.html"]`)
+      ).toBeVisible();
+    }
 
     // Check for upcoming versions section
     await expect(
       dropdown.locator(".dropdown-header").filter({ hasText: "Upcoming" })
     ).toBeVisible();
-    await expect(dropdown.locator('a[href*="0.8.0-SNAPSHOT"]')).toBeVisible();
 
     // Check for old versions section
     await expect(
       dropdown.locator(".dropdown-header").filter({ hasText: "Old" })
     ).toBeVisible();
-    await expect(dropdown.locator('a[href*="0.5.0"]')).toBeVisible();
-    await expect(dropdown.locator('a[href*="0.4.0"]')).toBeVisible();
-    await expect(dropdown.locator('a[href*="0.3.0"]')).toBeVisible();
-    await expect(dropdown.locator('a[href*="0.2.1"]')).toBeVisible();
-    await expect(dropdown.locator('a[href*="0.1.1"]')).toBeVisible();
   });
 
   test("should have proper dropdown structure with headers and dividers", async ({
@@ -93,8 +95,7 @@ test.describe("Dropdown Functionality Tests", () => {
     const dropdown = page.locator("#versions");
     const links = dropdown.locator('a[href*="manual/"]');
 
-    // Should have at least 7 version links (2 supported + 1 upcoming + 5 old)
-    await expect(links).toHaveCount(8);
+    await expect(links).toHaveCount(Object.values(versions).flat().length);
 
     // Check href pattern
     for (const link of await links.all()) {
