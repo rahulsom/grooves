@@ -22,10 +22,16 @@ dependencies {
 
 project.version = rootProject.version.toString()
 
+// Render historical sources with the maintained documentation toolchain.
+val manualRoot = file(providers.gradleProperty("manualRoot").getOrElse(rootDir.absolutePath))
+val manualSource = file(providers.gradleProperty("manualSource").getOrElse("src/docs/asciidoc"))
+val manualVersion = providers.gradleProperty("manualVersion").getOrElse(project.version.toString())
+
 tasks.withType<AsciidoctorTask> {
     notCompatibleWithConfigurationCache("AsciidoctorTask is not compatible with the configuration cache in the current version of the plugin.")
-    sourceDir(file("src/docs/asciidoc"))
+    sourceDir(manualSource)
     baseDirFollowsSourceDir()
+    providers.gradleProperty("manualOutput").orNull?.let { setOutputDir(file(it)) }
     sources {
         include("index.adoc")
     }
@@ -33,8 +39,10 @@ tasks.withType<AsciidoctorTask> {
 
     attributes(
         mutableMapOf(
-            "sourcedir" to rootDir.absolutePath,
-            "includedir" to file("src/docs/asciidoc"),
+            "sourcedir" to manualRoot.absolutePath,
+            "includedir" to manualSource,
+            "gradle-project-version" to manualVersion,
+            "revnumber" to manualVersion,
             "toc" to "left",
             "icons" to "font",
             "stylesheet" to "grooves.css",
@@ -43,7 +51,7 @@ tasks.withType<AsciidoctorTask> {
     )
 
     resources {
-        from("src/docs/asciidoc") {
+        from(manualSource) {
             include("*.css")
         }
     }
