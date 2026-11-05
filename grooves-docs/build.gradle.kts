@@ -25,7 +25,7 @@ project.version = rootProject.version.toString()
 tasks.withType<AsciidoctorTask> {
     notCompatibleWithConfigurationCache("AsciidoctorTask is not compatible with the configuration cache in the current version of the plugin.")
     sourceDir(file("src/docs/asciidoc"))
-    // baseDir (file("src/docs/asciidoc"))
+    baseDirFollowsSourceDir()
     sources {
         include("index.adoc")
     }
@@ -57,11 +57,11 @@ gitPublish {
     username = System.getenv("GITHUB_ACTOR")
     password = System.getenv("GITHUB_TOKEN")
     contents {
-        from(file("${layout.buildDirectory.get()}/asciidoc/html5")) {
+        from(tasks.named("asciidoctor")) {
             into("manual/${version}")
         }
         if (System.getenv("GITHUB_REF_NAME") == "main" || System.getenv("BRANCH_NAME") == "main") {
-            from(file("${layout.buildDirectory.get()}/asciidoc/html5")) {
+            from(tasks.named("asciidoctor")) {
                 into("manual/current")
             }
             from(rootProject.file("grooves-site/dist")) {
@@ -95,7 +95,7 @@ tasks.register("configureGit") {
 }
 
 tasks.named("gitPublishCopy") {
-    dependsOn("configureGit", ":grooves-site:build")
+    dependsOn("configureGit", "asciidoctor", ":grooves-site:build")
 }
 
 tasks.named("gitPublishPush") { dependsOn("asciidoctor") }
