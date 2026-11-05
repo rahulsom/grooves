@@ -1,0 +1,2152 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.26">
+<title>Grooves</title>
+<link rel="stylesheet" href="./grooves.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="./rouge-github.css">
+<link rel="icon" type="image/svg+xml" href="/grooves/favicon.svg">
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Grooves</h1>
+<div class="details">
+<span id="revnumber">version 0.1.0-dev.1+74a17bc</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_introduction">Introduction</a>
+<ul class="sectlevel2">
+<li><a href="#_event_sourcing_concepts">Event Sourcing Concepts</a></li>
+<li><a href="#_cqrs">CQRS</a></li>
+<li><a href="#_representing_events">Representing Events</a></li>
+</ul>
+</li>
+<li><a href="#_hurdles">Hurdles</a>
+<ul class="sectlevel2">
+<li><a href="#_completeness_of_queries">Completeness of Queries</a></li>
+<li><a href="#_reverting_events">Reverting Events</a></li>
+<li><a href="#_merging_aggregates">Merging Aggregates</a></li>
+<li><a href="#_reverting_merges">Reverting Merges</a></li>
+<li><a href="#_performing_joins">Performing joins</a></li>
+<li><a href="#_performing_disjoins">Performing disjoins</a></li>
+</ul>
+</li>
+<li><a href="#_how_grooves_solves_it">How Grooves solves it</a></li>
+<li><a href="#_event_sourcing_with_grooves">Event Sourcing with Grooves</a>
+<ul class="sectlevel2">
+<li><a href="#_dependencies">Dependencies</a></li>
+<li><a href="#_aggregates">Aggregates</a></li>
+<li><a href="#_events">Events</a></li>
+<li><a href="#_snapshots">Snapshots</a></li>
+<li><a href="#_queries">Queries</a></li>
+<li><a href="#_joins">Joins</a></li>
+<li><a href="#_frp_style">FRP Style</a></li>
+</ul>
+</li>
+<li><a href="#_creating_your_own_diagrams">Creating your own diagrams</a></li>
+<li><a href="#_support">Support</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Formerly, <em>Groovy + Event Sourcing</em>.
+Now, <em>Grooves</em> is just a name.
+It supports Event Sourcing on many JVM languages.
+Examples and tests are included in java, kotlin, and of course, groovy.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Event Sourcing is a way of storing data for flexible retrieval.
+The principle behind Event Sourcing is very simple.
+We treat our database like a log file.
+It is a record of everything that happened as events, and we read these events in order to compute the state of things like we do while debugging an application from the logs.</p>
+</div>
+<div class="sect2">
+<h3 id="_event_sourcing_concepts">Event Sourcing Concepts</h3>
+<div class="paragraph">
+<p>Here are some things that we will need to get familiar with, that are relevant to Event Sourcing.</p>
+</div>
+<div class="sect3">
+<h4 id="_aggregate">Aggregate</h4>
+<div class="paragraph">
+<p>An aggregate is a type of object that you are interested in managing data about.
+A classic example would be a bank account.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_event">Event</h4>
+<div class="paragraph">
+<p>An event is an atomic change that needs to occur on the aggregate.
+A suitable example for the bank account would be a transaction.
+It could be an ATM withdrawal, or a check deposit, or an electronic payment.
+Most events can be applied while only looking ahead.
+When there is a <code>revert</code> event or a <code>merge</code> (which is represented as a <code>deprecates</code> and a <code>deprecatedBy</code> events), that doesn&#8217;t hold true.</p>
+</div>
+<div class="paragraph">
+<p>We will not be modifying the aggregate in our data store.
+We will however, store the event in the data store, so we know when we read to read it a certain way.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_snapshot">Snapshot</h4>
+<div class="paragraph">
+<p>A snapshot is a way of looking at the state of an aggregate at a point in time.
+In our banking example, this could be your account balance.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_cqrs">CQRS</h3>
+<div class="paragraph">
+<p>Event Sourcing works particularly well with CQRS - Command Query Responsibility Segregation.
+There are a couple of types of objects that are relevant to Event Sourcing and CQRS.</p>
+</div>
+<div class="sect3">
+<h4 id="_command">Command</h4>
+<div class="paragraph">
+<p>A command is an input which causes one or more events to be stored.
+It typically represents a broad intention of the user.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_query">Query</h4>
+<div class="paragraph">
+<p>A query is a computation that needs to be performed in order to obtain a snapshot.</p>
+</div>
+<div class="paragraph">
+<p>A query performs a computation like the one below.</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\$S_N = f(S_0, [E_1 .. E_(N)])\$
+</div>
+</div>
+<div class="paragraph">
+<p>Where</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>\$S_N\$ is the Snapshot computed by applying the first <code>N</code> events.</p>
+</li>
+<li>
+<p>\$S_0\$ is the empty snapshot.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Most of the time this also holds true</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\$S_N = f(S_k, [E_(k+1) .. E_(N)])\$
+</div>
+</div>
+<div class="paragraph">
+<p>The second one holds true only for forward events.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_representing_events">Representing Events</h3>
+<div class="paragraph">
+<p>This is how we&#8217;ll be representing events in the documentation.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="SimpleEvents.svg" alt="">
+</div>
+</div>
+<div class="paragraph">
+<p>The aggregate is represented by the rectangle.
+It says its type and its id in the box.
+Above the box is a description of the aggregate.</p>
+</div>
+<div class="paragraph">
+<p>The circles with numbers represent events that are applied on the aggregate.
+They are reasonably spaced apart to show the flow of time.
+The spacing is not necessarily linear.
+However, when there are multiple aggregates shown together, the timelines will be in sync.</p>
+</div>
+<div class="paragraph">
+<p>Creation events will have a dotted circle around them.
+It doesn&#8217;t mean anything special.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="ParallelEvents.svg" alt="">
+</div>
+</div>
+<div class="paragraph">
+<p>When the time of two events is exactly the same, then they are displayed like this.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="ConcurrentEvents.svg" alt="">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_hurdles">Hurdles</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>While the theory is very simple, in practice, it&#8217;s a little more complicated.
+The functions that you see above are very simple at first glance, but implementing an entire system based on it requires some patterns.
+That is the problem that Grooves aims to solve.</p>
+</div>
+<div class="sect2">
+<h3 id="_completeness_of_queries">Completeness of Queries</h3>
+<div class="paragraph">
+<p>When applying events on a Snapshot, you need to be sure that you have handled every single event type.
+Let&#8217;s say you&#8217;ve got 3 types of events for an aggregate and 2 snapshots.
+If you add a new event type, you need to handle it in the computation of both snapshots.
+When a language has case classes, (sealed classes in Kotlin), it&#8217;s easier to achieve this.
+Alas, Groovy and Java do not have case classes.</p>
+</div>
+<div class="paragraph">
+<p>There are some special kinds of Events that require a lot of complex handling:</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_reverting_events">Reverting Events</h3>
+<div class="paragraph">
+<p>Sometimes events are entered into an aggregate&#8217;s timeline in error.
+This could be a system error, or a human error.
+When this happens, for the business logic to make sense, the system should behave as if that event never occurred.
+However, for auditing purposes, and for preserving a reasonable system, the original event as well as the moment the error was detected need to be tracked.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="RevertEvent.svg" alt="">
+</div>
+</div>
+<div class="paragraph">
+<p>In the diagram above, we see that event 3 was performed, and later after event 4, we realized that 3 should not have occurred.
+Now, we insert a special event, 5, that causes a revert of 3.
+Once the system processes the data correctly, this is equivalent to what follows.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="RevertEventEffective.svg" alt="">
+</div>
+</div>
+<div class="paragraph">
+<p>Depending on how many mistakes people and systems make, this could be much more complicated.
+For example, you might be able to revert a revert event.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="RevertOnRevert.svg" alt="">
+</div>
+</div>
+<div class="paragraph">
+<p>This should be interpreted as 6 cancels out 5, so 5 can no more cancel out 3.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="RevertOnRevertEffective.svg" alt="">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_merging_aggregates">Merging Aggregates</h3>
+<div class="paragraph">
+<p><code>DeprecatedBy</code> and <code>Deprecates</code> is a pair of events that work together on aggregates of the same type.
+Sometimes, real world things merge together.
+For example, companies get merged or acquired.
+Sometimes, you accidentally create two aggregates that represent the same thing.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="MergeAggregates.svg" alt="">
+</div>
+</div>
+<div class="paragraph">
+<p>In this case, we created two patients that actually represent the same person.
+Then we realized that this needs to be the same person.
+While reading this, we would treat it as if it was like this.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="MergeAggregatesEffective.svg" alt="">
+</div>
+</div>
+<div class="paragraph">
+<p>4 is grayed out because it&#8217;s a creation event, and, this is the second creation event for the aggregate.
+We will read that event, but not apply it in any meaningful way.</p>
+</div>
+<div class="paragraph">
+<p>Typically, we cannot apply any new events after 6 on Aggregate 5.
+The exception to the rule is when we&#8217;re reverting the merge.
+That might not always be true.
+Some systems might choose to continue adding events on an aggregate like 5.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_reverting_merges">Reverting Merges</h3>
+<div class="paragraph">
+<p>Let&#8217;s assume we got confused with a pair of aggregates like these and performed a merge like this.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="RevertMergeBefore.svg" alt="">
+</div>
+</div>
+<div class="paragraph">
+<p>The correct way of reverting fixing this mistake, would be to perform a pair of reverts.
+This is complicated, but necessary in order to make the reads on both aggregates result in the merge being ignored.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="RevertMergeAfter.svg" alt="">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_performing_joins">Performing joins</h3>
+<div class="paragraph">
+<p>In an event sourced system, even joins are just events.
+That way we can preserve their temporal changes.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="JoinExample.svg" alt="">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_performing_disjoins">Performing disjoins</h3>
+<div class="paragraph">
+<p>Since joins can change with time, you could have a situation where you need to perform a <code>disjoin</code>.
+In our example here, Mr Spock stops being the Science Officer when he becomes captain.
+For that to happen, we need to represent that the relationship between the department Science and Mr Spock is severed at a point in time.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="DisjoinExample.svg" alt="">
+</div>
+</div>
+<div class="paragraph">
+<p>You might be tempted to reuse the revert capability here.
+A disjoin is different from a revert.
+The difference between a disjoin and a revert is the same as the difference between a divorce and an annulment.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_grooves_solves_it">How Grooves solves it</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Grooves assumes nothing about your persistence framework or whether you&#8217;re building a webapp or a batch application.
+Grooves only offers some tools to help you build your own event sourced system.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Interfaces for the Aggregate, Event (and its special subtypes) and Snapshot.</p>
+</li>
+<li>
+<p>A set of interfaces with default methods that help you write queries.</p>
+</li>
+<li>
+<p><em>If you&#8217;re using groovy</em>, annotations to mark these and AST Transformations to ensure all event types are covered in a Query implementation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This allows you to use Grooves with a lot of different frameworks.
+There are examples in the repository for some options you could use.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_event_sourcing_with_grooves">Event Sourcing with Grooves</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section contains example code with annotations that indicate what is being done, and why.
+We will be using 4 different kinds of projects.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Java - A java project that uses a few in memory collections as it&#8217;s storage mechanism.
+It is written in Java 8, and uses JavaEE.
+In the case of Java code, we&#8217;ll be skipping getters and setters to keep examples concise.
+For the code to actually work, those would be required.</p>
+</li>
+<li>
+<p>Groovy - A project that uses SpringBoot and JPA for persistence.
+It&#8217;s written using Groovy. This uses RxJava2 as the Reactive Streams Framework.</p>
+</li>
+<li>
+<p>Kotlin - This is a SpringBoot Reactive Web project that uses RxMongo for persistence.
+This example uses Spring Reactor as the Reactive Streams Framework.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_dependencies">Dependencies</h3>
+<div class="paragraph">
+<p>The examples here use gradle to manage dependencies.
+You could very well be using Maven, or ant+ivy, or leiningen, or sbt.</p>
+</div>
+<div class="listingblock primary">
+<div class="title">Java</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">repositories</span> <span class="o">{</span>
+  <span class="c1">// ... other repositories ...</span>
+  <span class="n">mavenCentral</span><span class="o">()</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="o">}</span>
+<span class="n">dependencies</span> <span class="o">{</span>
+  <span class="c1">// ... other dependencies ...</span>
+  <span class="n">implementation</span> <span class="s1">'com.github.rahulsom:grooves-java:0.1.0-dev.1+74a17bc'</span> <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>In this example, we&#8217;re using <code>mavenCentral</code>. You could also be using <code>jcenter</code> or <code>google</code>.
+As long as your private artifact repository mirrors <code>mavenCentral</code>, you can use that as well.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>grooves-api</code> contains the interfaces for your queries.
+It has a dependency on <code>grooves-types</code>.
+That contains the interfaces for your aggregates, events, and snapshots.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock secondary">
+<div class="title">Groovy</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">repositories</span> <span class="o">{</span>
+  <span class="c1">// ... other repositories ...</span>
+  <span class="n">mavenCentral</span><span class="o">()</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="o">}</span>
+<span class="n">dependencies</span> <span class="o">{</span>
+  <span class="c1">// ... other dependencies ...</span>
+  <span class="n">implementation</span> <span class="s1">'com.github.rahulsom:grooves-groovy:0.1.0-dev.1+74a17bc'</span> <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>In this example, we&#8217;re using <code>mavenCentral</code>. You could also be using <code>jcenter</code> or <code>google</code>.
+As long as your private artifact repository mirrors <code>mavenCentral</code>, you can use that as well.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>grooves-groovy</code> contains support for writing idiomatic groovy code.
+It has a dependency on <code>grooves-api</code> which contains interfaces for your queries.
+It also has a transitive dependency on <code>grooves-types</code>.
+That contains the interfaces for your aggregates, events, and snapshots.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock secondary">
+<div class="title">Kotlin</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">repositories</span> <span class="o">{</span>
+  <span class="c1">// ... other repositories ...</span>
+  <span class="n">mavenCentral</span><span class="o">()</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="o">}</span>
+<span class="n">dependencies</span> <span class="o">{</span>
+  <span class="c1">// ... other dependencies ...</span>
+  <span class="n">implementation</span> <span class="s1">'com.github.rahulsom:grooves-api:0.1.0-dev.1+74a17bc'</span> <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>In this example, we&#8217;re using <code>mavenCentral</code>. You could also be using <code>jcenter</code> or <code>google</code>.
+As long as your private artifact repository mirrors <code>mavenCentral</code>, you can use that as well.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>grooves-api</code> contains the interfaces for your queries.
+It has a dependency on <code>grooves-types</code>.
+That contains the interfaces for your aggregates, events, and snapshots.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_aggregates">Aggregates</h3>
+<div class="paragraph">
+<p>In our examples, to begin with, we will use one aggregate - a patient.
+We&#8217;ll model our system such that there are events that get applied on a Patient&#8217;s timeline.</p>
+</div>
+<div class="paragraph">
+<p>To uniquely identify a patient, we&#8217;re assuming, all we need is a <code>uniqueId</code>.
+No name, no address, no other information.</p>
+</div>
+<div class="paragraph">
+<p>The rest of the information will be brought in using events.</p>
+</div>
+<div class="listingblock primary">
+<div class="title">Java</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="kn">import</span> <span class="nn">com.github.rahulsom.grooves.java.Aggregate</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.Serializable</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">lombok.Data</span><span class="o">;</span>
+
+<span class="nd">@Data</span>
+<span class="nd">@Aggregate</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Patient</span> <span class="kd">implements</span> <span class="nc">Serializable</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Long</span> <span class="n">id</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">uniqueId</span><span class="o">;</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This annotation will assist in checking for completeness of queries.
+There are two other annotations we&#8217;ll see - <code>@Event</code> and <code>@Query</code>.
+Together, the three will help us ensure that our queries cover all events.
+This is optional, but highly recommended.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock secondary">
+<div class="title">Groovy</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="kn">import</span> <span class="nn">groovy.transform.EqualsAndHashCode</span>
+<span class="kn">import</span> <span class="nn">groovy.transform.ToString</span>
+
+<span class="kn">import</span> <span class="nn">jakarta.persistence.*</span>
+
+<span class="nd">@Entity</span>
+<span class="nd">@Table</span><span class="o">(</span><span class="n">uniqueConstraints</span> <span class="o">=</span> <span class="o">[</span>
+    <span class="nd">@UniqueConstraint</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'UK_PATIENT_UNIQUEID'</span><span class="o">,</span> <span class="n">columnNames</span> <span class="o">=</span> <span class="o">[</span><span class="s1">'uniqueId'</span><span class="o">]),</span>
+<span class="o">])</span>
+<span class="nd">@ToString</span><span class="o">(</span><span class="n">includeSuperProperties</span> <span class="o">=</span> <span class="kc">true</span><span class="o">,</span> <span class="n">includeNames</span> <span class="o">=</span> <span class="kc">true</span><span class="o">,</span> <span class="n">includePackage</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
+<span class="nd">@JsonIgnoreProperties</span><span class="o">([</span><span class="s1">'hibernateLazyInitializer'</span><span class="o">,</span> <span class="s1">'handler'</span><span class="o">])</span>
+<span class="nd">@Aggregate</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="kd">class</span> <span class="nc">Patient</span> <span class="o">{</span>
+    <span class="nd">@Id</span> <span class="n">Long</span> <span class="n">id</span>
+    <span class="n">String</span> <span class="n">uniqueId</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This annotation will assist in checking for completeness of queries.
+There are two other annotations we&#8217;ll see - <code>@Event</code> and <code>@Query</code>.
+Together, the three will help us ensure that our queries cover all events.
+This is optional, but highly recommended.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock secondary">
+<div class="title">Kotlin</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="kotlin"><span class="kd">class</span> <span class="nc">Patient</span><span class="p">(</span>
+    <span class="kd">var</span> <span class="py">uniqueId</span><span class="p">:</span> <span class="nc">String</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span><span class="p">,</span>
+<span class="p">)</span> <span class="p">{</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="kd">var</span> <span class="py">id</span><span class="p">:</span> <span class="nc">String</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">toString</span><span class="p">()</span> <span class="p">=</span> <span class="s">"Patient(uniqueId=$uniqueId, id=$id)"</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Since 0.5.0, there isn&#8217;t really anything special to do for declaring Aggregates.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_events">Events</h3>
+<div class="paragraph">
+<p>In our example, we&#8217;re going to have a bunch of events that will modify the computed state of the <code>Patient</code>.</p>
+</div>
+<div class="sect3">
+<h4 id="_your_base_event">Your Base Event</h4>
+<div class="paragraph">
+<p>Let&#8217;s start with the PatientEvent first.
+<code>PatientEvent</code> is the base event for all events related to <code>Patient</code>.</p>
+</div>
+<div class="listingblock primary">
+<div class="title">Java</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="c1">// Some imports omitted</span>
+<span class="nd">@Data</span>
+<span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">PatientEvent</span> <span class="kd">implements</span> <span class="nc">BaseEvent</span><span class="o">&lt;</span><span class="nc">Patient</span><span class="o">,</span> <span class="nc">Long</span><span class="o">,</span> <span class="nc">PatientEvent</span><span class="o">&gt;</span> <span class="o">{</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="kd">private</span> <span class="nc">Patient</span> <span class="n">aggregate</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Long</span> <span class="n">id</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">RevertEvent</span><span class="o">&lt;</span><span class="nc">Patient</span><span class="o">,</span> <span class="nc">Long</span><span class="o">,</span> <span class="nc">PatientEvent</span><span class="o">&gt;</span> <span class="n">revertedBy</span><span class="o">;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">timestamp</span><span class="o">;</span> <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="kd">private</span> <span class="kt">long</span> <span class="n">position</span><span class="o">;</span> <i class="conum" data-value="4"></i><b>(4)</b>
+
+    <span class="nd">@Override</span>
+    <span class="nd">@NotNull</span>
+    <span class="kd">public</span> <span class="nc">Publisher</span><span class="o">&lt;</span><span class="nc">Patient</span><span class="o">&gt;</span> <span class="nf">getAggregateObservable</span><span class="o">()</span> <span class="o">{</span> <i class="conum" data-value="5"></i><b>(5)</b>
+        <span class="k">return</span> <span class="nf">toPublisher</span><span class="o">(</span><span class="n">aggregate</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">?</span> <span class="n">just</span><span class="o">(</span><span class="n">aggregate</span><span class="o">)</span> <span class="o">:</span> <span class="n">empty</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>You&#8217;ll have to extend <code>BaseEvent</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This is typically transient from a persistence perspective.
+Since we&#8217;re using collections for persistence, it doesn&#8217;t make much difference.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Timestamp is used for time based filtering and ordering</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Position is used for version based filtering and ordering.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The aggregate observable allows for lazy fetching of the aggregate.
+Again, since we&#8217;re using collections, it doesn&#8217;t matter.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock secondary">
+<div class="title">Groovy</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="c1">// All imports omitted</span>
+<span class="nd">@Entity</span>
+<span class="nd">@Inheritance</span><span class="o">(</span><span class="n">strategy</span> <span class="o">=</span> <span class="n">InheritanceType</span><span class="o">.</span><span class="na">SINGLE_TABLE</span><span class="o">)</span>
+<span class="nd">@DiscriminatorColumn</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'eventType'</span><span class="o">)</span>
+<span class="nd">@SuppressWarnings</span><span class="o">([</span><span class="s1">'AbstractClassWithoutAbstractMethod'</span><span class="o">])</span>
+<span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">PatientEvent</span> <span class="kd">implements</span> <span class="n">BaseEvent</span><span class="o">&lt;</span><span class="n">Patient</span><span class="o">,</span> <span class="n">Long</span><span class="o">,</span> <span class="n">PatientEvent</span><span class="o">&gt;</span> <span class="o">{</span>
+    <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="nd">@GeneratedValue</span> <span class="nd">@Id</span> <span class="n">Long</span> <span class="n">id</span>
+    <span class="nd">@Transient</span> <span class="n">RevertEvent</span><span class="o">&lt;</span><span class="n">Patient</span><span class="o">,</span> <span class="n">Long</span><span class="o">,</span> <span class="n">PatientEvent</span><span class="o">&gt;</span> <span class="n">revertedBy</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="nd">@Column</span><span class="o">(</span><span class="n">nullable</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span> <span class="n">Date</span> <span class="n">timestamp</span> <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="nd">@Column</span><span class="o">(</span><span class="n">nullable</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span> <span class="kt">long</span> <span class="n">position</span> <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="nd">@ManyToOne</span> <span class="n">Patient</span> <span class="n">aggregate</span>
+
+    <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">Patient</span><span class="o">&gt;</span> <span class="n">getAggregateObservable</span><span class="o">()</span> <span class="o">{</span>
+        <i class="conum" data-value="5"></i><b>(5)</b>
+        <span class="n">aggregate</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">?</span> <span class="n">empty</span><span class="o">()</span> <span class="o">:</span> <span class="n">just</span><span class="o">(</span><span class="n">aggregate</span><span class="o">)</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>You&#8217;ll have to extend <code>BaseEvent</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This is transient from a persistence perspective.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Timestamp is used for time based filtering and ordering</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Position is used for version based filtering and ordering.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The aggregate observable allows for lazy fetching of the aggregate.
+In our case, it doesn&#8217;t matter much since we&#8217;re using JPA, which is blocking in nature.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock secondary">
+<div class="title">Kotlin</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="kotlin"><span class="c1">// All imports omitted</span>
+<span class="k">sealed</span> <span class="kd">class</span> <span class="nc">PatientEvent</span> <span class="p">:</span> <span class="nc">BaseEvent</span><span class="p">&lt;</span><span class="nc">Patient</span><span class="p">,</span> <span class="nc">String</span><span class="p">,</span> <span class="nc">PatientEvent</span><span class="p">&gt;</span> <span class="p">{</span> <i class="conum" data-value="1"></i><b>(1)</b> <i class="conum" data-value="2"></i><b>(2)</b>
+
+    <span class="nd">@Id</span>
+    <span class="k">override</span> <span class="kd">var</span> <span class="py">id</span><span class="p">:</span> <span class="nc">String</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
+
+    <span class="kd">var</span> <span class="py">aggregateId</span><span class="p">:</span> <span class="nc">String</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
+
+    <span class="nd">@Transient</span>
+    <span class="k">override</span> <span class="kd">var</span> <span class="py">revertedBy</span><span class="p">:</span> <span class="nc">RevertEvent</span><span class="p">&lt;</span><span class="nc">Patient</span><span class="p">,</span> <span class="nc">String</span><span class="p">,</span> <span class="nc">PatientEvent</span><span class="p">&gt;?</span> <span class="p">=</span> <span class="k">null</span> <i class="conum" data-value="3"></i><b>(3)</b>
+
+    <span class="nd">@JsonFormat</span><span class="p">(</span><span class="n">pattern</span> <span class="p">=</span> <span class="s">"yyyy-MM-dd'T'HH:mm:ss.SSSZ"</span><span class="p">)</span>
+    <span class="k">override</span> <span class="k">lateinit</span> <span class="kd">var</span> <span class="py">timestamp</span><span class="p">:</span> <span class="nc">Date</span> <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="k">override</span> <span class="kd">var</span> <span class="py">position</span><span class="p">:</span> <span class="nc">Long</span> <span class="p">=</span> <span class="mi">0</span> <i class="conum" data-value="5"></i><b>(5)</b>
+
+    <span class="k">fun</span> <span class="nf">getType</span><span class="p">():</span> <span class="nc">String</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">javaClass</span><span class="p">.</span><span class="n">simpleName</span>
+
+    <span class="nd">@JsonIgnore</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">getAggregateObservable</span><span class="p">():</span> <span class="nc">Publisher</span><span class="p">&lt;</span><span class="nc">Patient</span><span class="p">&gt;</span> <span class="p">=</span>
+        <i class="conum" data-value="6"></i><b>(6)</b>
+        <span class="n">aggregateId</span><span class="o">?.</span><span class="nf">let</span> <span class="p">{</span>
+            <span class="nc">BeansHolder</span><span class="p">.</span><span class="n">context</span><span class="o">?.</span><span class="nf">getBean</span><span class="p">(</span><span class="nc">PatientRepository</span><span class="o">::</span><span class="k">class</span><span class="p">.</span><span class="n">java</span><span class="p">)</span><span class="o">?.</span><span class="nf">findById</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+        <span class="p">}</span> <span class="o">?:</span> <span class="nf">empty</span><span class="p">()</span>
+
+    <span class="k">override</span> <span class="kd">var</span> <span class="py">aggregate</span><span class="p">:</span> <span class="nc">Patient</span><span class="p">?</span>
+        <span class="nd">@JsonIgnore</span>
+        <span class="k">get</span><span class="p">()</span> <span class="p">=</span> <span class="nc">Mono</span><span class="p">.</span><span class="nf">from</span><span class="p">(</span><span class="nf">getAggregateObservable</span><span class="p">()).</span><span class="nf">block</span><span class="p">()</span>
+        <span class="k">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">aggregateId</span> <span class="p">=</span> <span class="n">value</span><span class="o">!!</span><span class="p">.</span><span class="n">id</span>
+        <span class="p">}</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We&#8217;re using sealed classes in Kotlin.
+We&#8217;ll add more classes inside it as we progress.
+This helps us achieve completeness without the need to customize the compilation.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>You&#8217;ll have to extend <code>BaseEvent</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This is transient from a persistence perspective.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Timestamp is used for time based filtering and ordering</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Position is used for version based filtering and ordering.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The aggregate observable allows for lazy fetching of the aggregate.
+In our case, it doesn&#8217;t matter much since we&#8217;re using Hibernate, which is blocking in nature.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_your_business_events">Your business events</h4>
+<div class="paragraph">
+<p>Next up, let&#8217;s look at our first event, <code>PatientCreated</code>.</p>
+</div>
+<div class="listingblock primary">
+<div class="title">Java</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="nd">@Data</span>
+<span class="nd">@EqualsAndHashCode</span><span class="o">(</span><span class="n">callSuper</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+<span class="nd">@Event</span><span class="o">(</span><span class="nc">Patient</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PatientCreated</span> <span class="kd">extends</span> <span class="nc">PatientEvent</span> <span class="o">{</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>@Event</code> annotation is the second step to achieving completeness of events.
+It accepts as a param, the Aggregate over which it applies.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>For most events you&#8217;re interested in as a user, you&#8217;ll just have to extend <code>PatientEvent</code>.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock secondary">
+<div class="title">Groovy</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="nd">@Entity</span>
+<span class="nd">@Event</span><span class="o">(</span><span class="n">Patient</span><span class="o">)</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="kd">class</span> <span class="nc">PatientCreated</span> <span class="kd">extends</span> <span class="n">PatientEvent</span> <span class="o">{</span>
+    <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="n">String</span> <span class="n">name</span>
+
+    <span class="nd">@Override</span> <span class="n">String</span> <span class="n">toString</span><span class="o">()</span> <span class="o">{</span>
+        <span class="s2">"PatientCreated(name=$name)"</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>@Event</code> annotation is the second step to achieving completeness of events.
+It accepts as a param, the Aggregate over which it applies.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>For most events you&#8217;re interested in as a user, you&#8217;ll just have to extend <code>PatientEvent</code>.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock secondary">
+<div class="title">Kotlin</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="kotlin"><span class="k">sealed</span> <span class="kd">class</span> <span class="nc">PatientEvent</span> <span class="p">:</span> <span class="nc">BaseEvent</span><span class="p">&lt;...&gt;</span> <span class="p">{</span>
+    <span class="c1">// ... skipping stuff already there ...</span>
+    <span class="k">sealed</span> <span class="kd">class</span> <span class="nc">Applicable</span> <span class="p">:</span> <span class="nc">PatientEvent</span><span class="p">()</span> <span class="p">{</span> <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="kd">data class</span> <span class="nc">Created</span><span class="p">(</span>
+            <span class="kd">val</span> <span class="py">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span>
+        <span class="p">)</span> <span class="p">:</span> <span class="nc">Applicable</span><span class="p">()</span> <span class="p">{</span> <i class="conum" data-value="2"></i><b>(2)</b>
+            <span class="k">fun</span> <span class="nf">getAudit</span><span class="p">():</span> <span class="nc">String</span> <span class="p">=</span> <span class="s">"$id - Created '$name'"</span>
+
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>First we create a sealed class within the <code>PatientEvent</code> called <code>Applicable</code>.
+What we call it doesn&#8217;t matter.
+All application events will go there.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>For most events you&#8217;re interested in as a user, you&#8217;ll just have to extend <code>Applicable</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In our example, we&#8217;ll have two more business events.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ProcedurePerformed</code> that gives you a procedure code and the cost</p>
+</li>
+<li>
+<p><code>PaymentMade</code> which gives you the amount paid</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Please look at the source to see how they are implemented.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_standard_grooves_events">Standard Grooves Events</h4>
+<div class="paragraph">
+<p>There are some Standard Grooves Events - JoinEvent, DisjoinEvent, DeprecatedBy, Deprecates, RevertEvent.
+Their implementation is similar to one another, but slightly different from your business events.</p>
+</div>
+<div class="paragraph">
+<p>We are going to walk through the <code>RevertEvent</code> over here.</p>
+</div>
+<div class="listingblock primary">
+<div class="title">Java</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="kn">import</span> <span class="nn">com.github.rahulsom.grooves.api.events.RevertEvent</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">lombok.Data</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">lombok.EqualsAndHashCode</span><span class="o">;</span>
+
+<span class="nd">@EqualsAndHashCode</span><span class="o">(</span><span class="n">callSuper</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+<span class="nd">@Data</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PatientEventReverted</span> <span class="kd">extends</span> <span class="nc">PatientEvent</span> <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="kd">implements</span> <span class="nc">RevertEvent</span><span class="o">&lt;</span><span class="nc">Patient</span><span class="o">,</span> <span class="nc">Long</span><span class="o">,</span> <span class="nc">PatientEvent</span><span class="o">&gt;</span> <span class="o">{</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">Long</span> <span class="n">revertedEventId</span><span class="o">;</span> <i class="conum" data-value="3"></i><b>(3)</b>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Like your business events, you&#8217;ll extend <code>PatientEvent</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>In addition, you&#8217;ll implement the <code>RevertEvent</code> interface.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>And you&#8217;ll have to give it a property <code>revertedEventId</code>.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock secondary">
+<div class="title">Groovy</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="nd">@Entity</span>
+<span class="kd">class</span> <span class="nc">PatientEventReverted</span> <span class="kd">extends</span> <span class="n">PatientEvent</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="kd">implements</span> <span class="n">RevertEvent</span><span class="o">&lt;</span><span class="n">Patient</span><span class="o">,</span> <span class="n">Long</span><span class="o">,</span> <span class="n">PatientEvent</span><span class="o">&gt;</span> <span class="o">{</span>
+    <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="n">Long</span> <span class="n">revertedEventId</span> <i class="conum" data-value="3"></i><b>(3)</b>
+
+    <span class="nd">@Override</span> <span class="n">String</span> <span class="n">toString</span><span class="o">()</span> <span class="o">{</span>
+        <span class="s2">"PatientEventReverted(revertedEventId=$revertedEventId)"</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Like your business events, you&#8217;ll extend <code>PatientEvent</code>.
+You do not need to annotate it as an Event.
+Even if you do, you cannot process this event.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>In addition, you&#8217;ll implement the <code>RevertEvent</code> interface.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>And you&#8217;ll have to give it a property <code>revertedEventId</code>.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock secondary">
+<div class="title">Kotlin</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="kotlin"><span class="k">sealed</span> <span class="kd">class</span> <span class="nc">PatientEvent</span> <span class="p">:</span> <span class="nc">BaseEvent</span><span class="p">&lt;...&gt;</span> <span class="p">{</span>
+    <span class="c1">// ... skipping stuff already there ...</span>
+    <span class="kd">data class</span> <span class="nc">Reverted</span><span class="p">(</span>
+        <span class="k">override</span> <span class="kd">val</span> <span class="py">revertedEventId</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">:</span> <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="nc">PatientEvent</span><span class="p">(),</span>
+        <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="nc">RevertEvent</span><span class="p">&lt;</span><span class="nc">Patient</span><span class="p">,</span> <span class="nc">String</span><span class="p">,</span> <span class="nc">PatientEvent</span><span class="p">&gt;</span> <span class="p">{</span> <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="k">fun</span> <span class="nf">getAudit</span><span class="p">():</span> <span class="nc">String</span> <span class="p">=</span> <span class="s">"$id - Revert $revertedEventId"</span>
+
+    <span class="p">}</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>You&#8217;ll have to give it a property <code>revertedEventId</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Like your <code>Applicable</code> in business events, you&#8217;ll extend <code>PatientEvent</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>In addition, you&#8217;ll implement the <code>RevertEvent</code> interface.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_snapshots">Snapshots</h3>
+<div class="paragraph">
+<p>Let&#8217;s start with a snapshot that manages account balance for a patient.</p>
+</div>
+<div class="listingblock primary">
+<div class="title">Java</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="nd">@Data</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PatientAccount</span>
+        <span class="kd">implements</span> <span class="nc">Snapshot</span><span class="o">&lt;</span><span class="nc">Patient</span><span class="o">,</span> <span class="nc">Long</span><span class="o">,</span> <span class="nc">Long</span><span class="o">,</span> <span class="nc">PatientEvent</span><span class="o">&gt;,</span> <i class="conum" data-value="1"></i><b>(1)</b>
+                <span class="nc">Serializable</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Long</span> <span class="n">id</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Patient</span> <span class="n">aggregate</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Patient</span> <span class="n">deprecatedBy</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Patient</span><span class="o">&gt;</span> <span class="n">deprecates</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+    <span class="kd">private</span> <span class="kt">long</span> <span class="n">lastEventPosition</span><span class="o">;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">lastEventTimestamp</span><span class="o">;</span> <i class="conum" data-value="3"></i><b>(3)</b>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">BigDecimal</span> <span class="n">balance</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="nc">BigDecimal</span> <span class="n">moneyMade</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BigDecimal</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+
+    <span class="kd">public</span> <span class="nc">Publisher</span><span class="o">&lt;</span><span class="nc">Patient</span><span class="o">&gt;</span> <span class="nf">getAggregateObservable</span><span class="o">()</span> <span class="o">{</span> <i class="conum" data-value="4"></i><b>(4)</b>
+        <span class="k">return</span> <span class="nf">toPublisher</span><span class="o">(</span><span class="n">aggregate</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">?</span> <span class="n">just</span><span class="o">(</span><span class="n">aggregate</span><span class="o">)</span> <span class="o">:</span> <span class="n">empty</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Publisher</span><span class="o">&lt;</span><span class="nc">Patient</span><span class="o">&gt;</span> <span class="nf">getDeprecatedByObservable</span><span class="o">()</span> <span class="o">{</span> <i class="conum" data-value="5"></i><b>(5)</b>
+        <span class="k">return</span> <span class="nf">toPublisher</span><span class="o">(</span><span class="n">deprecatedBy</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">?</span> <span class="n">just</span><span class="o">(</span><span class="n">deprecatedBy</span><span class="o">)</span> <span class="o">:</span> <span class="n">empty</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Publisher</span><span class="o">&lt;</span><span class="nc">Patient</span><span class="o">&gt;</span> <span class="nf">getDeprecatesObservable</span><span class="o">()</span> <span class="o">{</span> <i class="conum" data-value="6"></i><b>(6)</b>
+        <span class="k">return</span> <span class="nf">toPublisher</span><span class="o">(</span><span class="n">from</span><span class="o">(</span><span class="n">deprecates</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>For most snapshots, you may implement <code>Snapshot</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>lastEventPosition</code> is useful when locating snapshots by version.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>lastEventTimestamp</code> is useful when locating snapshots by timestamp.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The <code>aggregateObservable</code> getter points to the aggregate from the snapshot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The <code>deprecatedByObservable</code> points to the deprecator of the snapshot&#8217;s aggregate.
+It is empty when the aggregate is not deprecated.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The <code>deprecatesObservable</code> points to the aggregates deprecated by snapshot&#8217;s aggregate.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock secondary">
+<div class="title">Groovy</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="kd">class</span> <span class="nc">PatientAccount</span> <span class="kd">implements</span> <span class="n">Snapshot</span><span class="o">&lt;</span><span class="n">Patient</span><span class="o">,</span> <span class="n">Long</span><span class="o">,</span> <span class="n">Long</span><span class="o">,</span> <span class="n">PatientEvent</span><span class="o">&gt;</span> <span class="o">{</span>
+    <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="nd">@GeneratedValue</span> <span class="nd">@Id</span> <span class="n">Long</span> <span class="n">id</span>
+
+    <span class="nd">@Column</span><span class="o">(</span><span class="n">nullable</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span> <span class="kt">long</span> <span class="n">lastEventPosition</span> <i class="conum" data-value="2"></i><b>(2)</b>
+
+    <span class="nd">@JsonFormat</span><span class="o">(</span><span class="n">pattern</span> <span class="o">=</span> <span class="s2">"yyyy-MM-dd'T'HH:mm:ss.SSSZ"</span><span class="o">)</span>
+    <span class="nd">@Column</span><span class="o">(</span><span class="n">nullable</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span> <span class="n">Date</span> <span class="n">lastEventTimestamp</span> <i class="conum" data-value="3"></i><b>(3)</b>
+
+    <span class="nd">@OneToOne</span> <span class="n">Patient</span> <span class="n">deprecatedBy</span>
+    <span class="nd">@OneToMany</span> <span class="nd">@JoinTable</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'PatientAccountDeprecates'</span><span class="o">)</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Patient</span><span class="o">&gt;</span> <span class="n">deprecates</span>
+    <span class="nd">@ManyToOne</span> <span class="n">Patient</span> <span class="n">aggregate</span>
+
+    <span class="nd">@Column</span><span class="o">(</span><span class="n">nullable</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span> <span class="n">BigDecimal</span> <span class="n">balance</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="nd">@Column</span><span class="o">(</span><span class="n">nullable</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span> <span class="n">BigDecimal</span> <span class="n">moneyMade</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="nd">@Column</span><span class="o">(</span><span class="n">nullable</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span> <span class="n">String</span> <span class="n">name</span>
+
+    <span class="kt">int</span> <span class="n">processingErrors</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@Override</span> <span class="nd">@JsonIgnore</span> <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">Patient</span><span class="o">&gt;</span> <span class="n">getAggregateObservable</span><span class="o">()</span> <span class="o">{</span>
+        <i class="conum" data-value="4"></i><b>(4)</b>
+        <span class="n">aggregate</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">?</span> <span class="n">empty</span><span class="o">()</span> <span class="o">:</span> <span class="n">just</span><span class="o">(</span><span class="n">aggregate</span><span class="o">)</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span> <span class="nd">@JsonIgnore</span> <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">Patient</span><span class="o">&gt;</span> <span class="n">getDeprecatedByObservable</span><span class="o">()</span> <span class="o">{</span>
+        <i class="conum" data-value="5"></i><b>(5)</b>
+        <span class="n">deprecatedBy</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">?</span> <span class="n">empty</span><span class="o">()</span> <span class="o">:</span> <span class="n">just</span><span class="o">(</span><span class="n">deprecatedBy</span><span class="o">)</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span> <span class="nd">@JsonIgnore</span> <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">Patient</span><span class="o">&gt;</span> <span class="n">getDeprecatesObservable</span><span class="o">()</span> <span class="o">{</span>
+        <i class="conum" data-value="6"></i><b>(6)</b>
+        <span class="n">fromIterable</span><span class="o">(</span><span class="n">deprecates</span><span class="o">.</span><span class="na">toList</span><span class="o">())</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>For most snapshots, you may implement <code>Snapshot</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>lastEventPosition</code> is useful when locating snapshots by version.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>lastEventTimestamp</code> is useful when locating snapshots by timestamp.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The <code>aggregateObservable</code> getter points to the aggregate from the snapshot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The <code>deprecatedByObservable</code> points to the deprecator of the snapshot&#8217;s aggregate.
+It is empty when the aggregate is not deprecated.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The <code>deprecatesObservable</code> points to the aggregates deprecated by snapshot&#8217;s aggregate.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock secondary">
+<div class="title">Kotlin</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="kotlin"><span class="nd">@Configurable</span>
+<span class="kd">class</span> <span class="nc">PatientAccount</span> <span class="p">:</span> <span class="nc">Snapshot</span><span class="p">&lt;</span><span class="nc">Patient</span><span class="p">,</span> <span class="nc">String</span><span class="p">,</span> <span class="nc">String</span><span class="p">,</span> <span class="nc">PatientEvent</span><span class="p">&gt;</span> <span class="p">{</span> <i class="conum" data-value="1"></i><b>(1)</b>
+
+    <span class="k">override</span> <span class="kd">var</span> <span class="py">id</span><span class="p">:</span> <span class="nc">String</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
+    <span class="k">override</span> <span class="kd">var</span> <span class="py">lastEventPosition</span><span class="p">:</span> <span class="nc">Long</span> <span class="p">=</span> <span class="mi">0</span> <i class="conum" data-value="2"></i><b>(2)</b>
+
+    <span class="nd">@JsonFormat</span><span class="p">(</span><span class="n">pattern</span> <span class="p">=</span> <span class="s">"yyyy-MM-dd'T'HH:mm:ss.SSSZ"</span><span class="p">)</span>
+    <span class="k">override</span> <span class="kd">var</span> <span class="py">lastEventTimestamp</span><span class="p">:</span> <span class="nc">Date</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span> <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="kd">val</span> <span class="py">deprecatesIds</span><span class="p">:</span> <span class="nc">MutableList</span><span class="p">&lt;</span><span class="nc">String</span><span class="p">&gt;</span> <span class="p">=</span> <span class="nf">mutableListOf</span><span class="p">()</span>
+    <span class="k">private</span> <span class="kd">var</span> <span class="py">deprecator</span><span class="p">:</span> <span class="nc">Patient</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
+    <span class="kd">var</span> <span class="py">aggregateId</span><span class="p">:</span> <span class="nc">String</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
+
+    <span class="kd">var</span> <span class="py">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
+    <span class="kd">var</span> <span class="py">balance</span><span class="p">:</span> <span class="nc">BigDecimal</span> <span class="p">=</span> <span class="nc">BigDecimal</span><span class="p">.</span><span class="nc">ZERO</span>
+    <span class="kd">var</span> <span class="py">moneyMade</span><span class="p">:</span> <span class="nc">BigDecimal</span> <span class="p">=</span> <span class="nc">BigDecimal</span><span class="p">.</span><span class="nc">ZERO</span>
+
+    <span class="k">fun</span> <span class="nf">getDeprecatedBy</span><span class="p">()</span> <span class="p">=</span> <span class="n">deprecator</span>
+
+    <span class="nd">@JsonIgnore</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">getAggregateObservable</span><span class="p">()</span> <span class="p">=</span>
+        <i class="conum" data-value="4"></i><b>(4)</b>
+        <span class="n">aggregateId</span><span class="o">?.</span><span class="nf">let</span> <span class="p">{</span> <span class="n">patientRepository</span><span class="o">!!</span><span class="p">.</span><span class="nf">findAllById</span><span class="p">(</span><span class="nf">just</span><span class="p">(</span><span class="n">it</span><span class="p">))</span> <span class="p">}</span> <span class="o">?:</span> <span class="nf">empty</span><span class="p">()</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">setAggregate</span><span class="p">(</span><span class="n">aggregate</span><span class="p">:</span> <span class="nc">Patient</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="n">aggregateId</span> <span class="p">=</span> <span class="n">aggregate</span><span class="p">.</span><span class="n">id</span>
+    <span class="p">}</span>
+
+    <span class="nd">@JsonIgnore</span>
+    <span class="nd">@Autowired</span>
+    <span class="kd">var</span> <span class="py">patientRepository</span><span class="p">:</span> <span class="nc">PatientRepository</span><span class="p">?</span> <span class="p">=</span> <span class="k">null</span>
+
+    <span class="nd">@JsonIgnore</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">getDeprecatedByObservable</span><span class="p">()</span> <span class="p">=</span>
+        <i class="conum" data-value="5"></i><b>(5)</b>
+        <span class="n">deprecator</span><span class="o">?.</span><span class="nf">let</span> <span class="p">{</span> <span class="nf">just</span><span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="p">}</span> <span class="o">?:</span> <span class="nc">Mono</span><span class="p">.</span><span class="nf">empty</span><span class="p">()</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">setDeprecatedBy</span><span class="p">(</span><span class="n">deprecatingAggregate</span><span class="p">:</span> <span class="nc">Patient</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">deprecator</span> <span class="p">=</span> <span class="n">deprecatingAggregate</span>
+    <span class="p">}</span>
+
+    <span class="nd">@JsonIgnore</span>
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">getDeprecatesObservable</span><span class="p">()</span> <span class="p">=</span>
+        <i class="conum" data-value="6"></i><b>(6)</b>
+        <span class="k">if</span> <span class="p">(</span><span class="n">deprecatesIds</span><span class="p">.</span><span class="nf">isEmpty</span><span class="p">())</span> <span class="p">{</span>
+            <span class="nf">empty</span><span class="p">()</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">patientRepository</span><span class="o">!!</span><span class="p">.</span><span class="nf">findAllById</span><span class="p">(</span><span class="n">deprecatesIds</span><span class="p">)</span>
+        <span class="p">}</span>
+
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>For most snapshots, you may implement <code>Snapshot</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>lastEventPosition</code> is useful when locating snapshots by version.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>lastEventTimestamp</code> is useful when locating snapshots by timestamp.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The <code>aggregateObservable</code> getter points to the aggregate from the snapshot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The <code>deprecatedByObservable</code> points to the deprecator of the snapshot&#8217;s aggregate.
+It is empty when the aggregate is not deprecated.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The <code>deprecatesObservable</code> points to the aggregates deprecated by snapshot&#8217;s aggregate.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The reason for <code>aggregateObservable</code>, <code>deprecatedByObservable</code> and <code>deprecatesObservable</code> being <code>rx.Observable</code> is to allow asynchronous data access layers to work well.</p>
+</div>
+<div class="paragraph">
+<p>In our examples, we have one more snapshot - <code>PatientHealth</code> which lists codes for procedures and the dates they were performed.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_queries">Queries</h3>
+<div class="listingblock primary">
+<div class="title">Java</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java"><span class="c1">// You don't need to have an intermediate type to manage your queries, but it does make code reuse better.</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">CustomQuerySupport</span><span class="o">&lt;</span>
+                <span class="nc">SnapshotT</span> <span class="kd">extends</span> <span class="nc">Snapshot</span><span class="o">&lt;</span><span class="nc">Patient</span><span class="o">,</span> <span class="nc">Long</span><span class="o">,</span> <span class="nc">Long</span><span class="o">,</span> <span class="nc">PatientEvent</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="nc">Serializable</span> <i class="conum" data-value="1"></i><b>(1)</b>
+                <span class="o">&gt;</span>
+        <span class="kd">extends</span> <span class="nc">QuerySupport</span><span class="o">&lt;</span><span class="nc">Patient</span><span class="o">,</span> <span class="nc">Long</span><span class="o">,</span> <span class="nc">PatientEvent</span><span class="o">,</span> <span class="nc">Long</span><span class="o">,</span> <span class="nc">SnapshotT</span><span class="o">&gt;</span> <span class="o">{</span> <i class="conum" data-value="2"></i><b>(2)</b>
+
+    <span class="nd">@Override</span>
+    <span class="k">default</span> <span class="nc">Publisher</span><span class="o">&lt;</span><span class="nc">SnapshotT</span><span class="o">&gt;</span> <span class="nf">getSnapshot</span><span class="o">(</span><span class="kt">long</span> <span class="n">maxPosition</span><span class="o">,</span> <span class="nd">@NotNull</span> <span class="nc">Patient</span> <span class="n">aggregate</span><span class="o">)</span> <span class="o">{</span>
+        <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="o">}</span>
+
+    <span class="nd">@NotNull</span>
+    <span class="nd">@Override</span>
+    <span class="k">default</span> <span class="nc">Publisher</span><span class="o">&lt;</span><span class="nc">SnapshotT</span><span class="o">&gt;</span> <span class="nf">getSnapshot</span><span class="o">(</span><span class="nd">@Nullable</span> <span class="nc">Date</span> <span class="n">maxTimestamp</span><span class="o">,</span> <span class="nd">@NotNull</span> <span class="nc">Patient</span> <span class="n">aggregate</span><span class="o">)</span> <span class="o">{</span> <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="k">default</span> <span class="kt">boolean</span> <span class="nf">shouldEventsBeApplied</span><span class="o">(</span><span class="nd">@NotNull</span> <span class="nc">SnapshotT</span> <span class="n">snapshot</span><span class="o">)</span> <span class="o">{</span> <i class="conum" data-value="5"></i><b>(5)</b>
+    <span class="o">}</span>
+
+    <span class="nd">@NotNull</span>
+    <span class="nd">@Override</span>
+    <span class="k">default</span> <span class="nc">Publisher</span><span class="o">&lt;</span><span class="nc">EventApplyOutcome</span><span class="o">&gt;</span> <span class="nf">onException</span><span class="o">(</span>
+            <span class="nd">@NotNull</span> <span class="nc">Exception</span> <span class="n">e</span><span class="o">,</span> <span class="nd">@NotNull</span> <span class="nc">SnapshotT</span> <span class="n">snapshot</span><span class="o">,</span> <span class="nd">@NotNull</span> <span class="nc">PatientEvent</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span> <i class="conum" data-value="6"></i><b>(6)</b>
+    <span class="o">}</span>
+
+    <span class="nd">@NotNull</span>
+    <span class="nd">@Override</span>
+    <span class="k">default</span> <span class="nc">Publisher</span><span class="o">&lt;</span><span class="nc">PatientEvent</span><span class="o">&gt;</span> <span class="nf">getUncomputedEvents</span><span class="o">(</span>
+            <span class="nd">@NotNull</span> <span class="nc">Patient</span> <span class="n">aggregate</span><span class="o">,</span> <span class="nd">@Nullable</span> <span class="nc">SnapshotT</span> <span class="n">lastSnapshot</span><span class="o">,</span> <span class="kt">long</span> <span class="n">version</span><span class="o">)</span> <span class="o">{</span>
+        <i class="conum" data-value="7"></i><b>(7)</b>
+    <span class="o">}</span>
+
+    <span class="nd">@NotNull</span>
+    <span class="nd">@Override</span>
+    <span class="k">default</span> <span class="nc">Publisher</span><span class="o">&lt;</span><span class="nc">PatientEvent</span><span class="o">&gt;</span> <span class="nf">getUncomputedEvents</span><span class="o">(</span>
+            <span class="nd">@NotNull</span> <span class="nc">Patient</span> <span class="n">aggregate</span><span class="o">,</span> <span class="nd">@Nullable</span> <span class="nc">SnapshotT</span> <span class="n">lastSnapshot</span><span class="o">,</span> <span class="nd">@NotNull</span> <span class="nc">Date</span> <span class="n">snapshotTime</span><span class="o">)</span> <span class="o">{</span>
+        <i class="conum" data-value="8"></i><b>(8)</b>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// This is the implementation we need</span>
+<span class="nd">@Getter</span>
+<span class="nd">@Query</span><span class="o">(</span><span class="n">aggregate</span> <span class="o">=</span> <span class="nc">Patient</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">snapshot</span> <span class="o">=</span> <span class="nc">PatientAccount</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <i class="conum" data-value="9"></i><b>(9)</b>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PatientAccountQuery</span> <span class="kd">implements</span> <span class="nc">CustomQuerySupport</span><span class="o">&lt;</span><span class="nc">PatientAccount</span><span class="o">&gt;</span> <span class="o">{</span> <i class="conum" data-value="10"></i><b>(10)</b>
+
+    <span class="nd">@NotNull</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">PatientAccount</span> <span class="nf">createEmptySnapshot</span><span class="o">()</span> <span class="o">{</span> <i class="conum" data-value="11"></i><b>(11)</b>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">PatientAccount</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="nc">Publisher</span><span class="o">&lt;</span><span class="nc">EventApplyOutcome</span><span class="o">&gt;</span> <span class="nf">applyPatientCreated</span><span class="o">(</span><span class="nc">PatientCreated</span> <span class="n">event</span><span class="o">,</span> <span class="nc">PatientAccount</span> <span class="n">snapshot</span><span class="o">)</span> <span class="o">{</span> <i class="conum" data-value="12"></i><b>(12)</b>
+        <span class="k">if</span> <span class="o">(</span><span class="n">snapshot</span><span class="o">.</span><span class="na">getAggregate</span><span class="o">()</span> <span class="o">==</span> <span class="n">event</span><span class="o">.</span><span class="na">getAggregate</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">snapshot</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="nf">toPublisher</span><span class="o">(</span><span class="n">just</span><span class="o">(</span><span class="no">CONTINUE</span><span class="o">));</span> <i class="conum" data-value="13"></i><b>(13)</b>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Publisher</span><span class="o">&lt;</span><span class="nc">EventApplyOutcome</span><span class="o">&gt;</span> <span class="nf">applyProcedurePerformed</span><span class="o">(</span><span class="nc">ProcedurePerformed</span> <span class="n">event</span><span class="o">,</span> <span class="nc">PatientAccount</span> <span class="n">snapshot</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="kt">double</span> <span class="n">cost</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="na">getCost</span><span class="o">().</span><span class="na">doubleValue</span><span class="o">();</span>
+        <span class="kd">final</span> <span class="kt">double</span> <span class="n">originalBalance</span> <span class="o">=</span> <span class="n">snapshot</span><span class="o">.</span><span class="na">getBalance</span><span class="o">().</span><span class="na">doubleValue</span><span class="o">();</span>
+
+        <span class="n">snapshot</span><span class="o">.</span><span class="na">setBalance</span><span class="o">(</span><span class="nc">BigDecimal</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">originalBalance</span> <span class="o">+</span> <span class="n">cost</span><span class="o">));</span>
+
+        <span class="k">return</span> <span class="nf">toPublisher</span><span class="o">(</span><span class="n">just</span><span class="o">(</span><span class="no">CONTINUE</span><span class="o">));</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Publisher</span><span class="o">&lt;</span><span class="nc">EventApplyOutcome</span><span class="o">&gt;</span> <span class="nf">applyPaymentMade</span><span class="o">(</span><span class="nc">PaymentMade</span> <span class="n">event</span><span class="o">,</span> <span class="nc">PatientAccount</span> <span class="n">snapshot</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="kd">final</span> <span class="kt">double</span> <span class="n">amount</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="na">getAmount</span><span class="o">().</span><span class="na">doubleValue</span><span class="o">();</span>
+        <span class="kd">final</span> <span class="kt">double</span> <span class="n">originalBalance</span> <span class="o">=</span> <span class="n">snapshot</span><span class="o">.</span><span class="na">getBalance</span><span class="o">().</span><span class="na">doubleValue</span><span class="o">();</span>
+        <span class="kd">final</span> <span class="kt">double</span> <span class="n">originalMoneyMade</span> <span class="o">=</span> <span class="n">snapshot</span><span class="o">.</span><span class="na">getMoneyMade</span><span class="o">().</span><span class="na">doubleValue</span><span class="o">();</span>
+
+        <span class="n">snapshot</span><span class="o">.</span><span class="na">setBalance</span><span class="o">(</span><span class="nc">BigDecimal</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">originalBalance</span> <span class="o">-</span> <span class="n">amount</span><span class="o">));</span>
+        <span class="n">snapshot</span><span class="o">.</span><span class="na">setMoneyMade</span><span class="o">(</span><span class="nc">BigDecimal</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">originalMoneyMade</span> <span class="o">+</span> <span class="n">amount</span><span class="o">));</span>
+
+        <span class="k">return</span> <span class="nf">toPublisher</span><span class="o">(</span><span class="n">just</span><span class="o">(</span><span class="no">CONTINUE</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This is a placeholder for the snapshot we&#8217;ll compute.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>QuerySupport</code> allows computing both temporal and versioned snapshots.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The implementation of this method will return a snapshot that&#8217;s older than the <code>maxPosition</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The implementation of this method will return a snapshot that&#8217;s older than the <code>maxTimestamp</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>This allows the query to have some control over when to stop applying events on a snapshot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>This is an exception handler.
+You can decide to <code>CONTINUE</code> or <code>RETURN</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>The implementation of this method must return all events for an aggregate that are more recent than the last event of <code>lastSnapshot</code>, but lead up to <code>version</code>.
+Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <code>version</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>The implementation of this method must return all events for an aggregate that are more recent than the last event of <code>lastSnapshot</code>, but lead up to <code>snapshotTime</code>.
+Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <code>snapshotTime</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>This annotation is the final step in verification of completeness.
+The AST Transformation checks that all <code>@Event</code> s associated with the <code>@Aggregate</code> are accounted for in the <code>@Query</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>Here we implement our default interface</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>This method gets called if no prior snapshot that is usable is found.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td>We name our methods <code>apply&lt;EventType&gt;</code>.
+This is required.
+It is not enforced though.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td>Each of these methods takes the event and the snapshot as inputs and returns an <code>Publisher&lt;EventApplyOutcome&gt;</code> as output.
+It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock secondary">
+<div class="title">Groovy</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="nd">@Query</span><span class="o">(</span><span class="n">aggregate</span> <span class="o">=</span> <span class="n">Patient</span><span class="o">,</span> <span class="n">snapshot</span> <span class="o">=</span> <span class="n">PatientAccount</span><span class="o">)</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="kd">class</span> <span class="nc">PatientAccountQuery</span> <span class="kd">implements</span>
+<span class="n">QuerySupport</span><span class="o">&lt;</span><span class="n">Patient</span><span class="o">,</span> <span class="n">Long</span><span class="o">,</span> <span class="n">PatientEvent</span><span class="o">,</span> <span class="n">Long</span><span class="o">,</span> <span class="n">PatientAccount</span><span class="o">&gt;</span> <span class="o">{</span>
+    <i class="conum" data-value="2"></i><b>(2)</b>
+
+    <span class="nd">@NotNull</span>
+    <span class="nd">@Override</span>
+    <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">PatientAccount</span><span class="o">&gt;</span> <span class="n">getSnapshot</span><span class="o">(</span><span class="kt">long</span> <span class="n">maxPosition</span><span class="o">,</span> <span class="nd">@NotNull</span> <span class="n">Patient</span> <span class="n">aggregate</span><span class="o">)</span> <span class="o">{</span>
+        <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="o">}</span>
+
+    <span class="nd">@NotNull</span>
+    <span class="nd">@Override</span>
+    <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">PatientAccount</span><span class="o">&gt;</span> <span class="n">getSnapshot</span><span class="o">(</span><span class="n">Date</span> <span class="n">maxTimestamp</span><span class="o">,</span> <span class="nd">@NotNull</span> <span class="n">Patient</span> <span class="n">aggregate</span><span class="o">)</span> <span class="o">{</span>
+        <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kt">boolean</span> <span class="nf">shouldEventsBeApplied</span><span class="o">(</span><span class="nd">@NotNull</span> <span class="n">PatientAccount</span> <span class="n">snapshot</span><span class="o">)</span> <span class="o">{</span>
+        <i class="conum" data-value="5"></i><b>(5)</b>
+        <span class="kc">true</span>
+    <span class="o">}</span>
+
+    <span class="nd">@NotNull</span>
+    <span class="nd">@Override</span>
+    <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">EventApplyOutcome</span><span class="o">&gt;</span> <span class="n">onException</span><span class="o">(</span>
+            <span class="nd">@NotNull</span> <span class="n">Exception</span> <span class="n">e</span><span class="o">,</span> <span class="nd">@NotNull</span> <span class="n">PatientAccount</span> <span class="n">snapshot</span><span class="o">,</span> <span class="nd">@NotNull</span> <span class="n">PatientEvent</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+        <i class="conum" data-value="6"></i><b>(6)</b>
+        <span class="n">snapshot</span><span class="o">.</span><span class="na">processingErrors</span><span class="o">++</span>
+        <span class="n">just</span><span class="o">(</span><span class="n">CONTINUE</span><span class="o">)</span>
+    <span class="o">}</span>
+
+    <span class="nd">@NotNull</span>
+    <span class="nd">@Override</span>
+    <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">PatientEvent</span><span class="o">&gt;</span> <span class="n">getUncomputedEvents</span><span class="o">(</span>
+            <span class="nd">@NotNull</span> <span class="n">Patient</span> <span class="n">patient</span><span class="o">,</span> <span class="n">PatientAccount</span> <span class="n">lastSnapshot</span><span class="o">,</span> <span class="kt">long</span> <span class="n">version</span><span class="o">)</span> <span class="o">{</span>
+        <i class="conum" data-value="7"></i><b>(7)</b>
+    <span class="o">}</span>
+
+    <span class="nd">@NotNull</span>
+    <span class="nd">@Override</span> <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">PatientEvent</span><span class="o">&gt;</span> <span class="n">getUncomputedEvents</span><span class="o">(</span>
+            <span class="nd">@NotNull</span> <span class="n">Patient</span> <span class="n">aggregate</span><span class="o">,</span> <span class="n">PatientAccount</span> <span class="n">lastSnapshot</span><span class="o">,</span> <span class="nd">@NotNull</span> <span class="n">Date</span> <span class="n">snapshotTime</span><span class="o">)</span> <span class="o">{</span>
+        <i class="conum" data-value="8"></i><b>(8)</b>
+    <span class="o">}</span>
+
+    <span class="nd">@NotNull</span>
+    <span class="nd">@Override</span> <span class="n">PatientAccount</span> <span class="n">createEmptySnapshot</span><span class="o">()</span> <span class="o">{</span>
+        <i class="conum" data-value="9"></i><b>(9)</b>
+        <span class="k">new</span> <span class="nf">PatientAccount</span><span class="o">(</span><span class="nl">deprecates:</span> <span class="o">[])</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kt">void</span> <span class="nf">addToDeprecates</span><span class="o">(</span><span class="nd">@NotNull</span> <span class="n">PatientAccount</span> <span class="n">snapshot</span><span class="o">,</span> <span class="nd">@NotNull</span> <span class="n">Patient</span> <span class="n">deprecatedAggregate</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">snapshot</span><span class="o">.</span><span class="na">deprecates</span> <span class="o">&lt;&lt;</span> <span class="n">deprecatedAggregate</span>
+    <span class="o">}</span>
+
+    <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">EventApplyOutcome</span><span class="o">&gt;</span> <span class="n">applyPatientCreated</span><span class="o">(</span>
+            <span class="n">PatientCreated</span> <span class="n">event</span><span class="o">,</span> <span class="n">PatientAccount</span> <span class="n">snapshot</span><span class="o">)</span> <span class="o">{</span>
+        <i class="conum" data-value="10"></i><b>(10)</b>
+        <span class="k">if</span> <span class="o">(</span><span class="n">snapshot</span><span class="o">.</span><span class="na">aggregate</span> <span class="o">==</span> <span class="n">event</span><span class="o">.</span><span class="na">aggregate</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">snapshot</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="na">name</span>
+        <span class="o">}</span>
+        <span class="n">just</span><span class="o">(</span><span class="n">CONTINUE</span><span class="o">)</span> <i class="conum" data-value="11"></i><b>(11)</b>
+    <span class="o">}</span>
+
+    <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">EventApplyOutcome</span><span class="o">&gt;</span> <span class="n">applyProcedurePerformed</span><span class="o">(</span>
+            <span class="n">ProcedurePerformed</span> <span class="n">event</span><span class="o">,</span> <span class="n">PatientAccount</span> <span class="n">snapshot</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">snapshot</span><span class="o">.</span><span class="na">balance</span> <span class="o">+=</span> <span class="n">event</span><span class="o">.</span><span class="na">cost</span>
+        <span class="n">just</span><span class="o">(</span><span class="n">CONTINUE</span><span class="o">)</span>
+    <span class="o">}</span>
+
+    <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">EventApplyOutcome</span><span class="o">&gt;</span> <span class="n">applyPaymentMade</span><span class="o">(</span>
+            <span class="n">PaymentMade</span> <span class="n">event</span><span class="o">,</span> <span class="n">PatientAccount</span> <span class="n">snapshot</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">snapshot</span><span class="o">.</span><span class="na">balance</span> <span class="o">-=</span> <span class="n">event</span><span class="o">.</span><span class="na">amount</span>
+        <span class="n">snapshot</span><span class="o">.</span><span class="na">moneyMade</span> <span class="o">+=</span> <span class="n">event</span><span class="o">.</span><span class="na">amount</span>
+        <span class="n">just</span><span class="o">(</span><span class="n">CONTINUE</span><span class="o">)</span>
+    <span class="o">}</span>
+
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This annotation is the final step in verification of completeness.
+The AST Transformation checks that all <code>@Event</code> s associated with the <code>@Aggregate</code> are accounted for in the <code>@Query</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>QuerySupport</code> allows computing both temporal and versioned snapshots.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The implementation of this method will return a snapshot that&#8217;s older than the <code>maxPosition</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The implementation of this method will return a snapshot that&#8217;s older than the <code>maxTimestamp</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>This allows the query to have some control over when to stop applying events on a snapshot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>This is an exception handler.
+You can decide to <code>CONTINUE</code> or <code>RETURN</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>The implementation of this method must return all events for an aggregate that are more recent than the last event of <code>lastSnapshot</code>, but lead up to <code>version</code>.
+Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <code>version</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>The implementation of this method must return all events for an aggregate that are more recent than the last event of <code>lastSnapshot</code>, but lead up to <code>snapshotTime</code>.
+Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <code>snapshotTime</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>This method gets called if no prior snapshot that is usable is found.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>We name our methods <code>apply&lt;EventType&gt;</code>.
+This is required.
+Your IDE might not point out if you don&#8217;t do it right, but the compiler will.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>Each of these methods takes the event and the snapshot as inputs and returns an <code>Publisher&lt;EventApplyOutcome&gt;</code> as output.
+It can <code>CONTINUE</code> or <code>RETURN</code>.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock secondary">
+<div class="title">Kotlin</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="kotlin"><span class="nd">@Component</span>
+<span class="kd">class</span> <span class="nc">PatientAccountQuery</span><span class="p">(</span>
+    <span class="err">@</span><span class="n">param</span><span class="p">:</span><span class="nc">Autowired</span> <span class="kd">val</span> <span class="py">patientEventRepository</span><span class="p">:</span> <span class="nc">PatientEventRepository</span><span class="p">,</span>
+    <span class="err">@</span><span class="n">param</span><span class="p">:</span><span class="nc">Autowired</span> <span class="kd">val</span> <span class="py">patientAccountRepository</span><span class="p">:</span> <span class="nc">PatientAccountRepository</span><span class="p">,</span>
+<span class="p">)</span> <span class="p">:</span> <span class="nc">QuerySupport</span><span class="p">&lt;</span><span class="nc">Patient</span><span class="p">,</span> <span class="nc">String</span><span class="p">,</span> <span class="nc">PatientEvent</span><span class="p">,</span> <span class="nc">String</span><span class="p">,</span> <span class="nc">PatientAccount</span><span class="p">&gt;,</span>
+    <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="nc">SimpleQuery</span><span class="p">&lt;</span>
+        <span class="nc">Patient</span><span class="p">,</span>
+        <span class="nc">String</span><span class="p">,</span>
+        <span class="nc">PatientEvent</span><span class="p">,</span>
+        <span class="nc">PatientEvent</span><span class="p">.</span><span class="nc">Applicable</span><span class="p">,</span>
+        <span class="nc">String</span><span class="p">,</span>
+        <span class="nc">PatientAccount</span><span class="p">,</span>
+    <span class="p">&gt;</span> <span class="p">{</span> <i class="conum" data-value="2"></i><b>(2)</b>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">getExecutor</span><span class="p">()</span> <span class="p">=</span>
+        <span class="nc">SimpleExecutor</span><span class="p">&lt;</span>
+            <span class="nc">Patient</span><span class="p">,</span>
+            <span class="nc">String</span><span class="p">,</span>
+            <span class="nc">PatientEvent</span><span class="p">,</span>
+            <span class="nc">PatientEvent</span><span class="p">.</span><span class="nc">Applicable</span><span class="p">,</span>
+            <span class="nc">String</span><span class="p">,</span>
+            <span class="nc">PatientAccount</span><span class="p">,</span>
+            <span class="nc">PatientAccountQuery</span><span class="p">,</span>
+        <span class="p">&gt;()</span> <i class="conum" data-value="3"></i><b>(3)</b>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">createEmptySnapshot</span><span class="p">()</span> <span class="p">=</span> <span class="nc">PatientAccount</span><span class="p">()</span> <i class="conum" data-value="4"></i><b>(4)</b>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">getSnapshot</span><span class="p">(</span>
+        <span class="n">maxPosition</span><span class="p">:</span> <span class="nc">Long</span><span class="p">,</span>
+        <span class="n">aggregate</span><span class="p">:</span> <span class="nc">Patient</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">=</span> <i class="conum" data-value="5"></i><b>(5)</b>
+        <span class="n">patientAccountRepository</span><span class="p">.</span><span class="nf">findByAggregateIdAndLastEventPositionLessThan</span><span class="p">(</span>
+            <span class="n">aggregate</span><span class="p">.</span><span class="n">id</span><span class="o">!!</span><span class="p">,</span>
+            <span class="n">maxPosition</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">getSnapshot</span><span class="p">(</span>
+        <span class="n">maxTimestamp</span><span class="p">:</span> <span class="nc">Date</span><span class="p">?,</span>
+        <span class="n">aggregate</span><span class="p">:</span> <span class="nc">Patient</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">=</span> <i class="conum" data-value="6"></i><b>(6)</b>
+        <span class="n">patientAccountRepository</span><span class="p">.</span><span class="nf">findByAggregateIdAndLastEventTimestampLessThan</span><span class="p">(</span>
+            <span class="n">aggregate</span><span class="p">.</span><span class="n">id</span><span class="o">!!</span><span class="p">,</span>
+            <span class="n">maxTimestamp</span><span class="o">!!</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">shouldEventsBeApplied</span><span class="p">(</span><span class="n">snapshot</span><span class="p">:</span> <span class="nc">PatientAccount</span><span class="p">)</span> <span class="p">=</span> <span class="k">true</span> <i class="conum" data-value="7"></i><b>(7)</b>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">addToDeprecates</span><span class="p">(</span>
+        <span class="n">snapshot</span><span class="p">:</span> <span class="nc">PatientAccount</span><span class="p">,</span>
+        <span class="n">deprecatedAggregate</span><span class="p">:</span> <span class="nc">Patient</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">{</span>
+        <span class="n">snapshot</span><span class="p">.</span><span class="n">deprecatesIds</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="n">deprecatedAggregate</span><span class="p">.</span><span class="n">id</span><span class="o">!!</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">onException</span><span class="p">(</span>
+        <span class="n">e</span><span class="p">:</span> <span class="nc">Exception</span><span class="p">,</span>
+        <span class="n">snapshot</span><span class="p">:</span> <span class="nc">PatientAccount</span><span class="p">,</span>
+        <span class="n">event</span><span class="p">:</span> <span class="nc">PatientEvent</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">=</span> <i class="conum" data-value="8"></i><b>(8)</b>
+        <span class="nf">just</span><span class="p">(</span><span class="nc">CONTINUE</span><span class="p">)</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">getUncomputedEvents</span><span class="p">(</span>
+        <span class="n">aggregate</span><span class="p">:</span> <span class="nc">Patient</span><span class="p">,</span>
+        <span class="n">lastSnapshot</span><span class="p">:</span> <span class="nc">PatientAccount</span><span class="p">?,</span>
+        <span class="n">version</span><span class="p">:</span> <span class="nc">Long</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">=</span> <i class="conum" data-value="9"></i><b>(9)</b>
+        <span class="n">patientEventRepository</span><span class="p">.</span><span class="nf">findAllByPositionRange</span><span class="p">(</span>
+            <span class="n">aggregate</span><span class="p">.</span><span class="n">id</span><span class="o">!!</span><span class="p">,</span>
+            <span class="n">lastSnapshot</span><span class="o">?.</span><span class="n">lastEventPosition</span> <span class="o">?:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">version</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">getUncomputedEvents</span><span class="p">(</span>
+        <span class="n">aggregate</span><span class="p">:</span> <span class="nc">Patient</span><span class="p">,</span>
+        <span class="n">lastSnapshot</span><span class="p">:</span> <span class="nc">PatientAccount</span><span class="p">?,</span>
+        <span class="n">snapshotTime</span><span class="p">:</span> <span class="nc">Date</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">=</span> <i class="conum" data-value="10"></i><b>(10)</b>
+        <span class="n">lastSnapshot</span><span class="o">?.</span><span class="n">lastEventTimestamp</span><span class="o">?.</span><span class="nf">let</span> <span class="p">{</span>
+            <span class="n">patientEventRepository</span><span class="p">.</span><span class="nf">findAllByTimestampRange</span><span class="p">(</span>
+                <span class="n">aggregate</span><span class="p">.</span><span class="n">id</span><span class="o">!!</span><span class="p">,</span>
+                <span class="n">it</span><span class="p">,</span>
+                <span class="n">snapshotTime</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">}</span> <span class="o">?:</span> <span class="n">patientEventRepository</span><span class="p">.</span><span class="nf">findAllByAggregateIdAndTimestampLessThan</span><span class="p">(</span>
+            <span class="n">aggregate</span><span class="p">.</span><span class="n">id</span><span class="o">!!</span><span class="p">,</span>
+            <span class="n">snapshotTime</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">applyEvent</span><span class="p">(</span>
+        <span class="n">event</span><span class="p">:</span> <span class="nc">PatientEvent</span><span class="p">.</span><span class="nc">Applicable</span><span class="p">,</span>
+        <span class="n">snapshot</span><span class="p">:</span> <span class="nc">PatientAccount</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">=</span> <span class="k">when</span> <span class="p">(</span><span class="n">event</span><span class="p">)</span> <span class="p">{</span> <i class="conum" data-value="11"></i><b>(11)</b>
+        <span class="k">is</span> <span class="nc">PatientEvent</span><span class="p">.</span><span class="nc">Applicable</span><span class="p">.</span><span class="nc">Created</span> <span class="p">-&gt;</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="n">aggregateId</span> <span class="p">==</span> <span class="n">snapshot</span><span class="p">.</span><span class="n">aggregateId</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">snapshot</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="n">event</span><span class="p">.</span><span class="n">name</span>
+            <span class="p">}</span>
+            <span class="nf">just</span><span class="p">(</span><span class="nc">CONTINUE</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">is</span> <span class="nc">PatientEvent</span><span class="p">.</span><span class="nc">Applicable</span><span class="p">.</span><span class="nc">ProcedurePerformed</span> <span class="p">-&gt;</span> <span class="p">{</span>
+            <span class="n">snapshot</span><span class="p">.</span><span class="n">balance</span> <span class="p">=</span> <span class="n">snapshot</span><span class="p">.</span><span class="n">balance</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="n">cost</span><span class="p">)</span>
+            <span class="nf">just</span><span class="p">(</span><span class="nc">CONTINUE</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">is</span> <span class="nc">PatientEvent</span><span class="p">.</span><span class="nc">Applicable</span><span class="p">.</span><span class="nc">PaymentMade</span> <span class="p">-&gt;</span> <span class="p">{</span>
+            <span class="n">snapshot</span><span class="p">.</span><span class="n">balance</span> <span class="p">=</span> <span class="n">snapshot</span><span class="p">.</span><span class="n">balance</span><span class="p">.</span><span class="nf">subtract</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="n">amount</span><span class="p">)</span>
+            <span class="n">snapshot</span><span class="p">.</span><span class="n">moneyMade</span> <span class="p">=</span> <span class="n">snapshot</span><span class="p">.</span><span class="n">moneyMade</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="n">amount</span><span class="p">)</span>
+            <span class="nf">just</span><span class="p">(</span><span class="nc">CONTINUE</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>QuerySupport</code> allows computing both temporal and versioned snapshots.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>SimpleQuery</code> makes working with Kotlin better.
+It calls the <code>applyEvent</code> method instead of calling <code>apply&lt;EventType&gt;</code>.
+With Kotlin <code>applyEvent</code> is sufficient, because you can use sealed classes to achieve completeness.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>SimpleExecutor</code> is what wires up <code>SimpleQuery</code> correctly.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>This method gets called if no prior snapshot that is usable is found.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The implementation of this method will return a snapshot that&#8217;s older than the <code>maxPosition</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The implementation of this method will return a snapshot that&#8217;s older than the <code>maxTimestamp</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>This allows the query to have some control over when to stop applying events on a snapshot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>This is an exception handler.
+You can decide to <code>CONTINUE</code> or <code>RETURN</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>The implementation of this method must return all events for an aggregate that are more recent than the last event of <code>lastSnapshot</code>, but lead up to <code>version</code>.
+Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <code>version</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>The implementation of this method must return all events for an aggregate that are more recent than the last event of <code>lastSnapshot</code>, but lead up to <code>snapshotTime</code>.
+Think of the range as exclusive of <code>lastSnapshot</code>, but inclusive of <code>snapshotTime</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td><code>applyEvent</code> handles all events under <code>Applicable</code>.
+Kotlin will check for completeness when you use the <code>when</code> keyword as part of an <code>expression</code>.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_joins">Joins</h3>
+<div class="paragraph">
+<p>Joins are just snapshots of a different kind.
+With Grooves, they&#8217;re always <em>One-To-Many</em>. <em>One-To-One</em> is just a special case of <em>One-To-Many</em>.
+This is a good example for [join events] in a SpringBoot JPA project.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="kd">class</span> <span class="nc">ZipcodeGotPatient</span> <span class="kd">extends</span> <span class="n">ZipcodeEvent</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="kd">implements</span> <span class="n">JoinEvent</span><span class="o">&lt;</span><span class="n">Zipcode</span><span class="o">,</span> <span class="n">Long</span><span class="o">,</span> <span class="n">ZipcodeEvent</span><span class="o">,</span> <span class="n">Patient</span><span class="o">&gt;</span> <span class="o">{</span>
+    <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="nd">@ManyToOne</span> <span class="n">Patient</span> <span class="n">patient</span>
+    <span class="nd">@Override</span> <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">Patient</span><span class="o">&gt;</span> <span class="n">getJoinAggregateObservable</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">just</span><span class="o">(</span><span class="n">patient</span><span class="o">)</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="kd">class</span> <span class="nc">ZipcodeLostPatient</span> <span class="kd">extends</span> <span class="n">ZipcodeEvent</span> <span class="kd">implements</span>
+<span class="n">DisjoinEvent</span><span class="o">&lt;</span><span class="n">Zipcode</span><span class="o">,</span> <span class="n">Long</span><span class="o">,</span> <span class="n">ZipcodeEvent</span><span class="o">,</span> <span class="n">Patient</span><span class="o">&gt;</span> <span class="o">{</span>
+    <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="nd">@ManyToOne</span> <span class="n">Patient</span> <span class="n">patient</span>
+    <span class="nd">@Override</span> <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">Patient</span><span class="o">&gt;</span> <span class="n">getJoinAggregateObservable</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">just</span><span class="o">(</span><span class="n">patient</span><span class="o">)</span>
+    <span class="o">}</span> <i class="conum" data-value="4"></i><b>(4)</b>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This extends a base class corresponding to its aggregate</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This implements <code>JoinEvent</code> to mark the beginning of a join</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This class implements <code>DisjoinEvent</code> to mark the end of a join</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The method <code>getJoinAggregateObservable</code> allows redirections from deprecated aggregates.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The query used to compute a Join is slightly different.
+It only concerns itself with two forward events - the <code>JoinEvent</code> and the <code>DisjoinEvent</code>.
+This is a good example for such a <a href="https://github.com/rahulsom/grooves/blob/main/examples/springboot/jpa/src/main/groovy/grooves/boot/jpa/queries/ZipcodePatientsQuery.groovy">query</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="kd">class</span> <span class="nc">ZipcodePatientsQuery</span> <span class="kd">implements</span> <span class="n">JoinSupport</span><span class="o">&lt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="n">Zipcode</span><span class="o">,</span> <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="n">Long</span><span class="o">,</span> <span class="n">ZipcodeEvent</span><span class="o">,</span> <i class="conum" data-value="3"></i><b>(3)</b>
+<span class="n">Patient</span><span class="o">,</span> <i class="conum" data-value="4"></i><b>(4)</b>
+<span class="n">Long</span><span class="o">,</span> <span class="n">ZipcodePatients</span><span class="o">,</span> <i class="conum" data-value="5"></i><b>(5)</b>
+<span class="n">ZipcodeGotPatient</span><span class="o">,</span> <span class="n">ZipcodeLostPatient</span> <i class="conum" data-value="6"></i><b>(6)</b>
+<span class="o">&gt;</span> <span class="o">{</span>
+    <i class="conum" data-value="7"></i><b>(7)</b>
+
+    <span class="kd">final</span> <span class="n">Class</span><span class="o">&lt;</span><span class="n">ZipcodeGotPatient</span><span class="o">&gt;</span> <span class="n">joinEventClass</span> <span class="o">=</span> <span class="n">ZipcodeGotPatient</span> <i class="conum" data-value="8"></i><b>(8)</b>
+    <span class="kd">final</span> <span class="n">Class</span><span class="o">&lt;</span><span class="n">ZipcodeLostPatient</span><span class="o">&gt;</span> <span class="n">disjoinEventClass</span> <span class="o">=</span> <span class="n">ZipcodeLostPatient</span> <i class="conum" data-value="9"></i><b>(9)</b>
+    <span class="c1">// Skipping familiar methods </span><i class="conum" data-value="10"></i><b>(10)</b>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>JoinSupport</code> is similar to <code>QuerySupport</code>.
+It does not require implementing methods for each event.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This says that the aggregate for which this computes joins is <code>Zipcode</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This says that the base class for events for which this computes joins is <code>ZipcodeEvent</code> whose id is <code>Long</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>This says that the joined aggregate for which this computes joins is <code>Patient</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>This says that the join computed is <code>ZipcodePatients</code> whose id is <code>String</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The events that represent a join and a disjoin are <code>ZipcodeGotPatient</code>, <code>ZipcodeLostPatient</code> respectively.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>This says that the class of the query is <code>ZipcodePatientsQuery</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>This is another reference to the disjoin event.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>This is another reference to the join event.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>Methods that you&#8217;ve seen in typical queries have been skipped here.
+You don&#8217;t however need <code>applyXXXEvent</code> methods.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_frp_style">FRP Style</h3>
+<div class="paragraph">
+<p>Sometimes, it is not ideal to create classes to implement the queries.
+Since 0.4.0, grooves has experimental support for doing this in a somewhat <em>Functional Reactive Programming</em> style.</p>
+</div>
+<div class="paragraph">
+<p>This is an example for such a query in Kotlin.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="kotlin"><span class="k">private</span> <span class="kd">val</span> <span class="py">query</span> <span class="p">=</span>
+    <span class="nc">Grooves</span>
+        <span class="p">.</span><span class="n">versioned</span><span class="p">&lt;</span><span class="nc">Account</span><span class="p">,</span> <span class="nc">String</span><span class="p">,</span> <span class="nc">Transaction</span><span class="p">,</span> <span class="nc">String</span><span class="p">,</span> <span class="nc">Balance</span><span class="p">&gt;()</span> <i class="conum" data-value="1"></i><b>(1)</b>
+        <span class="p">.</span><span class="nf">withSnapshot</span> <span class="p">{</span> <span class="n">version</span><span class="p">,</span> <span class="n">account</span> <span class="p">-&gt;</span>
+            <i class="conum" data-value="2"></i><b>(2)</b>
+            <span class="n">log</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s">"getBalance($account, $version)"</span><span class="p">)</span>
+            <span class="nc">Maybe</span>
+                <span class="p">.</span><span class="nf">fromCallable</span> <span class="p">{</span> <span class="n">database</span><span class="p">.</span><span class="nf">getBalance</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span> <span class="p">}</span>
+                <span class="p">.</span><span class="nf">map</span> <span class="p">{</span> <span class="n">dbBalance</span> <span class="p">-&gt;</span> <span class="nc">Balance</span><span class="p">(</span><span class="n">dbBalance</span><span class="p">)</span> <span class="p">}</span>
+                <span class="p">.</span><span class="nf">toFlowable</span><span class="p">()</span>
+        <span class="p">}.</span><span class="nf">withEmptySnapshot</span> <span class="p">{</span> <span class="nc">Balance</span><span class="p">()</span> <span class="p">}</span> <i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="p">.</span><span class="nf">withEvents</span> <span class="p">{</span> <span class="n">account</span><span class="p">,</span> <span class="n">balance</span><span class="p">,</span> <span class="n">version</span> <span class="p">-&gt;</span>
+            <i class="conum" data-value="4"></i><b>(4)</b>
+            <span class="kd">val</span> <span class="py">transaction</span> <span class="p">=</span>
+                <span class="nc">ContextManager</span><span class="p">.</span><span class="k">get</span><span class="p">()</span><span class="o">?.</span><span class="k">get</span><span class="p">(</span><span class="s">"transaction"</span><span class="p">)</span> <span class="k">as</span> <span class="nc">Transaction</span><span class="p">?</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">transaction</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nf">just</span><span class="p">(</span><span class="n">transaction</span><span class="p">)</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nf">empty</span><span class="p">()</span>
+            <span class="p">}</span>
+        <span class="p">}.</span><span class="nf">withApplyEvents</span> <span class="p">{</span> <span class="n">balance</span> <span class="p">-&gt;</span> <span class="k">true</span> <span class="p">}</span> <i class="conum" data-value="5"></i><b>(5)</b>
+        <span class="p">.</span><span class="nf">withDeprecator</span> <span class="p">{</span> <span class="n">balance</span><span class="p">,</span> <span class="n">deprecatingAccount</span> <span class="p">-&gt;</span> <i class="conum" data-value="6"></i><b>(6)</b>
+        <span class="p">}.</span><span class="nf">withExceptionHandler</span> <span class="p">{</span> <span class="n">exception</span><span class="p">,</span> <span class="n">balance</span><span class="p">,</span> <span class="n">transaction</span> <span class="p">-&gt;</span>
+            <i class="conum" data-value="7"></i><b>(7)</b>
+            <span class="n">log</span><span class="p">.</span><span class="nf">warn</span><span class="p">(</span><span class="s">"$exception occurred"</span><span class="p">)</span>
+            <span class="nf">just</span><span class="p">(</span><span class="nc">CONTINUE</span><span class="p">)</span>
+        <span class="p">}.</span><span class="nf">withEventHandler</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">updateBalance</span><span class="p">)</span> <i class="conum" data-value="8"></i><b>(8)</b>
+        <span class="p">.</span><span class="nf">build</span><span class="p">()</span> <i class="conum" data-value="9"></i><b>(9)</b>
+
+<span class="k">private</span> <span class="k">fun</span> <span class="nf">updateBalance</span><span class="p">(</span>
+    <span class="n">transaction</span><span class="p">:</span> <span class="nc">Transaction</span><span class="p">,</span>
+    <span class="n">balance</span><span class="p">:</span> <span class="nc">Balance</span><span class="p">,</span>
+<span class="p">)</span> <span class="p">=</span> <span class="k">when</span> <span class="p">(</span><span class="n">transaction</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">is</span> <span class="nc">Transaction</span><span class="p">.</span><span class="nc">Deposit</span> <span class="p">-&gt;</span> <span class="p">{</span>
+        <span class="n">balance</span><span class="p">.</span><span class="n">balance</span> <span class="p">+=</span> <span class="n">transaction</span><span class="p">.</span><span class="n">amount</span>
+        <span class="nf">just</span><span class="p">(</span><span class="nc">CONTINUE</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">is</span> <span class="nc">Transaction</span><span class="p">.</span><span class="nc">Withdraw</span> <span class="p">-&gt;</span> <span class="p">{</span>
+        <span class="n">balance</span><span class="p">.</span><span class="n">balance</span> <span class="p">-=</span> <span class="n">transaction</span><span class="p">.</span><span class="n">amount</span>
+        <span class="nf">just</span><span class="p">(</span><span class="nc">CONTINUE</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>Grooves</code> is a class that allows creating FRP style queries.
+You can start with <code>versioned</code> or <code>temporal</code>.
+It returns a query builder.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This method helps Grooves fetch a prior snapshot from the datastore. <code>account</code> is an aggregate.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This method helps Grooves create a new snapshot when none was found by the previous method.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>This method helps Grooves fetch events since the last known snapshot.
+<code>account</code> is the aggregate.
+<code>balance</code> is the last known snapshot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>This method is optional and by default returns true.
+<code>balance</code> is the snapshot.
+This allows inspecting the snapshot to determine if Grooves should continue processing events.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>This method allows Grooves to execute some code when a deprecation event is found.
+<code>balance</code> is the snapshot
+<code>deprecatingAccount</code> is the aggregate the deprecates the aggregate of <code>balance</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>This method helps Grooves decide what to do on an exception.
+Returning an observable that says <code>CONTINUE</code> means processing will continue.
+Returning an observable that says <code>RETURN</code> means processing will stop and the value will be returned.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>This allows Grooves to apply events on a snapshot as shown in the function <code>updateBalance</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>This returns an instance of <code>VersionedQuery</code>.
+That can be used to compute snapshots.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The full source for <em>Push Style</em> Event Sourcing with <em>jOOQ</em> and FRP, look at <a href="https://github.com/rahulsom/grooves/tree/main/examples/pushstyle">this subproject</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_your_own_diagrams">Creating your own diagrams</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In a gradle project, if you&#8217;re using asciidoctor for documentation, you can generate diagrams using <code>grooves-diagrams</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="groovy"><span class="n">plugins</span> <span class="o">{</span>
+    <span class="n">id</span><span class="o">(</span><span class="s2">"org.asciidoctor.convert"</span><span class="o">).</span><span class="na">version</span><span class="o">(</span><span class="s2">"1.5.3"</span><span class="o">)</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="o">}</span>
+
+<span class="n">repositories</span> <span class="o">{</span>
+    <span class="n">mavenCentral</span><span class="o">()</span>
+<span class="o">}</span>
+
+<span class="n">dependencies</span> <span class="o">{</span>
+    <span class="n">asciidoctor</span> <span class="s1">'com.github.rahulsom:grooves-diagrams:0.1.0-dev.1+74a17bc'</span> <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This adds and applies the asciidoctor gradle plugin to your build</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This includes the dependency on grooves-diagrams</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now in your asciidoctor files, you can do this</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="asciidoctor">[esdiag,SimpleEvents]
+....
+|Type,ID,Description
+  + 1 2016-01-02 created as John Lennon
+  + 2 2016-01-03 performed FLUSHOT for $ 32.40
+  + 3 2016-01-04 performed GLUCOSETEST for $ 78.93
+  + 4 2016-01-05 paid $ 100.25
+....</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The result is this</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="SimpleEvents.svg" alt="">
+</div>
+</div>
+<div class="paragraph">
+<p>Take a look at <a href="https://github.com/rahulsom/grooves/tree/main/grooves-docs/src/docs/asciidoc">the source</a> for more examples of creating diagrams.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_support">Support</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you&#8217;re having trouble using this, head over to <a href="https://github.com/rahulsom/grooves/issues">GitHub Issues</a> and raise a question.
+Our aim is to document things here rather than answering individual questions on the issue tracker.</p>
+</div>
+<div class="paragraph">
+<p>If you run into a bug, feel free to create a Pull Request complete with tests, or open an issue with a detailed test description.
+If you feel that the design can be enhanced, please open a ticket and start a discussion before spending time on that.</p>
+</div>
+</div>
+</div>
+</div>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [["\\(", "\\)"]],
+    displayMath: [["\\[", "\\]"]],
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+  TeX: { equationNumbers: { autoNumber: "none" } }
+})
+MathJax.Hub.Register.StartupHook("AsciiMath Jax Ready", function () {
+  MathJax.InputJax.AsciiMath.postfilterHooks.Add(function (data, node) {
+    if ((node = data.script.parentNode) && (node = node.parentNode) && node.classList.contains("stemblock")) {
+      data.math.root.display = "block"
+    }
+    return data
+  })
+})
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0/jquery.min.js"
+        integrity="sha512-YuCuk5nNmVIUfKROKeV3fpZZ5Vt9vsnq8nExr5JwEJc2r1YDVmDfujcq373eHIzjqdxwCzoKpxngIaAdRUyg3A=="
+        crossorigin="anonymous"></script>
+<script>
+$(function(){
+    var $h1 = $('#header > h1');
+    $h1.remove();
+    $('#toc .toc-header').remove();
+    $('#toc').prepend(
+        '<div class="toc-header">'
+        + '<div class="grooves-title">'
+        + '<a href="#"><h1>' + $h1.text() +'</h1></a>'
+        + '</div>'
+        + '</div>'
+    );
+});
+</script>
+</body>
+</html>
