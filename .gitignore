@@ -33,6 +33,7 @@ grooves-site/test-results/
 grooves-site/playwright-report/
 
 ### Other stuff
+__pycache__/
 .gradletasknamecache
 .pid.lock
 /.vscode/
