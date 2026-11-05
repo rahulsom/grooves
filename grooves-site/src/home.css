@@ -26,6 +26,10 @@
 .btn-group {
     margin: 0.25rem;
 }
+#versions {
+    max-height: 70vh;
+    overflow-y: auto;
+}
 * {
     font-family: "Roboto", "Helvetica Neue", sans-serif;
     font-weight: 300;
