@@ -16,7 +16,7 @@ dependencies {
     compileOnly(libs.jetbrains.annotations)
     compileOnly(libs.lombok)
 
-    implementation(libs.rxjava2)
+    api(libs.rxjava2)
     implementation(libs.slf4j.api)
 }
 

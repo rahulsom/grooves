@@ -15,7 +15,7 @@ This module uses Testcontainers to run Open Liberty in a Docker container during
 
 ## How It Works
 
-- **Docker Image**: Uses `openliberty/open-liberty:full-java17-openj9-ubi` 
+- **Docker Image**: Uses `icr.io/appcafe/open-liberty:full-java25-openj9-ubi-minimal`
 - **Configuration**: Custom `server.xml` with JAX-RS 2.1, CDI 2.0, EJB Lite 3.2, and other required features
 - **Application Deployment**: WAR file is copied to `/config/dropins/` for automatic deployment
 - **Cross-platform**: Includes Docker configuration for Mac ARM64 systems
