@@ -19,7 +19,7 @@ jobs:
       packages: write
       pages: write
     with:
-      java-version: 21
+      java-version: 25
       codeql: false
       codeql-actions: true
       codeql-typescript: true
