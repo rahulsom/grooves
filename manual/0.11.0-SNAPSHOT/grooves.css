@@ -1,0 +1,74 @@
+@import url('https://rahulsom.github.io/grooves/styles/foundation.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism.min.css');
+@import url('https://fonts.googleapis.com/css?family=Monoton|Roboto:300,700');
+
+:root {
+    --grooves-accent: #2ba6cb;
+}
+
+.switch--item:not(:first-child) {
+    border-left: var(--grooves-accent) solid 0.1px !important;
+}
+
+.switch--item.selected {
+    background-color: var(--grooves-accent) !important;
+    color: #fff !important;
+    font-weight: bold;
+}
+
+.switch--item {
+    color: var(--grooves-accent) !important;
+}
+
+.switch {
+    border-color: var(--grooves-accent) !important;
+}
+
+.colist>table tr>td:first-of-type {
+    padding: .75em;
+    line-height: 1;
+    vertical-align: top;
+}
+
+pre, pre>code, code[class*=language-], pre[class*=language-] {
+    font-family: "Fira Code", "Droid Sans Mono","DejaVu Sans Mono",monospace;
+}
+
+pre[class*=language-] {
+    margin: 0;
+}
+
+.literalblock > .content pre, .listingblock > .content pre {
+    background-color: #fcfcfc;
+}
+
+code b {
+    display: none;
+}
+
+#toctitle {
+    display: none;
+}
+
+.grooves-title h1 {
+    margin-top: 0;
+
+    font-family: 'Monoton', cursive;
+    animation-name: example;
+    animation-duration: 12s;
+    animation-iteration-count: infinite;
+    transform: rotate(-1.5deg);
+    text-shadow: 6px 6px 6px rgba(128,128,128,.25);
+
+    font-weight: 100;
+    font-size: 2.3em;
+
+}
+
+@keyframes example {
+    0%   {color: red;}
+    25%  {color: darkgoldenrod;}
+    50%  {color: blue;}
+    75%  {color: green;}
+    100% {color: red;}
+}
