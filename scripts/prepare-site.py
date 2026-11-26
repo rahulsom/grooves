@@ -112,10 +112,8 @@ def prepare(pages):
             run(str(ROOT / "gradlew"), ":grooves-docs:asciidoctor",
                 f"-PmanualRoot={source}", f"-PmanualSource={index.parent}",
                 f"-PmanualVersion={version}", f"-PmanualOutput={output}")
-            # The Gradle plugin normally adds the backend name to outputDir.
-            rendered = output / "html5" if (output / "html5/index.html").is_file() else output
-            validate_manual(rendered, tag)
-            shutil.copytree(rendered, destination, dirs_exist_ok=True)
+            validate_manual(output, tag)
+            shutil.copytree(output, destination, dirs_exist_ok=True)
 
     # Always refresh the development manual; replace historical symlinks first.
     current = pages / "manual/current"
@@ -128,9 +126,8 @@ def prepare(pages):
         run(str(ROOT / "gradlew"), ":grooves-docs:asciidoctor",
             f"-PmanualVersion={versions['upcoming'][0]}",
             f"-PmanualOutput={output}")
-        rendered = output / "html5" if (output / "html5/index.html").is_file() else output
-        validate_manual(rendered, "current")
-        shutil.copytree(rendered, current)
+        validate_manual(output, "current")
+        shutil.copytree(output, current)
     add_favicons(pages)
 
     # The upcoming menu entry must resolve to the freshly built development manual.

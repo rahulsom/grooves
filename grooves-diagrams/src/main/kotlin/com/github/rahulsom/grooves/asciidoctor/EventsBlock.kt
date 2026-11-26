@@ -1,5 +1,6 @@
 package com.github.rahulsom.grooves.asciidoctor
 
+import org.asciidoctor.Options
 import org.asciidoctor.ast.StructuralNode
 import org.asciidoctor.extension.BlockProcessor
 import org.asciidoctor.extension.Reader
@@ -20,8 +21,12 @@ class EventsBlock(
         reader: Reader,
         attributes: MutableMap<String, Any>?,
     ): Any {
-        val projectDirAttr = parent.document.attributes["gradle-projectdir"] as String
-        val outDir = File(projectDirAttr, "build/docs/asciidoc")
+        val document = parent.document
+        val outputPath = document.options[Options.TO_DIR] as? String
+        val outDir =
+            outputPath?.let(::File)
+                ?: File(document.attributes["gradle-projectdir"] as String, "build/docs/asciidoc")
+        outDir.mkdirs()
 
         val input = reader.readLines().joinToString("\n")
 
