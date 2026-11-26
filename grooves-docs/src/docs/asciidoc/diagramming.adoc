@@ -2,22 +2,33 @@
 
 In a gradle project, if you're using asciidoctor for documentation, you can generate diagrams using `grooves-diagrams`.
 
-[source,groovy,subs="attributes+"]
+[source,kotlin,subs="attributes+"]
 ----
+import org.asciidoctor.gradle.model5.jvm.extensions.AsciidoctorjGenericExtension
+import org.asciidoctor.gradle.model5.jvm.toolchains.AsciidoctorjToolchain
+
 plugins {
-    id("org.asciidoctor.convert").version("1.5.3") // <1>
+    id("org.asciidoctor.jvm") version "5.2.0" // <1>
 }
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    asciidoctor 'com.github.rahulsom:grooves-diagrams:{gradle-project-version}' // <2>
+asciidoc.toolchains.named<AsciidoctorjToolchain>("asciidoctorj") {
+    useAsciidoctorj("3.0.1")
+    asciidocExtensions.register<AsciidoctorjGenericExtension>("groovesDiagrams") {
+        useModule("com.github.rahulsom:grooves-diagrams", "{gradle-project-version}") // <2>
+    }
+}
+
+asciidoc.publications.named("main") {
+    output("asciidoctorj", "html") // <3>
 }
 ----
-<1> This adds and applies the asciidoctor gradle plugin to your build
-<2> This includes the dependency on grooves-diagrams
+<1> Apply the Asciidoctor Gradle plugin.
+<2> Add the Grooves diagram extension to the AsciidoctorJ toolchain.
+<3> Enable HTML rendering with the `asciidoctorHtml` task.
 
 Now in your asciidoctor files, you can do this
 

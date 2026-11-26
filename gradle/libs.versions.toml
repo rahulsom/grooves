@@ -1,6 +1,6 @@
 [versions]
 activation = "2.1.4"
-asciidoctor = "4.0.5"
+asciidoctor = "5.2.0"
 asciidoctorj = "3.0.1"
 aspectj = "1.9.27"
 assertj = "3.27.7"
@@ -117,7 +117,7 @@ xerces = { module = "xerces:xercesImpl", version.ref = "xerces" }
 
 
 [plugins]
-asciidoctor-convert = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctor" }
+asciidoctor-jvm = { id = "org.asciidoctor.jvm", version.ref = "asciidoctor" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
 git-publish = { id = "org.ajoberstar.git-publish", version.ref = "git-publish" }
 jooq = { id = "nu.studer.jooq", version.ref = "jooq" }
