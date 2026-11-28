@@ -44,6 +44,30 @@ subprojects {
     repositories {
         mavenCentral()
     }
+
+    normalization {
+        runtimeClasspath {
+            // Nebula writes build provenance to both the manifest and the module properties.
+            val provenance = listOf(
+                "Built-By",
+                "Build-Date",
+                "Build-Date-UTC",
+                "Build-Host",
+                "Build-Id",
+                "Build-Job",
+                "Build-Number",
+                "Build-Timezone",
+                "Build-Url",
+            )
+            metaInf {
+                provenance.forEach(::ignoreAttribute)
+            }
+            properties("META-INF/grooves-*.properties") {
+                provenance.forEach(::ignoreProperty)
+            }
+        }
+    }
+
     apply(plugin = "checkstyle")
     apply(plugin = "com.adarshr.test-logger")
 

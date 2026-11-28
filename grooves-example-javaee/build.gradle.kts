@@ -29,10 +29,14 @@ dependencies {
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 
+val deploymentArchive = tasks.war.flatMap { it.archiveFile }
+
 tasks.test {
-    dependsOn("war")
     useJUnitPlatform()
-    systemProperty("war.file.path", tasks.war.get().archiveFile.get().asFile.absolutePath)
+    inputs.files(deploymentArchive)
+        .withPropertyName("deploymentArchive")
+        .withNormalizer(ClasspathNormalizer::class.java)
+    systemProperty("war.file.path", deploymentArchive.get().asFile.absolutePath)
 
     // Docker configuration for Mac ARM
     val isMacArm = System.getProperty("os.name").contains("Mac") && System.getProperty("os.arch") == "aarch64"
