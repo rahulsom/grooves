@@ -10,60 +10,56 @@ on:
       - "v*"
 
 jobs:
-  build-subproject:
-    name: Build ${{ matrix.project }}
+  build-libraries:
+    name: Build libraries
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        # Keep this list in sync with the subprojects in settings.gradle.kts.
-        project:
-          - grooves-api
-          - grooves-core
-          - grooves-diagrams
-          - grooves-docs
-          - grooves-example-javaee
-          - grooves-example-pushstyle
-          - grooves-example-springboot-jpa
-          - grooves-example-springboot-kotlin
-          - grooves-example-test
-          - grooves-groovy
-          - grooves-java
-          - grooves-site
-          - grooves-types
+    env:
+      GRADLE_CACHE_ARTIFACT: gradle-task-cache-libraries
     steps:
-      - uses: actions/checkout@v7
+      - &checkout-read-only
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: actions/setup-java@v6
+      - &setup-java
+        uses: actions/setup-java@v6
         with:
           java-version: 25
           distribution: zulu
 
-      - uses: gradle/actions/setup-gradle@v6
+      - &setup-gradle-read-only
+        uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: true
 
-      - name: Build subproject
+      - name: Build and test libraries
         env:
-          SUBPROJECT: ${{ matrix.project }}
-        run: |
-          args=()
+          # grooves-example-test is a shared test library used by the examples.
+          GRADLE_TASKS: >-
+            :grooves-api:build
+            :grooves-core:build
+            :grooves-diagrams:build
+            :grooves-example-test:build
+            :grooves-groovy:build
+            :grooves-java:build
+            :grooves-types:build
+        run: &build-projects |
+          read -r -a tasks <<< "$GRADLE_TASKS"
           if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
-            args+=(-Prelease.useLastTag=true)
+            tasks+=(-Prelease.useLastTag=true)
           fi
-          ./gradlew ":$SUBPROJECT:build" --no-daemon "${args[@]}"
+          ./gradlew "${tasks[@]}" --no-daemon
 
       # A fresh runner cannot see cache entries produced by other jobs in this run.
-      - name: Upload Gradle task cache
+      - &upload-task-cache
+        name: Upload Gradle task cache
         uses: actions/upload-artifact@v7
         continue-on-error: true
         with:
-          name: gradle-task-cache-${{ matrix.project }}
+          name: ${{ env.GRADLE_CACHE_ARTIFACT }}
           path: ~/.gradle/caches/build-cache-1/[0-9a-f]*
           include-hidden-files: true
           if-no-files-found: ignore
@@ -71,40 +67,73 @@ jobs:
           retention-days: 1
           overwrite: true
 
-  build:
-    name: build / Build with Gradle
-    needs: build-subproject
+  build-example:
+    name: Build ${{ matrix.project }}
+    needs: build-libraries
     runs-on: ubuntu-latest
     permissions:
       actions: read
       contents: read
-      packages: write
+    env:
+      GRADLE_CACHE_PATTERN: gradle-task-cache-libraries
+      GRADLE_CACHE_ARTIFACT: gradle-task-cache-${{ matrix.project }}
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - grooves-example-javaee
+          - grooves-example-pushstyle
+          - grooves-example-springboot-jpa
+          - grooves-example-springboot-kotlin
     steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
+      - *checkout-read-only
+      - *setup-java
+      - *setup-gradle-read-only
 
-      - uses: actions/setup-java@v6
-        with:
-          java-version: 25
-          distribution: zulu
-
-      - uses: gradle/actions/setup-gradle@v6
-
-      - name: Download subproject task caches
+      - &download-task-cache
+        name: Download Gradle task caches
         uses: actions/download-artifact@v8
         continue-on-error: true
         with:
-          pattern: gradle-task-cache-*
+          pattern: ${{ env.GRADLE_CACHE_PATTERN }}
           path: ${{ runner.temp }}/gradle-task-caches
 
-      - name: Restore Gradle task cache entries
+      - &restore-task-cache
+        name: Restore Gradle task cache entries
         run: |
           cache_dir="$HOME/.gradle/caches/build-cache-1"
           mkdir -p "$cache_dir" "$RUNNER_TEMP/gradle-task-caches"
           find "$RUNNER_TEMP/gradle-task-caches" -regextype posix-extended \
             -type f -regex '.*/[[:xdigit:]]{32}' \
             -exec cp --update=none --target-directory="$cache_dir" {} +
+
+      - name: Build and test example
+        env:
+          GRADLE_TASKS: :${{ matrix.project }}:build
+        run: *build-projects
+
+      - *upload-task-cache
+
+  build:
+    name: build / Build with Gradle
+    needs: [build-libraries, build-example]
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      packages: write
+    env:
+      GRADLE_CACHE_PATTERN: gradle-task-cache-*
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - *setup-java
+      - uses: gradle/actions/setup-gradle@v6
+
+      - *download-task-cache
+      - *restore-task-cache
 
       - name: Build branch or release candidate
         if: github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master' && (!startsWith(github.ref, 'refs/tags/v') || contains(github.ref, '-rc'))
